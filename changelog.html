@@ -4,15 +4,19 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Release Notes &#8212; DeerLab</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -28,13 +32,14 @@
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -42,34 +47,41 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Contributing" href="contributing.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="index.html">
-  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+    <img src="_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
+    <img src="_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -78,55 +90,55 @@
       
       <div class="navbar-center-item">
         <div class="container-fluid  px-0">
-
-    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+  
+    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="installation.html">Installation</a>
+          <a class="nav-link nav-link" href="installation.html">Installation</a>
         </li>
 
         <li class="dropdown">
           <a class="dropbtn" href="user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="sk-nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
+              <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
+              <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
+              <a class="nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
         </li>
 
         <li class="dropdown">
             <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="sk-nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
-                <a class="sk-nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
-                <a class="sk-nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
             </div>
           </li>
 
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="examples.html">Examples</a>
+          <a class="nav-link nav-link" href="examples.html">Examples</a>
         </li>
 
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="modelsref.html">Models</a>
+          <a class="nav-link nav-link" href="modelsref.html">Models</a>
         </li>
 
         
         <li class="nav-item">
-            <a class="sk-nav-link nav-link" href="reference.html">Reference</a>
+            <a class="nav-link nav-link" href="reference.html">Reference</a>
           </li>
 
         <li class="dropdown">
-          <a class="dropbtn" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="sk-nav-dropdown-item dropdown-item" href="#">Release Notes</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="support.html">Support</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="license.html">License</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+              <a class="nav-dropdown-item dropdown-item" href="#">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
+              <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
+              <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
           </div>
         </li>
       </ul>
@@ -146,47 +158,48 @@
 </form>
       </div>
       
-      <div class="navbar-end-item">
-        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-      </ul>
-      </div>
-      
     </div>
   </div>
 </div>
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-14-2-june-2022">
+   Release v0.14.2 - June 2022
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-v0-14-1-june-2022">
    Release v0.14.1 - June 2022
@@ -240,26 +253,24 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   <section id="release-notes">
-<span id="changelog"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">#</a></h1>
+<span id="changelog"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">#</a></h1>
 <p class="rubric">Legend</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> : Features something new which could not be done before</p></li>
@@ -268,11 +279,29 @@
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> : Something which was not working as expected or leading to errors has been fixed.</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> : This will require changes in your scripts or code.</p></li>
 </ul>
-<section id="release-v0-14-1-june-2022">
-<h2>Release v0.14.1 - June 2022<a class="headerlink" href="#release-v0-14-1-june-2022" title="Permalink to this headline">#</a></h2>
-<p class="rubric">Overall changes</p>
+<section id="release-v0-14-2-june-2022">
+<h2>Release v0.14.2 - June 2022<a class="headerlink" href="#release-v0-14-2-june-2022" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Use Scipy’s <img class="math" src="_images/math/93a816595ceff2f083c6ba984b6dedbf88fba3f1.svg" alt="eigh"/> instead of Numpy’s to avoid convergence error <code class="docutils literal notranslate"><span class="pre">numpy.linalg.LinAlgError:</span> <span class="pre">Eigenvalues</span> <span class="pre">did</span> <span class="pre">not</span> <span class="pre">converge</span></code> during model uncertainty propagation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/310">#310</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/311">#311</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> <span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> (Windows-systems only) Removed the unorthodox default installation procedure of DeerLab based on the installation of Numpy and related packages linked against MKL via the Gohlke repository (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/322">#322</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/330">#330</a>).</p>
+<ul>
+<li><p>As a result the default performance of DeerLab can be affected in some Windows systems. To link the Numpy and related packages against MKL as in previous versions, an automated script <code class="docutils literal notranslate"><span class="pre">upgrade_mkl.py</span></code> is provided with the package.</p></li>
+<li><p>Fixes the error appearing during installation if the <code class="docutils literal notranslate"><span class="pre">git</span></code> command was not installed or available in the system (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/326">#326</a>).</p></li>
+<li><p>Allows the distribution of DeerLab as wheels.</p></li>
+</ul>
+</li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Implemented better options for automated and user-supplied noise estimates to improve bootstrapping approaches (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/334">#334</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/343">#343</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Avoid the installation of (potentially unstable) pre-release versions of Numpy in systems with fresh Python installations (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/336">#336</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Improved the robustness of several function against non-numerical values due to division-by-zero errors (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/335">#335</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected the behavior of regularization parameter selection with L-curve methods (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/340">#340</a>). Fixes the <code class="docutils literal notranslate"><span class="pre">lc</span></code> method in <code class="docutils literal notranslate"><span class="pre">selgregparam</span></code> which was seeking the optimal regularization parameter by minimizing curvature rather than by maximizing it. Prevents failure of the L-curve methods due to the appearance of non-numeric values when evaluating too large regularization parameter values.</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixes the error when specifying a limited excitation bandwidth in <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> via the <code class="docutils literal notranslate"><span class="pre">excbandwidth</span></code> argument (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/342">#342</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixes the navigation menu on the documentation that appeared empty on mobile phones or for partially minimized windows on computers, impeding navigation through the documentation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/346">#346</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Minor corrections to the documentation and examples.</p></li>
+</ul>
+</section>
+<section id="release-v0-14-1-june-2022">
+<h2>Release v0.14.1 - June 2022<a class="headerlink" href="#release-v0-14-1-june-2022" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Use Scipy’s <code class="docutils literal notranslate"><span class="pre">eigh</span></code> instead of Numpy’s to avoid convergence error <code class="docutils literal notranslate"><span class="pre">numpy.linalg.LinAlgError:</span> <span class="pre">Eigenvalues</span> <span class="pre">did</span> <span class="pre">not</span> <span class="pre">converge</span></code> during model uncertainty propagation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/310">#310</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/311">#311</a>).</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Refactored the code to avoid the use of <code class="docutils literal notranslate"><span class="pre">lambda</span></code> and nested functions. This enables pickling DeerLab’s objects with Python’s <code class="docutils literal notranslate"><span class="pre">pickle</span></code> module without errors (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/312">#312</a>).</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added two new utility functions <code class="docutils literal notranslate"><span class="pre">store_pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">read_pickle</span></code> that implement pickling with the <code class="docutils literal notranslate"><span class="pre">dill</span></code> package to be more robust against potential <code class="docutils literal notranslate"><span class="pre">lambda</span></code> functions defined by the users in scripts (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/312">#312</a>).</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed minor bug when printing fit results with many model parameters being frozen. The print command would return an error message (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/329">#329</a>).</p></li>
@@ -281,7 +310,7 @@
 </ul>
 </section>
 <section id="release-v0-14-0-april-2022">
-<h2>Release v0.14.0 - April 2022<a class="headerlink" href="#release-v0-14-0-april-2022" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.14.0 - April 2022<a class="headerlink" href="#release-v0-14-0-april-2022" title="Permalink to this heading">#</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> <span class="raw-html"><span class="badge changelog_api">API Change</span></span> Complete overhaul of the DeerLab modelling and fitting interface. Check the new documentation for help and details. (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/223">#223</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/228">#228</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/237">#237</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/225">#225</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/243">#243</a>).</p>
@@ -416,7 +445,7 @@
 </ul>
 </section>
 <section id="release-v0-13-2-july-2021">
-<h2>Release v0.13.2 - July 2021<a class="headerlink" href="#release-v0-13-2-july-2021" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.13.2 - July 2021<a class="headerlink" href="#release-v0-13-2-july-2021" title="Permalink to this heading">#</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed an error appearing during installation in Windows systems. If during installation a  <code class="docutils literal notranslate"><span class="pre">python</span></code> executable alias was not created, the call to the <code class="docutils literal notranslate"><span class="pre">pipwin</span></code> manager returned an error and the installation failed to download and install Numpy, SciPy and CVXOpt (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/187">#187</a>).</p></li>
@@ -426,7 +455,7 @@
 </ul>
 </section>
 <section id="release-v0-13-1-may-2021">
-<h2>Release v0.13.1 - May 2021<a class="headerlink" href="#release-v0-13-1-may-2021" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.13.1 - May 2021<a class="headerlink" href="#release-v0-13-1-may-2021" title="Permalink to this heading">#</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed the behavior of global weights throughout DeerLab fit functions. The keyword argument <code class="docutils literal notranslate"><span class="pre">weights</span></code> was not having any or the expected effect in the results in some fit functions. Also fixes the behavior of built-in plots for global fits (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/168">#168</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/171">#171</a>).</p></li>
@@ -452,7 +481,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-13-0-april-2021">
-<h2>Release v0.13.0 - April 2021<a class="headerlink" href="#release-v0-13-0-april-2021" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.13.0 - April 2021<a class="headerlink" href="#release-v0-13-0-april-2021" title="Permalink to this heading">#</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> DeerLab is now distributed via the Anaconda repository and can be installed with the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/12">#12</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/157">#157</a>). The installation instructions have been expanded to describe the Anaconda installation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/155">#155</a>).</p></li>
@@ -547,7 +576,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-12-2-october-2020">
-<h2>Release v0.12.2 - October 2020<a class="headerlink" href="#release-v0-12-2-october-2020" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.12.2 - October 2020<a class="headerlink" href="#release-v0-12-2-october-2020" title="Permalink to this heading">#</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fit functions using the <code class="docutils literal notranslate"><span class="pre">multistart</span></code> option are now fully deterministic. The functions was using now a random generator to define the different start points, this is now deterministic.</p></li>
@@ -568,7 +597,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-12-1-october-2020">
-<h2>Release v0.12.1 - October 2020<a class="headerlink" href="#release-v0-12-1-october-2020" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.12.1 - October 2020<a class="headerlink" href="#release-v0-12-1-october-2020" title="Permalink to this heading">#</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_efficiency">Efficiency</span></span> The calculation of the Jacobian for covariance-based uncertainty analysis has been simplified providing a significant boost in performance for all fit functions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/55">#55</a>).</p></li>
@@ -587,7 +616,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-12-0-october-2020">
-<h2>Release v0.12.0 - October 2020<a class="headerlink" href="#release-v0-12-0-october-2020" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.12.0 - October 2020<a class="headerlink" href="#release-v0-12-0-october-2020" title="Permalink to this heading">#</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added new function <code class="docutils literal notranslate"><span class="pre">diststats</span></code> to calculate different statistical quantities of the distance distribution and their corresponding uncertainties (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/37">#37</a>).</p></li>
@@ -625,7 +654,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-11-0-september-2020">
-<h2>Release v0.11.0 - September 2020<a class="headerlink" href="#release-v0-11-0-september-2020" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.11.0 - September 2020<a class="headerlink" href="#release-v0-11-0-september-2020" title="Permalink to this heading">#</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge changelog_enhancement">Enhancement</span></span> All Gauss models (<code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code>,etc.) now use the standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code> instead of the FWHM as the width parameter for consistency with other method such as Rice distributions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/19">#19</a>).</p></li>
@@ -671,7 +700,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-10-0-august-2020">
-<h2>Release v0.10.0 - August 2020<a class="headerlink" href="#release-v0-10-0-august-2020" title="Permalink to this headline">#</a></h2>
+<h2>Release v0.10.0 - August 2020<a class="headerlink" href="#release-v0-10-0-august-2020" title="Permalink to this heading">#</a></h2>
 <p>As of this version, DeerLab is based on Python in contrast to older versions based on MATLAB found [here](<a class="reference external" href="https://github.com/JeschkeLab/DeerLab-Matlab">https://github.com/JeschkeLab/DeerLab-Matlab</a>).</p>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
@@ -713,44 +742,48 @@
 </section>
 
 
-              </div>
+              </article>
               
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="contributing.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Contributing</p>
-        </div>
-    </a>
-</div>
-              
-          </main>
-          
 
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="contributing.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Contributing</p>
+      </div>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>

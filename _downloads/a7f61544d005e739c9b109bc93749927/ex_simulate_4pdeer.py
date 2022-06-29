@@ -42,8 +42,6 @@ reftime3 = experiment.reftimes[2]
 
 # Construct the dipolar signal model
 Vmodel = dl.dipolarmodel(t,r,Pmodel=dl.dd_gauss, experiment=experiment) 
-# Function for the scaled background
-Vinter_fcn = lambda mod,conc: (1-mod)*dl.bg_hom3d(t,conc,mod)
 
 # Function for the scaled background
 Vinter_fcn = lambda lam1,lam23,conc: (1-lam1-2*lam23)*dl.bg_hom3d(t-reftime1,conc,lam1)*dl.bg_hom3d(t-reftime2,conc,lam23)*dl.bg_hom3d(t-reftime3,conc,lam23)

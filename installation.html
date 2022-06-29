@@ -4,15 +4,19 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Installation &#8212; DeerLab</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -28,47 +32,55 @@
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="index.html">
-  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+    <img src="_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
+    <img src="_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -77,55 +89,55 @@
       
       <div class="navbar-center-item">
         <div class="container-fluid  px-0">
-
-    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+  
+    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="#">Installation</a>
+          <a class="nav-link nav-link" href="#">Installation</a>
         </li>
 
         <li class="dropdown">
           <a class="dropbtn" href="user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="sk-nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
+              <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
+              <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
+              <a class="nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
         </li>
 
         <li class="dropdown">
             <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="sk-nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
-                <a class="sk-nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
-                <a class="sk-nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
             </div>
           </li>
 
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="examples.html">Examples</a>
+          <a class="nav-link nav-link" href="examples.html">Examples</a>
         </li>
 
         <li class="nav-item">
-          <a class="sk-nav-link nav-link" href="modelsref.html">Models</a>
+          <a class="nav-link nav-link" href="modelsref.html">Models</a>
         </li>
 
         
         <li class="nav-item">
-            <a class="sk-nav-link nav-link" href="reference.html">Reference</a>
+            <a class="nav-link nav-link" href="reference.html">Reference</a>
           </li>
 
         <li class="dropdown">
-          <a class="dropbtn" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="sk-nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="support.html">Support</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="license.html">License</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
-              <a class="sk-nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+              <a class="nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
+              <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
+              <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
           </div>
         </li>
       </ul>
@@ -145,41 +157,37 @@
 </form>
       </div>
       
-      <div class="navbar-end-item">
-        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-      </ul>
-      </div>
-      
     </div>
   </div>
 </div>
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -233,6 +241,11 @@
      Installing from source
     </a>
    </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#linking-against-blas-libraries">
+     Linking against BLAS libraries
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -243,28 +256,26 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   <section id="installation">
-<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">#</a></h1>
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
 <section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">#</a></h2>
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">#</a></h2>
 <p>To install DeerLab, first install Python on your computer. Python can be downloaded from the <a class="reference external" href="https://www.python.org/">official Python distribution</a>. There are
 many online tutorials to guide you through the installation and setup (see <a class="reference external" href="https://realpython.com/installing-python/">here</a> for example). Make sure you install
 one of the Python versions compatible with DeerLab, either <strong>Python 3.6</strong>, <strong>3.7</strong>, <strong>3.8</strong>, <strong>3.9</strong>, or  <strong>3.10</strong>.</p>
@@ -276,9 +287,9 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.6</s
 <p>which should display the installed Python version and launch the Python command line. To exit, use the <code class="docutils literal notranslate"><span class="pre">exit()</span></code> command or close the console.</p>
 </section>
 <section id="installing-deerlab">
-<h2>Installing DeerLab<a class="headerlink" href="#installing-deerlab" title="Permalink to this headline">#</a></h2>
+<h2>Installing DeerLab<a class="headerlink" href="#installing-deerlab" title="Permalink to this heading">#</a></h2>
 <section id="installing-from-pypi">
-<h3>Installing from PyPI<a class="headerlink" href="#installing-from-pypi" title="Permalink to this headline">#</a></h3>
+<h3>Installing from PyPI<a class="headerlink" href="#installing-from-pypi" title="Permalink to this heading">#</a></h3>
 <p>A pre-built distribution can be installed using <a class="reference external" href="https://pip.pypa.io/en/stable/installing/">pip</a>.</p>
 <p>First, it is important to ensure that <code class="docutils literal notranslate"><span class="pre">pip</span></code> is up-to-date. From a terminal (preferably with administrative privileges) use the following command:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
@@ -300,15 +311,9 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.6</s
 <li><p><a class="reference external" href="https://github.com/tqdm/tqdm">tqdm</a> - A lightweight package for smart progress meters.</p></li>
 <li><p><a class="reference external" href="https://github.com/uqfoundation/dill">dill</a> - An extension of Python’s pickle module for serializing and de-serializing python objects.</p></li>
 </ul>
-<p>The installed numerical computing packages (numpy, scipy, cvxopt) are linked against different BLAS libraries depending on the OS:</p>
-<ul class="simple">
-<li><p>Windows: linked against the Intel Matrix Kernel Library (MKL)</p></li>
-<li><p>Linux: linked against OpenBLAS</p></li>
-<li><p>Mac: linked against BLAS/LAPACK from the Accelerate framework</p></li>
-</ul>
 </section>
 <section id="installing-from-anaconda">
-<h3>Installing from Anaconda<a class="headerlink" href="#installing-from-anaconda" title="Permalink to this headline">#</a></h3>
+<h3>Installing from Anaconda<a class="headerlink" href="#installing-from-anaconda" title="Permalink to this heading">#</a></h3>
 <p>DeerLab is also distributed via the Anaconda repository and the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager.</p>
 <p>Open the Anaconda prompt (preferably with administrative privileges) or activate the Anaconda environment. Next install DeerLab via the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">deerlab</span> <span class="o">-</span><span class="n">c</span> <span class="n">JeschkeLab</span>
@@ -318,7 +323,7 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.6</s
 </section>
 </section>
 <section id="importing-deerlab">
-<h2>Importing DeerLab<a class="headerlink" href="#importing-deerlab" title="Permalink to this headline">#</a></h2>
+<h2>Importing DeerLab<a class="headerlink" href="#importing-deerlab" title="Permalink to this heading">#</a></h2>
 <p>As a Python package, DeerLab must be imported before using it. For this, use the <code class="docutils literal notranslate"><span class="pre">import</span></code> statement:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
 </pre></div>
@@ -326,7 +331,7 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.6</s
 <p>This makes DeerLab functions accessible via the abbreviated name <code class="docutils literal notranslate"><span class="pre">dl</span></code>. For example, the function <code class="docutils literal notranslate"><span class="pre">fit</span></code> can be called via <code class="docutils literal notranslate"><span class="pre">dl.fit</span></code>. We recommend to use <code class="docutils literal notranslate"><span class="pre">dl</span></code> as the standard import abbreviation for DeerLab.</p>
 </section>
 <section id="updating-to-the-latest-release">
-<h2>Updating to the latest release<a class="headerlink" href="#updating-to-the-latest-release" title="Permalink to this headline">#</a></h2>
+<h2>Updating to the latest release<a class="headerlink" href="#updating-to-the-latest-release" title="Permalink to this heading">#</a></h2>
 <p>To upgrade an existing DeerLab installation to the latest released version, use the following command from a terminal:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">deerlab</span>
 </pre></div>
@@ -337,9 +342,9 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.6</s
 </div>
 </section>
 <section id="other-installations">
-<h2>Other installations<a class="headerlink" href="#other-installations" title="Permalink to this headline">#</a></h2>
+<h2>Other installations<a class="headerlink" href="#other-installations" title="Permalink to this heading">#</a></h2>
 <section id="installing-specific-versions">
-<h3>Installing specific versions<a class="headerlink" href="#installing-specific-versions" title="Permalink to this headline">#</a></h3>
+<h3>Installing specific versions<a class="headerlink" href="#installing-specific-versions" title="Permalink to this heading">#</a></h3>
 <p>Any DeerLab version released after v0.10.0 can be installed via <code class="docutils literal notranslate"><span class="pre">pip</span></code> using the following command matching the x.y.z to the desired version:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">deerlab</span><span class="o">==</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
 </pre></div>
@@ -352,7 +357,7 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.6</s
 Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.</p>
 </section>
 <section id="installing-from-source">
-<h3>Installing from source<a class="headerlink" href="#installing-from-source" title="Permalink to this headline">#</a></h3>
+<h3>Installing from source<a class="headerlink" href="#installing-from-source" title="Permalink to this heading">#</a></h3>
 <p>If you wish to contribute to DeerLab or like to get the latest updates as they come, install DeerLab from <code class="docutils literal notranslate"><span class="pre">git</span></code>. If your OS has not <code class="docutils literal notranslate"><span class="pre">git</span></code> installed, you can download it and install it from the <a class="reference external" href="https://git-scm.com/">official Git distribution</a>.
 To download (clone) the repository, execute the following from the command line:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">JeschkeLab</span><span class="o">/</span><span class="n">DeerLab</span><span class="o">.</span><span class="n">git</span>
@@ -372,9 +377,22 @@ To download (clone) the repository, execute the following from the command line:
 </div>
 <p>Any changes made to the source code will then immediate effect.</p>
 </section>
+<section id="linking-against-blas-libraries">
+<h3>Linking against BLAS libraries<a class="headerlink" href="#linking-against-blas-libraries" title="Permalink to this heading">#</a></h3>
+<p>The installed numerical computing packages (numpy, scipy, cvxopt) are automatically linked against different BLAS libraries depending on the OS:</p>
+<ul class="simple">
+<li><p>Linux: OpenBLAS</p></li>
+<li><p>Mac: BLAS/LAPACK from the Accelerate framework</p></li>
+</ul>
+<p>In Windows systems, these packages can be linked against the Intel MKL libraries. To do so, DeerLab provides a script <code class="docutils literal notranslate"><span class="pre">mkl_link.py</span></code> that can be used to link against the Intel MKL libraries automatically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mkl_link</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>The script will download the binaries from the Gohlke repository and override any currently installed version of the mentioned packages.</p>
+</section>
 </section>
 <section id="installation-failed">
-<h2>Installation failed<a class="headerlink" href="#installation-failed" title="Permalink to this headline">#</a></h2>
+<h2>Installation failed<a class="headerlink" href="#installation-failed" title="Permalink to this heading">#</a></h2>
 <p>Under certain circumstances the installation using some of the methods described above may fail due to specific technical reasons.
 This is a selection of some of the known issues that may arise during installation of DeerLab along with instructions to solve them.</p>
 <p class="rubric">Known Issue #1: DLL load failed</p>
@@ -426,37 +444,41 @@ numpy-1.19.1+mkl-cp36-cp36m-win_amd64.whl
 </section>
 
 
-              </div>
+              </article>
               
+
               
-              <!-- Previous / next buttons -->
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
+              </footer>
               
-          </main>
+          </div>
           
-
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>
