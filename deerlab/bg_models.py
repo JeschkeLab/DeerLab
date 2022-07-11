@@ -142,7 +142,7 @@ def _hom3dphase(t,conc,lam):
     conc = conc*1e-6*1e3*Nav # umol/L -> mol/L -> mol/m^3 -> spins/m^3
     # Compute background function
     ξ = 8*pi/9/np.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))*D
-    B = np.exp(-1j*ξ*lam*conc*(t*1e-6))
+    B = np.exp(1j*ξ*lam*conc*(t*1e-6))
 
     return B
 # Create model
@@ -246,7 +246,7 @@ def _hom3dex_phase(t,conc,rex,lam):
     
     # Background function
     C_k = - Ic - np.squeeze(Vex*(dipolarkernel(t,rex,integralop=False,complex=True)).imag)
-    B = np.exp(-1j*lam*conc*C_k)
+    B = np.exp(1j*lam*conc*C_k)
 
     return B
 # Create model
@@ -336,7 +336,7 @@ def _homfractal_phase(t,fconc,fdim,lam):
             ) 
 
     # Compute background function
-    B = np.exp(-1j*ξd*fconc*lam*np.sign(t)*abs(t*1e-6)**(d/3))
+    B = np.exp(1j*ξd*fconc*lam*np.sign(t)*abs(t*1e-6)**(d/3))
     return B
 # ======================================================================
 # Create model
