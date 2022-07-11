@@ -284,7 +284,7 @@ def _homfractal(t,fconc,fdim,lam):
     elif d==4.5:
         κd = 5.35506  # d->4.5 limit of general expression
     else:
-        κd = 2/9*(-1)**(-d/3)*pi*np.cos(d*pi/6)*gamma(-d/3)*(
+        κd = 2/9*(-1)**(-d/3+1)*pi*np.cos(d*pi/6)*gamma(-d/3)*(
                 (-1 + (-1)**(d/3))*np.sqrt(3*np.pi)*gamma(1+d/3)/gamma(3/2+d/3)
                 + 6*hyp2f1_repro(1/2, -d/3, 3/2, 3)
               )
@@ -330,7 +330,7 @@ def _homfractal_phase(t,fconc,fdim,lam):
     elif d==4.5:
         ξd = 1j*np.inf # Limit of d->4.5 of equation below 
     else:
-        ξd = D**(d/3)*pi**(3/2)/9/gamma(3/2 + d/3) * (
+        ξd = 2*D**(d/3)*pi**(3/2)/9/gamma(3/2 + d/3) * (
                 np.sqrt(3)*pi*np.cos(d*pi/6)/np.cos(d*pi/3) 
                 - 2**(2+2*d/3)*3**(1 + d/3)*gamma(-1-2*d/3)*np.sin(d*pi/6)*gamma(3/2+d/3)*hyp2f1((-3-2*d)/6, -d/3, (3-2*d)/6, 1/3)/gamma((3-2*d)/6) 
             ) 
