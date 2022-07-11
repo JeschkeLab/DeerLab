@@ -1048,12 +1048,15 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         model.addlinear('scale',lb=-np.inf,ub=np.inf,description='Scaling factor')
 
     normalization = False
+    normfactor_keys = []
     for key in model._parameter_list():
         param = getattr(model,key)
         if np.all(param.linear):
             if param.normalization is not None:
-                model.addnonlinear(f'{key}_scale',lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
-                getattr(model,f'{key}_scale').freeze(1)
+                normfactor_key = f'{key}_scale'
+                normfactor_keys.append(normfactor_key)
+                model.addnonlinear(normfactor_key,lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
+                getattr(model,normfactor_key).freeze(1)
                 normalization = True
 
     # Get boundaries and conditions for the linear and nonlinear parameters
@@ -1167,11 +1170,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     if normalization:
         for key in keys:
             param = getattr(model,key)
-            param.unfreeze()
+            if key in normfactor_keys:
+                param.unfreeze() 
             if np.all(param.linear):
                 if param.normalization is not None:
                     non_normalized = FitResult_param_[key] # Non-normalized value
                     FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
+                    FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
                     FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
                     FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
                     FitResult_paramuq_[f'{key}_scaleUncert'] = UQResult('void')
