@@ -109,7 +109,8 @@ html_context = {
     "github_repo": "DeerLab", # Repo name
     "github_version": "master", # Version
     "conf_py_path": "/source/", # Path in the checkout to the docs root
-    'version' : version,                                  
+    'version' : version,     
+    "default_mode": "light",                             
 }
 html_theme_options = {
     "navbar_start": ["navbar-logo"],
