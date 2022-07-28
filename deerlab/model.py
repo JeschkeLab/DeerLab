@@ -108,6 +108,19 @@ class Parameter():
     #---------------------------------------------------------------------------------------
     
     #---------------------------------------------------------------------------------------
+    def setas(self,parameter):
+        """
+        Copy all attributes from an input parameter to the current parameter. 
+
+        Parameters
+        ----------
+        param : ``Parameter`` object 
+            Model parameters from which to extract the attributes. 
+        """
+        self.set(**_importparameter(parameter))
+    #---------------------------------------------------------------------------------------
+
+    #---------------------------------------------------------------------------------------
     def freeze(self,value):
         """
         Freeze a parameter during a fit/optimization to a given value. Does not affect model evaluation. 
