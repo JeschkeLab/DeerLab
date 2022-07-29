@@ -279,7 +279,7 @@ class Model():
         try:
             return super(Model, self).__getattribute__(attr)
         except AttributeError:
-            errstr = f'The model has no attribute {attr}.'
+            errstr = f"The model has no attribute '{attr}'."
             attributes = [key for key in self.__dict__]
             proposal = difflib.get_close_matches(attr, attributes)
             if len(proposal)>0:
