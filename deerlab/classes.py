@@ -8,6 +8,7 @@ from scipy.signal import fftconvolve
 from scipy.linalg import block_diag
 from scipy.optimize import brentq
 from scipy.interpolate import interp1d
+import difflib
 
 class FitResult(dict):
 # ========================================================================
@@ -48,12 +49,17 @@ class FitResult(dict):
     using the `keys()` method. 
     """
 
-    def __getattr__(self, name):
+    def __getattr__(self, attr):
         try:
-            return self[name]
+            return self[attr]
         except KeyError:
-            raise AttributeError(name)
-    
+            errstr = f"The results object has no attribute '{attr}'."
+            attributes = [key for key in self.keys()]
+            proposal = difflib.get_close_matches(attr, attributes)
+            if len(proposal)>0:
+                errstr += f' \n Did you mean: {proposal} ?'
+            raise AttributeError(errstr)
+
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 

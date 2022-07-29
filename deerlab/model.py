@@ -108,6 +108,19 @@ class Parameter():
     #---------------------------------------------------------------------------------------
     
     #---------------------------------------------------------------------------------------
+    def setas(self,parameter):
+        """
+        Copy all attributes from an input parameter to the current parameter. 
+
+        Parameters
+        ----------
+        param : ``Parameter`` object 
+            Model parameters from which to extract the attributes. 
+        """
+        self.set(**_importparameter(parameter))
+    #---------------------------------------------------------------------------------------
+
+    #---------------------------------------------------------------------------------------
     def freeze(self,value):
         """
         Freeze a parameter during a fit/optimization to a given value. Does not affect model evaluation. 
@@ -266,7 +279,7 @@ class Model():
         try:
             return super(Model, self).__getattribute__(attr)
         except AttributeError:
-            errstr = f'The model has no attribute {attr}.'
+            errstr = f"The model has no attribute '{attr}'."
             attributes = [key for key in self.__dict__]
             proposal = difflib.get_close_matches(attr, attributes)
             if len(proposal)>0:
@@ -506,19 +519,38 @@ class Model():
         or keyword arguments and evaluates the model.
         """
         # Check that the correct number of arguments have been specified
-        Nrequired = len(self._parameter_list())
-        Nrequired += len(self._constantsInfo)
+        paramlist = self._parameter_list(order='vector')
+        constlist = [info['argkey'] for info in self._constantsInfo]
+        Nrequired = len(paramlist)
+        Nrequired += len(constlist)
         if (len(args)+len(kargs))!=Nrequired:
             raise SyntaxError(f'The model requires {Nrequired} arguments, but {len(args)+len(kargs)} have been specified.')
 
-        # Positional arguments       
-        args_constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo if info['argidx']<len(args)]
-        args_list = [np.atleast_1d(arg) for idx,arg in enumerate(args) if idx not in [info['argidx'] for info in self._constantsInfo]]
+        # Extract positional arguments  
+        args_constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo if info['argidx']<len(args)]     
+        args_list = [np.atleast_1d(arg) for idx,arg in enumerate(args) if idx not in [info['argidx'] for info in self._constantsInfo]] 
 
-        # Keywords arguments
-        kargs_constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo  if info['argkey'] in kargs] 
-        kargs_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list(order='vector')[len(args_list):]]
-        
+        # Check keyword arguments 
+        paramlist_ = paramlist[len(args_list):]
+        karg_keys = kargs.keys()
+        for key in karg_keys:
+            if key in paramlist and key not in paramlist_: 
+                raise SyntaxError(f'The parameter "{key}" has been specified twice.')
+            if key not in paramlist and not key in constlist: 
+                errstr = f'The argument \"{key}\" is not part of the model signature.'
+                proposal = difflib.get_close_matches(key, paramlist)
+                print(paramlist,proposal)
+                if len(proposal)>0:
+                    errstr += f' \n\t\tDid you mean: {proposal}?'
+                raise AttributeError(errstr)    
+        for param in paramlist_:
+            if param not in karg_keys:
+                raise KeyError(f'The parameter "{param}" has not been specified.')
+
+        # Extract keywords arguments      
+        kargs_constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo if info['argkey'] in kargs]  
+        kargs_list = [np.atleast_1d(kargs[param]) for param in paramlist_]
+
         constants = args_constants + kargs_constants
         param_list = args_list + kargs_list
 
@@ -903,6 +935,27 @@ def _print_fitresults(fitresult,model):
     # Add auto-formatted table string
     string += 'Goodness-of-fit: \n'
     string += formatted_table(table,alignment) + '\n'
+
+    
+    hasregularization = fitresult.regparam!=0
+    haspenalties = fitresult.penweights
+    if hasregularization and haspenalties:
+        string += 'Model hyperparameters: \n'
+        tags = []
+        values = []
+        alignment = [] 
+        if hasregularization:
+            alignment.append('^')
+            tags.append('Regularization parameter')        
+            values.append(fitresult.regparam) 
+        if haspenalties:
+            for n,penweight in enumerate(fitresult.penweights):
+                alignment.append('^')
+                tags.append(f'Penalty weight #{n+1}')        
+                values.append(penweight) 
+        values = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in values] 
+        table = [tags,values] 
+        string += formatted_table(table,alignment) + '\n'
 
     # Construct table of model parameters fits
     table = []
