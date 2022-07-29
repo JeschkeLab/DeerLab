@@ -917,6 +917,27 @@ def _print_fitresults(fitresult,model):
     string += 'Goodness-of-fit: \n'
     string += formatted_table(table,alignment) + '\n'
 
+    
+    hasregularization = fitresult.regparam!=0
+    haspenalties = fitresult.penweights
+    if hasregularization and haspenalties:
+        string += 'Model hyperparameters: \n'
+        tags = []
+        values = []
+        alignment = [] 
+        if hasregularization:
+            alignment.append('^')
+            tags.append('Regularization parameter')        
+            values.append(fitresult.regparam) 
+        if haspenalties:
+            for n,penweight in enumerate(fitresult.penweights):
+                alignment.append('^')
+                tags.append(f'Penalty weight #{n+1}')        
+                values.append(penweight) 
+        values = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in values] 
+        table = [tags,values] 
+        string += formatted_table(table,alignment) + '\n'
+
     # Construct table of model parameters fits
     table = []
     table.append([f'Parameter','Value','95%-Confidence interval','Unit','Description']) # Header
