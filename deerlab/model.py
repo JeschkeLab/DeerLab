@@ -939,7 +939,7 @@ def _print_fitresults(fitresult,model):
     
     hasregularization = fitresult.regparam!=0
     haspenalties = fitresult.penweights
-    if hasregularization and haspenalties:
+    if hasregularization or haspenalties:
         string += 'Model hyperparameters: \n'
         tags = []
         values = []
