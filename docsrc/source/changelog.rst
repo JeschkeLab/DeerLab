@@ -14,6 +14,24 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
+
+Release v0.14.3 - July 2022
+---------------------------------
+
+- |api| Deprecated support for Python 3.6 and 3.7 (:pr:`353`). 
+- |feature| Added multiple quality of life improvements to the modelling system (:pr:`354`). 
+
+  * Add new method ``paramA.setas(paramB)`` for ``Parameter`` objects to copy the full metadata content from ``paramB`` into ``paramA``. 
+  * Expand the ``FitResult`` summary to report on the regularization parameter and penalty weights when used in the analysis. 
+  * Improve the report of incorrect attribute requests in ``FitResult`` objects and provide close matches as suggestions. 
+  * Improve the report of errors during the evaluation of ``Model`` objects.  
+  
+- |fix| Fix bug in the ``fit`` function unfreezing all frozen model parameters upon fitting if any model parameter included a normalization constraint (:issue:`348`, :pr:`352`).
+- |fix| Corrected two minor mathematical errors in the physical background models ``bg_homfractal`` and ``bg_homfractal_phase`` (:pr:`351`). 
+- |fix| Fixed display of the online documentation in browsers with an enabled dark theme that made certain menus and text sections unreadable (:issue:`349`, :pr:`350`). The documentation will now default to a light theme even for dark themed browser. 
+
+
+
 Release v0.14.2 - June 2022
 ---------------------------------
 
