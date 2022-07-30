@@ -108,6 +108,19 @@ class Parameter():
     #---------------------------------------------------------------------------------------
     
     #---------------------------------------------------------------------------------------
+    def setas(self,parameter):
+        """
+        Copy all attributes from an input parameter to the current parameter. 
+
+        Parameters
+        ----------
+        param : ``Parameter`` object 
+            Model parameters from which to extract the attributes. 
+        """
+        self.set(**_importparameter(parameter))
+    #---------------------------------------------------------------------------------------
+
+    #---------------------------------------------------------------------------------------
     def freeze(self,value):
         """
         Freeze a parameter during a fit/optimization to a given value. Does not affect model evaluation. 
@@ -266,7 +279,7 @@ class Model():
         try:
             return super(Model, self).__getattribute__(attr)
         except AttributeError:
-            errstr = f'The model has no attribute {attr}.'
+            errstr = f"The model has no attribute '{attr}'."
             attributes = [key for key in self.__dict__]
             proposal = difflib.get_close_matches(attr, attributes)
             if len(proposal)>0:
@@ -506,19 +519,38 @@ class Model():
         or keyword arguments and evaluates the model.
         """
         # Check that the correct number of arguments have been specified
-        Nrequired = len(self._parameter_list())
-        Nrequired += len(self._constantsInfo)
+        paramlist = self._parameter_list(order='vector')
+        constlist = [info['argkey'] for info in self._constantsInfo]
+        Nrequired = len(paramlist)
+        Nrequired += len(constlist)
         if (len(args)+len(kargs))!=Nrequired:
             raise SyntaxError(f'The model requires {Nrequired} arguments, but {len(args)+len(kargs)} have been specified.')
 
-        # Positional arguments       
-        args_constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo if info['argidx']<len(args)]
-        args_list = [np.atleast_1d(arg) for idx,arg in enumerate(args) if idx not in [info['argidx'] for info in self._constantsInfo]]
+        # Extract positional arguments  
+        args_constants= [np.atleast_1d(args[info['argidx']]) for info in self._constantsInfo if info['argidx']<len(args)]     
+        args_list = [np.atleast_1d(arg) for idx,arg in enumerate(args) if idx not in [info['argidx'] for info in self._constantsInfo]] 
 
-        # Keywords arguments
-        kargs_constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo  if info['argkey'] in kargs] 
-        kargs_list = [np.atleast_1d(kargs[param]) for param in self._parameter_list(order='vector')[len(args_list):]]
-        
+        # Check keyword arguments 
+        paramlist_ = paramlist[len(args_list):]
+        karg_keys = kargs.keys()
+        for key in karg_keys:
+            if key in paramlist and key not in paramlist_: 
+                raise SyntaxError(f'The parameter "{key}" has been specified twice.')
+            if key not in paramlist and not key in constlist: 
+                errstr = f'The argument \"{key}\" is not part of the model signature.'
+                proposal = difflib.get_close_matches(key, paramlist)
+                print(paramlist,proposal)
+                if len(proposal)>0:
+                    errstr += f' \n\t\tDid you mean: {proposal}?'
+                raise AttributeError(errstr)    
+        for param in paramlist_:
+            if param not in karg_keys:
+                raise KeyError(f'The parameter "{param}" has not been specified.')
+
+        # Extract keywords arguments      
+        kargs_constants = [np.atleast_1d(kargs[info['argkey']]) for info in self._constantsInfo if info['argkey'] in kargs]  
+        kargs_list = [np.atleast_1d(kargs[param]) for param in paramlist_]
+
         constants = args_constants + kargs_constants
         param_list = args_list + kargs_list
 
@@ -904,6 +936,29 @@ def _print_fitresults(fitresult,model):
     string += 'Goodness-of-fit: \n'
     string += formatted_table(table,alignment) + '\n'
 
+    
+    hasregularization = fitresult.regparam!=0
+    haspenalties = fitresult.penweights
+    if hasregularization or haspenalties:
+        string += 'Model hyperparameters: \n'
+        tags = []
+        values = []
+        alignment = [] 
+        if hasregularization:
+            alignment.append('^')
+            tags.append('Regularization parameter')      
+            regparam = fitresult.regparam
+            if regparam is None: regparam = 0  
+            values.append(regparam) 
+        if haspenalties:
+            for n,penweight in enumerate(fitresult.penweights):
+                alignment.append('^')
+                tags.append(f'Penalty weight #{n+1}')        
+                values.append(penweight) 
+        values = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in values] 
+        table = [tags,values] 
+        string += formatted_table(table,alignment) + '\n'
+
     # Construct table of model parameters fits
     table = []
     table.append([f'Parameter','Value','95%-Confidence interval','Unit','Description']) # Header
@@ -1048,12 +1103,15 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         model.addlinear('scale',lb=-np.inf,ub=np.inf,description='Scaling factor')
 
     normalization = False
+    normfactor_keys = []
     for key in model._parameter_list():
         param = getattr(model,key)
         if np.all(param.linear):
             if param.normalization is not None:
-                model.addnonlinear(f'{key}_scale',lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
-                getattr(model,f'{key}_scale').freeze(1)
+                normfactor_key = f'{key}_scale'
+                normfactor_keys.append(normfactor_key)
+                model.addnonlinear(normfactor_key,lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
+                getattr(model,normfactor_key).freeze(1)
                 normalization = True
 
     # Get boundaries and conditions for the linear and nonlinear parameters
@@ -1167,11 +1225,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     if normalization:
         for key in keys:
             param = getattr(model,key)
-            param.unfreeze()
+            if key in normfactor_keys:
+                param.unfreeze() 
             if np.all(param.linear):
                 if param.normalization is not None:
                     non_normalized = FitResult_param_[key] # Non-normalized value
                     FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
+                    FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
                     FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
                     FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
                     FitResult_paramuq_[f'{key}_scaleUncert'] = UQResult('void')

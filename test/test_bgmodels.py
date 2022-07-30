@@ -62,38 +62,56 @@ def test_bg_hom3d_value():
     conc = 143
     lam = 0.47
     B = dl.bg_hom3d(t, conc, lam)
-    Bref = 0.9227092
-    assert abs(B - Bref) < 1e-7
+    Bref = 0.92269778443975   # Value from numerical integration
+    assert abs(B - Bref) < 1e-4
 
 
-def test_bg_hom3d_phase():
-    Bref = 0.9998641918107823 - 0.01648022859583373j
-    assert_bgmodel_value(dl.bg_hom3d_phase, Bref)
+def test_bg_hom3d_phase_value():
+    t = 1.2
+    conc = 143
+    lam = 0.47
+    B = dl.bg_hom3d_phase(t, conc, lam)
+    Bref = 0.99994353+0.01062727j   # Value from numerical integration
+    assert np.abs(B - Bref) < 1e-4
 
-
-def test_bg_homfractal3d_value():
-    conc = 100
-    dim = 3
-    lam = 0.423
+def test_bg_homfractal_value():
+    conc = 1e-3
+    dim = 2.2
+    lam = 0.47
     t = 0.1
     B = dl.bg_homfractal(t, conc, dim, lam)
-    Bref = 0.99578995 
-    assert abs(B - Bref) < 1e-6
+    Bref = 0.9443678720378192    # Value from numerical integration
+    assert abs(B - Bref) < 1e-4
 
 
 def test_bg_homfractal_phase():
-    Bref = 0.999999988356966 - 0.00015259773164288322j
-    assert_bgmodel_value(dl.bg_homfractal_phase, Bref)
+    conc = 1e-3
+    dim = 2.2
+    lam = 0.47
+    t = 0.1
+    B = dl.bg_homfractal_phase(t, conc, dim, lam)
+    Bref = 0.9999771819749+0.006755407429425621j    # Value from numerical integration
+    assert abs(B - Bref) < 1e-4
 
 
 def test_bg_hom3dex():
-    Bref = 0.8828975362813715
-    assert_bgmodel_value(dl.bg_hom3dex, Bref)
+    t = 1.2
+    Rex = 3
+    conc = 143
+    lam = 0.47
+    B = dl.bg_hom3dex(t, conc, Rex, lam)
+    Bref = 0.926971275363862   # Value from numerical integration
+    assert abs(B - Bref) < 1e-4
 
 
 def test_bg_hom3dex_phase():
-    Bref = 0.9998641899814665 - 0.016480339581022234j
-    assert_bgmodel_value(dl.bg_hom3dex_phase, Bref)
+    t = 1.2
+    Rex = 3
+    conc = 143
+    lam = 0.47
+    B = dl.bg_hom3dex_phase(t, conc, Rex, lam)
+    Bref = 0.999943779807736+0.010603642007255394j   # Value from numerical integration
+    assert abs(B - Bref) < 1e-4
 
 
 def test_bg_exp_value():

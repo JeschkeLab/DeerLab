@@ -55,6 +55,18 @@ def test_parameters_set():
     assert getattr(model.mean,'lb')==0 and getattr(model.mean,'ub')==10 
 #================================================================
 
+def test_parameters_setas():
+#================================================================
+    "Check that attributes can be set to that of another parameter"
+    modelref = Model(gauss)
+    modelref.mean.set(lb=0,ub=10)
+
+    model = Model(gauss)
+    model.mean.setas(modelref.mean)
+
+    assert getattr(model.mean,'lb')==getattr(modelref.mean,'lb') and getattr(model.mean,'ub')==getattr(modelref.mean,'ub') 
+#================================================================
+
 def test_call_keywords():
 #================================================================
     "Check that calling the model with parameter returns the correct response"
