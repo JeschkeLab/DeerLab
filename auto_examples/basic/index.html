@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>&lt;no title&gt; &#8212; DeerLab</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Simulating a 5-pulse DEER signal" href="ex_simulate_5pdeer.html" />
+    <link rel="prev" title="Examples" href="../../examples.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
+  
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+  
+    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<div class="sidebar-primary col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-md-block col-md-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+
+<nav id="bd-toc-nav">
+    
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-8">
+              
+              <article class="bd-article" role="main">
+                
+  <p class="rubric" id="sphx-glr-auto-examples-basic">Basic</p>
+<p>These are basic examples for routine operations in DeerLab.</p>
+<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="An example on how to simulate a 5-pulse DEER dipolar signal.  "><img alt="Simulating a 5-pulse DEER signal" src="../../_images/sphx_glr_ex_simulate_5pdeer_thumb.png" />
+<p><a class="reference internal" href="ex_simulate_5pdeer.html#sphx-glr-auto-examples-basic-ex-simulate-5pdeer-py"><span class="std std-ref">Simulating a 5-pulse DEER signal</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Simulating a 5-pulse DEER signal</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="An example on how to simulate a 4-pulse DEER dipolar signal.  "><img alt="Simulating a 4-pulse DEER signal" src="../../_images/sphx_glr_ex_simulate_4pdeer_thumb.png" />
+<p><a class="reference internal" href="ex_simulate_4pdeer.html#sphx-glr-auto-examples-basic-ex-simulate-4pdeer-py"><span class="std std-ref">Simulating a 4-pulse DEER signal</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Simulating a 4-pulse DEER signal</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="How to use the profile analysis method to asses whether the 4-pulse DEER model parameters  are ..."><img alt="Identifiability analysis of a 4-pulse DEER signal via the profile analysis method" src="../../_images/sphx_glr_ex_identifiability_analysis_thumb.png" />
+<p><a class="reference internal" href="ex_identifiability_analysis.html#sphx-glr-auto-examples-basic-ex-identifiability-analysis-py"><span class="std std-ref">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Fit a simple 4-pulse DEER signal with a model with a non-parametric distribution and a homogene..."><img alt="Basic analysis of a 4-pulse DEER signal" src="../../_images/sphx_glr_ex_fitting_4pdeer_thumb.png" />
+<p><a class="reference internal" href="ex_fitting_4pdeer.html#sphx-glr-auto-examples-basic-ex-fitting-4pdeer-py"><span class="std std-ref">Basic analysis of a 4-pulse DEER signal</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Basic analysis of a 4-pulse DEER signal</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Fit a simple 4-pulse DEER signal with a model with a non-parametric distribution and a homogene..."><img alt="Analysis of a 4-pulse DEER signal with a compactness penalty" src="../../_images/sphx_glr_ex_fitting_4pdeer_compactness_thumb.png" />
+<p><a class="reference internal" href="ex_fitting_4pdeer_compactness.html#sphx-glr-auto-examples-basic-ex-fitting-4pdeer-compactness-py"><span class="std std-ref">Analysis of a 4-pulse DEER signal with a compactness penalty</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Analysis of a 4-pulse DEER signal with a compactness penalty</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Fit a simple 4-pulse DEER signal with a model with a bimodal Gaussian parametric  distribution ..."><img alt="Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model" src="../../_images/sphx_glr_ex_fitting_4pdeer_gauss_thumb.png" />
+<p><a class="reference internal" href="ex_fitting_4pdeer_gauss.html#sphx-glr-auto-examples-basic-ex-fitting-4pdeer-gauss-py"><span class="std std-ref">Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="How to obtain bootstrapped confidence intervals for simple routine operations."><img alt="Bootstrapped confidence intervals in routine analysis" src="../../_images/sphx_glr_ex_bootstrapping_thumb.png" />
+<p><a class="reference internal" href="ex_bootstrapping.html#sphx-glr-auto-examples-basic-ex-bootstrapping-py"><span class="std std-ref">Bootstrapped confidence intervals in routine analysis</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Bootstrapped confidence intervals in routine analysis</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="How to fit a simple 4-pulse DEER signal and derive distance restraints from  the fitted non-par..."><img alt="Distance restraints from 4-pulse DEER data, non-parametric distribution" src="../../_images/sphx_glr_ex_restraints_4pdeer_thumb.png" />
+<p><a class="reference internal" href="ex_restraints_4pdeer.html#sphx-glr-auto-examples-basic-ex-restraints-4pdeer-py"><span class="std std-ref">Distance restraints from 4-pulse DEER data, non-parametric distribution</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Distance restraints from 4-pulse DEER data, non-parametric distribution</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="This example shows how to model and fit a 5-pulse DEER signal, including the typically present ..."><img alt="Basic fitting of a 5-pulse DEER signal" src="../../_images/sphx_glr_ex_fitting_5pdeer_thumb.png" />
+<p><a class="reference internal" href="ex_fitting_5pdeer.html#sphx-glr-auto-examples-basic-ex-fitting-5pdeer-py"><span class="std std-ref">Basic fitting of a 5-pulse DEER signal</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Basic fitting of a 5-pulse DEER signal</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Fit a 4-pulse DEER with multiple dipolar pathways and display the individual pathway contributi..."><img alt="Analysis of a 4-pulse DEER signal with multiple dipolar pathays" src="../../_images/sphx_glr_ex_fitting_4pdeer_pathways_thumb.png" />
+<p><a class="reference internal" href="ex_fitting_4pdeer_pathways.html#sphx-glr-auto-examples-basic-ex-fitting-4pdeer-pathways-py"><span class="std std-ref">Analysis of a 4-pulse DEER signal with multiple dipolar pathays</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Analysis of a 4-pulse DEER signal with multiple dipolar pathays</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="How to fit multiple 4-pulse DEER signals to a model with a non-parametric distribution and a ho..."><img alt="Global fitting of multiple 4-pulse DEER signals, non-parametric distribution" src="../../_images/sphx_glr_ex_global_fitting_4pdeer_thumb.png" />
+<p><a class="reference internal" href="ex_global_fitting_4pdeer.html#sphx-glr-auto-examples-basic-ex-global-fitting-4pdeer-py"><span class="std std-ref">Global fitting of multiple 4-pulse DEER signals, non-parametric distribution</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Global fitting of multiple 4-pulse DEER signals, non-parametric distribution</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Fit a 5-pulse DEER with multiple dipolar pathways and display the individual pathway contributi..."><img alt="Analysis of a 5-pulse DEER signal with multiple dipolar pathays" src="../../_images/sphx_glr_ex_fitting_5pdeer_pathways_thumb.png" />
+<p><a class="reference internal" href="ex_fitting_5pdeer_pathways.html#sphx-glr-auto-examples-basic-ex-fitting-5pdeer-pathways-py"><span class="std std-ref">Analysis of a 5-pulse DEER signal with multiple dipolar pathays</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Analysis of a 5-pulse DEER signal with multiple dipolar pathays</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="This examples shows how to quickly compare the effects of the compactness criterion on the resu..."><img alt="Comparing the analysis with and without compactness criterion" src="../../_images/sphx_glr_ex_compactness_with_without_thumb.png" />
+<p><a class="reference internal" href="ex_compactness_with_without.html#sphx-glr-auto-examples-basic-ex-compactness-with-without-py"><span class="std std-ref">Comparing the analysis with and without compactness criterion</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Comparing the analysis with and without compactness criterion</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="How to fit multiple signals from different DEER experiments to a model with a non-parametric di..."><img alt="Global fitting of multiple different DEER signals" src="../../_images/sphx_glr_ex_global_different_deer_thumb.png" />
+<p><a class="reference internal" href="ex_global_different_deer.html#sphx-glr-auto-examples-basic-ex-global-different-deer-py"><span class="std std-ref">Global fitting of multiple different DEER signals</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Global fitting of multiple different DEER signals</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="How to obtain objective function profiles for the non-linear parameters of a model. "><img alt="Profile analysis in routine analysis" src="../../_images/sphx_glr_ex_profileanalysis_thumb.png" />
+<p><a class="reference internal" href="ex_profileanalysis.html#sphx-glr-auto-examples-basic-ex-profileanalysis-py"><span class="std std-ref">Profile analysis in routine analysis</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Profile analysis in routine analysis</div>
+</div></div><div class="toctree-wrapper compound">
+</div>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="../../examples.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Examples</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="ex_simulate_5pdeer.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Simulating a 5-pulse DEER signal</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

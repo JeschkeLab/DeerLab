@@ -4,11 +4,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Fitting Gaussians to a non-parametric distance distribution fit &#8212; DeerLab</title>
 <script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
 </script>
 
@@ -53,7 +53,7 @@
   </head>
   
   
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
     <div class="bd-header-announcement container-fluid" id="banner">
       
 
@@ -269,8 +269,7 @@ distribution calculated from Tikhonov regularization.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  amplitude2 = </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp2</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp2Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">amp2Uncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">2.2f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_ex_extracting_gauss_constraints_001.png" srcset="../../_images/sphx_glr_ex_extracting_gauss_constraints_001.png" alt="ex extracting gauss constraints" class = "sphx-glr-single-img"/><p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Gaussian components with (95%-confidence intervals):
+<img src="../../_images/sphx_glr_ex_extracting_gauss_constraints_001.png" srcset="../../_images/sphx_glr_ex_extracting_gauss_constraints_001.png" alt="ex extracting gauss constraints" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Gaussian components with (95%-confidence intervals):
        mean1 = 3.44 (3.43-3.46) nm
        mean2 = 4.01 (4.00-4.01) nm
         std1 = 0.23 (0.22-0.25) nm
@@ -296,8 +295,8 @@ distribution calculated from Tikhonov regularization.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_ex_extracting_gauss_constraints_002.png" srcset="../../_images/sphx_glr_ex_extracting_gauss_constraints_002.png" alt="ex extracting gauss constraints" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  6.751 seconds)</p>
-<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-extracting-gauss-constraints-py">
+<img src="../../_images/sphx_glr_ex_extracting_gauss_constraints_002.png" srcset="../../_images/sphx_glr_ex_extracting_gauss_constraints_002.png" alt="ex extracting gauss constraints" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  7.069 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-extracting-gauss-constraints-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/31af3fee58de24498b285c1b36da8322/ex_extracting_gauss_constraints.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_extracting_gauss_constraints.py</span></code></a></p>
 </div>
@@ -353,7 +352,7 @@ distribution calculated from Tikhonov regularization.</p>
   
   <div class="footer-item">
     <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
 </p>
   </div>
   

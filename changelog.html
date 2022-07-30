@@ -4,11 +4,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Release Notes &#8212; DeerLab</title>
 <script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
 </script>
 
@@ -52,7 +52,7 @@
   </head>
   
   
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
     <div class="bd-header-announcement container-fluid" id="banner">
       
 
@@ -196,6 +196,11 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-14-3-july-2022">
+   Release v0.14.3 - July 2022
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-v0-14-2-june-2022">
    Release v0.14.2 - June 2022
   </a>
@@ -279,6 +284,23 @@
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> : Something which was not working as expected or leading to errors has been fixed.</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> : This will require changes in your scripts or code.</p></li>
 </ul>
+<section id="release-v0-14-3-july-2022">
+<h2>Release v0.14.3 - July 2022<a class="headerlink" href="#release-v0-14-3-july-2022" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> Deprecated support for Python 3.6 and 3.7 (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/353">#353</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_feature">Feature</span></span> Added multiple quality of life improvements to the modelling system (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/354">#354</a>).</p>
+<ul>
+<li><p>Add new method <code class="docutils literal notranslate"><span class="pre">paramA.setas(paramB)</span></code> for <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> objects to copy the full metadata content from <code class="docutils literal notranslate"><span class="pre">paramB</span></code> into <code class="docutils literal notranslate"><span class="pre">paramA</span></code>.</p></li>
+<li><p>Expand the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> summary to report on the regularization parameter and penalty weights when used in the analysis.</p></li>
+<li><p>Improve the report of incorrect attribute requests in <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> objects and provide close matches as suggestions.</p></li>
+<li><p>Improve the report of errors during the evaluation of <code class="docutils literal notranslate"><span class="pre">Model</span></code> objects.</p></li>
+</ul>
+</li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fix bug in the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function unfreezing all frozen model parameters upon fitting if any model parameter included a normalization constraint (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/348">#348</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/352">#352</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Corrected two minor mathematical errors in the physical background models <code class="docutils literal notranslate"><span class="pre">bg_homfractal</span></code> and <code class="docutils literal notranslate"><span class="pre">bg_homfractal_phase</span></code> (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/351">#351</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fixed display of the online documentation in browsers with an enabled dark theme that made certain menus and text sections unreadable (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/349">#349</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/350">#350</a>). The documentation will now default to a light theme even for dark themed browser.</p></li>
+</ul>
+</section>
 <section id="release-v0-14-2-june-2022">
 <h2>Release v0.14.2 - June 2022<a class="headerlink" href="#release-v0-14-2-june-2022" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
@@ -779,7 +801,7 @@
   
   <div class="footer-item">
     <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
 </p>
   </div>
   
