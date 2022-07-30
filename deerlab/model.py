@@ -946,8 +946,10 @@ def _print_fitresults(fitresult,model):
         alignment = [] 
         if hasregularization:
             alignment.append('^')
-            tags.append('Regularization parameter')        
-            values.append(fitresult.regparam) 
+            tags.append('Regularization parameter')      
+            regparam = fitresult.regparam
+            if regparam is None: regparam = 0  
+            values.append(regparam) 
         if haspenalties:
             for n,penweight in enumerate(fitresult.penweights):
                 alignment.append('^')
