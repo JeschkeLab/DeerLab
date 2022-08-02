@@ -25,10 +25,10 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     Parameters
     ----------
-    t : array_like
+    t : ndarray or list thereof
         Dipolar evolution time axis, in microseconds.
     
-    r : array_like
+    r : ndarray or list thereof
         Distance axis, in nanometers.
     
     pathways : list of lists  or ``None``, optional
@@ -157,27 +157,40 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     if g is None:
         g = [ge, ge]
 
-    # Ensure that inputs are Numpy arrays
-    r,t,g = np.atleast_1d(r,t,g)
+    # Mare sure that r and t are lists
+    if not isinstance(t,(list)): t = [t]
+    if not isinstance(r,(list)): r = [r]
+
+    D  = len(t) # Number of time-dimensions 
+    Q = len(r) # Number of dipolar interactions
+
+    # Parse the individual time and distance dimensions
+    for n,t_ in enumerate(t):
+        t[n] = np.atleast_1d(t_)    
+    for n,r_ in enumerate(r):
+        r[n] = np.atleast_1d(r_)    
+        if np.any(r[n]<=0):
+            raise ValueError("All distances must be nonnegative and nonzero.")
 
     # Check that requested kernel does not exceed the memory limit
-    memory_requirement = 8*len(t)*len(r)/1e9 # GB
+    memory_requirement = 8/1e9 # GB/float
+    memory_requirement *= np.prod([len(t_) for t_ in t])*np.prod([len(r_) for r_ in r]) 
     if method=='grid': 
         memory_requirement = memory_requirement*nKnots
     if memory_requirement > memorylimit: 
         raise MemoryError(f'The requested kernel requires {memory_requirement:.2f}GB, exceeding the current memory limit {memorylimit:.2f}GB.')
 
-    # Check validity of some inputs
+    # Check validity of the g-values
+    g = np.atleast_1d(g)
     if len(g) == 1:
         g = [g, g]
     elif len(g) != 2:
         raise TypeError('The g-value must be specified as a scalar or a two-element array.')
 
-    if np.any(r<=0):
-        raise ValueError("All distances must be nonnegative and nonzero.")
-
     # Check that the kernel construction method is compatible with requested options
     if method=='fresnel':
+        if Q>1: 
+            raise KeyError("The 'fresnel' method is not compatible with multiple dipolar interactions. Use the 'grid' or 'integral' methods.")
         if excbandwidth != inf:
             raise KeyError("Excitation bandwidths can only be specified with the 'grid' or 'integral' methods.")
         if orisel is not None:
@@ -194,31 +207,36 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     if moddepth_passed:
         # Construct single-pathway kernel if modulation depth is specified
-        pathways = [[1-mod], [mod, 0]]
+        unmod = {'amp': 1 - mod}
+        singpathway = {'amp': mod, 'reftime': [np.zeros(D)]*Q, 'harmonic': [np.ones(D)]*D}
+        pathways = [unmod,singpathway]
     elif not pathways_passed:
         # Full modulation if neither pathways or modulation depth are specified
-        pathways = [[1, 0]]
+        unmod = {'amp': 1}
+        singpathway = {'amp': 0, 'reftime': [np.zeros(D)]*Q, 'harmonic': [np.ones(D)]*Q}
+        pathways = [unmod,singpathway]
 
     # Ensure correct data types of the pathways and its components
-    pathways = [[np.atleast_1d(p).astype(float) for p in path] for path in pathways]
-    pathways = [np.concatenate([np.atleast_1d(p) for p in path]).astype(float) for path in pathways]
-
-    # Get unmodulated pathways    
-    unmodulated = [pathways.pop(i) for i,path in enumerate(pathways) if len(path)==1]
-    # Combine all unmodulated contributions
-    if unmodulated:
-        Λ0 = sum(np.concatenate([path for path in unmodulated]))
-    else: 
-        Λ0 = 0
+    pathways = [{key: np.atleast_1d(value).astype(float) for key,value in pathway.items()} for pathway in pathways]
 
     # Check structure of pathways
-    for i,path in enumerate(pathways):
-        if len(path) == 2:
+    for k,pathway in enumerate(pathways):
+        if not 'amp' in pathway.keys():
+            raise SyntaxError('All pathways must contain at least an \'amp\' field.')
+        if not 'reftime' in pathway.keys():
+            pathways[k]['reftime'] = [None]*len(t) 
+            pathways[k]['harmonic'] = [np.zeros(D)]*Q
+        if 'amp' in pathway.keys() and 'reftime' in pathway.keys() and not 'harmonic' in pathway.keys():
             # If harmonic is not defined, append default n=1
-            pathways[i] = np.append(path,1) 
-        elif len(path) != 3:
-            # Otherwise pathways are not correctly defined
-            raise KeyError(f'The pathway #{i} must be a list of two or three elements [λ, T0] or [λ, T0, n]') 
+            pathways[k]['harmonic'] = [np.ones(D)]*Q
+
+    # Get unmodulated pathways    
+    unmodulated = [pathways.pop(k) for k,pathway in enumerate(pathways) if np.all(pathway['harmonic']==np.zeros(len(t)))]
+    # Combine all unmodulated contributions
+    if unmodulated:
+        Λ0 = sum(np.concatenate([pathway['amp'] for pathway in unmodulated]))
+    else: 
+        Λ0 = 0
 
     # Define kernel matrix auxiliary function
     K0 = lambda tdip: elementarykernel(tdip,r,method,excbandwidth,nKnots,g,orisel,complex)
@@ -226,8 +244,10 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     # Build dipolar kernel matrix, summing over all pathways
     K = Λ0
     for pathway in pathways:
-        λ,T0,n = pathway
-        K += λ*K0(n*(t-T0))
+        λ,tref,δ = [pathway['amp'],pathway['reftime'],pathway['harmonic']]
+        # Construct dipolar evolution time along the d-th dimensions
+        tdip = [δd*(td-trefd) for δd,td,trefd in zip(δ,t,tref)]
+        K += λ*K0(tdip)
 
     # Multiply by background if given
     if bg is not None:
@@ -252,14 +272,18 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
 def _echomodulation(ωr,tdip,cosθ,ωex,complex):
 #==============================================================================
-    "Spin echo modulation due to dipolar coupling"
-    if complex: 
-        echomod = np.exp(-1j*ωr*tdip*(1 - 3*cosθ**2))
-    else:
-        echomod = np.cos(ωr*abs(tdip)*(1 - 3*cosθ**2))
-    # If given, include limited excitation bandwidth
-    if not np.isinf(ωex):
-        echomod *= np.exp(-(ωr*(1 - 3*cosθ**2))**2/ωex**2)
+    "Spin echo modulation due to dipolar coupling(s)"
+    echomod = 1
+    # Loop over the different dipolar interactions
+    for ωr_q, tdip_q in zip(ωr,tdip):
+        # Differentiate between complex and real valued cases for a speedup
+        if complex: 
+            echomod *= np.exp(-1j*ωr_q*np.sum(tdip_q)*(1 - 3*cosθ**2))
+        else:
+            echomod *= np.cos(ωr_q*abs(np.sum(tdip_q))*(1 - 3*cosθ**2))
+        # If given, include limited excitation bandwidth
+        if not np.isinf(ωex):
+            echomod *= np.exp(-(ωr_q*(1 - 3*cosθ**2))**2/ωex**2)
     return echomod
 #==============================================================================
 
@@ -272,7 +296,7 @@ def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
     tdip,r = np.atleast_1d(tdip,r)
 
     # Dipolar frequencies
-    ωr = (μ0/2)*μB**2*g[0]*g[1]/h*1e21/(r**3)  # rad μs^-1
+    ωr = [(μ0/2)*μB**2*g[0]*g[1]/h*1e21/(r_q**3) for r_q in r]  # rad μs^-1
 
     # Orientation selection
     orientationselection = Pθ is not None 
@@ -284,11 +308,14 @@ def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
         Pθnorm,_ = quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
         Pθ = lambda θ: Pθ_(θ)/Pθnorm
 
-    def elementarykernel_fresnel(tdip):
+    def elementarykernel_fresnel(tdip_):
     #==========================================================================
         """Calculate kernel using Fresnel integrals (fast and accurate)"""
 
-       # Calculation using Fresnel integrals
+        idx = np.where([np.all(tdip_q==0) for tdip_q in tdip_])[0]
+        tdip = tdip_[idx]
+        
+        # Calculation using Fresnel integrals
         if complex:
             ɸ = np.outer(tdip, ωr)
             κ = np.lib.scimath.sqrt(6*ɸ/π)
@@ -306,7 +333,6 @@ def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
             warnings.simplefilter("ignore")
             K0 = K0/κ
 
-        # Limit of K0(t,r) as t->0
         K0[tdip==0] = 1 
 
         return K0
@@ -321,9 +347,11 @@ def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
 
         # Vectorized 3D-grid evaluation (t,r,orientations)
         x = np.newaxis
-        tdip_ = tdip[:,x,x]
-        ωr_   =   ωr[x,:,x]
-        cosθ_ = cosθ[x,x,:] 
+        dims = np.arange(len(tdip) + len(r) + 1)
+        # Expand dimensions of all variables on a multi-dimensional grid
+        tdip_ = [np.expand_dims(tdip[n], axis=tuple(np.delete(dims, n))) for n,_ in enumerate(tdip)]
+        ωr_   = [np.expand_dims(ωr[n],   axis=tuple(np.delete(dims, len(tdip)+n))) for n,_ in enumerate(ωr)]
+        cosθ_ =  np.expand_dims(cosθ,    axis=tuple(np.delete(dims, len(tdip)+len(ωr))))
 
         # Integrate over the grid of echo modulations
         if orientationselection:
@@ -331,7 +359,7 @@ def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
             K0 = np.dot(_echomodulation(ωr_,tdip_,cosθ_,ωex,complex),Pθ(np.arccos(cosθ)))/nKnots
         else: 
             # Without orientation selection
-            K0 = np.sum(_echomodulation(ωr_,tdip_,cosθ_,ωex,complex),axis=2)/nKnots
+            K0 = np.sum(_echomodulation(ωr_,tdip_,cosθ_,ωex,complex),axis=-1)/nKnots
         return K0
     #==========================================================================
 

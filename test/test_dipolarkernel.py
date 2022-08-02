@@ -77,9 +77,7 @@ def test_negative_time_fresnel():
     Kneg = dipolarkernel(tneg,r,method='fresnel')
     Kpos = dipolarkernel(tpos,r,method='fresnel')
 
-    delta = abs(Kneg - np.flipud(Kpos))
-
-    assert np.all(delta<1e-12)
+    assert np.all(abs(Kneg - np.flipud(Kpos))<1e-12)
 #=======================================================================
 
 
@@ -570,3 +568,15 @@ def test_memory_limit():
     with pytest.raises(MemoryError):
         K = dipolarkernel(t,r)
 # ======================================================================
+
+def test_twodimensional():
+#=======================================================================
+    "Check the contrusction of kernels with two time dimensions"
+
+    t1 = np.linspace(0,5,10)
+    t2 = np.linspace(0,3,20)
+    r = 3.5
+    K = dipolarkernel([t1,t2],r)
+
+    assert np.shape(K)==np.array([10,20,1], method='grid', nKnots=5)
+#=======================================================================
