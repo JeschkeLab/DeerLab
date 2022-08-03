@@ -12,8 +12,8 @@ In order to compile the documentation the following steps must be followed:
 
 3) Install Sphinx and Sphinx extensions
 
-        pip install sphinx    
-        pip install pydata-sphinx-theme
+        pip install sphinx==4.2
+        pip install pydata-sphinx-theme==0.7.1
         pip install sphinxcontrib-httpdomain
         pip install sphinx-gallery
         pip install sphinxcontrib-ghcontributors
