@@ -217,7 +217,7 @@ pygments_style = "my_fancy_style"
 
 # Print the HTML code for the landing page with dynamically compiled version number
 string = f"""
-:raw-html:`<div class="topfloatcontainer">
+:raw-html:`<div class="topfloatcontainer_title">
         <div class="illustration">
             <img src="_static/landingpage.svg" alt="DeerLab Illustration">
         </div>
