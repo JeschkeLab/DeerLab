@@ -45,3 +45,29 @@ DeerLab is a project that has been funded by the following sources:
         </div>
     </div>    
     
+
+.. rubric:: Swiss Academy of Sciences 
+
+.. raw:: html 
+
+    <div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+        <div style="margin-right:2%; font-size:14px">
+            Chemistry Travel Award 2022
+        </div>
+        <div style="height:70%; width=30%">
+            <img src="https://raw.githubusercontent.com/JeschkeLab/DeerLab/main/docsrc/source/images/SCNAT_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
+        </div>
+    </div>    
+    
+.. rubric:: Swiss Chemical Society
+
+.. raw:: html 
+
+    <div style="height:100px; width:100%; display:flex; flex-wrap:wrap; align-items:center;">
+        <div style="margin-right:2%; font-size:14px">
+            Chemistry Travel Award 2022
+        </div>
+        <div style="height:70%; width=30%">
+            <img src="https://raw.githubusercontent.com/JeschkeLab/DeerLab/main/docsrc/source/images/SCS_logo.png", style="margin-top:1%; margin-bottom:1%;height:96%;">
+        </div>
+    </div>    
