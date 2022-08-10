@@ -1034,11 +1034,80 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     ----------
     model : :ref:`Model`
         Model object. 
+
     y : array_like 
         Data to be fitted. 
+
     par0 : array_like, optional 
         Value at which to initialize the parameter at the start of a fit routine. 
         Must be specified if not defined in the model. Otherwise, it overrides the definition in the model. 
+
+    penalties: callable or list thereof, optional
+        Custom penalty function(s) to impose upon the solution. A single penalty must be specified as a callable function. 
+        Multiple penalties can be specified as a list of callable functons. Each function must take two inputs, a vector of non-linear parameters
+        and a vector of linear parameters, and return a vector to be added to the residual vector (``pen = fcn(pnonlin,plin)``).  
+        The square of the penalty is computed internally.
+
+    bootstrap : scalar, optional,
+        Bootstrap samples for uncertainty quantification. If ``bootstrap>0``, the uncertainty quantification will be 
+        performed via the boostrapping method with based on the number of samples specified as the argument.
+
+    reg : boolean or string, optional
+        Determines the use of regularization on the solution of the linear problem.
+        
+        * ``'auto'`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.
+        * ``True`` - Forces regularization regardless of the condition number
+        * ``False`` - Disables regularization regardless of the condition number
+        
+        The default is ``'auto'``.
+
+    regparam : string or float scalar, optional
+        Method for the automatic selection of the optimal regularization parameter:
+
+        * ``'lr'`` - L-curve minimum-radius method (LR)
+        * ``'lc'`` - L-curve maximum-curvature method (LC)
+        * ``'cv'`` - Cross validation (CV)
+        * ``'gcv'`` - Generalized Cross Validation (GCV)
+        * ``'rgcv'`` - Robust Generalized Cross Validation (rGCV)
+        * ``'srgcv'`` - Strong Robust Generalized Cross Validation (srGCV)
+        * ``'aic'`` - Akaike information criterion (AIC)
+        * ``'bic'`` - Bayesian information criterion (BIC)
+        * ``'aicc'`` - Corrected Akaike information criterion (AICC)
+        * ``'rm'`` - Residual method (RM)
+        * ``'ee'`` - Extrapolated Error (EE)
+        * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
+        * ``'gml'`` - Generalized Maximum Likelihood (GML)
+        * ``'mcl'`` - Mallows' C_L (MCL)
+        
+        The regularization parameter can be manually specified by passing a scalar value
+        instead of a string. The default ``'aic'``.
+
+    regparamrange : array_like, optional 
+        Search range for the optimization of the regularization parameter. Must be specified as a list ``[regparam_lb, regparam_ub]`` 
+        with the lower/upper boundaries of the regularization parameter. The default range is ``[1e-8, 1e3]``. 
+
+    regop : 2D array_like, optional
+        Regularization operator matrix, the default is the second-order differential operator.
+
+    alphareopt : float scalar, optional
+        Relative parameter change threshold for reoptimizing the regularization parameter
+        when using a selection method, the default is ``1e-3``.
+
+    nnlsSolver : string, optional
+        Solver used to solve a non-negative least-squares problem (if applicable):
+
+        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
+        
+        The default is ``'cvx'``.
+
+    verbose : scalar integer, optional
+        Level of verbosity during the analysis:
+
+            * ``0`` : Work silently (default).
+            * ``1`` : Display progress including the non-linear least-squares' solver termination report.
+            * ``2`` : Display progress including the non-linear least-squares' solver iteration details.
+
     snlls_keyargs_docstrings
 
     Returns
