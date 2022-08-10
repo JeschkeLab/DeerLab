@@ -620,17 +620,18 @@ class Model():
     """)
         string += '\n'
         table = []
-        table.append(['Name','Lower','Upper','Type','Frozen','Unit','Description'])  
-        alignment = ['<','^','^','^','^','^','<']
+        table.append(['Name','Lower','Start','Upper','Type','Frozen','Unit','Description'])  
+        alignment = ['<','^','^','^','^','^','^','<']
         for n,paramname in enumerate(self._parameter_list(order='vector')): 
             param_str = paramname
             lb_str = f'{np.atleast_1d(getattr(self,paramname).lb)[0]:5.3g}'
             ub_str = f'{np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
+            par0_str = f'{np.atleast_1d(getattr(self,paramname).par0)[0]:5.3g}' if np.atleast_1d(getattr(self,paramname).par0)[0] is not None else "-"
             linear_str = "linear" if np.all(getattr(self,paramname).linear) else "nonlin"
-            frozen_str = "Yes" if np.all(getattr(self,paramname).frozen) else "No"
+            frozen_str = f'{np.atleast_1d(getattr(self,paramname).value)[0]:5.3g}' if np.all(getattr(self,paramname).frozen) else "No"
             unit_str = str(getattr(self,paramname).unit)
             desc_str = str(getattr(self,paramname).description)
-            table.append([param_str,lb_str,ub_str,linear_str,frozen_str,unit_str,desc_str])
+            table.append([param_str,lb_str,par0_str,ub_str,linear_str,frozen_str,unit_str,desc_str])
         string += formatted_table(table,alignment)
         return string
     #---------------------------------------------------------------------------------------

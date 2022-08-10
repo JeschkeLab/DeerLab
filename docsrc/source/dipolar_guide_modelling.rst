@@ -89,14 +89,14 @@ A full summary of the constructed model(s) can be inspected by printing the mode
     Signature: (mod, reftime, conc, P)
     Constants: []
     Parameter Table: 
-    ========= ======= ======= ======== ======== ======= ====================================== 
-     Name      Lower   Upper    Type    Frozen   Units   Description                           
-    ========= ======= ======= ======== ======== ======= ====================================== 
-     mod           0       1   nonlin     No             Modulation depth                      
-     reftime     0.4     0.6   nonlin     No      μs     Refocusing time                       
-     conc       0.01   5e+03   nonlin     No      μM     Spin concentration                    
-     P             0     inf   linear     No     None    Non-parametric distance distribution  
-    ========= ======= ======= ======== ======== ======= ====================================== 
+    ========= ======= ======= ======= ======== ======== ====== ====================================== 
+    Name      Lower   Start   Upper    Type    Frozen   Unit   Description                           
+    ========= ======= ======= ======= ======== ======== ====== ====================================== 
+    mod           0    0.01       1   nonlin     No            Modulation depth                      
+    reftime    -inf       0     inf   nonlin     No      μs    Refocusing time                       
+    conc       0.01      50   5e+03   nonlin     No      μM    Spin concentration                    
+    P             0       0     inf   linear     No     nm⁻¹   Non-parametric distance distribution  
+    ========= ======= ======= ======= ======== ======== ====== ====================================== 
 
 
 From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the :ref:`modelling guide <modelling_guide>` for more details and instructions on model manipulation.
