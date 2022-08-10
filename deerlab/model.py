@@ -1302,9 +1302,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                     non_normalized = FitResult_param_[key] # Non-normalized value
                     FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
                     FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
-                    FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
+                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: np.mean(x/param.normalization(x)))
                     FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
-                    FitResult_paramuq_[f'{key}_scaleUncert'] = UQResult('void')
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
 
