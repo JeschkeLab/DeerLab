@@ -4,19 +4,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Modeling Guide &#8212; DeerLab</title>
-<script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
-  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
-</script>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-
-
+    
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -24,7 +19,12 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
@@ -32,14 +32,12 @@
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
-
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -48,41 +46,34 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Fitting Guide" href="fitting_guide.html" />
     <link rel="prev" title="Advanced" href="advanced_guide.html" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="docsearch:language" content="en">
-  </head>
-  
-  
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
-    <div class="bd-header-announcement container-fluid" id="banner">
-      
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
 
-    </div>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
     
-    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
   <div id="navbar-start">
     
     
-  
 
-
-<a class="navbar-brand logo" href="index.html">
-  
-  
-  
-  
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
-  
-  
+<a class="navbar-brand" href="index.html">
+  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
+
+
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="fas fa-bars"></span>
+    <span class="navbar-toggler-icon"></span>
   </button>
 
   
@@ -165,13 +156,12 @@
     </nav>
     
 
-    <div class="bd-container container-xl">
-      <div class="bd-container__inner row">
+    <div class="container-xl">
+      <div class="row">
           
-
-<!-- Only show if we have sidebars configured, else just a small margin  -->
-<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
-  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active">
@@ -193,21 +183,17 @@
 
   </div>
 </nav>
-  </div>
-  <div class="sidebar-end-items">
-  </div>
-</div>
-
-
+            </div>
+            
           
 
-
-<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
-  
-    
-    <div class="toc-item">
-      
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -417,24 +403,26 @@
 </ul>
 
 </nav>
-    </div>
-    
-    <div class="toc-item">
-      
-    </div>
-    
-  
-</div>
-
-
-          
-          
-          <div class="bd-content col-12 col-md-9 col-xl-7">
+              </div>
               
-              <article class="bd-article" role="main">
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
                 
   <section id="modeling-guide">
-<span id="modelling-guide"></span><h1>Modeling Guide<a class="headerlink" href="#modeling-guide" title="Permalink to this heading">#</a></h1>
+<span id="modelling-guide"></span><h1>Modeling Guide<a class="headerlink" href="#modeling-guide" title="Permalink to this headline">¶</a></h1>
 <p>The core functionality of DeerLab focuses on the construction, manipulation, and fitting of models. In this way, the workflow of DeerLab for any application can be structured as follows:</p>
 <ol class="arabic simple">
 <li><p>Loading of the experimental dataset(s) and pre-processing (if strictly necessary).</p></li>
@@ -443,7 +431,7 @@
 </ol>
 <p>In this guide, we will focus on the second step, i.e., the modeling. We will introduce all model-related concepts.</p>
 <section id="the-model-object">
-<h2>The <code class="docutils literal notranslate"><span class="pre">Model</span></code> object<a class="headerlink" href="#the-model-object" title="Permalink to this heading">#</a></h2>
+<h2>The <code class="docutils literal notranslate"><span class="pre">Model</span></code> object<a class="headerlink" href="#the-model-object" title="Permalink to this headline">¶</a></h2>
 <p>All models in DeerLab pertain to the <code class="docutils literal notranslate"><span class="pre">deerlab.model.Model</span></code> class. All functions returning models as their outputs will return such <code class="docutils literal notranslate"><span class="pre">Model</span></code> objects. You can check whether a variable is a model by using the <code class="docutils literal notranslate"><span class="pre">type()</span></code> function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">)</span>
 <span class="go">deerlab.model.Model</span>
@@ -451,14 +439,14 @@
 </div>
 <p>Models in DeerLab have two essential components: model parameters and a model function that takes those parameters.</p>
 <section id="model-parameters">
-<h3>Model Parameters<a class="headerlink" href="#model-parameters" title="Permalink to this heading">#</a></h3>
+<h3>Model Parameters<a class="headerlink" href="#model-parameters" title="Permalink to this headline">¶</a></h3>
 <p>The model parameters are those quantities that parametrize the model’s response and are (usually) the quantity of interest sought to be estimated via DeerLab. DeerLab represents parameters as <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> objects which can be accessed using the dot-notation from the model (e.g. <code class="docutils literal notranslate"><span class="pre">model.&lt;parameter&gt;</span></code>). For example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
 <span class="go">deerlab.model.Parameter</span>
 </pre></div>
 </div>
 <section id="the-parameter-object">
-<h4>The <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> object<a class="headerlink" href="#the-parameter-object" title="Permalink to this heading">#</a></h4>
+<h4>The <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> object<a class="headerlink" href="#the-parameter-object" title="Permalink to this headline">¶</a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> object contains all the information related to a particular parameter, namely</p>
 <dl class="simple">
 <dt>Boundaries (<code class="docutils literal notranslate"><span class="pre">&lt;parameter&gt;.lb</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;parameter&gt;.ub</span></code>)</dt><dd><p>The upper/lower bounds of the parameter that constrain the parameter values during fitting and optimization. Built-in models models will have pre-defined boundaries, while newly constructed models will have fully unbounded parameters. A parameter is considered unbounded when any of its bounds is set to plus/minus infinity (using the Numpy infinity <code class="docutils literal notranslate"><span class="pre">np.inf</span></code>).
@@ -480,17 +468,17 @@ Note that freezing does not prevent the model to be <a class="reference internal
 <span class="go">Signature: (r, mean, std)</span>
 <span class="go">Constants: [r]</span>
 <span class="go">Parameter Table:</span>
-<span class="go">======= ======= ======= ======== ======== ======= ====================</span>
-<span class="go"> Name    Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">======= ======= ======= ======== ======== ======= ====================</span>
-<span class="go"> mean        1      20   nonlin     No      nm     Mean</span>
-<span class="go"> std      0.05     2.5   nonlin     No      nm     Standard deviation</span>
-<span class="go">======= ======= ======= ======== ======== ======= ====================</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
+<span class="go">Name   Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
+<span class="go">mean       1     3.5      20   nonlin     No      nm    Mean</span>
+<span class="go">std     0.05     0.2     2.5   nonlin     No      nm    Standard deviation</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
 </pre></div>
 </div>
 </section>
 <section id="modifying-parameter-attributes">
-<span id="modelling-modifying-parameters"></span><h4>Modifying parameter attributes<a class="headerlink" href="#modifying-parameter-attributes" title="Permalink to this heading">#</a></h4>
+<span id="modelling-modifying-parameters"></span><h4>Modifying parameter attributes<a class="headerlink" href="#modifying-parameter-attributes" title="Permalink to this headline">¶</a></h4>
 <p>Any editable parameter attribute can be modified by simple assigning the new value to the corresponding attribute. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span>
 <span class="c1"># Set a new value for the `mean` parameter upper boundary</span>
@@ -507,7 +495,7 @@ Note that freezing does not prevent the model to be <a class="reference internal
 </section>
 </section>
 <section id="model-function">
-<span id="id1"></span><h3>Model function<a class="headerlink" href="#model-function" title="Permalink to this heading">#</a></h3>
+<span id="id1"></span><h3>Model function<a class="headerlink" href="#model-function" title="Permalink to this headline">¶</a></h3>
 <p>DeerLab’s <code class="docutils literal notranslate"><span class="pre">Model</span></code> object implements a concrete yet completely general mathematical structure for the models. The <code class="docutils literal notranslate"><span class="pre">Model</span></code> object assumes that the model function is defined in the following form:</p>
 <div class="math">
 <p><img src="_images/math/20e52772015b3655bdbef8d6e58df6929d90788a.svg" alt="y = A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}"/></p>
@@ -516,10 +504,10 @@ Note that freezing does not prevent the model to be <a class="reference internal
 </section>
 </section>
 <section id="model-construction">
-<span id="modelling-construction"></span><h2>Model construction<a class="headerlink" href="#model-construction" title="Permalink to this heading">#</a></h2>
+<span id="modelling-construction"></span><h2>Model construction<a class="headerlink" href="#model-construction" title="Permalink to this headline">¶</a></h2>
 <p>In this section, we will look at how to construct custom <code class="docutils literal notranslate"><span class="pre">Model</span></code> objects from scratch. DeerLab provides a large selection of pre-defined models and model generators for dipolar EPR spectroscopy-specific applications.</p>
 <section id="models-without-linear-parameters">
-<h3>Models without linear parameters<a class="headerlink" href="#models-without-linear-parameters" title="Permalink to this heading">#</a></h3>
+<h3>Models without linear parameters<a class="headerlink" href="#models-without-linear-parameters" title="Permalink to this headline">¶</a></h3>
 <p>If the model consists of just non-linear parameters and no linear parameters, we first need to define the non-linear function <img class="math" src="_images/math/9fa5636af77a9ff7c61943c7cddf370d0c09b274.svg" alt="A(\theta_\mathrm{nonlin})"/>. The function must take each non-linear parameter as a separate input argument. Then the model constructor <code class="docutils literal notranslate"><span class="pre">Model()</span></code> can be called to generate the model from the defined function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definition of the non-linear function of the model</span>
 <span class="k">def</span> <span class="nf">nonlinear_fcn</span><span class="p">(</span><span class="n">nonlinparam1</span><span class="p">,</span><span class="n">nonlinparam2</span><span class="p">,</span><span class="o">*</span><span class="n">nonlinparamN</span><span class="p">):</span>
@@ -541,7 +529,7 @@ Note that freezing does not prevent the model to be <a class="reference internal
 </pre></div>
 </div>
 <section id="example-gaussian-model">
-<span id="modelling-example1"></span><h4>Example: Gaussian model<a class="headerlink" href="#example-gaussian-model" title="Permalink to this heading">#</a></h4>
+<span id="modelling-example1"></span><h4>Example: Gaussian model<a class="headerlink" href="#example-gaussian-model" title="Permalink to this headline">¶</a></h4>
 <p>For example, let’s consider a Gaussian function given by:</p>
 <div class="math">
 <p><img src="_images/math/8d1c0308c311880ea9e4c6647224607dc3d75620.svg" alt="y(\langle x \rangle,\sigma) = \exp\left(-\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)"/></p>
@@ -561,12 +549,12 @@ Note that freezing does not prevent the model to be <a class="reference internal
 <span class="go">Signature: (center, std)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name     Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> center    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> std       -inf     inf   nonlin     No     None    None</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">Name     Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">center    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
 </pre></div>
 </div>
 <p>We can see that the model has properly introduced the two non-linear parameters <code class="docutils literal notranslate"><span class="pre">center</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code>. By default, all new parameters are initialized unbounded (i.e. <code class="docutils literal notranslate"><span class="pre">lb=-np.inf</span></code> and  <code class="docutils literal notranslate"><span class="pre">ub=+np.inf</span></code>). Any attributes can be changed freely after the model has been generated. For example</p>
@@ -578,12 +566,12 @@ Note that freezing does not prevent the model to be <a class="reference internal
 </section>
 </section>
 <section id="models-with-linear-parameters">
-<h3>Models with linear parameters<a class="headerlink" href="#models-with-linear-parameters" title="Permalink to this heading">#</a></h3>
+<h3>Models with linear parameters<a class="headerlink" href="#models-with-linear-parameters" title="Permalink to this headline">¶</a></h3>
 <p>Linear parameters do not take part in the non-linear function of the model and hence must be declared after the non-linear part of the model has been constructed (as described in the previous section). Using the <code class="docutils literal notranslate"><span class="pre">addlinear</span></code> method of the <code class="docutils literal notranslate"><span class="pre">Model</span></code> class, we can introduce any number of linear parameters to the model. The <code class="docutils literal notranslate"><span class="pre">addlinear</span></code> method takes the name of the parameter as its first argument. Other attributes of the linear parameter (such as boundaries) can be specified as additional keyword arguments.
 It is important to note that the order in which the parameters are introduced must match the shape of the matrix returned by <code class="docutils literal notranslate"><span class="pre">nonlinear_fcn</span></code>.</p>
 <p>Additionally, DeerLab introduces another distinction between linear parameters. In addition, linear parameters can be defined in scalar or vector form.</p>
 <section id="adding-linear-parameters-in-scalar-form">
-<h4>Adding linear parameters in scalar form<a class="headerlink" href="#adding-linear-parameters-in-scalar-form" title="Permalink to this heading">#</a></h4>
+<h4>Adding linear parameters in scalar form<a class="headerlink" href="#adding-linear-parameters-in-scalar-form" title="Permalink to this headline">¶</a></h4>
 <p>In this case, the linear parameters are defined by a single value (scalar). To add scalar linear parameters, we can use the function <code class="docutils literal notranslate"><span class="pre">addlinear</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definition of the non-linear function of the model</span>
 <span class="k">def</span> <span class="nf">nonlinear_fcn</span><span class="p">(</span><span class="n">nonlinparam1</span><span class="p">,</span><span class="n">nonlinparam2</span><span class="p">,</span><span class="o">*</span><span class="n">nonlinparamN</span><span class="p">):</span>
@@ -600,7 +588,7 @@ It is important to note that the order in which the parameters are introduced mu
 </div>
 </section>
 <section id="example-bimodal-gaussian-model">
-<span id="modelling-example2"></span><h4>Example: Bimodal Gaussian model<a class="headerlink" href="#example-bimodal-gaussian-model" title="Permalink to this heading">#</a></h4>
+<span id="modelling-example2"></span><h4>Example: Bimodal Gaussian model<a class="headerlink" href="#example-bimodal-gaussian-model" title="Permalink to this headline">¶</a></h4>
 <p>For example, let’s consider a bimodal Gaussian function given by:</p>
 <div class="math">
 <p><img src="_images/math/f5bbe49b1f4de0207eb645beb75e8c8b87f5eca6.svg" alt="y = w_1\exp\left(-\frac{(x - \langle x \rangle_1)^2}{2\sigma_1^2} \right) + w_2\exp\left(-\frac{(x - \langle x \rangle_2)^2}{2\sigma_2^2} \right)"/></p>
@@ -618,7 +606,7 @@ It is important to note that the order in which the parameters are introduced mu
 <span class="k">def</span> <span class="nf">bigaussian_fcn</span><span class="p">(</span><span class="n">center1</span><span class="p">,</span><span class="n">std1</span><span class="p">,</span><span class="n">center2</span><span class="p">,</span><span class="n">std2</span><span class="p">):</span>
     <span class="n">gauss1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">center1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">std1</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># First Gaussian component</span>
     <span class="n">gauss2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">center2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">std2</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># Second Gaussian component</span>
-    <span class="n">Anonlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">y1</span><span class="p">,</span><span class="n">y2</span><span class="p">])</span> <span class="c1"># Stack them vertically into a matrix</span>
+    <span class="n">Anonlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">gauss1</span><span class="p">,</span><span class="n">gauss2</span><span class="p">])</span> <span class="c1"># Stack them vertically into a matrix</span>
     <span class="k">return</span> <span class="n">Anonlin</span>
 <span class="c1"># Construct the model</span>
 <span class="n">bigauss</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">bigaussian_fcn</span><span class="p">)</span>
@@ -633,16 +621,16 @@ It is important to note that the order in which the parameters are introduced mu
 <span class="go">Signature: (center1, std1, center2, std2, weight1, weight2)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name      Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
-<span class="go"> center1    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> std1       -inf     inf   nonlin     No     None    None</span>
-<span class="go"> center2    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> std2       -inf     inf   nonlin     No     None    None</span>
-<span class="go"> weight1       0     inf   linear     No     None    None</span>
-<span class="go"> weight2       0     inf   linear     No     None    None</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">Name      Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">center1    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std1       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">center2    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std2       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">weight1       0     -       inf   linear     No     None   None</span>
+<span class="go">weight2       0     -       inf   linear     No     None   None</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
 </pre></div>
 </div>
 <p>We can see that the model has been correctly built, with four non-linear parameters (<code class="docutils literal notranslate"><span class="pre">center1</span></code>, <code class="docutils literal notranslate"><span class="pre">center2</span></code>, <code class="docutils literal notranslate"><span class="pre">std1</span></code>, and <code class="docutils literal notranslate"><span class="pre">std2</span></code>)
@@ -655,7 +643,7 @@ and with two linear parameters (<code class="docutils literal notranslate"><span
 </div>
 </section>
 <section id="adding-linear-parameters-in-vector-form">
-<h4>Adding linear parameters in vector form<a class="headerlink" href="#adding-linear-parameters-in-vector-form" title="Permalink to this heading">#</a></h4>
+<h4>Adding linear parameters in vector form<a class="headerlink" href="#adding-linear-parameters-in-vector-form" title="Permalink to this headline">¶</a></h4>
 <p>In some cases (for example, in semi-parametric modeling), a vector of values might describe a linear parameter more appropriately than a single value. In DeerLab, we can add a linear parameter as a vector with <img class="math" src="_images/math/3c01db19d2bea9adb52e8e0b68b2983f852ba49a.svg" alt="N"/>-elements to a model using the <code class="docutils literal notranslate"><span class="pre">addlinear</span></code> method with the <code class="docutils literal notranslate"><span class="pre">vec=N</span></code> keyword argument.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definition of the non-linear function of the model</span>
 <span class="k">def</span> <span class="nf">nonlinear_fcn</span><span class="p">(</span><span class="n">nonlinparam1</span><span class="p">,</span><span class="n">nonlinparam2</span><span class="p">,</span><span class="o">*</span><span class="n">nonlinparamN</span><span class="p">):</span>
@@ -671,7 +659,7 @@ and with two linear parameters (<code class="docutils literal notranslate"><span
 <p>The new parameter <code class="docutils literal notranslate"><span class="pre">linparam1</span></code> will now refer to the whole <img class="math" src="_images/math/3c01db19d2bea9adb52e8e0b68b2983f852ba49a.svg" alt="N"/>-element vector of values.</p>
 </section>
 <section id="example-gaussian-convolution-of-a-non-parametric-distribution">
-<span id="modelling-example3"></span><h4>Example: Gaussian convolution of a non-parametric distribution<a class="headerlink" href="#example-gaussian-convolution-of-a-non-parametric-distribution" title="Permalink to this heading">#</a></h4>
+<span id="modelling-example3"></span><h4>Example: Gaussian convolution of a non-parametric distribution<a class="headerlink" href="#example-gaussian-convolution-of-a-non-parametric-distribution" title="Permalink to this headline">¶</a></h4>
 <p>For example, let us construct a model describing the Gaussian convolution of a non-parametric distribution, which we can write as:</p>
 <div class="math">
 <p><img src="_images/math/4eabe72b8236a22aeffa6c56cb0152517ff892db.svg" alt="y(x,\sigma) = \int dz \exp\left(-\frac{(x-z)^2}{2\sigma^2} \right) P(z) = \int dz K(x,z) P(z)"/></p>
@@ -701,17 +689,17 @@ and with two linear parameters (<code class="docutils literal notranslate"><span
 <span class="go">Signature: (sigma, dist)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">======= ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name    Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">======= ======= ======= ======== ======== ======= =============</span>
-<span class="go"> sigma    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> dist        0     inf   linear     No     None    None</span>
-<span class="go">======= ======= ======= ======== ======== ======= =============</span>
+<span class="go">======= ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">Name    Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">======= ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">sigma    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">dist        0     -       inf   linear     No     None   None</span>
+<span class="go">======= ======= ======= ======= ======== ======== ====== =============</span>
 </pre></div>
 </div>
 </section>
 <section id="imposing-normalization-on-the-linear-parameters">
-<h4>Imposing normalization on the linear parameters<a class="headerlink" href="#imposing-normalization-on-the-linear-parameters" title="Permalink to this heading">#</a></h4>
+<h4>Imposing normalization on the linear parameters<a class="headerlink" href="#imposing-normalization-on-the-linear-parameters" title="Permalink to this headline">¶</a></h4>
 <p>Sometimes, the linear parameters represent quantities that have certain normalization constraints. For example, a linear parameter representing a probability density function would require its trapezoidal integration to equal one. Such normalization criteria can be specified via the <code class="docutils literal notranslate"><span class="pre">normalization</span></code> optional argument of the <code class="docutils literal notranslate"><span class="pre">addlinear</span></code> method.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definition of the non-linear function of the model</span>
 <span class="k">def</span> <span class="nf">nonlinear_fcn</span><span class="p">(</span><span class="n">nonlinparam1</span><span class="p">,</span><span class="n">nonlinparam2</span><span class="p">,</span><span class="o">*</span><span class="n">nonlinparamN</span><span class="p">):</span>
@@ -728,7 +716,7 @@ and with two linear parameters (<code class="docutils literal notranslate"><span
 </section>
 </section>
 <section id="models-with-constants">
-<span id="modelling-constants"></span><h3>Models with constants<a class="headerlink" href="#models-with-constants" title="Permalink to this heading">#</a></h3>
+<span id="modelling-constants"></span><h3>Models with constants<a class="headerlink" href="#models-with-constants" title="Permalink to this headline">¶</a></h3>
 <p>Thus far, we have seen how to construct models that depend solely on model parameters. In some cases, however, we might want to have other variables (usually known) that are part of the definition of the model but do not need to be considered parameters. DeerLab refers to those as “constants”, as they will remain unchanged during the fitting/optimization processes.</p>
 <p>Constants can be defined in the non-linear function along with the other non-linear parameters. Constants need to be additionally specified
 during the model construction using the <code class="docutils literal notranslate"><span class="pre">constants</span></code> keyword argument</p>
@@ -742,7 +730,7 @@ during the model construction using the <code class="docutils literal notranslat
 </div>
 <p>Constants have no associated <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> objects in the resulting model. In the example above, <code class="docutils literal notranslate"><span class="pre">mymodel</span></code> would have two parameters <code class="docutils literal notranslate"><span class="pre">nlpar1</span></code> and <code class="docutils literal notranslate"><span class="pre">nlpar2</span></code>, while <code class="docutils literal notranslate"><span class="pre">const1</span></code> and <code class="docutils literal notranslate"><span class="pre">const2</span></code> would be internally defined as constants.</p>
 <section id="example-gaussian-model-with-a-variable-axis">
-<h4>Example: Gaussian model with a variable axis<a class="headerlink" href="#example-gaussian-model-with-a-variable-axis" title="Permalink to this heading">#</a></h4>
+<h4>Example: Gaussian model with a variable axis<a class="headerlink" href="#example-gaussian-model-with-a-variable-axis" title="Permalink to this headline">¶</a></h4>
 <p>For example, let’s model a Gaussian function defined on an arbitrary axis:</p>
 <div class="math">
 <p><img src="_images/math/e2e96804325e7a6b136831d4ed9e154ae8c6337d.svg" alt="y(x,\langle x \rangle,\sigma) = \exp\left(-\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)"/></p>
@@ -761,12 +749,12 @@ during the model construction using the <code class="docutils literal notranslat
 <span class="go">Signature: (x, center, std)</span>
 <span class="go">Constants: [x]</span>
 <span class="go">Parameter Table:</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name     Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> center    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> std       -inf     inf   nonlin     No     None    None</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">Name     Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">center    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
 </pre></div>
 </div>
 <p>We can see that the model has only the two non-linear parameters as expected, and under <code class="docutils literal notranslate"><span class="pre">Constants</span></code> we can see that <code class="docutils literal notranslate"><span class="pre">x</span></code> has been adequately defined. From the <code class="docutils literal notranslate"><span class="pre">Signature</span></code> we can also check that the <code class="docutils literal notranslate"><span class="pre">x</span></code> constant can be passed to evaluate the model.</p>
@@ -774,24 +762,24 @@ during the model construction using the <code class="docutils literal notranslat
 </section>
 </section>
 <section id="model-evaluation">
-<span id="modelling-evaluation"></span><h2>Model evaluation<a class="headerlink" href="#model-evaluation" title="Permalink to this heading">#</a></h2>
+<span id="modelling-evaluation"></span><h2>Model evaluation<a class="headerlink" href="#model-evaluation" title="Permalink to this headline">¶</a></h2>
 <p>All <code class="docutils literal notranslate"><span class="pre">Model</span></code> objects can be called as normal functions by specifying the parameters and constants required by the model. These can be specified as positional and/or keyword arguments. If unsure of the model’s parameter names or their order, the easiest way to get all the information required to call a model is to print the model object. For example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;print(xgauss)</span>
 <span class="go">Description: None</span>
 <span class="go">Signature: (x, center, std)</span>
 <span class="go">Constants: [x]</span>
 <span class="go">Parameter Table:</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name     Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> center    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> std       -inf     inf   nonlin     No     None    None</span>
-<span class="go">======== ======= ======= ======== ======== ======= =============</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">Name     Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">center    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">======== ======= ======= ======= ======== ======== ====== =============</span>
 </pre></div>
 </div>
 <p>In the model printout, under <code class="docutils literal notranslate"><span class="pre">Signature</span></code> the exact signature of the model is given. The order and names of the arguments are as shown there.</p>
 <section id="calling-with-keyword-arguments">
-<h3>Calling with keyword arguments<a class="headerlink" href="#calling-with-keyword-arguments" title="Permalink to this heading">#</a></h3>
+<h3>Calling with keyword arguments<a class="headerlink" href="#calling-with-keyword-arguments" title="Permalink to this headline">¶</a></h3>
 <p>Keyword arguments provide a simple way of specifying model arguments without needing to know about their definition order. By using keyword-argument pairs, we can specify all model arguments in any order. In the example above,:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define model parameters and constants</span>
 <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
@@ -803,7 +791,7 @@ during the model construction using the <code class="docutils literal notranslat
 </div>
 </section>
 <section id="calling-with-positional-arguments">
-<h3>Calling with positional arguments<a class="headerlink" href="#calling-with-positional-arguments" title="Permalink to this heading">#</a></h3>
+<h3>Calling with positional arguments<a class="headerlink" href="#calling-with-positional-arguments" title="Permalink to this headline">¶</a></h3>
 <p>Positional arguments do not require knowledge of the parameters’/constants’ names but of the order, they are defined.
 In the example above, we would need to first pass <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">center</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code> in that exact order</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define model parameters and constants</span>
@@ -816,7 +804,7 @@ In the example above, we would need to first pass <code class="docutils literal 
 </div>
 </section>
 <section id="calling-with-mixed-arguments">
-<h3>Calling with mixed arguments<a class="headerlink" href="#calling-with-mixed-arguments" title="Permalink to this heading">#</a></h3>
+<h3>Calling with mixed arguments<a class="headerlink" href="#calling-with-mixed-arguments" title="Permalink to this headline">¶</a></h3>
 <p>A mixture of positional and keyword arguments can be used to specify the model arguments. As required in Python, the positional arguments must be specified first (in the correct order), followed by the keyword arguments (in any order). In the example above:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define model parameters and constants</span>
 <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
@@ -829,10 +817,10 @@ In the example above, we would need to first pass <code class="docutils literal 
 </section>
 </section>
 <section id="model-operations">
-<h2>Model operations<a class="headerlink" href="#model-operations" title="Permalink to this heading">#</a></h2>
+<h2>Model operations<a class="headerlink" href="#model-operations" title="Permalink to this headline">¶</a></h2>
 <p>Up until now, we have seen how to construct and evaluate user-defined models. The following sections will focus on a collection of operations to construct/design complex models out of simpler ones.</p>
 <section id="merging">
-<span id="modelling-merging"></span><h3>Merging<a class="headerlink" href="#merging" title="Permalink to this heading">#</a></h3>
+<span id="modelling-merging"></span><h3>Merging<a class="headerlink" href="#merging" title="Permalink to this headline">¶</a></h3>
 <p>In DeerLab, we refer to a merge of models to combine a series of models and their outputs. A model merge takes several models and returns a single model, whose output consists of a list of all the outputs of the original models. With these operations, we can construct a single model that describes multiple datasets locally or globally. Merging models is an essential step towards constructing models for multi-dataset fitting.</p>
 <a class="reference internal image-reference" href="_images/modelling_guide_merge.png"><img alt="_images/modelling_guide_merge.png" class="align-center" src="_images/modelling_guide_merge.png" style="width: 40%;" /></a>
 <p>For example, take three models, <code class="docutils literal notranslate"><span class="pre">model1</span></code>, <code class="docutils literal notranslate"><span class="pre">model3</span></code>, and <code class="docutils literal notranslate"><span class="pre">model3</span></code> (illustrated above), to be merged. Each model has a series of parameters <code class="docutils literal notranslate"><span class="pre">param(#)</span></code> and a corresponding response/output <code class="docutils literal notranslate"><span class="pre">responseN</span></code>. To merge the models and their responses, we must call the <code class="docutils literal notranslate"><span class="pre">merge</span></code> function and pass all models to be merged. The function will return the new merged model</p>
@@ -848,7 +836,7 @@ In the example above, we would need to first pass <code class="docutils literal 
 </div>
 <p>Models that are products of a merge will later require multiple datasets to be fitted (one dataset per model merged). See later for details.</p>
 <section id="example-merging-two-gaussian-models">
-<h4>Example: Merging two Gaussian models<a class="headerlink" href="#example-merging-two-gaussian-models" title="Permalink to this heading">#</a></h4>
+<h4>Example: Merging two Gaussian models<a class="headerlink" href="#example-merging-two-gaussian-models" title="Permalink to this headline">¶</a></h4>
 <p>Let us take a straightforward example, where we merge two Gaussian models, taking the <code class="docutils literal notranslate"><span class="pre">gauss</span></code> model defined in <a class="reference internal" href="#modelling-example1"><span class="std std-ref">a previous example</span></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Merge two Gaussian models</span>
 <span class="n">mergegauss</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">gauss</span><span class="p">,</span><span class="n">gauss</span><span class="p">)</span>
@@ -860,16 +848,16 @@ In the example above, we would need to first pass <code class="docutils literal 
 <span class="go">Signature: (center_1, width_1, center_2, width_2, scale_1, scale_2)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">========== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name       Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">========== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> center_1    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> width_1     -inf     inf   nonlin     No     None    None</span>
-<span class="go"> center_2    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> width_2     -inf     inf   nonlin     No     None    None</span>
-<span class="go"> scale_1        0     inf   linear     No     None    None</span>
-<span class="go"> scale_2        0     inf   linear     No     None    None</span>
-<span class="go">========== ======= ======= ======== ======== ======= =============</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ================</span>
+<span class="go">Name       Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ================</span>
+<span class="go">center_1    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std_1       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">center_2    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std_2       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">scale_1        0       1     inf   linear     No     None   Scaling factor</span>
+<span class="go">scale_2        0       1     inf   linear     No     None   Scaling factor</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ================</span>
 </pre></div>
 </div>
 <p>We can see that the merge has been successful. The model now takes the parameters of both <code class="docutils literal notranslate"><span class="pre">gauss</span></code> models, and their names have been adapted with the respective suffixes as described above. Now we can call the <code class="docutils literal notranslate"><span class="pre">mergemodel</span></code> to get both Gaussians responses, both centered equally, but the second being twice as broad as the first one:</p>
@@ -882,7 +870,7 @@ In the example above, we would need to first pass <code class="docutils literal 
 </section>
 </section>
 <section id="linear-combinations">
-<h3>Linear combinations<a class="headerlink" href="#linear-combinations" title="Permalink to this heading">#</a></h3>
+<h3>Linear combinations<a class="headerlink" href="#linear-combinations" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#model-function"><span class="std std-ref">mathematical structure</span></a> of the plain models does not allow the definition of model function consisting of sums of terms. DeerLab provides the function <code class="docutils literal notranslate"><span class="pre">lincombine</span></code> to generate models, whose output/response is a linear combination of the outputs of the input models.</p>
 <a class="reference internal image-reference" href="_images/modelling_guide_lincombine.png"><img alt="_images/modelling_guide_lincombine.png" class="align-center" src="_images/modelling_guide_lincombine.png" style="width: 40%;" /></a>
 <p>For example, take three models, <code class="docutils literal notranslate"><span class="pre">model1</span></code>, <code class="docutils literal notranslate"><span class="pre">model3</span></code>, and <code class="docutils literal notranslate"><span class="pre">model3</span></code> (illustrated above), to be linearly combined. Each model has a series of parameters <code class="docutils literal notranslate"><span class="pre">param(#)</span></code> and a corresponding response/output <code class="docutils literal notranslate"><span class="pre">responseN</span></code>. To merge the models and their responses, we must call the <code class="docutils literal notranslate"><span class="pre">lincombine</span></code> function and pass all models to be linearly combined. The function will return the new linearly combined model</p>
@@ -905,7 +893,7 @@ As in the <code class="docutils literal notranslate"><span class="pre">merge</sp
 </pre></div>
 </div>
 <section id="example-bimodal-gaussian-as-a-linear-combination">
-<h4>Example: Bimodal Gaussian as a linear combination<a class="headerlink" href="#example-bimodal-gaussian-as-a-linear-combination" title="Permalink to this heading">#</a></h4>
+<h4>Example: Bimodal Gaussian as a linear combination<a class="headerlink" href="#example-bimodal-gaussian-as-a-linear-combination" title="Permalink to this headline">¶</a></h4>
 <p>In this example, let us construct the model of a bimodal Gaussian from the linear combination of two unimodal Gaussian <code class="docutils literal notranslate"><span class="pre">gauss</span></code> models defined in <a class="reference internal" href="#modelling-example1"><span class="std std-ref">another example</span></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Linear combination of two Gaussians</span>
 <span class="n">bigauss</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">lincombine</span><span class="p">(</span><span class="n">gauss</span><span class="p">,</span> <span class="n">gauss</span><span class="p">)</span>
@@ -917,16 +905,16 @@ As in the <code class="docutils literal notranslate"><span class="pre">merge</sp
 <span class="go">Signature: (center_1, width_1, center_2, width_2, scale_1, scale_2)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">========== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name       Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">========== ======= ======= ======== ======== ======= =============</span>
-<span class="go"> center_1    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> width_1     -inf     inf   nonlin     No     None    None</span>
-<span class="go"> center_2    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> width_2     -inf     inf   nonlin     No     None    None</span>
-<span class="go"> scale_1        0     inf   linear     No     None    None</span>
-<span class="go"> scale_2        0     inf   linear     No     None    None</span>
-<span class="go">========== ======= ======= ======== ======== ======= =============</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ================</span>
+<span class="go">Name       Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ================</span>
+<span class="go">center_1    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std_1       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">center_2    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std_2       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">scale_1        0       1     inf   linear     No     None   Scaling factor</span>
+<span class="go">scale_2        0       1     inf   linear     No     None   Scaling factor</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ================</span>
 </pre></div>
 </div>
 <p>We can see that the merge has been successful. The model now takes the parameters of both <code class="docutils literal notranslate"><span class="pre">gauss</span></code> models, and their names have been adapted with the respective suffixes described above—the newly introduced linear parameters <code class="docutils literal notranslate"><span class="pre">scale_1</span></code> and <code class="docutils literal notranslate"><span class="pre">scale_2</span></code> work as linear combination weights.</p>
@@ -938,7 +926,7 @@ As in the <code class="docutils literal notranslate"><span class="pre">merge</sp
 </div>
 </section>
 <section id="example-weighted-linear-combination-of-two-non-parametric-distributions">
-<h4>Example: Weighted linear combination of two non-parametric distributions<a class="headerlink" href="#example-weighted-linear-combination-of-two-non-parametric-distributions" title="Permalink to this heading">#</a></h4>
+<h4>Example: Weighted linear combination of two non-parametric distributions<a class="headerlink" href="#example-weighted-linear-combination-of-two-non-parametric-distributions" title="Permalink to this headline">¶</a></h4>
 <p>In this example, we will construct a model describing a linear combination of two non-parametric distributions. For the sake of simplicity, we will use the Gaussian-convoluted non-parametric distribution <code class="docutils literal notranslate"><span class="pre">gaussconv</span></code> model defined in <a class="reference internal" href="#modelling-example3"><span class="std std-ref">a previous example</span></a>. Now, we do not want the weighting of the linear combination to arise from the linear parameters. For that purpose, we must use the <code class="docutils literal notranslate"><span class="pre">addweights</span></code> keyword argument when doing the linear combination</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Linearly combine both models with non-linear weighting parameters</span>
 <span class="n">combmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">lincombine</span><span class="p">(</span><span class="n">gaussconv</span><span class="p">,</span> <span class="n">gaussconv</span><span class="p">,</span> <span class="n">addweights</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -950,23 +938,23 @@ As in the <code class="docutils literal notranslate"><span class="pre">merge</sp
 <span class="go">Signature: (sigma_1, weight_1, sigma_2, weight_2, dist_1, dist_2)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">========== ======= ======= ======== ======== ======= ==================</span>
-<span class="go"> Name       Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">========== ======= ======= ======== ======== ======= ==================</span>
-<span class="go"> sigma_1     -inf     inf   nonlin     No     None    None</span>
-<span class="go"> weight_1       0     inf   nonlin     No     None    Weighting factor</span>
-<span class="go"> sigma_2     -inf     inf   nonlin     No     None    None</span>
-<span class="go"> weight_2       0     inf   nonlin     No     None    Weighting factor</span>
-<span class="go"> dist_1         0     inf   linear     No     None    None</span>
-<span class="go"> dist_2         0     inf   linear     No     None    None</span>
-<span class="go">========== ======= ======= ======== ======== ======= ==================</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ==================</span>
+<span class="go">Name       Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ==================</span>
+<span class="go">sigma_1     -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">weight_1       0       1     inf   nonlin     No     None   Weighting factor</span>
+<span class="go">sigma_2     -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">weight_2       0       1     inf   nonlin     No     None   Weighting factor</span>
+<span class="go">scale_1        0       1     inf   linear     No     None   Scaling factor</span>
+<span class="go">scale_2        0       1     inf   linear     No     None   Scaling factor</span>
+<span class="go">========== ======= ======= ======= ======== ======== ====== ==================</span>
 </pre></div>
 </div>
 <p>The linearly combined model has been successfully constructed, and the non-linear weighting parameters <code class="docutils literal notranslate"><span class="pre">weight_1</span></code> and <code class="docutils literal notranslate"><span class="pre">weight_2</span></code> have also been included in the model as requested.</p>
 </section>
 </section>
 <section id="linking">
-<h3>Linking<a class="headerlink" href="#linking" title="Permalink to this heading">#</a></h3>
+<h3>Linking<a class="headerlink" href="#linking" title="Permalink to this headline">¶</a></h3>
 <p>Parameter linking refers to the introduction of equality constraints between two or more parameters within a model. Parameter linking reduces the number of parameters and is crucial for the global analysis of multi-dataset models. DeerLab provides the function <code class="docutils literal notranslate"><span class="pre">link</span></code> for the introduction of such constraints between parameters in a model.</p>
 <a class="reference internal image-reference" href="_images/modelling_guide_link.png"><img alt="_images/modelling_guide_link.png" class="align-center" src="_images/modelling_guide_link.png" style="width: 50%;" /></a>
 <p>Take the example illustrated above with a <code class="docutils literal notranslate"><span class="pre">model</span></code> model and a series of parameters <code class="docutils literal notranslate"><span class="pre">param(#)</span></code>. Assume that we know that <code class="docutils literal notranslate"><span class="pre">paramA</span></code>, <code class="docutils literal notranslate"><span class="pre">paramF</span></code>, and <code class="docutils literal notranslate"><span class="pre">paramM</span></code> are equal, and we want to link them. The linking operation will create a new model, where all of the linked parameters have been removed and substituted by a new parameter representing all of the linked parameters. The response of the new model will remain unchanged with respect to the original one. Now, the <code class="docutils literal notranslate"><span class="pre">link</span></code> function employs the following syntax: first, it takes the model where the linking operation is to take place; second, it takes keyword-argument pairs where the arguments are lists of the parameter names to be linked together, and the keyword represents the new name to assign to the new linked parameter</p>
@@ -980,7 +968,7 @@ As in the <code class="docutils literal notranslate"><span class="pre">merge</sp
 </pre></div>
 </div>
 <section id="example-two-gaussians-of-equal-width">
-<h4>Example: Two Gaussians of equal width<a class="headerlink" href="#example-two-gaussians-of-equal-width" title="Permalink to this heading">#</a></h4>
+<h4>Example: Two Gaussians of equal width<a class="headerlink" href="#example-two-gaussians-of-equal-width" title="Permalink to this headline">¶</a></h4>
 <p>s
 To enforce equality of widths for the two Gaussians in the <code class="docutils literal notranslate"><span class="pre">bigauss</span></code> model, we must link the <code class="docutils literal notranslate"><span class="pre">std1</span></code> and <code class="docutils literal notranslate"><span class="pre">std2</span></code> parameters together. Since there will only be one width parameter in the linked model, we will assign the link to a new <code class="docutils literal notranslate"><span class="pre">std</span></code> parameter</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Link the width parameters</span>
@@ -993,15 +981,15 @@ To enforce equality of widths for the two Gaussians in the <code class="docutils
 <span class="go">Signature: (center1, std, center2, weight1, weight2)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name      Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
-<span class="go"> center1    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> std        -inf     inf   nonlin     No     None    None</span>
-<span class="go"> center2    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> weight1       0     inf   linear     No     None    None</span>
-<span class="go"> weight2       0     inf   linear     No     None    None</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">Name      Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">center1    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std        -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">center2    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">weight1       0     -       inf   linear     No     None   None</span>
+<span class="go">weight2       0     -       inf   linear     No     None   None</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
 </pre></div>
 </div>
 <p>The model now has the new <code class="docutils literal notranslate"><span class="pre">std</span></code> parameter instead of the <code class="docutils literal notranslate"><span class="pre">std1</span></code> and <code class="docutils literal notranslate"><span class="pre">std2</span></code> parameters. The linkage can be checked by comparing the two models</p>
@@ -1016,7 +1004,7 @@ To enforce equality of widths for the two Gaussians in the <code class="docutils
 </section>
 </section>
 <section id="relating">
-<h3>Relating<a class="headerlink" href="#relating" title="Permalink to this heading">#</a></h3>
+<h3>Relating<a class="headerlink" href="#relating" title="Permalink to this headline">¶</a></h3>
 <p>Similar to linking but more generally is the related operation. DeerLab refers to relating to the introduction of any functional relationship between two or more parameters. Using the <code class="docutils literal notranslate"><span class="pre">relate</span></code> function, DeerLab can introduce such relationships.</p>
 <a class="reference internal image-reference" href="_images/modelling_guide_relate.png"><img alt="_images/modelling_guide_relate.png" class="align-center" src="_images/modelling_guide_relate.png" style="width: 50%;" /></a>
 <p>Take the example illustrated above with a <code class="docutils literal notranslate"><span class="pre">model</span></code> model and a series of parameters <code class="docutils literal notranslate"><span class="pre">param(#)</span></code>. Assume that we know that <code class="docutils literal notranslate"><span class="pre">paramA</span></code> depends on the <code class="docutils literal notranslate"><span class="pre">paramF</span></code> parameter. The relating operation will create a new model, where <code class="docutils literal notranslate"><span class="pre">paramA</span></code> has been removed and its value is given by some function of the value <code class="docutils literal notranslate"><span class="pre">paramF</span></code> parameter. The response of the new model will remain unchanged with respect to the original one.</p>
@@ -1034,7 +1022,7 @@ To enforce equality of widths for the two Gaussians in the <code class="docutils
 </div>
 <p>The function will internally determine the best order in which to perform these operations. However, it cannot handle circular functional relationships.</p>
 <section id="example-two-gaussians-of-related-width">
-<h4>Example: Two Gaussians of related width<a class="headerlink" href="#example-two-gaussians-of-related-width" title="Permalink to this heading">#</a></h4>
+<h4>Example: Two Gaussians of related width<a class="headerlink" href="#example-two-gaussians-of-related-width" title="Permalink to this headline">¶</a></h4>
 <p>For this example, we will model a bimodal Gaussian function where one of the Gaussian components has twice the width of the other one. We will use the <code class="docutils literal notranslate"><span class="pre">bigauss</span></code> from <a class="reference internal" href="#modelling-example2"><span class="std std-ref">a previous example</span></a> as the basis model.</p>
 <p>To enforce the functional relationship between the widths of the two Gaussians in the <code class="docutils literal notranslate"><span class="pre">bigauss</span></code> model, we must relate the <code class="docutils literal notranslate"><span class="pre">std1</span></code> parameter to the <code class="docutils literal notranslate"><span class="pre">std2</span></code> parameter, such that the former’s value is twice the latter’s value</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Relate the width parameters</span>
@@ -1047,21 +1035,21 @@ To enforce equality of widths for the two Gaussians in the <code class="docutils
 <span class="go">Signature: (center1, std1, center2, weight1, weight2)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
-<span class="go"> Name      Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
-<span class="go"> center1    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> center2    -inf     inf   nonlin     No     None    None</span>
-<span class="go"> std2       -inf     inf   nonlin     No     None    None</span>
-<span class="go"> weight1       0     inf   linear     No     None    None</span>
-<span class="go"> weight2       0     inf   linear     No     None    None</span>
-<span class="go">========= ======= ======= ======== ======== ======= =============</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">Name      Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
+<span class="go">center1    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">center2    -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">std2       -inf     -       inf   nonlin     No     None   None</span>
+<span class="go">weight1       0     -       inf   linear     No     None   None</span>
+<span class="go">weight2       0     -       inf   linear     No     None   None</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== =============</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">std1</span></code> parameter has been removed from the parameter list as it is now given twice the value of <code class="docutils literal notranslate"><span class="pre">std2</span></code>.</p>
 </section>
 <section id="adding-isolated-non-linear-parameters">
-<h4>Adding isolated non-linear parameters<a class="headerlink" href="#adding-isolated-non-linear-parameters" title="Permalink to this heading">#</a></h4>
+<h4>Adding isolated non-linear parameters<a class="headerlink" href="#adding-isolated-non-linear-parameters" title="Permalink to this headline">¶</a></h4>
 <p>DeerLab provides the model method <code class="docutils literal notranslate"><span class="pre">addnonlinear</span></code> to add non-linear parameters to the model. These parameters will be isolated because they will not a priori affect the model function in any way. However, this functionality is helpful to introduce new parameters that functionalize any of the original parameter models.</p>
 <p>If two model parameters <code class="docutils literal notranslate"><span class="pre">paramA</span></code> and <code class="docutils literal notranslate"><span class="pre">paramB</span></code> can be defined as different functions of one (undefined) parameter <code class="docutils literal notranslate"><span class="pre">paramext</span></code> we can combine the <code class="docutils literal notranslate"><span class="pre">addnonlinear</span></code> and <code class="docutils literal notranslate"><span class="pre">relate</span></code> functions to implement this</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add a new non-linear parameter to the model</span>
@@ -1073,7 +1061,7 @@ To enforce equality of widths for the two Gaussians in the <code class="docutils
 <p>and the resulting model <code class="docutils literal notranslate"><span class="pre">newmodel</span></code> will now depend functionally on the <code class="docutils literal notranslate"><span class="pre">paramext</span></code> parameter instead of the <code class="docutils literal notranslate"><span class="pre">paramA</span></code> and <code class="docutils literal notranslate"><span class="pre">paramB</span></code> parameters.</p>
 </section>
 <section id="example-two-gaussians-with-functionalized-amplitudes">
-<h4>Example: Two Gaussians with functionalized amplitudes<a class="headerlink" href="#example-two-gaussians-with-functionalized-amplitudes" title="Permalink to this heading">#</a></h4>
+<h4>Example: Two Gaussians with functionalized amplitudes<a class="headerlink" href="#example-two-gaussians-with-functionalized-amplitudes" title="Permalink to this headline">¶</a></h4>
 <p>For this example, we will model a bimodal Gaussian function where the amplitudes of the two Gaussian components can be modeled via some function. We will use the <code class="docutils literal notranslate"><span class="pre">bigauss</span></code> from <a class="reference internal" href="#modelling-example2"><span class="std std-ref">a previous example</span></a> as the basis model.</p>
 <p>Let us assume that the amplitudes <img class="math" src="_images/math/a2eb069e091c3b1d2a5262e1eec64c7a2d112384.svg" alt="a_1"/> and <img class="math" src="_images/math/8a01a88ce503cf160babfcd5955943ede0be2203.svg" alt="a_2"/> of the two Gaussians can be modeled as follows:</p>
 <div class="math">
@@ -1092,7 +1080,7 @@ To enforce equality of widths for the two Gaussians in the <code class="docutils
 </section>
 </section>
 <section id="copying">
-<h3>Copying<a class="headerlink" href="#copying" title="Permalink to this heading">#</a></h3>
+<h3>Copying<a class="headerlink" href="#copying" title="Permalink to this headline">¶</a></h3>
 <p>Copying models is important when performing several model manipulations to avoid overwriting or modifying other models by accident. It is important to note that just assigning a model to another variable does not copy the model but passes the reference of the object</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">modelA</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Original&#39;</span>
 <span class="n">modelB</span> <span class="o">=</span> <span class="n">modelA</span> <span class="c1"># Assignment does not generate a copy</span>
@@ -1117,55 +1105,50 @@ To enforce equality of widths for the two Gaussians in the <code class="docutils
 </section>
 
 
-              </article>
+              </div>
               
-
               
-              <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="advanced_guide.html" title="previous page">
-      <i class="fas fa-angle-left"></i>
-      <div class="prev-next-info">
-          <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">Advanced</p>
-      </div>
-  </a>
-  <a class='right-next' id="next-link" href="fitting_guide.html" title="next page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Fitting Guide</p>
-  </div>
-  <i class="fas fa-angle-right"></i>
-  </a>
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="advanced_guide.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Advanced</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="fitting_guide.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Fitting Guide</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-              </footer>
               
-          </div>
+          </main>
           
+
       </div>
     </div>
-
   
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
-
-<footer class="bd-footer"><div class="bd-footer__inner container">
-  
-  <div class="footer-item">
-    <p class="copyright">
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-  </div>
-  
-  <div class="footer-item">
-    <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
 </p>
+    </div>
+    
   </div>
-  
-</div>
 </footer>
   </body>
 </html>

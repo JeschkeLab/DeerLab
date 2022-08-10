@@ -6,16 +6,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>deerlab.dipolarmodel &#8212; DeerLab</title>
-<script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
-  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
-</script>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-
-
+    
   <link rel="stylesheet"
     href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -23,7 +18,12 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
@@ -31,55 +31,46 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
-
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="docsearch:language" content="en">
-  </head>
-  
-  
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
-    <div class="bd-header-announcement container-fluid" id="banner">
-      
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
 
-    </div>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
     
-    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
   <div id="navbar-start">
     
     
-  
 
-
-<a class="navbar-brand logo" href="../../index.html">
-  
-  
-  
-  
-    <img src="../../_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
-    <img src="../../_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
-  
-  
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
+
+
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="fas fa-bars"></span>
+    <span class="navbar-toggler-icon"></span>
   </button>
 
   
@@ -162,36 +153,33 @@
     </nav>
     
 
-    <div class="bd-container container-xl">
-      <div class="bd-container__inner row">
+    <div class="container-xl">
+      <div class="row">
           
-
-<!-- Only show if we have sidebars configured, else just a small margin  -->
-<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
-  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
   </div>
 </nav>
-  </div>
-  <div class="sidebar-end-items">
-  </div>
-</div>
-
-
+            </div>
+            
           
 
-
-<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
-  
-</div>
-
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
 
           
           
-          <div class="bd-content col-12 col-md-9 col-xl-7">
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
-              <article class="bd-article" role="main">
+              <div>
                 
   <h1>Source code for deerlab.dipolarmodel</h1><div class="highlight"><pre>
 <span></span><span class="c1"># dipolarmodel.py - DeerLab&#39;s dipolar EPR model generator</span>
@@ -433,8 +421,8 @@
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npathways</span><span class="p">):</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="n">DipolarSignal</span><span class="p">,</span><span class="n">reftime_names</span><span class="p">[</span><span class="n">n</span><span class="p">])</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
                 <span class="n">par0</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
-                <span class="n">lb</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">,</span>
-                <span class="n">ub</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.05</span>
+                <span class="n">lb</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">experiment</span><span class="o">.</span><span class="n">pulselength</span><span class="p">,</span>
+                <span class="n">ub</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">experiment</span><span class="o">.</span><span class="n">pulselength</span>
                 <span class="p">)</span>
 
     <span class="c1"># Set other dipolar model specific attributes</span>
@@ -533,15 +521,16 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents information about a dipolar EPR experiment&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">,</span><span class="n">pulselength</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">npathways</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reftimes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reftimes</span> <span class="o">=</span> <span class="n">reftimes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">harmonics</span> <span class="o">=</span> <span class="n">harmonics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pulselength</span> <span class="o">=</span> <span class="n">pulselength</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 <span class="c1">#===============================================================================</span>
 
 <span class="c1">#===============================================================================</span>
-<div class="viewcode-block" id="ex_3pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_3pdeer.html#deerlab.ex_3pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_3pdeer</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ex_3pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_3pdeer.html#deerlab.ex_3pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_3pdeer</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a 3-pulse DEER dipolar experiment model. </span>
 
@@ -571,6 +560,10 @@
 <span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
 <span class="sd">        By default, both pathways are included in the order given in the table above.</span>
 
+<span class="sd">    pulselength : float scalar, optional </span>
+<span class="sd">        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the </span>
+<span class="sd">        boundaries of the pathay refocusing times.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    experiment : ``ExperimentInfo`` object</span>
@@ -590,11 +583,11 @@
         <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
         <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span> 
 
-    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;3-pulse DEER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;3-pulse DEER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">,</span><span class="n">pulselength</span><span class="p">)</span></div>
 <span class="c1">#===============================================================================</span>
 
 <span class="c1">#===============================================================================</span>
-<div class="viewcode-block" id="ex_4pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_4pdeer.html#deerlab.ex_4pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_4pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ex_4pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_4pdeer.html#deerlab.ex_4pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_4pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a 4-pulse DEER dipolar experiment model. </span>
 <span class="sd">    </span>
@@ -628,6 +621,10 @@
 <span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
 <span class="sd">        By default, all 4 pathways are included in the order given in the table above.</span>
 
+<span class="sd">    pulselength : float scalar, optional </span>
+<span class="sd">        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the </span>
+<span class="sd">        boundaries of the pathay refocusing times.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    experiment : ``ExperimentInfo`` object</span>
@@ -646,11 +643,11 @@
         <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
         <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span> 
 
-    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;4-pulse DEER&#39;</span><span class="p">,</span> <span class="n">reftimes</span><span class="p">,</span> <span class="n">harmonics</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;4-pulse DEER&#39;</span><span class="p">,</span> <span class="n">reftimes</span><span class="p">,</span> <span class="n">harmonics</span><span class="p">,</span> <span class="n">pulselength</span><span class="p">)</span></div>
 <span class="c1">#===============================================================================</span>
 
 <span class="c1">#===============================================================================</span>
-<div class="viewcode-block" id="ex_rev5pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_rev5pdeer.html#deerlab.ex_rev5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_rev5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ex_rev5pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_rev5pdeer.html#deerlab.ex_rev5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_rev5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a reverse 5-pulse DEER dipolar experiment model. </span>
 <span class="sd">    </span>
@@ -690,6 +687,10 @@
 <span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
 <span class="sd">        By default, all 8 pathways are included in the order given in the table above.</span>
 
+<span class="sd">    pulselength : float scalar, optional </span>
+<span class="sd">        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the </span>
+<span class="sd">        boundaries of the pathay refocusing times.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    experiment : ``ExperimentInfo`` object</span>
@@ -708,12 +709,12 @@
         <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
         <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
     
-    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;Reverse 5-pulse DEER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;Reverse 5-pulse DEER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">,</span><span class="n">pulselength</span><span class="p">)</span></div>
 <span class="c1">#===============================================================================</span>
 
 
 <span class="c1">#===============================================================================</span>
-<div class="viewcode-block" id="ex_fwd5pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_fwd5pdeer.html#deerlab.ex_fwd5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_fwd5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ex_fwd5pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_fwd5pdeer.html#deerlab.ex_fwd5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_fwd5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a forward 5-pulse DEER dipolar experiment model. </span>
 <span class="sd">    </span>
@@ -753,6 +754,10 @@
 <span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
 <span class="sd">        By default, all pathways are included in the order given in the table above.</span>
 
+<span class="sd">    pulselength : float scalar, optional </span>
+<span class="sd">        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the </span>
+<span class="sd">        boundaries of the pathay refocusing times.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    experiment : ``ExperimentInfo`` object</span>
@@ -771,11 +776,11 @@
         <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
         <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span> 
 
-    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;Forward 5-pulse DEER&#39;</span><span class="p">,</span> <span class="n">reftimes</span><span class="p">,</span> <span class="n">harmonics</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;Forward 5-pulse DEER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">,</span><span class="n">pulselength</span><span class="p">)</span></div>
 <span class="c1">#===============================================================================</span>
 
 <span class="c1">#===============================================================================</span>
-<div class="viewcode-block" id="ex_sifter"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_sifter.html#deerlab.ex_sifter">[docs]</a><span class="k">def</span> <span class="nf">ex_sifter</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ex_sifter"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_sifter.html#deerlab.ex_sifter">[docs]</a><span class="k">def</span> <span class="nf">ex_sifter</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a SIFTER dipolar experiment model. </span>
 
@@ -807,6 +812,10 @@
 <span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
 <span class="sd">        By default, all 3 pathways are included and ordered as given in the table above.</span>
 
+<span class="sd">    pulselength : float scalar, optional </span>
+<span class="sd">        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the </span>
+<span class="sd">        boundaries of the pathay refocusing times.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    experiment : ``ExperimentInfo`` object</span>
@@ -826,12 +835,12 @@
         <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
         <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;SIFTER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;SIFTER&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">,</span><span class="n">pulselength</span><span class="p">)</span></div>
 <span class="c1">#===============================================================================</span>
 
 
 <span class="c1">#===============================================================================</span>
-<div class="viewcode-block" id="ex_ridme"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme">[docs]</a><span class="k">def</span> <span class="nf">ex_ridme</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ex_ridme"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme">[docs]</a><span class="k">def</span> <span class="nf">ex_ridme</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a RIDME dipolar experiment model. </span>
 
@@ -864,6 +873,10 @@
 <span class="sd">        Pathways to include in the model. The pathways are specified based to the pathways numbers. </span>
 <span class="sd">        By default, all 4 pathways are included in the order given in the table above.</span>
 
+<span class="sd">    pulselength : float scalar, optional </span>
+<span class="sd">        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the </span>
+<span class="sd">        boundaries of the pathay refocusing times.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    experiment : ``ExperimentInfo`` object</span>
@@ -883,45 +896,40 @@
         <span class="n">reftimes</span> <span class="o">=</span> <span class="p">[</span><span class="n">reftimes</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span>
         <span class="n">harmonics</span> <span class="o">=</span> <span class="p">[</span><span class="n">harmonics</span><span class="p">[</span><span class="n">pathway</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="n">pathways</span><span class="p">]</span> 
 
-    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;RIDME&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ExperimentInfo</span><span class="p">(</span><span class="s1">&#39;RIDME&#39;</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">,</span><span class="n">pulselength</span><span class="p">)</span></div>
 <span class="c1">#===============================================================================</span>
 </pre></div>
 
-              </article>
+              </div>
               
-
               
-              <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
+              <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-              </footer>
               
-          </div>
+          </main>
           
+
       </div>
     </div>
-
   
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
-
-<footer class="bd-footer"><div class="bd-footer__inner container">
-  
-  <div class="footer-item">
-    <p class="copyright">
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-  </div>
-  
-  <div class="footer-item">
-    <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
 </p>
+    </div>
+    
   </div>
-  
-</div>
 </footer>
   </body>
 </html>

@@ -4,19 +4,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Basics &#8212; DeerLab</title>
-<script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
-  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
-</script>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-
-
+    
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -24,7 +19,12 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
@@ -32,14 +32,12 @@
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
-
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -48,41 +46,34 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Getting Started" href="getting_started.html" />
     <link rel="prev" title="User Guide" href="user_guide.html" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="docsearch:language" content="en">
-  </head>
-  
-  
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
-    <div class="bd-header-announcement container-fluid" id="banner">
-      
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
 
-    </div>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
     
-    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
   <div id="navbar-start">
     
     
-  
 
-
-<a class="navbar-brand logo" href="index.html">
-  
-  
-  
-  
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
-  
-  
+<a class="navbar-brand" href="index.html">
+  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
+
+
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="fas fa-bars"></span>
+    <span class="navbar-toggler-icon"></span>
   </button>
 
   
@@ -165,13 +156,12 @@
     </nav>
     
 
-    <div class="bd-container container-xl">
-      <div class="bd-container__inner row">
+    <div class="container-xl">
+      <div class="row">
           
-
-<!-- Only show if we have sidebars configured, else just a small margin  -->
-<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
-  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active">
@@ -203,21 +193,17 @@
 
   </div>
 </nav>
-  </div>
-  <div class="sidebar-end-items">
-  </div>
-</div>
-
-
+            </div>
+            
           
 
-
-<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
-  
-    
-    <div class="toc-item">
-      
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -251,28 +237,30 @@
 </ul>
 
 </nav>
-    </div>
-    
-    <div class="toc-item">
-      
-    </div>
-    
-  
-</div>
-
-
-          
-          
-          <div class="bd-content col-12 col-md-9 col-xl-7">
+              </div>
               
-              <article class="bd-article" role="main">
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
                 
   <section id="basics">
-<h1>Basics<a class="headerlink" href="#basics" title="Permalink to this heading">#</a></h1>
+<h1>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h1>
 <p>DeerLab applications to dipolar EPR spectroscopy relies on a few central quantities. They include distance distributions and model functions, background and their model functions, time-domain signals, and kernels. They are described in this section.</p>
 <p>All functions in DeerLab use the same units: all distances are in units of <strong>nanometers</strong>, and all times in units of <strong>microseconds</strong>.</p>
 <section id="distance-distributions">
-<h2>Distance distributions<a class="headerlink" href="#distance-distributions" title="Permalink to this heading">#</a></h2>
+<h2>Distance distributions<a class="headerlink" href="#distance-distributions" title="Permalink to this headline">¶</a></h2>
 <p>A distance distribution <img class="math" src="_images/math/865be106fc6ff8e698763f3b1bfb8777c311e175.svg" alt="P(r)"/> between two spins is represented by a pair of vectors: a distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> (in nanometers) and a vector of densities <code class="docutils literal notranslate"><span class="pre">P</span></code> (in inverse nanometers). The distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> can have linearly or non-linearly increasing values, but must have positive non-zero values. The elements <code class="docutils literal notranslate"><span class="pre">P[i]</span></code> are the distance distribution values at <code class="docutils literal notranslate"><span class="pre">r[i]</span></code> and are posiive or zero. Outside of the range defined by <code class="docutils literal notranslate"><span class="pre">r</span></code>, the distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> is assumed to be zero, i.e. the distribution is truncated to the range <code class="docutils literal notranslate"><span class="pre">r</span></code>. The distance distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> is normalized such that the integral over the range of the provided <code class="docutils literal notranslate"><span class="pre">r</span></code> equals one:</p>
 <div class="math">
 <p><img src="_images/math/40d7709134fc915404f6e8db4c8228b788d0c999.svg" alt="\int_{r_\mathrm{min}}^{r_\mathrm{max}} P(r) \mathrm{d}r = 1"/></p>
@@ -295,12 +283,12 @@ For example, you can generate <code class="docutils literal notranslate"><span c
 <span class="go">Signature: (r, mean, std)</span>
 <span class="go">Constants: [r]</span>
 <span class="go">Parameter Table:</span>
-<span class="go">======= ======= ======= ======== ======== ======= ====================</span>
-<span class="go">Name    Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">======= ======= ======= ======== ======== ======= ====================</span>
-<span class="go">mean        1      20   nonlin     No      nm     Mean</span>
-<span class="go">std      0.05     2.5   nonlin     No      nm     Standard deviation</span>
-<span class="go">======= ======= ======= ======== ======== ======= ====================</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
+<span class="go">Name   Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
+<span class="go">mean       1     3.5      20   nonlin     No      nm    Mean</span>
+<span class="go">std     0.05     0.2     2.5   nonlin     No      nm    Standard deviation</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
 </pre></div>
 </div>
 </dd>
@@ -308,19 +296,19 @@ For example, you can generate <code class="docutils literal notranslate"><span c
 <p>In least-squares fitting, non-parametric distance distributions make fewer assumptions about the distribution than parametric distance distributions. They are more flexible and introduce less bias.</p>
 </section>
 <section id="dipolar-background">
-<span id="bgmodels"></span><h2>Dipolar background<a class="headerlink" href="#dipolar-background" title="Permalink to this heading">#</a></h2>
+<span id="bgmodels"></span><h2>Dipolar background<a class="headerlink" href="#dipolar-background" title="Permalink to this headline">¶</a></h2>
 <p>In DeerLab, all inter-molecular contributions to the dipolar modulation (i.e. the echo modulation function due to randomly distributed spins in the sample that are not part of the spin-labeled protein or object) are referred to as the dipolar background. DeerLab has a range of parametric models for the background. All these background <a class="reference internal" href="modelsref.html#modelsref-bg"><span class="std std-ref">model’s</span></a> names start with the prefix <code class="docutils literal notranslate"><span class="pre">bg_</span></code>. They take the time axis vector <code class="docutils literal notranslate"><span class="pre">t</span></code> (in microseconds) and a parameter vector <code class="docutils literal notranslate"><span class="pre">param</span></code> as inputs. The output is a background vector <code class="docutils literal notranslate"><span class="pre">B</span></code> defined over <code class="docutils literal notranslate"><span class="pre">t</span></code>. To get information on the model and its parameters, print the model</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;print(dl.bg_hom3d)</span>
 <span class="go">Description: Background from homogeneous distribution of spins in a 3D medium</span>
 <span class="go">Signature: (t, conc, lam)</span>
 <span class="go">Constants: [t]</span>
 <span class="go">Parameter Table:</span>
-<span class="go">====== ======= ======= ======== ======== ======= ====================</span>
-<span class="go"> Name   Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">====== ======= ======= ======== ======== ======= ====================</span>
-<span class="go"> conc    0.01   5e+03   nonlin     No      μM     Spin concentration</span>
-<span class="go"> lam        0       1   nonlin     No             Pathway amplitude</span>
-<span class="go">====== ======= ======= ======== ======== ======= ====================</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
+<span class="go">Name   Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
+<span class="go">conc    0.01      50   5e+03   nonlin     No      μM    Spin concentration</span>
+<span class="go">lam        0       1       1   nonlin     No            Pathway amplitude</span>
+<span class="go">====== ======= ======= ======= ======== ======== ====== ====================</span>
 </pre></div>
 </div>
 <p>DeerLab’s <a class="reference internal" href="modelsref.html#modelsref-bg"><span class="std std-ref">background models</span></a> fall into two categories, physical and phenomenological:</p>
@@ -346,11 +334,11 @@ For example, you can generate <code class="docutils literal notranslate"><span c
 <p>In general, it is preferable to use physical instead of phenomenological models.</p>
 </section>
 <section id="experiments">
-<span id="exmodels"></span><h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this heading">#</a></h2>
+<span id="exmodels"></span><h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
 <p>DeerLab supports a wide range of dipolar EPR experiments (4-pulse DEER, 4-pulse DEER, RIDME, etc). Experiments differ in the number and nature of their modulated dipolar pathways. Each of these pathways leads to a dipolar modulation contribution to the total dipolar signal, with specific amplitude and refocusing times. The overall dipolar signal is the sum of an unmodulated contribution and a contribution from all modulated pathways, each of which with its own amplitude, refocusing time, and harmonic. For each supported experiment, there is a dedicated experiment :ref:` constructor &lt;modelsref_ex&gt;` starting with <code class="docutils literal notranslate"><span class="pre">ex_</span></code>, which generate experimental information on the pathway refocusing times and amplitudes based on the type of experiment and the experimental pulse sequence delays. This information can later be used to refine and constrain the dipolar models.</p>
 </section>
 <section id="dipolar-kernels">
-<h2>Dipolar kernels<a class="headerlink" href="#dipolar-kernels" title="Permalink to this heading">#</a></h2>
+<h2>Dipolar kernels<a class="headerlink" href="#dipolar-kernels" title="Permalink to this headline">¶</a></h2>
 <p>One of the core functions of DeerLab’s dipolar EPR applications is <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code>. It constructs the kernel that provides the connection between the distance distribution and the time-domain dipolar signal via</p>
 <div class="math">
 <p><img src="_images/math/d782fd11836a84cd933640472d4e60e61d91cf41.svg" alt="V(t) = \int K(t,r)P(r) \mathrm{d}r"/></p>
@@ -390,7 +378,7 @@ For example, you can generate <code class="docutils literal notranslate"><span c
 <p>The function <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> also has <a class="reference internal" href="_autosummary/deerlab.dipolarkernel.html#dipolarkernel"><span class="std std-ref">options</span></a> to set the excitation bandwidth, to select the internal calculation method, and more.</p>
 </section>
 <section id="dipolar-signals">
-<h2>Dipolar signals<a class="headerlink" href="#dipolar-signals" title="Permalink to this heading">#</a></h2>
+<h2>Dipolar signals<a class="headerlink" href="#dipolar-signals" title="Permalink to this headline">¶</a></h2>
 <p>Dipolar signals are the results of the many different dipolar EPR spectroscopy experiments. They represent the data from which distance distributions can be infered.  DeerLab provides the tools for simulating dipolar signals originating from different experiments.</p>
 <p>To generate complete time-domain signals from a distance distribution and a background decay, use the function <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> (described above) and apply it to the distance distribution:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarkernel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">mod</span><span class="o">=</span><span class="n">lam</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">B</span><span class="p">)</span>   <span class="c1"># generate dipolar kernel</span>
@@ -416,55 +404,50 @@ For example, you can generate <code class="docutils literal notranslate"><span c
 </section>
 
 
-              </article>
+              </div>
               
-
               
-              <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="user_guide.html" title="previous page">
-      <i class="fas fa-angle-left"></i>
-      <div class="prev-next-info">
-          <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">User Guide</p>
-      </div>
-  </a>
-  <a class='right-next' id="next-link" href="getting_started.html" title="next page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Getting Started</p>
-  </div>
-  <i class="fas fa-angle-right"></i>
-  </a>
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="user_guide.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">User Guide</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="getting_started.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Getting Started</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-              </footer>
               
-          </div>
+          </main>
           
+
       </div>
     </div>
-
   
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
-
-<footer class="bd-footer"><div class="bd-footer__inner container">
-  
-  <div class="footer-item">
-    <p class="copyright">
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-  </div>
-  
-  <div class="footer-item">
-    <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
 </p>
+    </div>
+    
   </div>
-  
-</div>
 </footer>
   </body>
 </html>

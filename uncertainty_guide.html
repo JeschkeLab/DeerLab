@@ -4,19 +4,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Uncertainty Guide &#8212; DeerLab</title>
-<script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
-  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
-</script>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-
-
+    
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -24,7 +19,12 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
@@ -32,14 +32,12 @@
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
-
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -48,41 +46,34 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Examples" href="examples.html" />
     <link rel="prev" title="Fitting Guide" href="fitting_guide.html" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="docsearch:language" content="en">
-  </head>
-  
-  
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
-    <div class="bd-header-announcement container-fluid" id="banner">
-      
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
 
-    </div>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
     
-    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
   <div id="navbar-start">
     
     
-  
 
-
-<a class="navbar-brand logo" href="index.html">
-  
-  
-  
-  
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
-  
-  
+<a class="navbar-brand" href="index.html">
+  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
+
+
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="fas fa-bars"></span>
+    <span class="navbar-toggler-icon"></span>
   </button>
 
   
@@ -165,13 +156,12 @@
     </nav>
     
 
-    <div class="bd-container container-xl">
-      <div class="bd-container__inner row">
+    <div class="container-xl">
+      <div class="row">
           
-
-<!-- Only show if we have sidebars configured, else just a small margin  -->
-<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
-  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
@@ -193,21 +183,17 @@
 
   </div>
 </nav>
-  </div>
-  <div class="sidebar-end-items">
-  </div>
-</div>
-
-
+            </div>
+            
           
 
-
-<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
-  
-    
-    <div class="toc-item">
-      
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -271,27 +257,29 @@
 </ul>
 
 </nav>
-    </div>
-    
-    <div class="toc-item">
-      
-    </div>
-    
-  
-</div>
-
-
-          
-          
-          <div class="bd-content col-12 col-md-9 col-xl-7">
+              </div>
               
-              <article class="bd-article" role="main">
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
                 
   <section id="uncertainty-guide">
-<span id="uncertainty"></span><h1>Uncertainty Guide<a class="headerlink" href="#uncertainty-guide" title="Permalink to this heading">#</a></h1>
+<span id="uncertainty"></span><h1>Uncertainty Guide<a class="headerlink" href="#uncertainty-guide" title="Permalink to this headline">¶</a></h1>
 <p>The mere presence of noise in a dataset results in an uncertain estimation of model parameters. This uncertainty results in a distribution of model parameter values that could describe the dataset.</p>
 <section id="basics">
-<h2>Basics<a class="headerlink" href="#basics" title="Permalink to this heading">#</a></h2>
+<h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
 <p>Here is a short selection of terms used in DeerLab related to uncertainty:</p>
 <dl class="simple">
 <dt>Uncertainty distributions</dt><dd><p>The distribution of values for a given variable that quantifies the uncertainty in said variable’s estimate. It arises from the noise/errors in the datasets used to estimate that quantity. A very sharp distribution means less uncertainty in the found result, whereas a broad distribution will indicate more significant uncertainty.
@@ -304,7 +292,7 @@ Many statistical descriptors of the uncertainty distribution, such as the mean, 
 </dl>
 </section>
 <section id="uncertainty-quantification-methods">
-<h2>Uncertainty quantification methods<a class="headerlink" href="#uncertainty-quantification-methods" title="Permalink to this heading">#</a></h2>
+<h2>Uncertainty quantification methods<a class="headerlink" href="#uncertainty-quantification-methods" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>DeerLab provides three different methods for the estimation of uncertainty:</dt><dd><ul class="simple">
 <li><p>Covariance-based or asymptotic method (least accurate, fastest)</p></li>
@@ -315,14 +303,14 @@ Many statistical descriptors of the uncertainty distribution, such as the mean, 
 </dl>
 <p>The following section will provide the basic concepts related to these methods:</p>
 <section id="covariance-based-or-asymptotic-method">
-<h3>Covariance-based or asymptotic method<a class="headerlink" href="#covariance-based-or-asymptotic-method" title="Permalink to this heading">#</a></h3>
+<h3>Covariance-based or asymptotic method<a class="headerlink" href="#covariance-based-or-asymptotic-method" title="Permalink to this headline">¶</a></h3>
 <p>Covariance-based uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function in DeerLab will employ it by default unless another method is requested.</p>
 <p>This method estimates the uncertainty based on the curvature of the optimization surface. It assumes the uncertainty distributions of all parameters to be normally distributed, centered at the fitted values (i.e., the maximum-likelihood estimates), and their variance to be given by the curvature of the objective function. This curvature is determined via the Jacobian of the objective optimization function and the corresponding covariance matrix.</p>
 <p>In addition, the method does not consider the boundaries of the parameters, i.e., they are assumed to be unconstrained. However, in DeerLab, confidence intervals and uncertainty distributions are clipped at the boundaries, as is standard practice.</p>
 <p>All these assumptions and approximations can lead to a less accurate estimate of the uncertainty. It is common for covariance-based confidence intervals to be overestimated and broader than those returned by the other methods offered by DeerLab. Due to the assumption of a normal uncertainty distribution, covariance-based confidence intervals will always be symmetrical about the fitted values, which might not always be accurate. However, their cheap computation cost makes them ideal for immediate and preliminary estimations of uncertainty.</p>
 </section>
 <section id="profile-likelihood-method">
-<h3>Profile-likelihood method<a class="headerlink" href="#profile-likelihood-method" title="Permalink to this heading">#</a></h3>
+<h3>Profile-likelihood method<a class="headerlink" href="#profile-likelihood-method" title="Permalink to this headline">¶</a></h3>
 <p>Likelihood-based uncertainty estimated from the profile-likelihood method represents a significant improvement in accuracy with respect to the covariance-based estimates. This method is, however, limited to non-linear model parameters.</p>
 <p>This method estimates the uncertainty based on the profile-likelihood of a non-linear model parameter. The profile of a model parameter is computed by fitting the model to the data repeatedly while keeping that parameter fixed at different values. This results in an isometric profile of the likelihood or objective function. A likelihood uncertainty distribution or confidence intervals can be derived from this profile using a statistical criterion.</p>
 <p>The number of values at which the model is repeatedly fitted determines the accuracy of the profile estimation and, therefore, of the uncertainty estimation. For setting up scripts and quick tests, 20 repeats provide rough estimates, but at least 50 repeats are recommended for final results.</p>
@@ -330,17 +318,17 @@ Many statistical descriptors of the uncertainty distribution, such as the mean, 
 <p>This method is also critical for the identifiability analysis of model parameters.</p>
 </section>
 <section id="bootstrap-method">
-<h3>Bootstrap method<a class="headerlink" href="#bootstrap-method" title="Permalink to this heading">#</a></h3>
+<h3>Bootstrap method<a class="headerlink" href="#bootstrap-method" title="Permalink to this headline">¶</a></h3>
 <p>A gold standard to accurately estimate parameter uncertainty is bootstrapping. In this method, many additional synthetic datasets (called bootstrap samples) are generated from the given dataset(s), and the model is fitted against them in the same fashion as the original dataset(s). This means that the method samples the uncertainty when the same analysis is repeated for multiple noise realizations.
 When all bootstrap samples have been analyzed, a distribution of values is obtained for each fitted quantity, which is taken as the uncertainty distribution for that quantity.</p>
 <p>Due to the need to repeat the fit for multiple bootstrap samples, this method can take a long time to estimate the uncertainty. However, since this method does not rely on any assumptions, the bootstrap uncertainty estimation is considered some of the most accurate, provided that enough bootstrap samples are taken. While a reduced number of samples (50-100) can be used when testing workflows or new scripts, the minimum standard is to use at least about 1000 bootstrap samples for conclusive analysis.</p>
 </section>
 </section>
 <section id="selecting-the-uncertainty-method">
-<h2>Selecting the uncertainty method<a class="headerlink" href="#selecting-the-uncertainty-method" title="Permalink to this heading">#</a></h2>
+<h2>Selecting the uncertainty method<a class="headerlink" href="#selecting-the-uncertainty-method" title="Permalink to this headline">¶</a></h2>
 <p>The choice of uncertainty quantification method can be easily controlled via optional keyword arguments in the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function. The program will then internally employ the appropriate methods to report the requested uncertainty estimates.</p>
 <section id="covariance-based-method">
-<h3>Covariance-based method<a class="headerlink" href="#covariance-based-method" title="Permalink to this heading">#</a></h3>
+<h3>Covariance-based method<a class="headerlink" href="#covariance-based-method" title="Permalink to this headline">¶</a></h3>
 <p>The covariance-based method is the default method. Therefore, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function can be passed without any additional inputs:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data and quantify the uncertainty based on covariance</span>
 <span class="n">fitresult</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -349,7 +337,7 @@ When all bootstrap samples have been analyzed, a distribution of values is obtai
 <p>When using bootstrapping, the parameter fits <code class="docutils literal notranslate"><span class="pre">fit.&lt;parameter&gt;</span></code> will not correspond to the maximum-likelihood but to the median of the bootstrapped uncertainty quantification (a better and more accurate estimate).</p>
 </section>
 <section id="id1">
-<h3>Bootstrap method<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3>Bootstrap method<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The bootstrap method can be requested upon fitting by passing the keyword argument <code class="docutils literal notranslate"><span class="pre">bootstrap</span></code> to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function along with the number of bootstrap samples to be taken:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data and quantify the uncertainty via bootstrapping</span>
 <span class="n">fitresult</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
@@ -359,7 +347,7 @@ When all bootstrap samples have been analyzed, a distribution of values is obtai
 </section>
 </section>
 <section id="the-uqresult-object">
-<h2>The <code class="docutils literal notranslate"><span class="pre">UQResult</span></code> Object<a class="headerlink" href="#the-uqresult-object" title="Permalink to this heading">#</a></h2>
+<h2>The <code class="docutils literal notranslate"><span class="pre">UQResult</span></code> Object<a class="headerlink" href="#the-uqresult-object" title="Permalink to this headline">¶</a></h2>
 <p>The results uncertainty estimation in DeerLab is contained into <a class="reference internal" href="_autosummary/deerlab.UQResult.html#uqresult"><span class="std std-ref">deerlab.UQResult</span></a> (Uncertainty Quantification result) objects.
 These objects contain all the quantities of interest related to the uncertainty of one or several quantities.</p>
 <dl>
@@ -396,55 +384,50 @@ These objects contain all the quantities of interest related to the uncertainty 
 </section>
 
 
-              </article>
+              </div>
               
-
               
-              <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="fitting_guide.html" title="previous page">
-      <i class="fas fa-angle-left"></i>
-      <div class="prev-next-info">
-          <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">Fitting Guide</p>
-      </div>
-  </a>
-  <a class='right-next' id="next-link" href="examples.html" title="next page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Examples</p>
-  </div>
-  <i class="fas fa-angle-right"></i>
-  </a>
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="fitting_guide.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Fitting Guide</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="examples.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Examples</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-              </footer>
               
-          </div>
+          </main>
           
+
       </div>
     </div>
-
   
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
-
-<footer class="bd-footer"><div class="bd-footer__inner container">
-  
-  <div class="footer-item">
-    <p class="copyright">
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-  </div>
-  
-  <div class="footer-item">
-    <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
 </p>
+    </div>
+    
   </div>
-  
-</div>
 </footer>
   </body>
 </html>

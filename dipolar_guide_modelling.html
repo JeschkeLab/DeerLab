@@ -4,19 +4,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Modelling &#8212; DeerLab</title>
-<script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
-  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
-</script>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-
-
+    
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -24,7 +19,12 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
@@ -32,14 +32,12 @@
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
-
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -48,41 +46,34 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Fitting" href="dipolar_guide_fitting.html" />
     <link rel="prev" title="Getting Started" href="getting_started.html" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="docsearch:language" content="en">
-  </head>
-  
-  
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
-    <div class="bd-header-announcement container-fluid" id="banner">
-      
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
 
-    </div>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
     
-    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
   <div id="navbar-start">
     
     
-  
 
-
-<a class="navbar-brand logo" href="index.html">
-  
-  
-  
-  
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
-  
-  
+<a class="navbar-brand" href="index.html">
+  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
+
+
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="fas fa-bars"></span>
+    <span class="navbar-toggler-icon"></span>
   </button>
 
   
@@ -165,13 +156,12 @@
     </nav>
     
 
-    <div class="bd-container container-xl">
-      <div class="bd-container__inner row">
+    <div class="container-xl">
+      <div class="row">
           
-
-<!-- Only show if we have sidebars configured, else just a small margin  -->
-<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
-  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
@@ -203,21 +193,17 @@
 
   </div>
 </nav>
-  </div>
-  <div class="sidebar-end-items">
-  </div>
-</div>
-
-
+            </div>
+            
           
 
-
-<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
-  
-    
-    <div class="toc-item">
-      
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -273,24 +259,26 @@
 </ul>
 
 </nav>
-    </div>
-    
-    <div class="toc-item">
-      
-    </div>
-    
-  
-</div>
-
-
-          
-          
-          <div class="bd-content col-12 col-md-9 col-xl-7">
+              </div>
               
-              <article class="bd-article" role="main">
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
                 
   <section id="modelling">
-<span id="dipolar-modelling"></span><h1>Modelling<a class="headerlink" href="#modelling" title="Permalink to this heading">#</a></h1>
+<span id="dipolar-modelling"></span><h1>Modelling<a class="headerlink" href="#modelling" title="Permalink to this headline">¶</a></h1>
 <p>DeerLab provides a very flexible framework to model dipolar signals originating from any dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. The DeerLab function <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> already defines the core model structure based on dipolar pathways, with the following components to be chosen:</p>
 <ul class="simple">
 <li><p><strong>Distance range</strong>: Also called the interspin distance axis, is the range of distances where the distribution is defined.</p></li>
@@ -300,40 +288,40 @@
 </ul>
 <p>For each of these four components, a choice needs to be made:</p>
 <section id="choosing-a-distance-range">
-<h2>Choosing a distance range<a class="headerlink" href="#choosing-a-distance-range" title="Permalink to this heading">#</a></h2>
+<h2>Choosing a distance range<a class="headerlink" href="#choosing-a-distance-range" title="Permalink to this headline">¶</a></h2>
 <p>The distance range <img class="math" src="_images/math/bf48e98d26b709c8c8eaa360f29a24af4f970dea.svg" alt="[r_\mathrm{min},r_\mathrm{max}]"/> is an important choice, as any distance distribution is truncated to this range, i.e. <img class="math" src="_images/math/ecfd62962fa63c6a198cd1edc22d93f9c4b25557.svg" alt="P(r)=0"/> for <img class="math" src="_images/math/9d074f39685dfd4ad4a997182cad8c5b59d2f757.svg" alt="r&lt;r_\mathrm{min}"/> and <img class="math" src="_images/math/345a8142bf1c2b77df3c8e89043da88f539d8aed.svg" alt="r&gt;r_\mathrm{max}"/>. The lower limit of the distance range is determined by the bandwidth of the pulses, and also by the time increment. Typically, 1.5 nm is a reasonable choice. The upper limit depends on the distances in your sample. The number of points in <code class="docutils literal notranslate"><span class="pre">r</span></code> is usually set to a certain resolution (typically 0.01-0.05nm). Such a distance-axis is usually defined as <code class="docutils literal notranslate"><span class="pre">r</span></code> is most easily defined using the <code class="docutils literal notranslate"><span class="pre">linspace</span></code> function from NumPy:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">6.5</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>  <span class="c1"># define distance range from 1.5nm to 6.5nm with a resolution of 0.05nm</span>
 </pre></div>
 </div>
 </section>
 <section id="choosing-a-distribution-model">
-<h2>Choosing a distribution model<a class="headerlink" href="#choosing-a-distribution-model" title="Permalink to this heading">#</a></h2>
+<h2>Choosing a distribution model<a class="headerlink" href="#choosing-a-distribution-model" title="Permalink to this headline">¶</a></h2>
 <p>A non-parametric distribution is specified by setting the choice of <code class="docutils literal notranslate"><span class="pre">Pmodel</span></code> keyword in <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>. In a non-parametric distribution, each element <img class="math" src="_images/math/45015180c6e1c4ab98c2cf85063a1f4c22e344c0.svg" alt="P_i"/> of the distribution is a linear parameter. Non-parametric distributions are obtained via methods such as Tikhonov regularization. If there are reasons to believe that the distance distribution has a specific shape (e.g. Gaussian, Rice, random-coil, etc.), or if there is very little information in the data, use a parametric distance distribution model from the <a class="reference internal" href="modelsref.html#modelsref-dd"><span class="std std-ref">list of available models</span></a>.</p>
 </section>
 <section id="choose-a-background-model">
-<h2>Choose a background model<a class="headerlink" href="#choose-a-background-model" title="Permalink to this heading">#</a></h2>
+<h2>Choose a background model<a class="headerlink" href="#choose-a-background-model" title="Permalink to this headline">¶</a></h2>
 <p>Typically, a background model of a homogenous 3D distribution of spins is appropriate. The associated parametric model function is <a class="reference internal" href="_autosummary/deerlab.bg_hom3d.html#bg-hom3d"><span class="std std-ref">deerlab.bg_hom3d</span></a>. In some cases, depending on the properties of your sample, other background models might be needed, such as backgrounds arising from distributions of spins in fractal dimensions or when  accounting for volume-exclusion effects. In such cases, use the associated parametric background models from the <a class="reference internal" href="modelsref.html#modelsref-bg"><span class="std std-ref">list of available models</span></a>. If there is no inter-molecular background in your sample, or it is negligible, set the background model to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </section>
 <section id="choosing-the-number-of-dipolar-pathways">
-<h2>Choosing the number of dipolar pathways<a class="headerlink" href="#choosing-the-number-of-dipolar-pathways" title="Permalink to this heading">#</a></h2>
+<h2>Choosing the number of dipolar pathways<a class="headerlink" href="#choosing-the-number-of-dipolar-pathways" title="Permalink to this headline">¶</a></h2>
 <p>This decision should be based on the experiment you used to acquire the data and the type of pulses you used. In the case of 4-pulse DEER data, when analyzing a standard 4-pulse DEER signal without 2+1 component at the end a single pathway suffices. If the 2+1 component (appearing at the right edge of the time trace) is present, then it should be fitted as well, including its counterpart appearing at negative times, making a total of three dipolar pathways. Experiments such as 5-pulse DEER typically require at least two dipolar pathways to be properly modelled.</p>
 </section>
 <section id="using-experimental-pulse-delays">
-<h2>Using experimental pulse delays<a class="headerlink" href="#using-experimental-pulse-delays" title="Permalink to this heading">#</a></h2>
+<h2>Using experimental pulse delays<a class="headerlink" href="#using-experimental-pulse-delays" title="Permalink to this headline">¶</a></h2>
 <p>The dipolar pathways of a newly constructed dipolar model are initialized at arbitrary refocusing times and fully unconstrained. The refocusing times can be strongly constrained by knowing the experimental pulse sequence delays used to acquire the data. If the experiment used to acquire the data is known, as well as its pulse delays, then it is strongly recommended do so.</p>
-<p>DeerLab provides a selection of experimental information generators for some of the most widely employed experimental methods (see the of <a class="reference internal" href="modelsref.html#modelsref-ex"><span class="std std-ref">list of available experiments</span></a>). These are functions that take the pulse sequence delays, and return an <code class="docutils literal notranslate"><span class="pre">ExperimentInfo</span></code> object. This can be passed to the <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> function via the <code class="docutils literal notranslate"><span class="pre">experiment</span></code> keyword argument, to incorporate the experiment information on the model and constrain some of its parameters.</p>
-<p>When using experimental time delays and the <code class="docutils literal notranslate"><span class="pre">experiment</span></code> argument, the model assumes that the experimental time axis <code class="docutils literal notranslate"><span class="pre">t</span></code> has its zero time at the beginning of the interpulse delay (see the illustrations of the individual experiment models for details). However, experimentally it is common not to record the first few hundred nanoseconds of signal. This results in a so-called deadtime, which many commercial spectrometers (such as Bruker) do not account for when storing the time-vector. It is very important to account for that deadtime in the model via</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deadtime</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># Experimental deadtime of 400ns, in μs</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">deadtime</span> <span class="c1"># Shift the time axis to account for the deadtime</span>
+<p>DeerLab provides a selection of experimental information generators for some of the most widely employed experimental methods (see the of <a class="reference internal" href="modelsref.html#modelsref-ex"><span class="std std-ref">list of available experiments</span></a>). These are functions that take the pulse sequence delays, and return an <code class="docutils literal notranslate"><span class="pre">ExperimentInfo</span></code> object. This can be passed to the <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> function via the <code class="docutils literal notranslate"><span class="pre">experiment</span></code> keyword argument, to incorporate the experiment information on the model and constrain some of its parameters. These experimental information generators can also take information on the duration of the longest microwave pulses to more accurately constraint the parameters when using long pulses such as in frequency-swept or shaped microwave pulses.</p>
+<p>When using experimental time delays and the <code class="docutils literal notranslate"><span class="pre">experiment</span></code> argument, the model assumes that the experimental time axis <code class="docutils literal notranslate"><span class="pre">t</span></code> has its zero time at the beginning of the interpulse delay (see the illustrations of the individual experiment models for details). However, experimentally it is common not to record the first few hundred nanoseconds of signal. This results in a so-called start time (often also referred to as a deadtime), which many commercial spectrometers (such as Bruker) do not account for when storing the time-vector. It is very important to account for that time shift in the model via</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="mf">0.4</span>   <span class="c1"># Experimental start time of 400ns, in μs</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t0</span> <span class="c1"># Shift the time axis to account for the start time</span>
 </pre></div>
 </div>
-<p>If the time vector <code class="docutils literal notranslate"><span class="pre">t</span></code> does not have any deadtime, this step can be skipped. Otherwise, an incorrectly defined time vector will results in wrong results.</p>
+<p>If the time vector <code class="docutils literal notranslate"><span class="pre">t</span></code> does not have any time shift, this step can be skipped. Otherwise, an incorrectly defined time vector will results in wrong results.</p>
 </section>
 <section id="constructing-the-dipolar-model">
-<h2>Constructing the dipolar model<a class="headerlink" href="#constructing-the-dipolar-model" title="Permalink to this heading">#</a></h2>
+<h2>Constructing the dipolar model<a class="headerlink" href="#constructing-the-dipolar-model" title="Permalink to this headline">¶</a></h2>
 <p>Once all the decisions above have been made, the dipolar model can be constructed using the <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> function. The models that have an associated parametric function, e.g. <code class="docutils literal notranslate"><span class="pre">bg_hom3d</span></code>, must be passed directly as inputs to <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code>. In Python, functions can be passed as inputs to other functions.  See the <a class="reference internal" href="_autosummary/deerlab.dipolarmodel.html#dipolarmodel"><span class="std std-ref">details</span></a> on <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> for more information.</p>
 <section id="example-single-pathway-4-pulse-deer-model">
-<h3>Example: Single-pathway 4-pulse DEER model<a class="headerlink" href="#example-single-pathway-4-pulse-deer-model" title="Permalink to this heading">#</a></h3>
+<h3>Example: Single-pathway 4-pulse DEER model<a class="headerlink" href="#example-single-pathway-4-pulse-deer-model" title="Permalink to this headline">¶</a></h3>
 <p>For example, a 4pDEER signal with non-parametric distance distribution and homogenous 3D background can be constructed using</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">expinfo</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">ex_4pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">tau2</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">Pmodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Bmodel</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">,</span> <span class="n">experiment</span><span class="o">=</span><span class="n">expinfo</span><span class="p">)</span>
@@ -346,7 +334,7 @@
 </div>
 </section>
 <section id="example-two-pathway-5-pulse-deer-model">
-<h3>Example: Two-pathway 5-pulse DEER model<a class="headerlink" href="#example-two-pathway-5-pulse-deer-model" title="Permalink to this heading">#</a></h3>
+<h3>Example: Two-pathway 5-pulse DEER model<a class="headerlink" href="#example-two-pathway-5-pulse-deer-model" title="Permalink to this headline">¶</a></h3>
 <p>For example, a 5pDEER signal with non-parametric distance distribution and homogenous 3D background can be constructed using</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">expinfo</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">ex_rev5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">tau2</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">tau3</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
 <span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">Pmodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Bmodel</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">,</span> <span class="n">experiment</span><span class="o">=</span><span class="n">expinfo</span><span class="p">)</span>
@@ -355,21 +343,21 @@
 </section>
 </section>
 <section id="manipulating-the-model">
-<h2>Manipulating the model<a class="headerlink" href="#manipulating-the-model" title="Permalink to this heading">#</a></h2>
+<h2>Manipulating the model<a class="headerlink" href="#manipulating-the-model" title="Permalink to this headline">¶</a></h2>
 <p>A full summary of the constructed model(s) can be inspected by printing the model object</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">)</span>
 <span class="go">Description: Dipolar signal model</span>
 <span class="go">Signature: (mod, reftime, conc, P)</span>
 <span class="go">Constants: []</span>
 <span class="go">Parameter Table:</span>
-<span class="go">========= ======= ======= ======== ======== ======= ======================================</span>
-<span class="go"> Name      Lower   Upper    Type    Frozen   Units   Description</span>
-<span class="go">========= ======= ======= ======== ======== ======= ======================================</span>
-<span class="go"> mod           0       1   nonlin     No             Modulation depth</span>
-<span class="go"> reftime     0.4     0.6   nonlin     No      μs     Refocusing time</span>
-<span class="go"> conc       0.01   5e+03   nonlin     No      μM     Spin concentration</span>
-<span class="go"> P             0     inf   linear     No     None    Non-parametric distance distribution</span>
-<span class="go">========= ======= ======= ======== ======== ======= ======================================</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== ======================================</span>
+<span class="go">Name      Lower   Start   Upper    Type    Frozen   Unit   Description</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== ======================================</span>
+<span class="go">mod           0    0.01       1   nonlin     No            Modulation depth</span>
+<span class="go">reftime    -inf       0     inf   nonlin     No      μs    Refocusing time</span>
+<span class="go">conc       0.01      50   5e+03   nonlin     No      μM    Spin concentration</span>
+<span class="go">P             0       0     inf   linear     No     nm⁻¹   Non-parametric distance distribution</span>
+<span class="go">========= ======= ======= ======= ======== ======== ====== ======================================</span>
 </pre></div>
 </div>
 <p>From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the <a class="reference internal" href="modelling_guide.html#modelling-guide"><span class="std std-ref">modelling guide</span></a> for more details and instructions on model manipulation.</p>
@@ -377,55 +365,50 @@
 </section>
 
 
-              </article>
+              </div>
               
-
               
-              <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="getting_started.html" title="previous page">
-      <i class="fas fa-angle-left"></i>
-      <div class="prev-next-info">
-          <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">Getting Started</p>
-      </div>
-  </a>
-  <a class='right-next' id="next-link" href="dipolar_guide_fitting.html" title="next page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Fitting</p>
-  </div>
-  <i class="fas fa-angle-right"></i>
-  </a>
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="getting_started.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Getting Started</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="dipolar_guide_fitting.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Fitting</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-              </footer>
               
-          </div>
+          </main>
           
+
       </div>
     </div>
-
   
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
-
-<footer class="bd-footer"><div class="bd-footer__inner container">
-  
-  <div class="footer-item">
-    <p class="copyright">
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-  </div>
-  
-  <div class="footer-item">
-    <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
 </p>
+    </div>
+    
   </div>
-  
-</div>
 </footer>
   </body>
 </html>

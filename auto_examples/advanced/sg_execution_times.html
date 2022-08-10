@@ -4,19 +4,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Computation times &#8212; DeerLab</title>
-<script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
-  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
-</script>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-
-
+    
   <link rel="stylesheet"
     href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -24,7 +19,12 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
@@ -32,55 +32,46 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
-
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="docsearch:language" content="en">
-  </head>
-  
-  
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
-    <div class="bd-header-announcement container-fluid" id="banner">
-      
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
 
-    </div>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
     
-    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
   <div id="navbar-start">
     
     
-  
 
-
-<a class="navbar-brand logo" href="../../index.html">
-  
-  
-  
-  
-    <img src="../../_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
-    <img src="../../_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
-  
-  
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
+
+
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="fas fa-bars"></span>
+    <span class="navbar-toggler-icon"></span>
   </button>
 
   
@@ -163,80 +154,86 @@
     </nav>
     
 
-    <div class="bd-container container-xl">
-      <div class="bd-container__inner row">
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
           
 
-<div class="sidebar-primary col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
-
-
           
-
-
-<div class="bd-sidebar-secondary d-none d-md-block col-md-2 bd-toc">
-  
-    
-    <div class="toc-item">
-      
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
 
 <nav id="bd-toc-nav">
     
 </nav>
-    </div>
-    
-    <div class="toc-item">
-      
-    </div>
-    
-  
-</div>
-
-
-          
-          
-          <div class="bd-content col-12 col-md-9 col-xl-8">
+              </div>
               
-              <article class="bd-article" role="main">
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
                 
   <section id="computation-times">
-<span id="sphx-glr-auto-examples-advanced-sg-execution-times"></span><h1>Computation times<a class="headerlink" href="#computation-times" title="Permalink to this heading">#</a></h1>
-<p><strong>10:37.888</strong> total execution time for <strong>auto_examples_advanced</strong> files:</p>
+<span id="sphx-glr-auto-examples-advanced-sg-execution-times"></span><h1>Computation times<a class="headerlink" href="#computation-times" title="Permalink to this headline">¶</a></h1>
+<p><strong>07:06.910</strong> total execution time for <strong>auto_examples_advanced</strong> files:</p>
 <table class="table">
+<colgroup>
+<col style="width: 86%" />
+<col style="width: 8%" />
+<col style="width: 6%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="ex_pseudotitration_parameter_free.html#sphx-glr-auto-examples-advanced-ex-pseudotitration-parameter-free-py"><span class="std std-ref">Analyzing pseudo-titration (dose-response) curves with non-parametric distributions</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_pseudotitration_parameter_free.py</span></code>)</p></td>
-<td><p>06:41.608</p></td>
+<td><p>04:38.906</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="ex_droplets_model.html#sphx-glr-auto-examples-advanced-ex-droplets-model-py"><span class="std std-ref">Global analysis of 5-pulse DEER on a liquid-droplet protein system</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_droplets_model.py</span></code>)</p></td>
-<td><p>01:08.231</p></td>
+<td><p>00:40.722</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ex_multigauss_fitting_4pdeer.html#sphx-glr-auto-examples-advanced-ex-multigauss-fitting-4pdeer-py"><span class="std std-ref">Multi-Gaussian analysis of a dipolar signal</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_multigauss_fitting_4pdeer.py</span></code>)</p></td>
-<td><p>00:57.589</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ex_comparing_uncertainties.html#sphx-glr-auto-examples-advanced-ex-comparing-uncertainties-py"><span class="std std-ref">Comparing confidence intervals for regularization results</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_comparing_uncertainties.py</span></code>)</p></td>
+<td><p>00:33.345</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ex_comparing_uncertainties.html#sphx-glr-auto-examples-advanced-ex-comparing-uncertainties-py"><span class="std std-ref">Comparing confidence intervals for regularization results</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_comparing_uncertainties.py</span></code>)</p></td>
-<td><p>00:43.916</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ex_multigauss_fitting_4pdeer.html#sphx-glr-auto-examples-advanced-ex-multigauss-fitting-4pdeer-py"><span class="std std-ref">Multi-Gaussian analysis of a dipolar signal</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_multigauss_fitting_4pdeer.py</span></code>)</p></td>
+<td><p>00:27.729</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="ex_dipolarpathways_selection.html#sphx-glr-auto-examples-advanced-ex-dipolarpathways-selection-py"><span class="std std-ref">Dipolar pathways model selection</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_dipolarpathways_selection.py</span></code>)</p></td>
-<td><p>00:31.222</p></td>
+<td><p>00:24.179</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="ex_global_twostates_parametric.html#sphx-glr-auto-examples-advanced-ex-global-twostates-parametric-py"><span class="std std-ref">Global fitting of a two-state model to a series of DEER traces</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_global_twostates_parametric.py</span></code>)</p></td>
-<td><p>00:17.826</p></td>
+<td><p>00:11.265</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="ex_extracting_gauss_constraints.html#sphx-glr-auto-examples-advanced-ex-extracting-gauss-constraints-py"><span class="std std-ref">Fitting Gaussians to a non-parametric distance distribution fit</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_extracting_gauss_constraints.py</span></code>)</p></td>
-<td><p>00:07.069</p></td>
+<td><p>00:05.504</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="ex_forcefield_fit.html#sphx-glr-auto-examples-advanced-ex-forcefield-fit-py"><span class="std std-ref">Fit a polynomial force field to a dipolar signal</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_forcefield_fit.py</span></code>)</p></td>
-<td><p>00:06.261</p></td>
+<td><p>00:03.896</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="ex_simulating_orisel.html#sphx-glr-auto-examples-advanced-ex-simulating-orisel-py"><span class="std std-ref">Simulating orientation selection effects in dipolar signals</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_simulating_orisel.py</span></code>)</p></td>
-<td><p>00:04.166</p></td>
+<td><p>00:01.363</p></td>
 <td><p>0.0 MB</p></td>
 </tr>
 </tbody>
@@ -244,41 +241,36 @@
 </section>
 
 
-              </article>
+              </div>
               
-
               
-              <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
+              <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-              </footer>
               
-          </div>
+          </main>
           
+
       </div>
     </div>
-
   
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
-
-<footer class="bd-footer"><div class="bd-footer__inner container">
-  
-  <div class="footer-item">
-    <p class="copyright">
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-  </div>
-  
-  <div class="footer-item">
-    <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
 </p>
+    </div>
+    
   </div>
-  
-</div>
 </footer>
   </body>
 </html>

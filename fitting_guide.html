@@ -4,19 +4,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Fitting Guide &#8212; DeerLab</title>
-<script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
-  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
-</script>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
-
-
+    
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -24,7 +19,12 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
@@ -32,14 +32,12 @@
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
-
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -48,41 +46,34 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Uncertainty Guide" href="uncertainty_guide.html" />
     <link rel="prev" title="Modeling Guide" href="modelling_guide.html" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="docsearch:language" content="en">
-  </head>
-  
-  
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="light">
-    <div class="bd-header-announcement container-fluid" id="banner">
-      
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
 
-    </div>
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
     
-    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
   <div id="navbar-start">
     
     
-  
 
-
-<a class="navbar-brand logo" href="index.html">
-  
-  
-  
-  
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-light" alt="Logo image">
-    <img src="_static/logo_docs_paths.svg" class="logo__image only-dark" alt="Logo image">
-  
-  
+<a class="navbar-brand" href="index.html">
+  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
 </a>
+
+
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="fas fa-bars"></span>
+    <span class="navbar-toggler-icon"></span>
   </button>
 
   
@@ -165,13 +156,12 @@
     </nav>
     
 
-    <div class="bd-container container-xl">
-      <div class="bd-container__inner row">
+    <div class="container-xl">
+      <div class="row">
           
-
-<!-- Only show if we have sidebars configured, else just a small margin  -->
-<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
-  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
@@ -193,21 +183,17 @@
 
   </div>
 </nav>
-  </div>
-  <div class="sidebar-end-items">
-  </div>
-</div>
-
-
+            </div>
+            
           
 
-
-<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
-  
-    
-    <div class="toc-item">
-      
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -311,24 +297,26 @@
 </ul>
 
 </nav>
-    </div>
-    
-    <div class="toc-item">
-      
-    </div>
-    
-  
-</div>
-
-
-          
-          
-          <div class="bd-content col-12 col-md-9 col-xl-7">
+              </div>
               
-              <article class="bd-article" role="main">
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
                 
   <section id="fitting-guide">
-<span id="id1"></span><h1>Fitting Guide<a class="headerlink" href="#fitting-guide" title="Permalink to this heading">#</a></h1>
+<span id="id1"></span><h1>Fitting Guide<a class="headerlink" href="#fitting-guide" title="Permalink to this headline">¶</a></h1>
 <p>This guide will focus on the last step of the DeerLab workflow, i.e., the fitting. Due to the separation of non-linear parameters <img class="math" src="_images/math/8e9f8e664891f997469cb4ad9e5439e81d0660dc.svg" alt="\theta_\mathrm{nonlin}"/> and linear parameters <img class="math" src="_images/math/68a93297867e31caa33516d8d3534ab818c7e905.svg" alt="\theta_\mathrm{lin}"/> in the model structure of DeerLab, the program can use penalized separable non-linear least-squares to fit the model to the data. The fitting procedure aims to find the following optimization problem with the objective function</p>
 <div class="math">
 <p><img src="_images/math/0a669195c4e733f32c693cf9fd4a7e8dcebd67e4.svg" alt="\min_{\theta_\mathrm{nonlin}} \left\{ \Vert y - A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}(\theta_\mathrm{nonlin}) \Vert^2  + \sum_i \gamma_i\mathcal{P}_i(\theta_\mathrm{nonlin},\theta_\mathrm{lin}) \right\} \\"/></p>
@@ -340,7 +328,7 @@
 <p><img src="_images/math/c399199c56f71b63c379203f10eba352c504b0ff.svg" alt="\theta_\mathrm{lb} \leq \theta_\mathrm{nonlin} \leq \theta_\mathrm{ub} \quad\quad \theta_\mathrm{lbl} \leq \theta_\mathrm{lin} \leq \theta_\mathrm{ubl}"/></p>
 </div><p>The term <img class="math" src="_images/math/9fa5636af77a9ff7c61943c7cddf370d0c09b274.svg" alt="A(\theta_\mathrm{nonlin})"/> is the non-linear function of the model. A regularization penalty <img class="math" src="_images/math/a2ea4e28b134adf895ee4d079b65868e160eb647.svg" alt="\mathcal{R}(\theta_\mathrm{lin})"/> weighted by a regularization weight or parameter <img class="math" src="_images/math/f36a3f8dbda6bea20079ecea63562c7932d00b1b.svg" alt="\alpha"/>, and multiple additional arbitrary penalty terms <img class="math" src="_images/math/c46422b33964608af7cf63390b465616f54031e9.svg" alt="\mathcal{P}_i(\theta_\mathrm{nonlin},\theta_\mathrm{lin})"/> each weighted by its own penalty weight <img class="math" src="_images/math/1befffcd1b819f2e5057daadfdb4d960e52b5f49.svg" alt="\gamma_i"/>, can be added to this objective function if wanted</p>
 <section id="the-fit-function">
-<h2>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> function<a class="headerlink" href="#the-fit-function" title="Permalink to this heading">#</a></h2>
+<h2>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> function<a class="headerlink" href="#the-fit-function" title="Permalink to this headline">¶</a></h2>
 <p>DeerLab provides a centralized fitting function called <code class="docutils literal notranslate"><span class="pre">fit</span></code>. Its syntax is generally straightforward, taking a dataset and a model to be fitted to it. The function will always return a <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object containing all of the fitted quantities, including uncertainty estimates, as well as other quantities of interest. Assume that we have some dataset <code class="docutils literal notranslate"><span class="pre">y</span></code> described by some model called <code class="docutils literal notranslate"><span class="pre">model</span></code>. The fit can be executed as follows</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -353,7 +341,7 @@
 </div>
 <p>However, the list must be ordered according to the model parameter ordering. Therefore, we recommend specifying the start values on the model (as shown <a class="reference internal" href="modelling_guide.html#modelling-modifying-parameters"><span class="std std-ref">here</span></a>).</p>
 <section id="specifying-the-noise-level-s">
-<h3>Specifying the noise level(s)<a class="headerlink" href="#specifying-the-noise-level-s" title="Permalink to this heading">#</a></h3>
+<h3>Specifying the noise level(s)<a class="headerlink" href="#specifying-the-noise-level-s" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> function (and other functions in the pipeline) employ the noise level of the dataset(s), i.e. the standard deviation of the white Gaussian noise superimposed on the data, at various stages of the model optimization and uncertainty estimation. Therefore, the analysis profits strongly from accurate estimates of the noise level(s). These can be specified via the <code class="docutils literal notranslate"><span class="pre">noiselvl</span></code> keyword argument of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">yclean</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="n">whitegaussnoise</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
 <span class="c1"># Fit the model (with two constants) to the data</span>
@@ -363,7 +351,7 @@
 <p>IF not specified, the program will estimate it from the dataset(s) directly using the <a class="reference internal" href="_autosummary/deerlab.noiselevel.html#noiselevel"><span class="std std-ref">deerlab.noiselevel</span></a> function. While, these estimates can be relatively accurate, it is better to specify the noise level if a trusted estimate is known.</p>
 </section>
 <section id="fitting-models-with-constants">
-<h3>Fitting models with constants<a class="headerlink" href="#fitting-models-with-constants" title="Permalink to this heading">#</a></h3>
+<h3>Fitting models with constants<a class="headerlink" href="#fitting-models-with-constants" title="Permalink to this headline">¶</a></h3>
 <p>Models with constants (see <a class="reference internal" href="modelling_guide.html#modelling-constants"><span class="std std-ref">here</span></a> for details) can be fitted as shown above, with the added requirement that the constants must be specified as well when calling <code class="docutils literal notranslate"><span class="pre">fit</span></code>. Constants can be specified after the data as positional arguments</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model (with two constants) to the data</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">constant1</span><span class="p">,</span> <span class="n">constant2</span><span class="p">)</span>
@@ -371,7 +359,7 @@
 </div>
 </section>
 <section id="fitting-multi-dataset-models">
-<h3>Fitting multi-dataset models<a class="headerlink" href="#fitting-multi-dataset-models" title="Permalink to this heading">#</a></h3>
+<h3>Fitting multi-dataset models<a class="headerlink" href="#fitting-multi-dataset-models" title="Permalink to this headline">¶</a></h3>
 <p>Models merged using the <code class="docutils literal notranslate"><span class="pre">merge</span></code> function (see <a class="reference internal" href="modelling_guide.html#modelling-merging"><span class="std std-ref">here</span></a> for details) can describe multiple datasets with a single model object and a common parameter set. To fit such a merged model to multiple datasets, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function can be used as above by passing a list of datasets <code class="docutils literal notranslate"><span class="pre">[y1,y2,...,yN]</span></code> instead of a single dataset</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to multiple datasets</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="n">y1</span><span class="p">,</span><span class="n">y2</span><span class="p">,</span><span class="n">y3</span><span class="p">]</span>
@@ -381,7 +369,7 @@
 </section>
 </section>
 <section id="adding-regularization">
-<h2>Adding regularization<a class="headerlink" href="#adding-regularization" title="Permalink to this heading">#</a></h2>
+<h2>Adding regularization<a class="headerlink" href="#adding-regularization" title="Permalink to this headline">¶</a></h2>
 <p>DeerLab includes the possibility to impose (Tikhonov) regularization based on the smoothness of the linear parameters in the model. By default, DeerLab will automatically check the condition number of the matrix returned by the non-linear part of the model and determine whether it is well-conditioned or not. If the matrix is ill-conditioned, the program will automatically enforce regularization upon the linear parameters.
 Regularization can be manually be switched on/off via the <code class="docutils literal notranslate"><span class="pre">reg</span></code> param</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enforce regularization</span>
@@ -392,7 +380,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </div>
 <p>The regularization penalty weight (a.k.a regularization parameter) is optimally selected according to a given criterion (by default, the Akaike information criterion, AIC). There are different ways to control this process:</p>
 <section id="changing-the-selection-functional">
-<h3>Changing the selection functional<a class="headerlink" href="#changing-the-selection-functional" title="Permalink to this heading">#</a></h3>
+<h3>Changing the selection functional<a class="headerlink" href="#changing-the-selection-functional" title="Permalink to this headline">¶</a></h3>
 <p>The regularization functional can be changed from the AIC to any built-in functionals via the <img class="math" src="_images/math/43e847293a04eb1bd90bec393f433291bae5d9db.svg" alt="regparam"/> keyword argument. Changing it to another functional will only change how the regularization parameter is selected, but it still will be optimized. For example, to switch the selection functional from the AIC to generalized cross-validation (GCV)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data, using the GCV criterion</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;gcv&#39;</span><span class="p">)</span>
@@ -401,7 +389,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 <p>A list of the available selection functionals and their string names are given in the reference for <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 </section>
 <section id="changing-the-optimization-range">
-<h3>Changing the optimization range<a class="headerlink" href="#changing-the-optimization-range" title="Permalink to this heading">#</a></h3>
+<h3>Changing the optimization range<a class="headerlink" href="#changing-the-optimization-range" title="Permalink to this headline">¶</a></h3>
 <p>When using selection functionals to optimize the regularization weights, a Brent-like algorithm searches the value that minimizes the given selection functional within a specific range. This range can be manually specified via the <code class="docutils literal notranslate"><span class="pre">regparamrange</span></code> keyword argument. It must be passed as a two-element list <code class="docutils literal notranslate"><span class="pre">[regparam_lb,</span> <span class="pre">regparam_ub]</span></code> with the search boundaries</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data, with a constrained regparam search range</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">regparamrange</span><span class="o">=</span><span class="p">[</span><span class="mf">1e-5</span><span class="p">,</span><span class="mf">1e-1</span><span class="p">])</span>
@@ -410,7 +398,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 <p>This can be useful for avoiding unwanted local minima of the selection functional causing potential under- or oversmoothing.</p>
 </section>
 <section id="manual-specification">
-<h3>Manual specification<a class="headerlink" href="#manual-specification" title="Permalink to this heading">#</a></h3>
+<h3>Manual specification<a class="headerlink" href="#manual-specification" title="Permalink to this headline">¶</a></h3>
 <p>The value of the regularization penalty weight can also be manually specified and fixed to a value for the whole optimization. This can be done via the aforementioned <code class="docutils literal notranslate"><span class="pre">regparam</span></code> keyword argument by specifying a value instead of a selection functional</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data, using a fixed regularization weight</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
@@ -419,7 +407,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </section>
 </section>
 <section id="adding-penalties">
-<h2>Adding penalties<a class="headerlink" href="#adding-penalties" title="Permalink to this heading">#</a></h2>
+<h2>Adding penalties<a class="headerlink" href="#adding-penalties" title="Permalink to this headline">¶</a></h2>
 <p>DeerLab provides a flexible system for defining and adding penalties to the objective function of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function in the form of the <code class="docutils literal notranslate"><span class="pre">Penalty</span></code> objects, which can be passed to the <code class="docutils literal notranslate"><span class="pre">penalties</span></code> keyword argument of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data with an additional penalty</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span> <span class="n">penalties</span><span class="o">=</span><span class="n">penalty</span><span class="p">)</span>
@@ -436,7 +424,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </dd>
 </dl>
 <section id="constructing-a-penalty">
-<h3>Constructing a penalty<a class="headerlink" href="#constructing-a-penalty" title="Permalink to this heading">#</a></h3>
+<h3>Constructing a penalty<a class="headerlink" href="#constructing-a-penalty" title="Permalink to this headline">¶</a></h3>
 <p>Penalties can be constructed in a similar way to <a class="reference internal" href="modelling_guide.html#modelling-construction"><span class="std std-ref">how models are constructed</span></a>. Since penalties depend on a model’s parameters, and by extension, are specific for a given model, it is recommended to construct penalties after the model has been entirely constructed.</p>
 <p>The first step is to construct the penalty function. First, it must be a callable function taking a series of positional arguments. The names of the arguments must match the names of the model parameters that the penalty depends on. Second, the function must return a vector, taking the following into account:</p>
 <ul class="simple">
@@ -468,7 +456,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </div>
 </section>
 <section id="example-gaussian-smoothness-penalty">
-<h3>Example: Gaussian smoothness penalty<a class="headerlink" href="#example-gaussian-smoothness-penalty" title="Permalink to this heading">#</a></h3>
+<h3>Example: Gaussian smoothness penalty<a class="headerlink" href="#example-gaussian-smoothness-penalty" title="Permalink to this headline">¶</a></h3>
 <p>In this example, let us construct a penalty that imposes the smoothness of a Gaussian function. As a model, we will take the <code class="docutils literal notranslate"><span class="pre">gauss</span></code> model defined in <a class="reference internal" href="modelling_guide.html#modelling-example1"><span class="std std-ref">another example</span></a>. The function has to penalize roughness for imposing smoothness, which can be quantified by a discrete differential operator of second order (which we can generate using DeerLab’s <code class="docutils literal notranslate"><span class="pre">regoperator</span></code>). As a selection criterion, we will use the AIC functional.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Differential operator of second order</span>
 <span class="n">L</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">regoperator</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
@@ -486,7 +474,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </div>
 </section>
 <section id="manually-setting-the-penalty-weight">
-<h3>Manually setting the penalty weight<a class="headerlink" href="#manually-setting-the-penalty-weight" title="Permalink to this heading">#</a></h3>
+<h3>Manually setting the penalty weight<a class="headerlink" href="#manually-setting-the-penalty-weight" title="Permalink to this headline">¶</a></h3>
 <p>By default, the program will use the specified selection functional to optimize the value of the penalty weights in an outer optimization approach. The search range of this optimization routine is given by the boundaries <code class="docutils literal notranslate"><span class="pre">[weight.lb,</span> <span class="pre">weight.ub]</span></code> of the penalty weight. However, the penalty weight can be fixed to a specific value using the <code class="docutils literal notranslate"><span class="pre">freeze</span></code> method of the <code class="docutils literal notranslate"><span class="pre">weight</span></code> attribute</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use a fixed penalty weight</span>
 <span class="n">penaltyobj</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
@@ -498,7 +486,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </section>
 </section>
 <section id="examining-the-results">
-<span id="fitting-fitresult"></span><h2>Examining the results<a class="headerlink" href="#examining-the-results" title="Permalink to this heading">#</a></h2>
+<span id="fitting-fitresult"></span><h2>Examining the results<a class="headerlink" href="#examining-the-results" title="Permalink to this headline">¶</a></h2>
 <p>A summary of the fit can be accessed by printing the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object as returned by the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;print(result)</span>
 <span class="go">Goodness-of-fit:</span>
@@ -518,7 +506,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </pre></div>
 </div>
 <section id="the-fitresult-object">
-<h3>The <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object<a class="headerlink" href="#the-fitresult-object" title="Permalink to this heading">#</a></h3>
+<h3>The <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object<a class="headerlink" href="#the-fitresult-object" title="Permalink to this headline">¶</a></h3>
 <p>Once the fitting routine is finished, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function will return a <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object containing multiple quantities of interest.</p>
 <dl class="simple">
 <dt>Estimated parameters (<code class="docutils literal notranslate"><span class="pre">FitResult.&lt;param&gt;</span></code>)</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> will contain an attribute <code class="docutils literal notranslate"><span class="pre">&lt;param&gt;</span></code> of the same name as each parameter in the model. This will be the estimated maximum likelihood estimator of the model parameter for the given data and penalties.</p>
@@ -536,7 +524,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </dl>
 </section>
 <section id="evaluating-and-propagating-from-the-results">
-<h3>Evaluating and propagating from the results<a class="headerlink" href="#evaluating-and-propagating-from-the-results" title="Permalink to this heading">#</a></h3>
+<h3>Evaluating and propagating from the results<a class="headerlink" href="#evaluating-and-propagating-from-the-results" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">FitResul</span></code> object provides commodity methods <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> and <code class="docutils literal notranslate"><span class="pre">propagate</span></code> to quickly evaluate other models that might depend on the fitted parameters and propagate the uncertainty in the parameter estimates to those models. To evaluate a model <code class="docutils literal notranslate"><span class="pre">modelB</span></code> that shares parameters with <code class="docutils literal notranslate"><span class="pre">modelA</span></code> (which has been fitted), we can use the <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> method</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit modelA to the data</span>
 <span class="n">fitresult</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">modelA</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
@@ -566,55 +554,50 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </section>
 
 
-              </article>
+              </div>
               
-
               
-              <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="modelling_guide.html" title="previous page">
-      <i class="fas fa-angle-left"></i>
-      <div class="prev-next-info">
-          <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">Modeling Guide</p>
-      </div>
-  </a>
-  <a class='right-next' id="next-link" href="uncertainty_guide.html" title="next page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Uncertainty Guide</p>
-  </div>
-  <i class="fas fa-angle-right"></i>
-  </a>
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="modelling_guide.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Modeling Guide</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="uncertainty_guide.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Uncertainty Guide</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-              </footer>
               
-          </div>
+          </main>
           
+
       </div>
     </div>
-
   
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
-
-<footer class="bd-footer"><div class="bd-footer__inner container">
-  
-  <div class="footer-item">
-    <p class="copyright">
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
     &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
 </p>
-  </div>
-  
-  <div class="footer-item">
-    <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
 </p>
+    </div>
+    
   </div>
-  
-</div>
 </footer>
   </body>
 </html>
