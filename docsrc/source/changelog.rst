@@ -19,6 +19,7 @@ Release v0.14.4 - August 2022
 ---------------------------------
 
 - |feature| The experiment model functions such as ``ex_4pdeer`` now take an additional optional keyword argument ``pulselength`` to specify the longest durations of a pulse during an experiment. The value is then used to more accurately set the boundaries of refocusing time parameters in dipolar models (:pr:`368`). 
+- |enhancement| The parameter table displayed when printing DeerLab models has been expanded to show the start values and the frozen values, if present (:pr:`369`).
 - |fix| Added missing documentation for certain attributes of the ``UQResult`` objects related to the bootstrap and profile-likelihood methods (:pr:`360`).
 - |fix| Behavior of the documention on minimized browser windows and mobile phones (:pr:`365`).
 - |fix| Multiple issues with the incorrect dark theming of the webpage (:pr:`359`) 
