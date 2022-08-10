@@ -15,6 +15,21 @@ Release Notes
 - |api| : This will require changes in your scripts or code.
 
 
+Release v0.14.4 - August 2022
+---------------------------------
+
+- |feature| The experiment model functions such as ``ex_4pdeer`` now take an additional optional keyword argument ``pulselength`` to specify the longest durations of a pulse during an experiment. The value is then used to more accurately set the boundaries of refocusing time parameters in dipolar models (:pr:`368`). 
+- |fix| Added missing documentation for certain attributes of the ``UQResult`` objects related to the bootstrap and profile-likelihood methods (:pr:`360`).
+- |fix| Behavior of the documention on minimized browser windows and mobile phones (:pr:`365`).
+- |fix| Multiple issues with the incorrect dark theming of the webpage (:pr:`359`) 
+
+.. rubric:: ``fit``
+- |fix| Added multiple missing optional keyword arguments to the documentation of the function (:pr:`367`).
+
+.. rubric:: ``dd_randcoil``
+- |fix| Fixed the erronously switched descriptions of the model parameters (:pr:`361`).
+
+
 Release v0.14.3 - July 2022
 ---------------------------------
 
@@ -29,7 +44,6 @@ Release v0.14.3 - July 2022
 - |fix| Fix bug in the ``fit`` function unfreezing all frozen model parameters upon fitting if any model parameter included a normalization constraint (:issue:`348`, :pr:`352`).
 - |fix| Corrected two minor mathematical errors in the physical background models ``bg_homfractal`` and ``bg_homfractal_phase`` (:pr:`351`). 
 - |fix| Fixed display of the online documentation in browsers with an enabled dark theme that made certain menus and text sections unreadable (:issue:`349`, :pr:`350`). The documentation will now default to a light theme even for dark themed browser. 
-
 
 
 Release v0.14.2 - June 2022
