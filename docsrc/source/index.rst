@@ -1,5 +1,4 @@
-﻿
-.. raw:: html 
+﻿.. raw:: html 
 
     <style>
     .title2 {font-size:65px; color:#4550e6; font-family: "Berlin Sans FB"; margin-left:-0px}
@@ -8,12 +7,6 @@
     .title1 {font-size:65px; font-family: "Berlin Sans FB"} 
     .col-xl-2 {flex: 0 0 3.66667%; max-width:  3.667%}
     .col-xl-8 {flex: 0 0 90.6667%; max-width: 90.667%}
-    .titlep {margin-top: -100px;margin-bottom: -10px;}
-    .invisibletitle {font-size:0px}
-    .prev-next-area a.right-next {float: right;visibility: hidden;}
-    .title {padding-top: 110px;padding-left: 22px;width:60%}
-    .illustration {width: 45%;}
-    .topfloatcontainer {float: initial;display: flex;margin-top: -60px;margin-bottom: 25px;}
     </style> 
 
 .. role:: title1

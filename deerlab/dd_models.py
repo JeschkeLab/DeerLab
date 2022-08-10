@@ -400,8 +400,8 @@ dd_randcoil = Model(_randcoil,constants='r')
 dd_randcoil.description = 'Random-coil model for an unfolded peptide/protein'
 # Parameters
 dd_randcoil.Nres.set(description='Number of residues', lb=2.0, ub=1000, par0=50, unit='')
-dd_randcoil.scaling.set(description='Segment length', lb=0.1, ub=0.4, par0=0.2, unit='nm')
-dd_randcoil.length.set(description='Scaling exponent', lb=0.33, ub=1.00, par0=0.602, unit='')
+dd_randcoil.scaling.set(description='Scaling exponent', lb=0.1, ub=0.4, par0=0.2, unit='nm')
+dd_randcoil.length.set(description='Segment length', lb=0.33, ub=1.00, par0=0.602, unit='')
 # Add documentation
 dd_randcoil.__doc__ = _dd_docstring(dd_randcoil,notes) +  docstr_example('dd_randcoil')
 
