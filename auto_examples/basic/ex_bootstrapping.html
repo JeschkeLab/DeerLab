@@ -27,10 +27,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
     
   <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
@@ -245,6 +245,7 @@ the confidence intervals but the longer the analysis will be. The standard for p
 <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 </pre></div>
 </div>
+<p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Goodness-of-fit:
 ========= ============= ============ ======= ===========
  Dataset   Noise level   Reduced 𝛘2   RMSD       AIC
@@ -261,11 +262,11 @@ Model parameters:
 =========== ==================== ========================= ====== ======================================
  Parameter   Value                95%-Confidence interval   Unit   Description
 =========== ==================== ========================= ====== ======================================
- mod         0.303                (0.300,0.307)                    Modulation depth
- reftime     0.299                (0.297,0.302)              μs    Refocusing time
- conc        148.348              (142.894,152.533)          μM    Spin concentration
+ mod         0.303                (0.299,0.307)                    Modulation depth
+ reftime     0.299                (0.298,0.301)              μs    Refocusing time
+ conc        147.163              (143.097,150.892)          μM    Spin concentration
  P           ...                  (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     1.0084877211630392                             None   Normalization factor of P
+ P_scale     1.0058062595313384                             None   Normalization factor of P
 =========== ==================== ========================= ====== ======================================
 </pre></div>
 </div>
@@ -309,8 +310,9 @@ Model parameters:
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_ex_bootstrapping_001.png" srcset="../../_images/sphx_glr_ex_bootstrapping_001.png" alt="ex bootstrapping" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  13.568 seconds)</p>
-<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-bootstrapping-py">
+<img alt="ex bootstrapping" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_bootstrapping_001.png" />
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  8.983 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-bootstrapping-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/6333a1f0c79ef721fc5967ce47c21d3f/ex_bootstrapping.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_bootstrapping.py</span></code></a></p>
 </div>
