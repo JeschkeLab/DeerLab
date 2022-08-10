@@ -26,7 +26,7 @@ build_package(){
     done
     for platform in "${PLATFORMS[@]}"; do 
         for filename in /$platform/*.tar.bz2; do
-            conda convert -p $platform linux-64/*.tar.bz2
+            conda convert /$platform/$filename -p $platform linux-64/*.tar.bz2 -o .
         done 
     done
 }
@@ -38,7 +38,7 @@ upload_package(){
     export ANACONDA_API_TOKEN=$INPUT_ANACONDATOKEN
 
     for platform in "${PLATFORMS[@]}"; do 
-        for filename in ./"$platform"/*.tar.bz2; do
+        for filename in ./$platform/*.tar.bz2; do
             anaconda upload $filename
         done
     done 

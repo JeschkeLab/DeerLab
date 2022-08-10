@@ -60,12 +60,12 @@ A summary of the model and all its parameters and related attributes can be quic
     Signature: (r, mean, std)
     Constants: [r]
     Parameter Table: 
-    ======= ======= ======= ======== ======== ======= ==================== 
-     Name    Lower   Upper    Type    Frozen   Units   Description         
-    ======= ======= ======= ======== ======== ======= ==================== 
-     mean        1      20   nonlin     No      nm     Mean                
-     std      0.05     2.5   nonlin     No      nm     Standard deviation  
-    ======= ======= ======= ======== ======== ======= ==================== 
+    ====== ======= ======= ======= ======== ======== ====== ==================== 
+    Name   Lower   Start   Upper    Type    Frozen   Unit   Description         
+    ====== ======= ======= ======= ======== ======== ====== ==================== 
+    mean       1     3.5      20   nonlin     No      nm    Mean                
+    std     0.05     0.2     2.5   nonlin     No      nm    Standard deviation  
+    ====== ======= ======= ======= ======== ======== ====== ====================
 
 .. _modelling_modifying_parameters:
 
@@ -156,12 +156,12 @@ To control that the model has been properly constructed, we can print the model 
     Signature: (center, std)
     Constants: []
     Parameter Table: 
-    ======== ======= ======= ======== ======== ======= ============= 
-     Name     Lower   Upper    Type    Frozen   Units   Description  
-    ======== ======= ======= ======== ======== ======= ============= 
-     center    -inf     inf   nonlin     No     None    None         
-     std       -inf     inf   nonlin     No     None    None         
-    ======== ======= ======= ======== ======== ======= ============= 
+    ======== ======= ======= ======= ======== ======== ====== ============= 
+    Name     Lower   Start   Upper    Type    Frozen   Unit   Description  
+    ======== ======= ======= ======= ======== ======== ====== ============= 
+    center    -inf     -       inf   nonlin     No     None   None         
+    std       -inf     -       inf   nonlin     No     None   None         
+    ======== ======= ======= ======= ======== ======== ====== ============= 
 
 We can see that the model has properly introduced the two non-linear parameters ``center`` and ``std``. By default, all new parameters are initialized unbounded (i.e. ``lb=-np.inf`` and  ``ub=+np.inf``). Any attributes can be changed freely after the model has been generated. For example ::
 
@@ -224,7 +224,7 @@ Therefore, we could define the following function: ::
     def bigaussian_fcn(center1,std1,center2,std2):
         gauss1 = np.exp(-(x-center1)**2/(2*std1**2)) # First Gaussian component
         gauss2 = np.exp(-(x-center2)**2/(2*std2**2)) # Second Gaussian component
-        Anonlin = np.vstack([y1,y2]) # Stack them vertically into a matrix
+        Anonlin = np.vstack([gauss1,gauss2]) # Stack them vertically into a matrix
         return Anonlin
     # Construct the model
     bigauss = dl.Model(bigaussian_fcn)
@@ -239,16 +239,16 @@ As before, we can check the state of the model by printing the ``mymodel`` objec
     Signature: (center1, std1, center2, std2, weight1, weight2)
     Constants: []
     Parameter Table: 
-    ========= ======= ======= ======== ======== ======= ============= 
-     Name      Lower   Upper    Type    Frozen   Units   Description  
-    ========= ======= ======= ======== ======== ======= ============= 
-     center1    -inf     inf   nonlin     No     None    None         
-     std1       -inf     inf   nonlin     No     None    None         
-     center2    -inf     inf   nonlin     No     None    None         
-     std2       -inf     inf   nonlin     No     None    None         
-     weight1       0     inf   linear     No     None    None         
-     weight2       0     inf   linear     No     None    None         
-    ========= ======= ======= ======== ======== ======= ============= 
+    ========= ======= ======= ======= ======== ======== ====== ============= 
+    Name      Lower   Start   Upper    Type    Frozen   Unit   Description  
+    ========= ======= ======= ======= ======== ======== ====== ============= 
+    center1    -inf     -       inf   nonlin     No     None   None         
+    std1       -inf     -       inf   nonlin     No     None   None         
+    center2    -inf     -       inf   nonlin     No     None   None         
+    std2       -inf     -       inf   nonlin     No     None   None         
+    weight1       0     -       inf   linear     No     None   None         
+    weight2       0     -       inf   linear     No     None   None         
+    ========= ======= ======= ======= ======== ======== ====== =============  
 
 We can see that the model has been correctly built, with four non-linear parameters (``center1``, ``center2``, ``std1``, and ``std2``) 
 and with two linear parameters (``weight1`` and ``weight2``), as indicated by the ``Type`` column. We can check whether a parameter is linear or non-linear by accessing its ``linear`` attribute, e.g.  :: 
@@ -317,12 +317,12 @@ By printing the model, we can check that the model has only two parameters: ::
     Signature: (sigma, dist)
     Constants: []
     Parameter Table: 
-    ======= ======= ======= ======== ======== ======= ============= 
-     Name    Lower   Upper    Type    Frozen   Units   Description  
-    ======= ======= ======= ======== ======== ======= ============= 
-     sigma    -inf     inf   nonlin     No     None    None         
-     dist        0     inf   linear     No     None    None         
-    ======= ======= ======= ======== ======== ======= ============= 
+    ======= ======= ======= ======= ======== ======== ====== ============= 
+    Name    Lower   Start   Upper    Type    Frozen   Unit   Description  
+    ======= ======= ======= ======= ======== ======== ====== ============= 
+    sigma    -inf     -       inf   nonlin     No     None   None         
+    dist        0     -       inf   linear     No     None   None         
+    ======= ======= ======= ======= ======== ======== ====== =============  
 
 
 
@@ -385,12 +385,12 @@ Let us print the model to examine the resulting model: ::
     Signature: (x, center, std)
     Constants: [x]
     Parameter Table: 
-    ======== ======= ======= ======== ======== ======= ============= 
-     Name     Lower   Upper    Type    Frozen   Units   Description  
-    ======== ======= ======= ======== ======== ======= ============= 
-     center    -inf     inf   nonlin     No     None    None         
-     std       -inf     inf   nonlin     No     None    None         
-    ======== ======= ======= ======== ======== ======= ============= 
+    ======== ======= ======= ======= ======== ======== ====== ============= 
+    Name     Lower   Start   Upper    Type    Frozen   Unit   Description  
+    ======== ======= ======= ======= ======== ======== ====== ============= 
+    center    -inf     -       inf   nonlin     No     None   None         
+    std       -inf     -       inf   nonlin     No     None   None         
+    ======== ======= ======= ======= ======== ======== ====== ============= 
 
 We can see that the model has only the two non-linear parameters as expected, and under ``Constants`` we can see that ``x`` has been adequately defined. From the ``Signature`` we can also check that the ``x`` constant can be passed to evaluate the model. 
 
@@ -407,12 +407,12 @@ All ``Model`` objects can be called as normal functions by specifying the parame
     Signature: (x, center, std)
     Constants: [x]
     Parameter Table: 
-    ======== ======= ======= ======== ======== ======= ============= 
-     Name     Lower   Upper    Type    Frozen   Units   Description  
-    ======== ======= ======= ======== ======== ======= ============= 
-     center    -inf     inf   nonlin     No     None    None         
-     std       -inf     inf   nonlin     No     None    None         
-    ======== ======= ======= ======== ======== ======= ============= 
+    ======== ======= ======= ======= ======== ======== ====== ============= 
+    Name     Lower   Start   Upper    Type    Frozen   Unit   Description  
+    ======== ======= ======= ======= ======== ======== ====== ============= 
+    center    -inf     -       inf   nonlin     No     None   None         
+    std       -inf     -       inf   nonlin     No     None   None         
+    ======== ======= ======= ======= ======== ======== ====== ============= 
 
 In the model printout, under ``Signature`` the exact signature of the model is given. The order and names of the arguments are as shown there.
 
@@ -504,16 +504,16 @@ As always, we can check the results of the operation by printing the model for a
     Signature: (center_1, width_1, center_2, width_2, scale_1, scale_2)
     Constants: []
     Parameter Table: 
-    ========== ======= ======= ======== ======== ======= ============= 
-     Name       Lower   Upper    Type    Frozen   Units   Description  
-    ========== ======= ======= ======== ======== ======= ============= 
-     center_1    -inf     inf   nonlin     No     None    None         
-     width_1     -inf     inf   nonlin     No     None    None         
-     center_2    -inf     inf   nonlin     No     None    None         
-     width_2     -inf     inf   nonlin     No     None    None         
-     scale_1        0     inf   linear     No     None    None         
-     scale_2        0     inf   linear     No     None    None         
-    ========== ======= ======= ======== ======== ======= ============= 
+    ========== ======= ======= ======= ======== ======== ====== ================ 
+    Name       Lower   Start   Upper    Type    Frozen   Unit   Description     
+    ========== ======= ======= ======= ======== ======== ====== ================ 
+    center_1    -inf     -       inf   nonlin     No     None   None            
+    std_1       -inf     -       inf   nonlin     No     None   None            
+    center_2    -inf     -       inf   nonlin     No     None   None            
+    std_2       -inf     -       inf   nonlin     No     None   None            
+    scale_1        0       1     inf   linear     No     None   Scaling factor  
+    scale_2        0       1     inf   linear     No     None   Scaling factor  
+    ========== ======= ======= ======= ======== ======== ====== ================ 
 
 
 We can see that the merge has been successful. The model now takes the parameters of both ``gauss`` models, and their names have been adapted with the respective suffixes as described above. Now we can call the ``mergemodel`` to get both Gaussians responses, both centered equally, but the second being twice as broad as the first one: ::
@@ -574,16 +574,16 @@ As always, we can check the results of the operation by printing the model for a
     Signature: (center_1, width_1, center_2, width_2, scale_1, scale_2)
     Constants: []
     Parameter Table: 
-    ========== ======= ======= ======== ======== ======= ============= 
-     Name       Lower   Upper    Type    Frozen   Units   Description  
-    ========== ======= ======= ======== ======== ======= ============= 
-     center_1    -inf     inf   nonlin     No     None    None         
-     width_1     -inf     inf   nonlin     No     None    None         
-     center_2    -inf     inf   nonlin     No     None    None         
-     width_2     -inf     inf   nonlin     No     None    None         
-     scale_1        0     inf   linear     No     None    None         
-     scale_2        0     inf   linear     No     None    None         
-    ========== ======= ======= ======== ======== ======= ============= 
+    ========== ======= ======= ======= ======== ======== ====== ================ 
+    Name       Lower   Start   Upper    Type    Frozen   Unit   Description     
+    ========== ======= ======= ======= ======== ======== ====== ================ 
+    center_1    -inf     -       inf   nonlin     No     None   None            
+    std_1       -inf     -       inf   nonlin     No     None   None            
+    center_2    -inf     -       inf   nonlin     No     None   None            
+    std_2       -inf     -       inf   nonlin     No     None   None            
+    scale_1        0       1     inf   linear     No     None   Scaling factor  
+    scale_2        0       1     inf   linear     No     None   Scaling factor  
+    ========== ======= ======= ======= ======== ======== ====== ================ 
 
 We can see that the merge has been successful. The model now takes the parameters of both ``gauss`` models, and their names have been adapted with the respective suffixes described above—the newly introduced linear parameters ``scale_1`` and ``scale_2`` work as linear combination weights. 
 
@@ -610,16 +610,16 @@ and we can check the resulting model ::
     Signature: (sigma_1, weight_1, sigma_2, weight_2, dist_1, dist_2)
     Constants: []
     Parameter Table: 
-    ========== ======= ======= ======== ======== ======= ================== 
-     Name       Lower   Upper    Type    Frozen   Units   Description       
-    ========== ======= ======= ======== ======== ======= ================== 
-     sigma_1     -inf     inf   nonlin     No     None    None              
-     weight_1       0     inf   nonlin     No     None    Weighting factor  
-     sigma_2     -inf     inf   nonlin     No     None    None              
-     weight_2       0     inf   nonlin     No     None    Weighting factor  
-     dist_1         0     inf   linear     No     None    None              
-     dist_2         0     inf   linear     No     None    None              
-    ========== ======= ======= ======== ======== ======= ================== 
+    ========== ======= ======= ======= ======== ======== ====== ================== 
+    Name       Lower   Start   Upper    Type    Frozen   Unit   Description       
+    ========== ======= ======= ======= ======== ======== ====== ================== 
+    sigma_1     -inf     -       inf   nonlin     No     None   None              
+    weight_1       0       1     inf   nonlin     No     None   Weighting factor  
+    sigma_2     -inf     -       inf   nonlin     No     None   None              
+    weight_2       0       1     inf   nonlin     No     None   Weighting factor  
+    scale_1        0       1     inf   linear     No     None   Scaling factor    
+    scale_2        0       1     inf   linear     No     None   Scaling factor    
+    ========== ======= ======= ======= ======== ======== ====== ================== 
 
 
 The linearly combined model has been successfully constructed, and the non-linear weighting parameters ``weight_1`` and ``weight_2`` have also been included in the model as requested. 
@@ -659,15 +659,15 @@ and check the model by printing it ::
     Signature: (center1, std, center2, weight1, weight2)
     Constants: []
     Parameter Table: 
-    ========= ======= ======= ======== ======== ======= ============= 
-     Name      Lower   Upper    Type    Frozen   Units   Description  
-    ========= ======= ======= ======== ======== ======= ============= 
-     center1    -inf     inf   nonlin     No     None    None         
-     std        -inf     inf   nonlin     No     None    None         
-     center2    -inf     inf   nonlin     No     None    None         
-     weight1       0     inf   linear     No     None    None         
-     weight2       0     inf   linear     No     None    None         
-    ========= ======= ======= ======== ======== ======= ============= 
+    ========= ======= ======= ======= ======== ======== ====== ============= 
+    Name      Lower   Start   Upper    Type    Frozen   Unit   Description  
+    ========= ======= ======= ======= ======== ======== ====== ============= 
+    center1    -inf     -       inf   nonlin     No     None   None         
+    std        -inf     -       inf   nonlin     No     None   None         
+    center2    -inf     -       inf   nonlin     No     None   None         
+    weight1       0     -       inf   linear     No     None   None         
+    weight2       0     -       inf   linear     No     None   None         
+    ========= ======= ======= ======= ======== ======== ====== ============= 
 
 
 The model now has the new ``std`` parameter instead of the ``std1`` and ``std2`` parameters. The linkage can be checked by comparing the two models ::
@@ -725,15 +725,15 @@ and check the model by printing it ::
     Signature: (center1, std1, center2, weight1, weight2)
     Constants: []
     Parameter Table: 
-    ========= ======= ======= ======== ======== ======= ============= 
-     Name      Lower   Upper    Type    Frozen   Units   Description  
-    ========= ======= ======= ======== ======== ======= ============= 
-     center1    -inf     inf   nonlin     No     None    None         
-     center2    -inf     inf   nonlin     No     None    None         
-     std2       -inf     inf   nonlin     No     None    None         
-     weight1       0     inf   linear     No     None    None         
-     weight2       0     inf   linear     No     None    None         
-    ========= ======= ======= ======== ======== ======= ============= 
+    ========= ======= ======= ======= ======== ======== ====== ============= 
+    Name      Lower   Start   Upper    Type    Frozen   Unit   Description  
+    ========= ======= ======= ======= ======== ======== ====== ============= 
+    center1    -inf     -       inf   nonlin     No     None   None         
+    center2    -inf     -       inf   nonlin     No     None   None         
+    std2       -inf     -       inf   nonlin     No     None   None         
+    weight1       0     -       inf   linear     No     None   None         
+    weight2       0     -       inf   linear     No     None   None         
+    ========= ======= ======= ======= ======== ======== ====== ============= 
 
 The ``std1`` parameter has been removed from the parameter list as it is now given twice the value of ``std2``.
 

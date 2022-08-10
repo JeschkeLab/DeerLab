@@ -237,8 +237,8 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
         for n in range(npathways):
             getattr(DipolarSignal,reftime_names[n]).set(
                 par0 = experiment.reftimes[n],
-                lb = experiment.reftimes[n] - 0.05,
-                ub = experiment.reftimes[n] + 0.05
+                lb = experiment.reftimes[n] - 3*experiment.pulselength,
+                ub = experiment.reftimes[n] + 3*experiment.pulselength
                 )
 
     # Set other dipolar model specific attributes
@@ -337,15 +337,16 @@ class ExperimentInfo():
     r"""
     Represents information about a dipolar EPR experiment"""
 
-    def __init__(self,name,reftimes,harmonics):
+    def __init__(self,name,reftimes,harmonics,pulselength):
         self.npathways = len(reftimes)
         self.reftimes = reftimes
         self.harmonics = harmonics
+        self.pulselength = pulselength
         self.name = name
 #===============================================================================
 
 #===============================================================================
-def ex_3pdeer(tau, pathways=None):
+def ex_3pdeer(tau, pathways=None, pulselength=0.016):
     r"""
     Generate a 3-pulse DEER dipolar experiment model. 
 
@@ -375,6 +376,10 @@ def ex_3pdeer(tau, pathways=None):
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
         By default, both pathways are included in the order given in the table above.
 
+    pulselength : float scalar, optional 
+        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
+        boundaries of the pathay refocusing times.
+
     Returns
     -------
     experiment : ``ExperimentInfo`` object
@@ -394,11 +399,11 @@ def ex_3pdeer(tau, pathways=None):
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
-    return ExperimentInfo('3-pulse DEER',reftimes,harmonics)
+    return ExperimentInfo('3-pulse DEER',reftimes,harmonics,pulselength)
 #===============================================================================
 
 #===============================================================================
-def ex_4pdeer(tau1, tau2, pathways=None):
+def ex_4pdeer(tau1, tau2, pathways=None, pulselength=0.016):
     r"""
     Generate a 4-pulse DEER dipolar experiment model. 
     
@@ -432,6 +437,10 @@ def ex_4pdeer(tau1, tau2, pathways=None):
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
         By default, all 4 pathways are included in the order given in the table above.
 
+    pulselength : float scalar, optional 
+        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
+        boundaries of the pathay refocusing times.
+
     Returns
     -------
     experiment : ``ExperimentInfo`` object
@@ -450,11 +459,11 @@ def ex_4pdeer(tau1, tau2, pathways=None):
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
-    return ExperimentInfo('4-pulse DEER', reftimes, harmonics)
+    return ExperimentInfo('4-pulse DEER', reftimes, harmonics, pulselength)
 #===============================================================================
 
 #===============================================================================
-def ex_rev5pdeer(tau1, tau2, tau3, pathways=None):
+def ex_rev5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
     r"""
     Generate a reverse 5-pulse DEER dipolar experiment model. 
     
@@ -494,6 +503,10 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=None):
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
         By default, all 8 pathways are included in the order given in the table above.
 
+    pulselength : float scalar, optional 
+        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
+        boundaries of the pathay refocusing times.
+
     Returns
     -------
     experiment : ``ExperimentInfo`` object
@@ -512,12 +525,12 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=None):
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways]
     
-    return ExperimentInfo('Reverse 5-pulse DEER',reftimes,harmonics)
+    return ExperimentInfo('Reverse 5-pulse DEER',reftimes,harmonics,pulselength)
 #===============================================================================
 
 
 #===============================================================================
-def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None):
+def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
     r"""
     Generate a forward 5-pulse DEER dipolar experiment model. 
     
@@ -557,6 +570,10 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None):
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
         By default, all pathways are included in the order given in the table above.
 
+    pulselength : float scalar, optional 
+        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
+        boundaries of the pathay refocusing times.
+
     Returns
     -------
     experiment : ``ExperimentInfo`` object
@@ -575,11 +592,11 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None):
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
-    return ExperimentInfo('Forward 5-pulse DEER', reftimes, harmonics)
+    return ExperimentInfo('Forward 5-pulse DEER',reftimes,harmonics,pulselength)
 #===============================================================================
 
 #===============================================================================
-def ex_sifter(tau1, tau2, pathways=None):
+def ex_sifter(tau1, tau2, pathways=None, pulselength=0.016):
     r"""
     Generate a SIFTER dipolar experiment model. 
 
@@ -611,6 +628,10 @@ def ex_sifter(tau1, tau2, pathways=None):
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
         By default, all 3 pathways are included and ordered as given in the table above.
 
+    pulselength : float scalar, optional 
+        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
+        boundaries of the pathay refocusing times.
+
     Returns
     -------
     experiment : ``ExperimentInfo`` object
@@ -630,12 +651,12 @@ def ex_sifter(tau1, tau2, pathways=None):
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways]
 
-    return ExperimentInfo('SIFTER',reftimes,harmonics)
+    return ExperimentInfo('SIFTER',reftimes,harmonics,pulselength)
 #===============================================================================
 
 
 #===============================================================================
-def ex_ridme(tau1, tau2, pathways=None):
+def ex_ridme(tau1, tau2, pathways=None, pulselength=0.016):
     r"""
     Generate a RIDME dipolar experiment model. 
 
@@ -668,6 +689,10 @@ def ex_ridme(tau1, tau2, pathways=None):
         Pathways to include in the model. The pathways are specified based to the pathways numbers. 
         By default, all 4 pathways are included in the order given in the table above.
 
+    pulselength : float scalar, optional 
+        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
+        boundaries of the pathay refocusing times.
+
     Returns
     -------
     experiment : ``ExperimentInfo`` object
@@ -687,5 +712,5 @@ def ex_ridme(tau1, tau2, pathways=None):
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
 
-    return ExperimentInfo('RIDME',reftimes,harmonics)
+    return ExperimentInfo('RIDME',reftimes,harmonics,pulselength)
 #===============================================================================

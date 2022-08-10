@@ -87,19 +87,34 @@ class UQResult:
     type : string
         Uncertainty quantification approach:
 
-            * 'covariance' - Covariance-based uncertainty analysis
-            * 'bootstrap' - Bootstrapped uncertainty analysis
+            * ``'covariance'`` - Covariance-based uncertainty analysis
+            * ``'bootstrap'`` - Bootstrapped uncertainty analysis
+            * ``'profile'`` - Likelihood profile uncertainty analysis
+            * ``'void'`` - Empty uncertainty analysis
     
     mean : ndarray
         Mean values of the uncertainty distribution of the parameters.
+   
     median : ndarray
         Median values of the uncertainty distribution of the parameters.
+   
     std : ndarray
         Standard deviations of the uncertainty distribution of the parameters.
+   
     covmat : ndarray
         Covariance matrix
+   
     nparam : int scalar
         Number of parameters in the analysis.
+   
+    samples : ndarray 
+        Bootstrap samples of the parameters. Only available for ``type='bootstrap'``.
+
+    profile : ndarray 
+        Likelihood profile of the parameters. Only available for ``type='profile'``.
+
+    threshold : scalar
+        Treshold value used for the profile method. Only available for ``type='profile'``.  
 
     Methods
     -------
