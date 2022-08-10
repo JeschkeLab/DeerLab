@@ -44,14 +44,15 @@ Using experimental pulse delays
 
 The dipolar pathways of a newly constructed dipolar model are initialized at arbitrary refocusing times and fully unconstrained. The refocusing times can be strongly constrained by knowing the experimental pulse sequence delays used to acquire the data. If the experiment used to acquire the data is known, as well as its pulse delays, then it is strongly recommended do so. 
  
-DeerLab provides a selection of experimental information generators for some of the most widely employed experimental methods (see the of :ref:`list of available experiments <modelsref_ex>`). These are functions that take the pulse sequence delays, and return an ``ExperimentInfo`` object. This can be passed to the ``dipolarmodel`` function via the ``experiment`` keyword argument, to incorporate the experiment information on the model and constrain some of its parameters. 
+DeerLab provides a selection of experimental information generators for some of the most widely employed experimental methods (see the of :ref:`list of available experiments <modelsref_ex>`). These are functions that take the pulse sequence delays, and return an ``ExperimentInfo`` object. This can be passed to the ``dipolarmodel`` function via the ``experiment`` keyword argument, to incorporate the experiment information on the model and constrain some of its parameters. These experimental information generators can also take information on the duration of the longest microwave pulses to more accurately constraint the parameters when using long pulses such as in frequency-swept or shaped microwave pulses.
 
-When using experimental time delays and the ``experiment`` argument, the model assumes that the experimental time axis ``t`` has its zero time at the beginning of the interpulse delay (see the illustrations of the individual experiment models for details). However, experimentally it is common not to record the first few hundred nanoseconds of signal. This results in a so-called deadtime, which many commercial spectrometers (such as Bruker) do not account for when storing the time-vector. It is very important to account for that deadtime in the model via :: 
+When using experimental time delays and the ``experiment`` argument, the model assumes that the experimental time axis ``t`` has its zero time at the beginning of the interpulse delay (see the illustrations of the individual experiment models for details). However, experimentally it is common not to record the first few hundred nanoseconds of signal. This results in a so-called start time (often also referred to as a deadtime), which many commercial spectrometers (such as Bruker) do not account for when storing the time-vector. It is very important to account for that time shift in the model via :: 
 
-    deadtime = 0.4 # Experimental deadtime of 400ns, in μs
-    t = t - deadtime # Shift the time axis to account for the deadtime 
+    t0 = 0.4   # Experimental start time of 400ns, in μs
+    t = t - t0 # Shift the time axis to account for the start time 
 
-If the time vector ``t`` does not have any deadtime, this step can be skipped. Otherwise, an incorrectly defined time vector will results in wrong results.
+If the time vector ``t`` does not have any time shift, this step can be skipped. Otherwise, an incorrectly defined time vector will results in wrong results.
+ 
 
 Constructing the dipolar model 
 *******************************
@@ -88,14 +89,14 @@ A full summary of the constructed model(s) can be inspected by printing the mode
     Signature: (mod, reftime, conc, P)
     Constants: []
     Parameter Table: 
-    ========= ======= ======= ======== ======== ======= ====================================== 
-     Name      Lower   Upper    Type    Frozen   Units   Description                           
-    ========= ======= ======= ======== ======== ======= ====================================== 
-     mod           0       1   nonlin     No             Modulation depth                      
-     reftime     0.4     0.6   nonlin     No      μs     Refocusing time                       
-     conc       0.01   5e+03   nonlin     No      μM     Spin concentration                    
-     P             0     inf   linear     No     None    Non-parametric distance distribution  
-    ========= ======= ======= ======== ======== ======= ====================================== 
+    ========= ======= ======= ======= ======== ======== ====== ====================================== 
+    Name      Lower   Start   Upper    Type    Frozen   Unit   Description                           
+    ========= ======= ======= ======= ======== ======== ====== ====================================== 
+    mod           0    0.01       1   nonlin     No            Modulation depth                      
+    reftime    -inf       0     inf   nonlin     No      μs    Refocusing time                       
+    conc       0.01      50   5e+03   nonlin     No      μM    Spin concentration                    
+    P             0       0     inf   linear     No     nm⁻¹   Non-parametric distance distribution  
+    ========= ======= ======= ======= ======== ======== ====== ====================================== 
 
 
 From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the :ref:`modelling guide <modelling_guide>` for more details and instructions on model manipulation.
