@@ -17,10 +17,9 @@ def test_basic():
 
     #Output
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    path = [[],[]]
-    path[0] = [1-lam]
-    path[1] = [lam, 0]
-    B = dipolarbackground(t,path,Bmodel)
+    pathways = [{'amp': 1-lam},
+                {'reftime': 0, 'amp': lam}]
+    B = dipolarbackground(t,pathways,Bmodel)
 
     assert max(abs(B-Bref) < 1e-8)
 #==================================================================================
@@ -39,10 +38,10 @@ def test_singletime():
 
     #Output
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    path = [[],[]]
-    path[0] = [1-lam]
-    path[1] = [lam, 0]
-    B = dipolarbackground(t,path,Bmodel)
+    pathways = [{'amp': 1-lam},
+                {'reftime': 0, 'amp': lam}]
+    B = dipolarbackground(t,pathways,Bmodel)
+
 
     assert max(abs(B-Bref) < 1e-8)
 #==================================================================================
@@ -57,16 +56,17 @@ def test_fractalharmonics():
     conc = 500
     lam = 0.423
     delta = 2
-    t0 = 0.14
+    tref = 0.14
     dim = 2.7
 
     # Reference
-    Bref = bg_homfractal(delta*(t-t0), conc, dim, lam)
+    Bref = bg_homfractal(delta*(t-tref), conc, dim, lam)
 
     # Output
     Bmodel = lambda t, lam: bg_homfractal(t, conc, dim, lam)
-    paths = [[1-lam], [lam, t0, delta]]
-    B = dipolarbackground(t, paths, Bmodel)
+    pathways = [{'amp': 1-lam},
+                {'reftime': tref, 'amp': lam, 'harmonic': delta}]
+    B = dipolarbackground(t,pathways,Bmodel)
 
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================
@@ -86,18 +86,14 @@ def test_multipath_renorm():
     T0 = [0, tau2-t2]
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
 
-    # Reference
     Bref = 1
     for p in range(len(lam)):
         Bref = Bref*Bmodel((t-T0[p]),lam[p])
     
-    paths = []
-    paths.append(1-prob)
-    paths.append([prob**2,0])
-    paths.append([prob*(1-prob),tau2-t2])
-
-    # Output
-    B = dipolarbackground(t,paths,Bmodel)
+    pathways = [{'amp': (1-prob)**2},
+                {'reftime': 0, 'amp': prob**2},
+                {'reftime': tau2-t2, 'amp': prob*(1-prob)}]
+    B = dipolarbackground(t,pathways,Bmodel)
 
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================
@@ -117,18 +113,14 @@ def test_multipath_raw():
     T0 = [0, tau2-t2]
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
 
-    #Reference
     Bref = 1
     for p in range(len(lam)):
             Bref = Bref*Bmodel((t-T0[p]),lam[p])
     
-    paths = []
-    paths.append(1-prob)
-    paths.append([prob**2,0])
-    paths.append([prob*(1-prob),tau2-t2])
-
-    #Output
-    B = dipolarbackground(t,paths,Bmodel)
+    pathways = [{'amp': (1-prob)**2},
+                {'reftime': 0, 'amp': prob**2},
+                {'reftime': tau2-t2, 'amp': prob*(1-prob)}]
+    B = dipolarbackground(t,pathways,Bmodel)
 
     assert max(abs(B-Bref)) < 1e-8
 #==================================================================================
@@ -146,10 +138,9 @@ def test_physical():
 
     #Output
     Bmodel = lambda t,lam: bg_hom3d(t,conc,lam)
-    path = [[],[]]
-    path[0] = [1-lam]
-    path[1] = [lam, 0]
-    B = dipolarbackground(t,path,Bmodel)
+    pathways = [{'amp': 1-lam},
+                {'reftime': 0, 'amp': lam}]
+    B = dipolarbackground(t,pathways,Bmodel)
 
     assert max(abs(B-Bref) < 1e-8)
 #==================================================================================
@@ -167,10 +158,9 @@ def test_phenomenological():
 
     #Output
     Bmodel = lambda t: bg_hom3d(t,kappa,1)
-    path = [[],[]]
-    path[0] = [1-lam]
-    path[1] = [lam, 0]
-    B = dipolarbackground(t,path,Bmodel)
+    pathways = [{'amp': 1-lam},
+                {'reftime': 0, 'amp': lam}]
+    B = dipolarbackground(t,pathways,Bmodel)
 
     assert max(abs(B-Bref) < 1e-8)
 #==================================================================================
