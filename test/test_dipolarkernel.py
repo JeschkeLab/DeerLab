@@ -103,13 +103,13 @@ def test_negative_time_integral():
 
     tneg = np.linspace(-5,0,50)
     tpos = np.linspace(0,5,50) 
-    r = np.linspace(2,6,10)
+    r = 5
     Kneg = dipolarkernel(tneg,r,method='integral')
     Kpos = dipolarkernel(tpos,r,method='integral')
 
     delta = abs(Kneg - np.flipud(Kpos))
 
-    assert np.all(delta<1e-12)
+    assert np.allclose(Kneg,np.flipud(Kpos))
 #=======================================================================
 
 def test_value_fresnel():
@@ -281,9 +281,9 @@ def test_multipath():
     T0 = [0, tau2-t2]
 
     paths = []
-    paths.append([1-prob])
-    paths.append([prob**2, 0])
-    paths.append([prob*(1-prob), tau2-t2])
+    paths.append({'amp':1-prob})
+    paths.append({'amp':prob**2, 'reftime': 0})
+    paths.append({'amp':prob*(1-prob), 'reftime': tau2-t2})
 
     K = dipolarkernel(t,r,pathways=paths, integralop=False)
 
@@ -322,9 +322,9 @@ def test_multipath_background():
     KBref = Kref*Bref[:,np.newaxis]
 
     paths = []
-    paths.append([1-prob])
-    paths.append([prob**2, 0])
-    paths.append([prob*(1-prob), tau2-t2])
+    paths.append({'amp': 1-prob})
+    paths.append({'amp': prob**2, 'reftime': 0})
+    paths.append({'amp': prob*(1-prob), 'reftime': tau2-t2})
 
     # Output
     KB = dipolarkernel(t,r,pathways=paths, bg=Bmodel, integralop=False)
@@ -349,9 +349,9 @@ def test_multipath_harmonics():
     n = [2, 3]
 
     paths = []
-    paths.append([1-prob])
-    paths.append([prob**2, 0, 2])
-    paths.append([prob*(1-prob), tau2-t2,3])
+    paths.append({'amp': 1-prob})
+    paths.append({'amp': prob**2, 'reftime': 0, 'harmonic': 2})
+    paths.append({'amp': prob*(1-prob), 'reftime': tau2-t2, 'harmonic': 3})
 
     K = dipolarkernel(t,r,pathways=paths, integralop=False)
 
@@ -475,7 +475,6 @@ def test_integralop():
 def test_nonuniform_r():
 #=======================================================================
     "Check that normalization is correct when using a non-uniform distance axis"
-    
 
     t = 0
     r = np.sqrt(np.linspace(1,7**2,200))
@@ -569,14 +568,48 @@ def test_memory_limit():
         K = dipolarkernel(t,r)
 # ======================================================================
 
-def test_twodimensional():
+def test_twodimensional_size():
 #=======================================================================
     "Check the contrusction of kernels with two time dimensions"
 
     t1 = np.linspace(0,5,10)
     t2 = np.linspace(0,3,20)
     r = 3.5
-    K = dipolarkernel([t1,t2],r)
+    K = dipolarkernel([t1,t2],r, method='grid', nKnots=5)
 
-    assert np.shape(K)==np.array([10,20,1], method='grid', nKnots=5)
+    assert np.allclose(np.shape(K), np.array([10,20,1]))
+#=======================================================================
+
+def test_twodimensional_twospins_t1modulated():
+#=======================================================================
+    "Check the contrusction of kernels with two time dimensions on two spin systems"
+
+    t1 = np.linspace(0,5,50)
+    t2 = np.linspace(0,3,50)
+    r = np.array(3.5)
+    pathways= [
+        {'amp': 0.7},
+        {'reftime': [0,0], 'amp': 0.3, 'harmonic': [1,0]}    
+    ]
+    K = dipolarkernel([t1,t2],r,pathways=pathways)
+    Kref = dipolarkernel(t1,r,mod=0.3)
+
+    assert np.allclose(K.squeeze(),Kref)
+#=======================================================================
+
+def test_twodimensional_twospins_t2modulated():
+#=======================================================================
+    "Check the contrusction of kernels with two time dimensions on two spin systems"
+
+    t1 = np.linspace(0,5,50)
+    t2 = np.linspace(0,3,50)
+    r = np.array(3.5)
+    pathways= [
+        {'amp': 0.7},
+        {'reftime': [0,0], 'amp': 0.3, 'harmonic': [0,1]}    
+    ]
+    K = dipolarkernel([t1,t2],r,pathways=pathways)
+    Kref = dipolarkernel(t2,r,mod=0.3)
+
+    assert np.allclose(K.squeeze().T,Kref)
 #=======================================================================
