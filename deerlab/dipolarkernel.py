@@ -259,14 +259,14 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         trefq = [[trefq[d] if δqd!=0 else 0 for d,δqd in enumerate(δq)] for δq,trefq in zip(δ,tref)]
 
         # Construct multi-dimensional effective dipolar evolution time
-        tdip = [np.sum([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)], axis=0) for δq,trefq in zip(δ,tref)]
+        tdip = [np.sum(np.array([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)],dtype=object), axis=0).astype(float) for δq,trefq in zip(δ,tref)]
 
         # Determine number of spins participating in the pathway
         Nspin = np.sum(np.abs(δ))+1 
 
         # Two-spin dipolar interactions
         if Nspin==2 and method!='grid':
-            q = int(np.where(δ!=0)[0])
+            q = int(np.where([np.any(δq!=0) for δq in δ])[0])
             K += λ*K0(tdip[q],r[q],method)
         else:
             K += λ*K0(tdip,r,'grid')

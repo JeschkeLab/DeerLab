@@ -109,7 +109,7 @@ def dipolarbackground(t, pathways, Bmodel):
                 raise SyntaxError(f"Some pathway's number of refocusing times and harmonics do not match the number of time coordinates.")
             # Set trefs defined as None to an arbitrary numerical value
             trefq = [trefq[d] if δqd!=0 else 0 for d,δqd in enumerate(δq)]
-            tdip = np.sum([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)], axis=0) 
+            tdip = np.sum(np.array([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)],dtype=object), axis=0).astype(float)
             if takes_lambda:
                 B *= Bmodel(tdip, λ)
             else:
