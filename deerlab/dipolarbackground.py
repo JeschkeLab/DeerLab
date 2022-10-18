@@ -80,29 +80,35 @@ def dipolarbackground(t, pathways, Bmodel):
     takes_lambda = nArgs == 2
 
     # Ensure correct data types of the pathways and its components
-    pathways = [{key: np.atleast_1d(value).astype(float) for key,value in pathway.items()} for pathway in pathways]
+    #pathways = [{key: np.atleast_1d(value).astype(float) for key,value in pathway.items()} for pathway in pathways]
 
     # Check structure of pathways
     for k,pathway in enumerate(pathways):
         if not 'amp' in pathway.keys():
             raise SyntaxError('All pathways must contain at least an \'amp\' field.')
         if not 'reftime' in pathway.keys():
-            pathways[k]['reftime'] = [None]*len(t) 
-            pathways[k]['harmonic'] = [np.zeros(D)]
-        if 'reftime' in pathway.keys():
-            pathway['reftime'] = np.atleast_2d(pathway['reftime'])
-        if 'harmonic' in pathway.keys():
-            pathway['harmonic'] = np.atleast_2d(pathway['harmonic'])
+            pathways[k]['reftime'] = ([None]*len(t)) 
+            pathways[k]['harmonic'] = (np.zeros(D))
+        for key in ['reftime','harmonic']:
+            if key in pathway.keys():
+                if not isinstance(pathway[key], tuple):
+                    pathway[key] = tuple([pathway[key]])
+                pathway[key] = tuple([np.atleast_1d(tref) for tref in pathway[key]])
         if 'amp' in pathway.keys() and 'reftime' in pathway.keys() and not 'harmonic' in pathway.keys():
             # If harmonic is not defined, append default n=1
-            pathways[k]['harmonic'] = [np.ones(D)]*len(pathways[k]['reftime'])
-    unmodulated = [pathways.pop(k) for k,pathway in enumerate(pathways) if np.all(pathway['harmonic']==np.zeros(len(t)))]
+            pathways[k]['harmonic'] = tuple([np.ones(D)]*len(pathways[k]['reftime']))
+    # Remove unmodulated pathways
+    [pathways.pop(k) for k,pathway in enumerate(pathways) if np.all(pathway['harmonic']==np.zeros(len(t)))]
 
     # Construction of multi-pathway background function
     B = 1
     for pathway in pathways:
         λ,tref,δ = [pathway['amp'],pathway['reftime'],pathway['harmonic']]
         for δq,trefq in zip(δ,tref):
+            if len(trefq)!=len(t): 
+                raise SyntaxError(f"Some pathway's number of refocusing times and harmonics do not match the number of time coordinates.")
+            # Set trefs defined as None to an arbitrary numerical value
+            trefq = [trefq[d] if δqd!=0 else 0 for d,δqd in enumerate(δq)]
             tdip = np.sum([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)], axis=0) 
             if takes_lambda:
                 B *= Bmodel(tdip, λ)

@@ -207,37 +207,43 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     if moddepth_passed:
         # Construct single-pathway kernel if modulation depth is specified
         unmod = {'amp': 1 - mod}
-        singpathway = {'amp': mod, 'reftime': [np.zeros(D)]*Q, 'harmonic': [np.ones(D)]*D}
+        singpathway = {'amp': mod, 'reftime': tuple([np.zeros(D)]*Q), 'harmonic': tuple([np.ones(D)]*Q)}
         pathways = [unmod,singpathway]
     elif not pathways_passed:
         # Full modulation if neither pathways or modulation depth are specified
         unmod = {'amp': 0}
-        singpathway = {'amp': 1, 'reftime': [np.zeros(D)]*Q, 'harmonic': [np.ones(D)]*Q}
+        singpathway = {'amp': 1, 'reftime': tuple([np.zeros(D)]*Q), 'harmonic': tuple([np.ones(D)]*Q)}
         pathways = [unmod,singpathway]
 
     # Ensure correct data types of the pathways and its components
-    pathways = [{key: np.atleast_1d(value).astype(float) for key,value in pathway.items()} for pathway in pathways]
+    #pathways = [{key: np.atleast_1d(value).astype(float) for key,value in pathway.items()} for pathway in pathways]
 
     # Check structure of pathways
     for k,pathway in enumerate(pathways):
         if not 'amp' in pathway.keys():
             raise SyntaxError('All pathways must contain at least an \'amp\' field.')
         if not 'reftime' in pathway.keys():
-            pathways[k]['reftime'] = [None]*len(t) 
-            pathways[k]['harmonic'] = [np.zeros(D)]*Q
-        if 'reftime' in pathway.keys():
-            pathway['reftime'] = np.atleast_2d(pathway['reftime'])
-        if 'harmonic' in pathway.keys():
-            pathway['harmonic'] = np.atleast_2d(pathway['harmonic'])
+            pathways[k]['reftime'] = ([None]*len(t)) 
+            pathways[k]['harmonic'] = (np.zeros(D))
+        for key in ['reftime','harmonic']:
+            if key in pathway.keys():
+                if not isinstance(pathway[key], tuple):
+                    pathway[key] = tuple([pathway[key]])
+                pathway[key] = tuple([np.atleast_1d(tref) for tref in pathway[key]])
         if 'amp' in pathway.keys() and 'reftime' in pathway.keys() and not 'harmonic' in pathway.keys():
             # If harmonic is not defined, append default n=1
-            pathways[k]['harmonic'] = [np.ones(D)]*Q
+            pathways[k]['harmonic'] = tuple([np.ones(D)]*len(pathways[k]['reftime']))
+
+        for trefq in pathways[k]['reftime']:
+            if len(trefq)!=len(t): 
+                raise SyntaxError(f"Some pathway's number of refocusing times and harmonics do not match the number of time coordinates.")
+
 
     # Get unmodulated pathways    
     unmodulated = [pathways.pop(k) for k,pathway in enumerate(pathways) if np.all(pathway['harmonic']==np.zeros(len(t)))]
     # Combine all unmodulated contributions
     if unmodulated:
-        Λ0 = sum(np.concatenate([pathway['amp'] for pathway in unmodulated]))
+        Λ0 = sum([pathway['amp'] for pathway in unmodulated])
     else: 
         Λ0 = 0
 
@@ -248,6 +254,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     K = Λ0
     for pathway in pathways:
         λ,tref,δ = [pathway['amp'],pathway['reftime'],pathway['harmonic']]
+
+        # Set trefs of unmodulated patwhays to an arbitrary numerical value
+        trefq = [[trefq[d] if δqd!=0 else 0 for d,δqd in enumerate(δq)] for δq,trefq in zip(δ,tref)]
 
         # Construct multi-dimensional effective dipolar evolution time
         tdip = [np.sum([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)], axis=0) for δq,trefq in zip(δ,tref)]
