@@ -701,3 +701,115 @@ def read_pickle(filename):
             except EOFError:
                 break
 # --------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------
+def sophegrid(octants,maxphi,size):
+    """
+    Construct spherical grid over spherical angles based on input parameters. The grid implemented in this function is often called the SOPHE grid [1]_. 
+    Adapted from Easyspin [2]_ ``sphgrid_`` source code. 
+
+    
+    Parameters
+    ----------
+    octants : integer 
+        Number of "octants" of the sphere; for each increment in theta, octants additional points are added along phi; special cases: octants=0 and octants=-1.
+
+    maxphi : float 
+        Largest value of angle phi (radians).
+
+    size : integer  
+        Number of orientations between theta=0 and theta=pi/2. 
+
+    References
+    ----------
+
+    .. [1] D. Wang, G. R. Hanson
+       J.Magn.Reson. A, 117, 1-8 (1995)
+       https://doi.org/10.1006/jmra.1995.9978
+
+    .. [2] Stefan Stoll, Arthur Schweiger
+       J. Magn. Reson. 178(1), 42-55 (2006)
+       https://doi.org/10.1016/j.jmr.2005.08.013
+    """ 
+    dtheta = (np.pi/2)/(size-1); # angular increment along theta
+    if octants > 0: # if not Dinfh or O3 symmetry
+        
+        # Initializations
+        if octants==8:
+            nOct = 4
+        else:
+            nOct = octants
+        nOrientations = int(size + nOct*size*(size-1)/2)
+        phi = np.zeros(nOrientations)
+        theta = np.zeros(nOrientations)
+        weights = np.zeros(nOrientations)
+        
+        sindth2 = np.sin(dtheta/2)
+        w1 = 0.5
+        
+        # North pole (z orientation)
+        phi[0] = 0
+        theta[0] = 0
+        weights[0] = maxphi*(1 - np.cos(dtheta/2))
+        
+        # All but equatorial slice
+        Start = 2
+        for iSlice in np.arange(2,size):
+            nPhi = nOct*(iSlice-1) + 1
+            dPhi = maxphi/(nPhi - 1)
+            idx = Start + np.arange(0,nPhi)
+            weights[idx] = 2*np.sin((iSlice - 1)*dtheta)*sindth2*dPhi*np.concatenate([[w1], np.ones(nPhi-2), [0.5]])
+            phi[idx] = np.linspace(0,maxphi,nPhi)
+            theta[idx] = (iSlice - 1)*dtheta
+            Start = Start + nPhi
+        
+        # Equatorial slice
+        nPhi = nOct*(size - 1) + 1
+        dPhi = maxphi/(nPhi - 1)
+        idx = Start + (np.arange(0,nPhi) - 1)
+        phi[idx] = np.linspace(0,maxphi,nPhi)
+        theta[idx] = np.pi/2
+        weights[idx] = sindth2*dPhi*np.concatenate([[w1], np.ones(nPhi-2), [0.5]])
+        
+        # Border removal
+        rmv = np.cumsum(nOct*np.arange(1,size-1)+1)+1 
+        phi = np.delete(phi,rmv)
+        theta = np.delete(theta,rmv)
+        weights = np.delete(weights,rmv)
+
+        # For C1, add lower hemisphere
+        if octants==8:
+            idx = len(theta)-nPhi + np.arange(1,1,-1) -1
+            phi = np.concatenate([phi, phi[idx]])
+            theta = np.concatenate([theta, np.pi-theta[idx]])
+            weights[idx] = weights[idx]/2; # half of real value
+            weights = np.concatenate([weights, weights[idx]])
+        
+        weights = 2*(2*np.pi/maxphi)*weights; # sum = 4*pi
+
+    elif octants==0: # Dinfh symmetry (quarter of meridian in xz plane)
+
+        phi = np.zeros(1,size)
+        theta = np.linspace(0,np.pi/2,size)
+        weights = -2*(2*np.pi)*np.diff(np.cos(np.concatenate([[0], np.arange(dtheta/2,np.pi/2,dtheta), [np.pi/2]]))); # sum = 4*pi
+
+    elif octants==-1: # O3 symmetry (z orientation only)
+        
+        phi = 0
+        theta = 0
+        weights = 4*np.pi
+
+    else:    
+        raise ValueError('Unsupported value #d for octants.',octants)
+
+    # Remove orientations with zero weight
+    phi = phi[weights!=0]
+    theta = theta[weights!=0]
+    weights = weights[weights!=0]
+    
+    # Normalize to unity 
+    weights = weights/np.sum(weights)
+
+    return phi,theta,weights
+# --------------------------------------------------------------------------------------
