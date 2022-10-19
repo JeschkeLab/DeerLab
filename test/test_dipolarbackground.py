@@ -196,7 +196,7 @@ def test_twodimensional():
 
 def test_threespin():
 #==================================================================================
-    "Check the construction of a threespin background contribution"
+    "Check the construction of a three-spin background contribution"
 
     t = np.linspace(0,5,150)
     conc = 50
@@ -218,7 +218,7 @@ def test_threespin():
 
 def test_threespin_twodimensional():
 #==================================================================================
-    "Check the construction of a threespin background contribution"
+    "Check the construction of a three-spin background contribution"
 
     t1 = np.linspace(0,5,150)
     t2 = np.linspace(0,3,150)

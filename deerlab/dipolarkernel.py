@@ -10,15 +10,17 @@ from scipy.integrate import quad_vec, quad
 from scipy.special import fresnel
 from scipy.interpolate import make_interp_spline
 # Other packages
+import numexpr as ne
 import types
 import warnings
 from memoization import cached
 # DeerLab dependencies
 from deerlab.dipolarbackground import dipolarbackground
+from deerlab.utils import sophegrid
 from deerlab.constants import *
 
 def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=None, 
-                  integralop=True, nKnots=5001, complex=False, clearcache=False, memorylimit=8):
+                  integralop=True, gridsize=1000, complex=False, clearcache=False, memorylimit=8):
 #===================================================================================================
     r"""Compute the (multi-pathway) dipolar kernel operator which enables the linear transformation from
     distance-domain to time-domain data. 
@@ -151,7 +153,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     """
     # Clear cache of memoized function is requested
     if clearcache:
-        elementarykernel.cache_clear()
+        elementarykernel_twospin.cache_clear()
 
     # If not specified, assume the free-electron g-values
     if g is None:
@@ -175,7 +177,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     memory_requirement = 8/1e9 # GB/float
     memory_requirement *= np.prod([len(t_) for t_ in t])*np.prod([len(r_) for r_ in r]) 
     if method=='grid': 
-        memory_requirement = memory_requirement*nKnots
+        memory_requirement = memory_requirement*gridsize
     if memory_requirement > memorylimit: 
         raise MemoryError(f'The requested kernel requires {memory_requirement:.2f}GB, exceeding the current memory limit {memorylimit:.2f}GB.')
 
@@ -188,8 +190,6 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     # Check that the kernel construction method is compatible with requested options
     if method=='fresnel':
-        if Q>1: 
-            raise KeyError("The 'fresnel' method is not compatible with multiple dipolar interactions. Use the 'grid' or 'integral' methods.")
         if excbandwidth != inf:
             raise KeyError("Excitation bandwidths can only be specified with the 'grid' or 'integral' methods.")
         if orisel is not None:
@@ -248,7 +248,8 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         Λ0 = 0
 
     # Define kernel matrix auxiliary function
-    K0 = lambda tdip,r,method: elementarykernel(tdip,r,method,excbandwidth,nKnots,g,orisel,complex)
+    K0_2spin = lambda tdip,r: elementarykernel_twospin(tdip,r,method,excbandwidth,gridsize,g,orisel,complex)
+    K0_3spin = lambda tdip: elementarykernel_threespin(tdip,r,'grid',excbandwidth,gridsize,g,orisel,complex)
 
     # Build dipolar kernel matrix, summing over all pathways
     K = Λ0
@@ -256,20 +257,25 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         λ,tref,δ = [pathway['amp'],pathway['reftime'],pathway['harmonic']]
 
         # Set trefs of unmodulated patwhays to an arbitrary numerical value
-        trefq = [[trefq[d] if δqd!=0 else 0 for d,δqd in enumerate(δq)] for δq,trefq in zip(δ,tref)]
-
-        # Construct multi-dimensional effective dipolar evolution time
-        tdip = [np.sum(np.array([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)],dtype=object), axis=0).astype(float) for δq,trefq in zip(δ,tref)]
+        tref = [[trefq[d] if δqd!=0 else 0 for d,δqd in enumerate(δq)] for δq,trefq in zip(δ,tref)]
 
         # Determine number of spins participating in the pathway
-        Nspin = np.sum(np.abs(δ))+1 
+        Nspin = np.sum([np.any(δq!=0) for δq in δ])+1 
 
         # Two-spin dipolar interactions
-        if Nspin==2 and method!='grid':
+        if Nspin==2:
+
+            # Determine the modulated dipolar interaction
             q = int(np.where([np.any(δq!=0) for δq in δ])[0])
-            K += λ*K0(tdip[q],r[q],method)
-        else:
-            K += λ*K0(tdip,r,'grid')
+            # Construc the effective dipolar evolution time for the modulated dipolar interactions
+            tdip = np.sum(np.array([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δ[q],tref[q])],dtype=object), axis=0).astype(float)
+            # Compute and accumulate the two-spin dipolar pathway contribution to the dipolar kernel
+            K += λ*K0_2spin(tdip,r[q])
+
+        elif Nspin==3:
+            # Construct effective dipolar evolution time for all dipolar interactions
+            tdip = [np.sum(np.array([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)],dtype=object), axis=0).astype(float) for δq,trefq in zip(δ,tref)]
+            K += λ*K0_3spin(tdip)
 
     # Multiply by background if given
     if bg is not None:
@@ -293,33 +299,36 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     return K
 #==============================================================================
 
+
+
+#==============================================================================
+#   TWO-SPIN ELEMENTARY DIPOLAR KERNEL
+#==============================================================================
+
 def _echomodulation(ωr,tdip,cosθ,ωex,complex):
 #==============================================================================
     "Spin echo modulation due to dipolar coupling(s)"
-    echomod = 1
-    # Loop over the different dipolar interactions
-    for ωr_q, tdip_q in zip(ωr,tdip):
-        # Differentiate between complex and real valued cases for a speedup
-        if complex: 
-            echomod *= np.exp(-1j*ωr_q*tdip_q*(1 - 3*cosθ**2))
-        else:
-            echomod *= np.cos(ωr_q*abs(tdip_q)*(1 - 3*cosθ**2))
-        # If given, include limited excitation bandwidth
-        if not np.isinf(ωex):
-            echomod *= np.exp(-(ωr_q*(1 - 3*cosθ**2))**2/ωex**2)
+    # Differentiate between complex and real valued cases for a speedup
+    if complex: 
+        echomod = np.exp(-1j*ωr*tdip*(1 - 3*cosθ**2))
+    else:
+        echomod = np.cos(ωr*abs(tdip)*(1 - 3*cosθ**2))
+    # If given, include limited excitation bandwidth
+    if not np.isinf(ωex):
+        echomod *= np.exp(-(ωr*(1 - 3*cosθ**2))**2/ωex**2)
     return echomod
 #==============================================================================
 
 @cached(max_size=100)
-def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
+def elementarykernel_twospin(tdip,r,method,ωex,gridsize,g,Pθ,complex):
 #==============================================================================
-    "Calculates the elementary dipolar kernel (cached for speed)"
+    "Calculates the elementary two-spin dipolar interaction kernel (cached for speed)"
 
     # Work with vectors
     r = np.atleast_1d(r)
 
     # Dipolar frequencies
-    ωr = [(μ0/2)*μB**2*g[0]*g[1]/h*1e21/(r_q**3) for r_q in r]  # rad μs^-1
+    ωr = (μ0/2)*μB**2*g[0]*g[1]/h*1e21/(r**3)  # rad μs^-1
 
     # Orientation selection
     orientationselection = Pθ is not None 
@@ -357,28 +366,28 @@ def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
         return K0
     #==========================================================================
 
-    def elementarykernel_grid(tdip,ωex,nKnots,Pθ):
+    def elementarykernel_grid(tdip,ωex,gridsize,Pθ):
     #==========================================================================
-        """Calculate kernel using grid-based powder integration (converges very slowly with nKnots)"""
+        """Calculate kernel using grid-based powder integration (converges very slowly with gridsize)"""
 
         # Orientational grid
-        cosθ = np.linspace(0,1,int(nKnots))
+        cosθ = np.linspace(0,1,int(gridsize))
 
-        # Vectorized 3D-grid evaluation (t,r,orientations)
-        D,Q = len(tdip[0].shape),len(ωr)
-        dims = np.arange(D + Q + 1)
+        D = len(tdip.shape)
+        dims = np.arange(D + 2)
+
         # Expand dimensions of all variables on a multi-dimensional grid
-        tdip_ = [np.expand_dims(tdip[q], axis=tuple(np.delete(dims, range(D)))) for q in range(Q)]
-        ωr_   = [np.expand_dims(ωr[q],   axis=tuple(np.delete(dims, D + q))) for q in range(Q)]
-        cosθ_ =  np.expand_dims(cosθ,    axis=tuple(np.delete(dims, D + Q)))
+        tdip_ =  np.expand_dims(tdip, axis=tuple(np.delete(dims, range(D)))) 
+        ωr_   =  np.expand_dims(ωr,   axis=tuple(np.delete(dims, D)))
+        cosθ_ =  np.expand_dims(cosθ, axis=tuple(np.delete(dims, D + 1)))
 
         # Integrate over the grid of echo modulations
         if orientationselection:
             # With orientation distribution Pθ
-            K0 = np.dot(_echomodulation(ωr_,tdip_,cosθ_,ωex,complex),Pθ(np.arccos(cosθ)))/nKnots
+            K0 = np.dot(_echomodulation(ωr_,tdip_,cosθ_,ωex,complex),Pθ(np.arccos(cosθ)))/gridsize
         else: 
             # Without orientation selection
-            K0 = np.sum(_echomodulation(ωr_,tdip_,cosθ_,ωex,complex),axis=-1)/nKnots
+            K0 = np.sum(_echomodulation(ωr_,tdip_,cosθ_,ωex,complex),axis=-1)/gridsize
         return K0
     #==========================================================================
 
@@ -389,7 +398,7 @@ def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
         for n,ωr_ in enumerate(ωr):
             #==================================================================
             def integrand(cosθ):
-                integ = _echomodulation([ωr_,0,0],[tdip,0,0],cosθ,ωex,complex)
+                integ = _echomodulation(ωr_,tdip,cosθ,ωex,complex)
                 # If given, include orientation selection
                 if orientationselection:
                     integ = integ*Pθ(np.arccos(cosθ))  
@@ -404,6 +413,103 @@ def elementarykernel(tdip,r,method,ωex,nKnots,g,Pθ,complex):
     elif method=='integral': 
         K0 = elementarykernel_integral(tdip,ωex,Pθ)
     elif method=='grid': 
-        K0 = elementarykernel_grid(tdip,ωex,nKnots,Pθ)
+        K0 = elementarykernel_grid(tdip,ωex,gridsize,Pθ)
+    return K0
+#==============================================================================
+
+#==============================================================================
+#   THREE-SPIN ELEMENTARY DIPOLAR KERNEL
+#==============================================================================
+
+
+def _echomodulation_threespin(tdips,ωrs,rs,θ1,φ1,weights,complex):
+#==============================================================================
+    "Spin echo modulation due to dipolar coupling(s)"
+
+    # Orientation of the first interspin vector relative to the magnetic field
+    cosθ1 = np.cos(θ1)
+    sinθ1 = np.sin(θ1)
+    cosφ1 = np.cos(φ1)
+
+    # Law of cosines
+    r1,r2,r3 = rs
+    Δθ12 = np.arccos((r1**2 + r2**2 - r3**2)/(2*r1*r2))
+    Δθ13 = np.arccos((r1**2 + r3**2 - r2**2)/(2*r1*r3))
+    sinΔθ12, cosΔθ12 = np.sin(Δθ12), np.cos(Δθ12)
+    sinΔθ13, cosΔθ13 = np.sin(Δθ13), np.cos(Δθ13)
+
+    # Compute orientations of the other two interspin vectors relative to the magnetic field
+    cosθ2 = sinΔθ12*cosφ1*sinθ1 + cosΔθ12*cosθ1
+    cosθ3 = sinΔθ13*cosφ1*sinθ1 + cosΔθ13*cosθ1 
+    
+    # Precompute partial broadcasting for efficiency
+    ωdip1_tdip1,ωdip2_tdip2,ωdip3_tdip3 = [ωdip_q*tdip_q for ωdip_q,tdip_q in zip(ωrs,tdips)]
+
+    # Differentiate between complex and real valued cases for a speedup
+    if complex: 
+        echomod = ne.evaluate('exp(-1j*ωdip1_tdip1*(1 - 3*cosθ1**2) )* \
+                               exp(-1j*ωdip2_tdip2*(1 - 3*cosθ2**2) )* \
+                               exp(-1j*ωdip3_tdip3*(1 - 3*cosθ3**2) )')
+    else:
+        echomod = ne.evaluate('cos(ωdip1_tdip1*(1 - 3*cosθ1**2) )* \
+                               cos(ωdip2_tdip2*(1 - 3*cosθ2**2) )* \
+                               cos(ωdip3_tdip3*(1 - 3*cosθ3**2) )')
+    # Orientation weighting
+    echomod = echomod*weights
+
+    return echomod
+#==============================================================================
+
+def elementarykernel_threespin(tdips,rs,method,ωex,gridsize,g,Pθ,complex):
+#==============================================================================
+    "Calculates the elementary three-spin dipolar interaction kernel"
+
+    # Work with vectors
+    rs = np.atleast_1d(*rs)
+
+    # Dipolar frequencies
+    ωrs = [(μ0/2)*μB**2*g[0]*g[1]/h*1e21/(r_q**3) for r_q in rs] # rad μs^-1
+
+    # Orientation selection
+    orientationselection = Pθ is not None 
+    if orientationselection:
+        # Ensure zero-derivatives at [0,π/2]
+        θ = np.linspace(0,π/2,50) # rad
+        Pθ_ = make_interp_spline(θ, Pθ(θ),bc_type="clamped")
+        # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
+        Pθnorm,_ = quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
+        Pθ = lambda θ: Pθ_(θ)/Pθnorm
+
+
+    def elementarykernel_threespin_grid(tsdip,gridsize,Pθ):
+    #==========================================================================
+        """Calculate kernel using grid-based powder integration (converges very slowly with gridsize)"""
+
+        # Orientational grid
+        φ,θ,weights = sophegrid(octants=4,maxphi=2*np.pi,size=int(np.floor(1/2*(np.sqrt(2*gridsize - 1) +1 ))))
+
+        D = len(tsdip[0].shape)
+        dims = np.arange(D + 2)
+        # Expand dimensions of all variables on a multi-dimensional grid
+        tsdip_ = [np.expand_dims(tdip, axis=tuple(np.delete(dims, range(D)))) for tdip in tsdip]
+        ωr_   =  [np.expand_dims(ωr_q,   axis=tuple(np.delete(dims, D))) for ωr_q in ωrs]
+        rs_   =  [np.expand_dims(r_q,   axis=tuple(np.delete(dims, D))) for r_q in rs]
+        θ_ =  np.expand_dims(θ, axis=tuple(np.delete(dims, D + 1)))
+        φ_ =  np.expand_dims(φ, axis=tuple(np.delete(dims, D + 1)))
+        weights_ =  np.expand_dims(weights, axis=tuple(np.delete(dims, D + 1)))
+
+        # Integrate over the grid of echo modulations
+        if orientationselection:
+            # With orientation distribution Pθ
+            K0 = np.dot(_echomodulation_threespin(tsdip_,ωr_,rs_,θ_,φ_,weights_,complex),Pθ(θ))
+        else:
+            # Without orientation selection
+            K0 = np.sum(_echomodulation_threespin(tsdip_,ωr_,rs_,θ_,φ_,weights_,complex),axis=-1)
+        return K0
+    #==========================================================================
+
+
+    if  method=='grid': 
+        K0 = elementarykernel_threespin_grid(tdips,gridsize,Pθ)
     return K0
 #==============================================================================
