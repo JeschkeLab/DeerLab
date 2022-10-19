@@ -65,8 +65,8 @@ Pr = dd_gauss(r,3,0.2)
 V1path = 1e5*dipolarkernel(t,r,mod=0.3,bg=Bfcn)@Pr
 V1path_noB = 1e5*dipolarkernel(t,r,mod=0.3)@Pr
 V1path_phenoB = 1e5*dipolarkernel(t,r,mod=0.3,bg=Bfcn_pheno)@Pr
-V2path = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,0],[0.1,2]],bg=Bfcn)@Pr
-V3path = 1e5*dipolarkernel(t,r,pathways=[[0.5],[0.3,0],[0.1,2],[0.1,5]],bg=Bfcn)@Pr
+V2path = 1e5*dipolarkernel(t,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':0},{'amp':0.1,'reftime':2}],bg=Bfcn)@Pr
+V3path = 1e5*dipolarkernel(t,r,pathways=[{'amp':0.5},{'amp':0.3,'reftime':0},{'amp':0.1,'reftime':2},{'amp':0.1,'reftime':5}],bg=Bfcn)@Pr
 
 
 # ======================================================================
@@ -189,9 +189,9 @@ def test_fit_3pathways():
 # ======================================================================
 
 
-V1harm = 1e5*dipolarkernel(t,r,pathways=[[0.7],[0.3,0,1]],bg=Bfcn)@Pr
-V2harm = 1e5*dipolarkernel(t,r,pathways=[[0.6],[0.3,0,1],[0.1,2,2]],bg=Bfcn)@Pr
-V3harm = 1e5*dipolarkernel(t,r,pathways=[[0.5],[0.3,0,1],[0.1,2,2],[0.1,5,3]],bg=Bfcn)@Pr
+V1harm = 1e5*dipolarkernel(t,r,pathways=[{'amp':0.7},{'amp':0.3,'reftime':0,'harmonic':1}],bg=Bfcn)@Pr
+V2harm = 1e5*dipolarkernel(t,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':0,'harmonic':1},{'amp':0.1,'reftime':2,'harmonic':2}],bg=Bfcn)@Pr
+V3harm = 1e5*dipolarkernel(t,r,pathways=[{'amp':0.5},{'amp':0.3,'reftime':0,'harmonic':1},{'amp':0.1,'reftime':2,'harmonic':2},{'amp':0.1,'reftime':5,'harmonic':3}],bg=Bfcn)@Pr
 
 
 # ======================================================================
@@ -266,12 +266,13 @@ tdeer = np.linspace(-0.5,5,300)
 tsifter = np.linspace(-2,4,300)
 tridme = np.linspace(-1,3,300)
 tau1,tau2,tau3 = 1,2,3
-V3pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[[0.6],[0.3,0],[0.1,tau1]],bg=Bfcn)@Pr
-V4pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[[0.6],[0.3,tau1],[0.1,tau1+tau2]],bg=Bfcn)@Pr
-Vfwd5pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[[0.6],[0.3,tau3],[0.1,tau1]],bg=Bfcn)@Pr
-Vrev5pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[[0.6],[0.3,tau3],[0.1,tau2]],bg=Bfcn)@Pr
-Vsifter = 1e5*dipolarkernel(tsifter,r,pathways=[[0.3],[0.5,tau2-tau1,1],[0.1,2*tau2,1/2],[0.1,-2*tau1,1/2]],bg=Bfcn)@Pr
-Vridme  = 1e5*dipolarkernel(tridme,r,pathways=[[0.3],[0.5,0],[0.1,tau2],[0.1,-tau1]],bg=Bfcn)@Pr
+V3pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':0},{'amp':0.1,'reftime':tau1}],bg=Bfcn)@Pr
+V4pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':tau1},{'amp':0.1,'reftime':tau1+tau2}],bg=Bfcn)@Pr
+Vfwd5pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':tau3},{'amp':0.1,'reftime':tau1}],bg=Bfcn)@Pr
+Vrev5pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':tau3},{'amp':0.1,'reftime':tau2}],bg=Bfcn)@Pr
+Vsifter = 1e5*dipolarkernel(tsifter,r,pathways=[{'amp':0.3},{'amp':0.5,'reftime':tau2-tau1,'harmonic':1},{'amp':0.1,'reftime':2*tau2,'harmonic':1/2},{'amp':0.1,'reftime':-2*tau2,'harmonic':1/2}],bg=Bfcn)@Pr
+Vridme  = 1e5*dipolarkernel(tridme,r,pathways=[{'amp':0.3},{'amp':0.5,'reftime':0},{'amp':0.1,'reftime':tau2},{'amp':0.1,'reftime':-tau1}],bg=Bfcn)@Pr
+
 
 # ======================================================================
 def test_ex_3pdeer_type(): 
@@ -399,7 +400,7 @@ def test_orisel():
     "Check that dipolar models with orientation selection work"
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
-    Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,orisel=lambda theta: np.ones_like(theta))
+    Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,orisel=lambda theta: np.ones_like(theta),gridsize=5000)
 
     Vref = Vmodel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
     Vorisel = Vmodelorisel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
@@ -413,7 +414,7 @@ def test_excitationbandwidth():
     "Check that dipolar models with limited excitation bandwidth work"
 
     Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
-    Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,excbandwidth=1e8)
+    Vmodelorisel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1,excbandwidth=1e8,gridsize=5000)
 
     Vref = Vmodel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)
     Vorisel = Vmodelorisel(mean=3,std=0.2,mod=0.3,reftime=0,conc=200,scale=1e2)

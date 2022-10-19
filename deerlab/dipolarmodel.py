@@ -13,7 +13,7 @@ from deerlab.constants import *
 
 #===============================================================================
 def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None, experiment=None,
-                    excbandwidth=np.inf, orisel=None, g=[ge,ge]):
+                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000):
     """
     Generate a dipolar EPR signal model.
 
@@ -107,18 +107,21 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
         if npathways==1:
             # Single-pathway model, use modulation depth notation
             lam,reftime = param
-            pathways = [[1-lam],[lam,reftime,harmonics[0]]]
+            pathways = [
+                {'amp':1-lam},
+                {'amp':lam, 'reftime':reftime, 'harmonic':harmonics[0]}
+                ]
         else:
             # Otherwise, use general notation
             lams = param[np.arange(0,len(param),2)]
             reftimes = param[np.arange(1,len(param),2)]
             Lam0 = np.maximum(0,1 - np.sum(lams)) 
             # Unmodulated pathways ccontribution
-            pathways = [[Lam0]]
+            pathways = [{'amp':Lam0}]
             # Modulated pathways
             for n in range(npathways):
-                pathways.append([lams[n], reftimes[n], harmonics[n]])    
-        return  pathways
+                pathways.append({'amp':lams[n], 'reftime':reftimes[n], 'harmonic':harmonics[n]})    
+        return pathways
     #------------------------------------------------------------------------
 
     # Construct the signature of the dipolarpathways() function
@@ -198,7 +201,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
         # Construct the dipolar kernel
         Kdipolar = dipolarkernel(t,r,pathways=pathways, bg=Bfcn,
                                  excbandwidth=excbandwidth, orisel=orisel,
-                                  g=g, method=kernelmethod)
+                                  g=g, method=kernelmethod, gridsize=gridsize)
         # Compute the non-linear part of the distance distribution
         Pnonlin = Pmodel.nonlinmodel(*[r]*Nconstants,*nonlin[Psubset])
         # Forward calculation of the non-linear part of the dipolar signal
