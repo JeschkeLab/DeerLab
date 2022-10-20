@@ -663,3 +663,21 @@ def test_threespin_grid_complexvalue():
 
     assert abs(K - Kref)<1e-2
 #=======================================================================
+
+def test_threespin_twodimensional():
+#=======================================================================
+    "Check that three-spin and bidimensional kernels are of the correct size"
+
+    t1 = np.linspace(0,5,20)
+    t2 = np.linspace(0,5,30)
+    r1 = np.linspace(1,4,10)
+    r2 = np.linspace(1,4,10)
+    r3 = np.linspace(1,4,10)
+    pathways= [
+    {'amp': 0.7},
+    {'reftime': ([0,0],[0,0],[None,None]),'amp': 0.3, 'harmonic': ([1,0],[0,1],[0,0])}    
+    ]
+    K = dipolarkernel([t1,t2],[r1,r2,r3],pathways=pathways)
+
+    assert np.allclose(np.shape(K), np.array([20,30,10]))
+#=======================================================================

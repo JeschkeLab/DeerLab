@@ -22,30 +22,97 @@ from deerlab.constants import *
 def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=None, 
                   integralop=True, gridsize=1000, complex=False, clearcache=False, memorylimit=8):
 #===================================================================================================
-    r"""Compute the (multi-pathway) dipolar kernel operator which enables the linear transformation from
-    distance-domain to time-domain data. 
+    r"""
+    Compute the (multi-pathway) dipolar kernel operator. 
+
+    The function computes the two-spin interaction dipolar kernel which accounts for the structure and shape of the echo modulation 
+    due to intra- and inter-molecular dipolar interactions over a sample. The dipolar kernel is constructed from the 
+    contributions arising from different dipolar pathways [1]_ during a pulse sequence. The two-spin dipolar kernel reads:
+
+    .. math::
+
+        K(\mathbf{t},r) = \Lambda_0 + \sum_k \lambda_k 
+        \int_0^\pi \mathrm{d}\theta \sin(\theta) 
+        \exp\Bigg(-i \frac{D\mathbf{\delta}_k (\mathbf{t} - \mathbf{t}_{\mathrm{ref},k})}{r^3}(1-3\cos(\theta)^2) \Bigg)
+        \prod_k B(\lambda_k, \mathbf{\delta}_k (\mathbf{t} - \mathbf{t}_{\mathrm{ref},k}))
+
+    where `\mathbf{t}=(t_1,\dots,t_D)` are the experimental time incrementation vectors of a `D`-dimensional experiment
+    and `r` represents the interspin distance. The dipolar pathways are characterized by their amplitudes `\lambda_k`,  
+    their refocusing times `\mathbf{t}_{\mathrm{ref},k}`, and their (sub)harmonic factors `\mathbf{\delta}_k`. The constant factor 
+    `\Lambda_0` represents the total amplitude of all unmodulated contributions. The function `B(\lambda,t)` represents
+    the background function due to the intermolecular contributions. The dipolar signal due to two-spin contributions given a
+    distance distribution `P(r)` is given by the linear Fredholm integral 
+
+    .. math:: 
+
+        V(\mathbf{t}) = \int_0^\infty \mathrm{d}r P(r) K(\mathbf{t},r)
+
+    The function can also compute three-spin interaction dipolar kernels that account for the additional the structure and shape
+    of the echo modulation in multi-spin systems [2]_. The three-spin dipolar kernel is constructed from the 
+    contributions arising from the combinations of different pair dipolar pathways [2]_ during a pulse sequence. 
+    The three-spin dipolar kernel reads:
+
+    .. math::
+
+        K^{(3)}(\mathbf{t},\mathbf{r}) = & \Lambda_0 + \sum_k \lambda_k \frac{1}{2\pi}
+        \int_0^{2\pi}\mathrm{d}\varphi 
+        \int_0^{\pi}\mathrm{d}\theta_1
+        \sin(\theta_1)
+        \exp\Bigg(-i \sum_q^3 \frac{D \delta_{k,q}(\mathbf{t} - \mathbf{t}_{\mathrm{ref},k,q})}{r_q^3}
+        (1 - 3\cos(\theta_{1q})^2 \Bigg) 
+        \prod_k\prod_q^3 B(\lambda_k, \mathbf{\delta}_{k,q} (\mathbf{t} - \mathbf{t}_{\mathrm{ref},k,q}))
+
+    with `\cos(\theta_{1q}) = \sin\chi_{1q} \cos\varphi \sin\theta_1 + \cos\chi_{1q} \cos\theta_1`,
+    where `\mathbf{r} = (r_1,r_2,r_3)` represents the vector of the three interspin distances between the three interacting spins, 
+    and `\chi_{1q}` are the angles between the first and `q`-th interspin vector. The three-spin dipolar pathways are now characterized 
+    by an amplitude `\lambda_k`, and by a set of three refocusing times `\mathbf{t}_{\mathrm{ref},k,q}` and three (sub)harmonic factors
+    `\mathbf{\delta}_{k,q}`.   
+
+    Due to the higher dimensionality, the three-spin kernel is not constructed as a full matrix but folds the three distance dimensions 
+    into a single one, such that the contribution to the dipolar echo modulation is given directly by
+
+    .. math:: 
+
+        V^{(3)}(\mathbf{t}) = \int_0^\infty\int_0^\infty \int_0^\infty  \mathrm{d}\mathbf{r} K^{(3)}(\mathbf{t},\mathbf{r})
+
+    without the specification of a distance distribution.
 
     Parameters
     ----------
     t : ndarray or list thereof
-        Dipolar evolution time axis, in microseconds.
+        Experimental time incrementation vectors (time coordinates) `t`, in microseconds. For multi-dimensional experiments, 
+        specify a list ``[t1,...,tD]`` of the time coordinates `\mathbf{t}` along each of the ``D`` different experimental dimensions. 
     
     r : ndarray or list thereof
-        Distance axis, in nanometers.
+        Distance vector `r`, in nanometers. For three-spin interactions, a list ``[r1,r2,r3]`` of three vectors of interspin distances 
+        must be specified.
     
-    pathways : list of lists  or ``None``, optional
-        List of dipolar pathways [1]_. Each pathway is defined as a list of the pathway's amplitude (lambda), refocusing time in microseconds (T0), 
-        and harmonic (n), i.e. ``[lambda, T0, n]`` or ``[lambda, T0]``. If n is not given, it is assumed to be 1. 
-        For a unmodulated pathway, specify only the amplitude, i.e. ``[Lambda0]``. If neither ``pathways`` or ``mod`` are specified
-        (or ``None``), ``pathways=[[1,0]]`` is used as the default.
+    pathways : list of dictionaries  or ``None``, optional
+        List of dipolar pathways. 
+        :raw-html:`<br /><br />`
+        For *two-spin dipolar interactions*, each pathway is defined as a dictionary containing the pathway's amplitude :math:`\lambda_k` (``'amp'``), 
+        refocusing time :math:`t_{\mathrm{ref},k}` (``'reftime'``) in microseconds, and (sub)harmonic :math:`\delta_k` (``'harmonic'``).
+        For example, for a one-dimensional experiment ``{'amp:'lambda, 'reftime':tref, 'harmonic':delta}`` or ``{'amp:'lambda, 'reftime':tref}``. If ``'harmonic'`` is not
+        specified, it is assumed to be 1 (modulated). For an unmodulated pathway, specify only the amplitude, i.e. ``{'amp':Lambda0}``.
+        :raw-html:`<br /><br />`
+        For *multi-dimensional experiments*, the pathway refocusing times \mathbf{\t}_{\mathrm{ref},k}` and harmonics `\mathbf{\delta}_k` 
+        along the different dimensions must be specified as a list, e.g. for a pathway in a two-dimensional experiment 
+        ``{'amp:'lambda, 'reftime':[tref1,tref2], 'harmonic':[delta1,delta2]}``
+        :raw-html:`<br /><br />`
+        For *three-spin interactions*, each pathway is defined as a dictionary containing the pathway's amplitude :math:`\lambda_k` (``'amp'``),
+        a tuple of refocusing times :math:`t_{\mathrm{ref},k,q}` (``'reftime'``), and a tuple of (sub)harmonics :math:`\delta_{k,q}` (``'harmonic'``). 
+        For example, for a one-dimensional experiment ``{'amp:'lambda, 'reftime':(tref1,tref2,tref3), 'harmonic':(delta1,delta2,delta3)}``. 
+        :raw-html:`<br /><br />`
+        If neither ``pathways`` or ``mod`` are specified (or set to ``None``), ``pathways=[{'amp':1,'reftime':0}]`` is used as the default.
     
     mod : scalar  or ``None``, optional
-        Modulation depth for the simplified 4-pulse DEER model. If neither ``pathways`` or ``mod`` are specified (or ``None``),
-        ``mod=1`` is used as the default.
+        Modulation depth for single-pathway dipolar models. This definition is equivalent to ``pathways=[{'amp':1-mod},{'amp':mod,'reftime':0}]``.
+        If neither ``pathways`` or ``mod`` are specified (or ``None``), ``mod=1`` is used as the default. 
         
     bg : callable or array_like or ``None``, optional
+        Dipolar background basis function. Must be a callable function, accepting a time-vector array as first input and a pathway amplitude 
+        as a second, i.e. ``bg = lambda t,lam: bg_model(t,par,lam)``. If set to ``None``, no background function is included.
         For a single-pathway model, the numerical background decay can be passed as an array. 
-        For multiple pathways, a callable function must be passed, accepting a time-axis array as first input and a pathway amplitude as a second, i.e. ``B = lambda t,lam: bg_model(t,par,lam)``. If set to ``None``, no background decay is included.
 
     method : string, optional
         Numerical method for kernel matrix calculation: 
@@ -54,7 +121,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
             * ``'integral'`` - uses explicit integration function (slow, accurate)
             * ``'grid'`` - powder average via explicit grid integration (slow, inaccurate)
         
-        The default is ``'fresnel'``.
+        The default is ``'fresnel'``. For all three-spin dipolar kernels, the ``'grid'`` method is used automatically. 
 
     orisel : callable  or ``None``, optional 
         Probability distribution of possible orientations of the interspin vector to account for orientation selection. Must be 
@@ -72,84 +139,126 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         If not specified, g = 2.002319... is used for both spins.
 
     complex : boolean, optional 
-        Return the complex-valued kernel such that the matrix operation ``V=K@P`` with a distance distribution yields the in-phase 
-        and out-of-phase components of the dipolar signal ``V``. Disabled by default. 
-        Requires the ``'fresnel'`` or ``'grid'`` methods.
+        If enabled, return the complex-valued dipolar kernel, otherwise return the real-valued dipolar kernel.
+        Disabled by default. Requires the ``'fresnel'`` or ``'grid'`` methods.
 
     integralop : boolean, optional
         Return the kernel as an integral operator (i.e ``K = K*dr``) or not (``K``). Usage as an integral operator means that the 
         matrix operation ``V=K@P`` with a normalized distance distribution (i.e. ``trapz(r,P)==1``) leads to a signal ``V`` with 
         amplitude ``V(t=0)=1``. The default is ``True``.
     
-    nKnots : scalar, optional
-        Number of knots for the grid of powder orientations to be used in the ``'grid'`` kernel calculation method. By default set to 5001 knots.
-        
+    gridsize : scalar, optional
+        Number of points on the grid of powder orientations to be used in the ``'grid'`` kernel calculation method. By default set to 1000 knots.
+        If the expected memory costs of the combined sizes of the ``t`` vector(s), ``r`` vector(s) and grid exceed the ``memorylimit`` value, 
+        a ``MemoryError`` will be raised. 
+
     clearcache : boolean, optional
         Clear the cached dipolar kernels at the beginning of the function to save memory. Disabled by default.
 
     memorylimit : scalar, optional
         Memory limit to be allocated for the dipolar kernel. If the requested kernel exceeds this limit, the 
-        execution will be stopped. The default is 12GB.  
+        execution will be stopped. The default is 8GB.  
 
     Returns
     --------
     K : ndarray
-        Dipolar kernel operator matrix, such that for a distance distribution ``P``, the dipolar signal is ``V = K@P``
+        Dipolar kernel matrix.
 
     Notes
     -----
-    For a multi-pathway DEER [1]_, [2]_ signal (e.g, 4-pulse DEER with 2+1 contribution 5-pulse DEER with 4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of pathway amplitudes and refocusing times (in microseconds).
-    The background function specified as ``B`` is used as basis function, and the actual multipathway background included into the kernel is computed using :ref:`dipolarbackground`. The background in included in the dipolar kernel definition [3]_. 
-    Optionally, the harmonic (1 = fundamental, 2 = first overtone, etc.) can be given as a third value in each row. This can be useful for modeling RIDME signals [4]_. If not given, the harmonic is 1 for all pathways. 
-
+    For a multi-pathway DEER [1]_, [2]_, [3]_ signal (e.g, 4-pulse DEER with 2+1 contribution, 5-pulse DEER with 
+    4-pulse DEER residual signal, and more complicated experiments), ``pathways`` contains a list of pathway amplitudes and refocusing times (in microseconds).
+    The background function specified as ``bg`` is used as basis function, and the actual multipathway background 
+    included into the kernel is computed using :ref:`dipolarbackground`. The background in included in the dipolar 
+    kernel definition [3]_. Optionally, the harmonic (1 = fundamental, 2 = first harmonic, etc.) can be specified for modeling RIDME signals or
+    subharmonics (1/2 = first subharmonic) can be specified for modeling SIFTER signals. 
+    
 
     Examples
     --------
-    To specify the standard model for 4-pulse DEER with an unmodulated offset and a single dipolar pathway that refocuses at time 0, use::
-    
-        lam = 0.4  # modulation depth main signal
-        pathways = [[1-lam], [lam, 0]]
+    To specify single-pathway model with an unmodulated offset and a single dipolar pathway that refocuses at time `t=0`, use::
+
+        lam = 0.4  # modulation depth
+        pathways = [
+            {'amp': [1-lam]},
+            {'amp': lam, 'reftime': 0}
+            ]
         
         K = dl.dipolarkernel(t,r,pathways=pathways)
 
 
     A shorthand input syntax equivalent to this input::
 
-        lam = 0.4
+        lam = 0.4 # modulation
         K = dl.dipolarkernel(t,r,mod=lam)
 
 
-	To specify a more complete 4-pulse DEER model that, e.g includes the 2+1 contribution, use::
+    To specify a three-pathway kernel of the 4-pulse DEER experiment that, e.g that includes the 2+1 contribution, use::
 
-        Lam0 = 0.5  # unmodulated part
-        lam = 0.4  # modulation depth main signal
-        lam21 = 0.1  # modulation depth 2+1 contribution
-        tau2 = 4  # refocusing time (µs) of 2+1 contribution
+        tau1 = 0.5  # First interpulse delay (µs) 
+        tau2 = 4.0  # Second interpulse delay (µs)
+        
+        lam1 = 0.40  # Pathway #1 amplitude
+        lam2 = 0.10  # Pathway #2 amplitude
+        lam3 = 0.10  # Pathway #3 amplitude
 
-        path0 = Lam0  # unmodulated pathway
-        path1 = [lam1, 0]  # main dipolar pathway, refocusing at time zero
-        path1 = [lam2, tau2]  # 2+1 dipolar pathway, refocusing at time tau2
-        pathways = [path0, path1, path2]  
+        tref1 = tau1       # Pathway #1 refocusing time
+        tref2 = tau1+tau2  # Pathway #2 refocusing time
+        tref3 = 0          # Pathway #3 refocusing time
+        
+        # Define the list of dipolar pathways
+        pathways = [
+            {'amp': 1-lam1-lam2-lam3},
+            {'amp': lam1, 'reftime': tref1}
+            {'amp': lam2, 'reftime': tref2}
+            {'amp': lam3, 'reftime': tref3}
+        ]
         
         K = dl.dipolarkernel(t,r,pathways=pathways)
+
+
+    To specify a dipolar kernel for an experiment on a three-spin system based on a single-pathway model use::
+
+        tau1 = 0.5  # First interpulse delay (µs)         
+        lam = 0.40  # Pathway #1 amplitude
+        
+        # Three dipolar pathways needed, one for each dipolar interaction in the three-spin system 
+        pathways = [
+            {'amp': 1-3*lam},
+            {'amp': lam, 'reftime': (tau1,None,None), 'harmonic': (1,0,0)}
+            {'amp': lam, 'reftime': (None,tau1,None), 'harmonic': (0,1,0)}
+            {'amp': lam, 'reftime': (None,None,tau1), 'harmonic': (0,0,1)}
+        ]
+        
+        K = dl.dipolarkernel(t, [r1,r2,r3], pathways=pathways)
+
+
+    To construct a kernel for a three-spin system studied with a two-dimensional experiment, with a single dipolar pathway refocusing at, e.g.,  `t=(\tau_1,\tau_2)` use:: 
+
+        # Three dipolar pathways needed, one for each dipolar interaction in the three-spin system 
+        pathways = [
+            {'amp': 1-3*lam},
+            {'amp': lam, 'reftime': ([tau1,tau2],None,None), 'harmonic': ([1,1],0,0)}
+            {'amp': lam, 'reftime': (None,[tau1,tau2],None), 'harmonic': (0,[1,1],0)}
+            {'amp': lam, 'reftime': (None,None,[tau1,tau2]), 'harmonic': (0,0,[1,1])}
+        ]
+        
+        K = dl.dipolarkernel(t, [r1,r2,r3], pathways=pathways)
 
 
     References
     ----------
     .. [1] L. Fábregas Ibáñez, M. H. Tessmer, G. Jeschke, and S. Stoll. 
-        Dipolar pathways in dipolar EPR spectroscopy, Phys. Chem. Chem. Phys., 2022, Advance Article
+        Dipolar pathways in dipolar EPR spectroscopy, Phys. Chem. Chem. Phys., 24 2022, 2504-2520
 
-    .. [2] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. 
+    .. [2] L. Fábregas Ibáñez, M. H. Tessmer, G. Jeschke, and S. Stoll. 
+        Dipolar pathways in multi-spin and multi-dimensional dipolar EPR spectroscopy, Phys. Chem. Chem. Phys., 24 2022, 22645-22660
+
+    .. [3] L. Fábregas Ibáñez, G. Jeschke, and S. Stoll. 
         DeerLab: A comprehensive toolbox for analyzing dipolar EPR spectroscopy data, Magn. Reson., 1, 209–224, 2020 
 
-    .. [3] L. Fábregas Ibáñez, and G. Jeschke
+    .. [4] L. Fábregas Ibáñez, and G. Jeschke
         Optimal background treatment in dipolar spectroscopy, Physical Chemistry Chemical Physics, 22, 1855–1868, 2020.
-
-    .. [4] K. Keller, V. Mertens, M. Qi, A. I. Nalepa, A. Godt, A. Savitsky, G. Jeschke, and M. Yulikov
-        Computing distance distributions from dipolar evolution data with overtones: RIDME spectroscopy with Gd(III)-based spin labels, Physical Chemistry Chemical Physics, 19
-
-    .. [5] J. E. Banham, C. M. Baker, S. Ceola, I. J. Day, G.H. Grant, E. J. J. Groenen, C. T. Rodgers, G. Jeschke, C. R. Timmel
-        Distance measurements in the borderline region of applicability of CW EPR and DEER: A model study on a homologous series of spin-labelled peptides, Journal of Magnetic Resonance, 191, 2, 2008, 202-218
     """
     # Clear cache of memoized function is requested
     if clearcache:
