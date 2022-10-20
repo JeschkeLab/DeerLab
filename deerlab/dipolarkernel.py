@@ -331,6 +331,10 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     for k,pathway in enumerate(pathways):
         if not 'amp' in pathway.keys():
             raise SyntaxError('All pathways must contain at least an \'amp\' field.')
+        elif hasattr(pathway['amp'], "__len__"): 
+            if len(np.atleast_1d(pathway['amp']))>1: 
+                raise SyntaxError('A dipolar patwhay can only have one amplitude value.')
+            else: pathway['amp'] = pathway['amp'].item()
         if not 'reftime' in pathway.keys():
             pathways[k]['reftime'] = ([None]*len(t)) 
             pathways[k]['harmonic'] = (np.zeros(D))

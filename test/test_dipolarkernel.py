@@ -681,3 +681,46 @@ def test_threespin_twodimensional():
 
     assert np.allclose(np.shape(K), np.array([20,30,10]))
 #=======================================================================
+
+def test_args_arraytype_mod():
+#=======================================================================
+    "Check that input arguments are insensitive to type of array"
+    t = 0.5
+    r = 5
+    mod = 0.3
+    K1 = dipolarkernel(t,r,mod=mod)
+    mod = np.array(0.3)
+    K2 = dipolarkernel(t,r,mod=mod)
+    mod = np.array([0.3])
+    K3 = dipolarkernel(t,r,mod=mod)
+
+    assert K1==K2 and K2==K3
+#=======================================================================
+
+def test_args_arraytype_t():
+#=======================================================================
+    "Check that input arguments are insensitive to type of array"
+    r = 5
+    t = 0.3
+    K1 = dipolarkernel(t,r)
+    t = np.array(0.3)
+    K2 = dipolarkernel(t,r)
+    t = np.array([0.3])
+    K3 = dipolarkernel(t,r)
+
+    assert K1==K2 and K2==K3
+#=======================================================================
+
+def test_args_arraytype_r():
+#=======================================================================
+    "Check that input arguments are insensitive to type of array"
+    t = 0.3
+    r = 5
+    K1 = dipolarkernel(t,r)
+    r = np.array(5)
+    K2 = dipolarkernel(t,r)
+    r = np.array([5])
+    K3 = dipolarkernel(t,r)
+
+    assert K1==K2 and K2==K3
+#=======================================================================
