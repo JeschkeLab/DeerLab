@@ -10,10 +10,11 @@ from deerlab.dd_models import freedist
 from deerlab.model import Model,Penalty
 from deerlab import bg_hom3d
 from deerlab.constants import *
-
+from math import factorial
+from itertools import permutations
 #===============================================================================
-def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None, experiment=None,
-                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000):
+def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None, experiment=None, spins=2,
+                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3):
     """
     Generate a dipolar EPR signal model.
 
@@ -100,42 +101,96 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
     if len(harmonics)!=npathways: 
         raise ValueError('The number of harmonics must match the number of dipolar pathways.')
 
+    # Determine number of dipolar interactions in the spins system
+    Q = int(spins*(spins-1)/2)
+
     #------------------------------------------------------------------------
     def dipolarpathways(*param):
-        """ Parametric constructor of the dipolar pathways definition """
+        """ 
+        Generator of dipolar pathways based on a parameter set. 
+
+        Constructs all possible two-spin dipolar pathways based on a parameter set, 
+        and then constructs all possible multi-spin dipolar pathways describing three-spin
+        interactions in systems with more than two spins based on the pair-wise dipolar pathways.  
+
+        The true signature of this function is defined dynamically after its definition below.
+        """
         param = np.atleast_1d(param)
-        if npathways==1:
-            # Single-pathway model, use modulation depth notation
-            lam,reftime = param
-            pathways = [
-                {'amp':1-lam},
-                {'amp':lam, 'reftime':reftime, 'harmonic':harmonics[0]}
-                ]
-        else:
-            # Otherwise, use general notation
-            lams = param[np.arange(0,len(param),2)]
-            reftimes = param[np.arange(1,len(param),2)]
-            Lam0 = np.maximum(0,1 - np.sum(lams)) 
-            # Unmodulated pathways ccontribution
-            pathways = [{'amp':Lam0}]
-            # Modulated pathways
-            for n in range(npathways):
-                pathways.append({'amp':lams[n], 'reftime':reftimes[n], 'harmonic':harmonics[n]})    
+
+        # Construct pair-wise dipolar pathways given by the parameter set
+        λs = param[np.arange(0,len(param),2)]
+        trefs = param[np.arange(1,len(param),2)]
+
+        # Unmodulated pathway
+        Λ0 = np.maximum(0,1 - np.sum(λs)) 
+        pairpathways = [{'amp':Λ0}]
+        # Modulated pathways
+        for λ,tref,δ in zip(λs,trefs,harmonics):
+            pairpathways.append({'amp': λ, 'reftime': tref, 'harmonic': δ})    
+
+        # For two-spin systems these are all the required pathways
+        if spins==2:
+            return pairpathways
+
+        # Remove the unmodulated dipolar pathway
+        pairpathways.pop(0)
+        # Amplitude of the unmodulated pair-wise dipolar pathway
+        λu = param[-1]
+        # Initialize containers
+        pathways = []
+        Λ0 = 1
+        # Construct all possible multi-spin dipolar pathways
+        for idx, pairpathway in enumerate(pairpathways):
+            # Compute amplitude of the two-spin interaction pathway 
+            λp = pairpathway['amp']
+            λ2k = factorial(Q-1)*λp*λu**2
+            # Construct all the permutations of the two-spin interaction pathways (without repetitions)
+            for perm in set(set(permutations([0]+[None]*(Q-1)))):
+                trefs = [pairpathway['reftime'] if n==0 else None for n in perm]
+                δs = [pairpathway['harmonic'] if n==0 else None for n in perm]
+                # Add two-spin interaction dipolar pathway to the list
+                pathways.append({'amp':λ2k, 'reftime': tuple(trefs), 'harmonic': tuple(δs)})
+                # Update the unmodulated amplitude
+                Λ0 -= λ2k
+                # Consider now three-spin interactions                
+                for pairpathway2 in pairpathways[idx + 1:]:
+                    # Compute amplitude of the three-spin interaction pathway 
+                    λm = pairpathway['amp']
+                    λ3k = 2*factorial(Q-2)*λp*λm*λp
+                    # If the pathway has negligible amplitude, ignore it (speed-up) 
+                    if λ3k>minamp:
+                        # Construct all the permutations of the multi-spin pathway (without repetitions) 
+                        for perm in set(set(permutations([0,1]+[None]*(Q-2)))):
+                            trefs = [pairpathway['reftime'] if n==0 else pairpathway2['reftime'] if n==1 else None for n in perm]
+                            δs = [pairpathway['harmonic'] if n==0 else pairpathway2['harmonic'] if n==1 else None for n in perm]
+                            # Add three-spin interaction dipolar pathway to the list
+                            pathways.append({'amp':λ3k, 'reftime': tuple(trefs), 'harmonic': tuple(δs)})
+                            # Update the unmodulated amplitude
+                            Λ0 -= λ3k
+        # Add pathway with unmodulated contribution
+        pathways.append({'amp':Λ0})
+
         return pathways
     #------------------------------------------------------------------------
 
-    # Construct the signature of the dipolarpathways() function
+    # Construct the signature of the dipolarpathways() function dynamically
     if npathways == 1:
+        # Use single-pathway notation, with amplitude as modulation depth
         variables = ['mod','reftime']
     else:
+        # Use general notation
         variables = []
         for n in range(npathways):
             variables.append(f'lam{n+1}')
             variables.append(f'reftime{n+1}')
+    # Add unmodulated pairwise pathway amplitude for multi-spin systems
+    if spins>2:
+        variables.append(f'lamu')
 
     # Create the dipolar pathways model object
     PathsModel = Model(dipolarpathways,signature=variables)
 
+    # Determine if distance distributions is non-parametric
     Pnonparametric = Pmodel is None
     if Pnonparametric:
         Pmodel = freedist(r)
@@ -149,8 +204,11 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
     else:
         # General case: use pathway ampltiudes and refocusing times
         for n in range(npathways):
-            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of pathway #{n+1}',unit='')
-            getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of pathway #{n+1}',unit='μs')
+            pairwise = ''
+            if spins>2: 
+                pairwise = ' pairwise'                
+            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{n+1}',unit='')
+            getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of{pairwise} pathway #{n+1}',unit='μs')
 
     # Construct the signature of the dipolar signal model function
     signature = []

@@ -209,9 +209,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         # Define the list of dipolar pathways
         pathways = [
             {'amp': 1-lam1-lam2-lam3},
-            {'amp': lam1, 'reftime': tref1}
-            {'amp': lam2, 'reftime': tref2}
-            {'amp': lam3, 'reftime': tref3}
+            {'amp': lam1, 'reftime': tref1},
+            {'amp': lam2, 'reftime': tref2},
+            {'amp': lam3, 'reftime': tref3},
         ]
         
         K = dl.dipolarkernel(t,r,pathways=pathways)
@@ -225,9 +225,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         # Three dipolar pathways needed, one for each dipolar interaction in the three-spin system 
         pathways = [
             {'amp': 1-3*lam},
-            {'amp': lam, 'reftime': (tau1,None,None), 'harmonic': (1,0,0)}
-            {'amp': lam, 'reftime': (None,tau1,None), 'harmonic': (0,1,0)}
-            {'amp': lam, 'reftime': (None,None,tau1), 'harmonic': (0,0,1)}
+            {'amp': lam, 'reftime': (tau1,None,None), 'harmonic': (1,0,0)},
+            {'amp': lam, 'reftime': (None,tau1,None), 'harmonic': (0,1,0)},
+            {'amp': lam, 'reftime': (None,None,tau1), 'harmonic': (0,0,1)},
         ]
         
         K = dl.dipolarkernel(t, [r1,r2,r3], pathways=pathways)
@@ -238,9 +238,9 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         # Three dipolar pathways needed, one for each dipolar interaction in the three-spin system 
         pathways = [
             {'amp': 1-3*lam},
-            {'amp': lam, 'reftime': ([tau1,tau2],None,None), 'harmonic': ([1,1],0,0)}
-            {'amp': lam, 'reftime': (None,[tau1,tau2],None), 'harmonic': (0,[1,1],0)}
-            {'amp': lam, 'reftime': (None,None,[tau1,tau2]), 'harmonic': (0,0,[1,1])}
+            {'amp': lam, 'reftime': ([tau1,tau2],None,None), 'harmonic': ([1,1],0,0)},
+            {'amp': lam, 'reftime': (None,[tau1,tau2],None), 'harmonic': (0,[1,1],0)},
+            {'amp': lam, 'reftime': (None,None,[tau1,tau2]), 'harmonic': (0,0,[1,1])},
         ]
         
         K = dl.dipolarkernel(t, [r1,r2,r3], pathways=pathways)
