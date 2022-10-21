@@ -315,6 +315,17 @@ def test_ex_4pdeer_fit():
 # ======================================================================
 
 # ======================================================================
+def test_ex_4pdeer_pulselength(): 
+    "Check the 4-pulse DEER experimental model."
+
+    pulselength = 0.1
+    experiment = ex_4pdeer(tau1,tau2, pathways=[1], pulselength=pulselength)
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+
+    assert np.isclose(Vmodel.reftime.ub - Vmodel.reftime.lb,6*pulselength)
+# ======================================================================
+
+# ======================================================================
 def test_ex_rev5pdeer_type(): 
     "Check the reverse 5-pulse DEER experimental model."
 
@@ -334,6 +345,16 @@ def test_ex_rev5pdeer_fit():
     assert np.allclose(Vrev5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
+# ======================================================================
+def test_ex_rev5pdeer_pulselength(): 
+    "Check the 5-pulse DEER experimental model."
+
+    pulselength = 0.1
+    experiment = ex_rev5pdeer(tau1,tau2,tau3, pathways=[1], pulselength=pulselength)
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+
+    assert np.isclose(Vmodel.reftime.ub - Vmodel.reftime.lb,6*pulselength)
+# ======================================================================
 
 # ======================================================================
 def test_ex_fwd5pdeer_type(): 
@@ -353,6 +374,17 @@ def test_ex_fwd5pdeer_fit():
     result = fit(Vmodel,Vfwd5pdeer,ftol=1e-4)
 
     assert np.allclose(Vfwd5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_ex_fwd5pdeer_pulselength(): 
+    "Check the forward 5-pulse DEER experimental model."
+
+    pulselength = 0.1
+    experiment = ex_fwd5pdeer(tau1,tau2,tau3, pathways=[1], pulselength=pulselength)
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+
+    assert np.isclose(Vmodel.reftime.ub - Vmodel.reftime.lb,6*pulselength)
 # ======================================================================
 
 # ======================================================================
@@ -376,6 +408,17 @@ def test_ex_sifter_fit():
 # ======================================================================
 
 # ======================================================================
+def test_ex_sifter_pulselength(): 
+    "Check the SIFTER experimental model."
+
+    pulselength = 0.1
+    experiment = ex_sifter(tau1,tau2,pathways=[1], pulselength=pulselength)
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+
+    assert np.isclose(Vmodel.reftime.ub - Vmodel.reftime.lb,6*pulselength)
+# ======================================================================
+
+# ======================================================================
 def test_ex_ridme_type(): 
     "Check the RIDME experimental model."
 
@@ -393,6 +436,17 @@ def test_ex_ridme_fit():
     result = fit(Vmodel,Vridme,ftol=1e-4)
 
     assert np.allclose(Vridme,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_ex_ridme_pulselength(): 
+    "Check the RIDME experimental model."
+
+    pulselength = 0.1
+    experiment = ex_ridme(tau1,tau2,pathways=[1], pulselength=pulselength)
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
+
+    assert np.isclose(Vmodel.reftime.ub - Vmodel.reftime.lb,6*pulselength)
 # ======================================================================
 
 # ======================================================================

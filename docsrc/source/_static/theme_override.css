@@ -181,7 +181,7 @@ margin:0 0 1rem
 }
 img {
 border-style:none;
-margin-top: 20px;
+margin-top: 0px;
 margin-bottom: 20px;
 }
 img,
@@ -8887,7 +8887,8 @@ height:100%
 position:relative;
 height:var(--pst-header-height);
 width:auto;
-padding:.5rem 0
+padding:.5rem 0;
+padding-left: 4%;
 }
 .navbar-brand img {
 max-width:100%;
@@ -9663,7 +9664,7 @@ margin-right: -27%;
 display: flex;
 justify-content: space-between;
 align-items: center;
-height: 350px;
+height: fit-content;
 margin-bottom: -5%;
 }
 .boxcontainer {
@@ -9679,6 +9680,10 @@ padding-right: 15px;
 margin-left: 3%;
 padding-top: 35px;
 padding-bottom: 35px;
+align-self: stretch;
+height: auto;
+margin-top: 2%;
+margin-bottom: 2%;
 }
 
 .boxcontainer p {
@@ -9689,7 +9694,7 @@ color: #464a51;
 
 
 .boxcontainer h3 {
-margin: 0.75rem 0 1.05rem;
+margin: 1.75rem 0 1.05rem;
 font-family: var(--pst-font-family-heading);
 font-weight: bold;
 line-height: 1.15;
@@ -9778,7 +9783,7 @@ left: 93%;
 padding: 5px 15px;
 position: absolute;
 z-index: 98;
-width: 150%;
+width: 80%;
 display: inline-block; 
 word-wrap: break-word;
 height: auto;
@@ -9789,7 +9794,7 @@ border-color: #333 transparent;
 border-width: 18px 0 0 20px;
 bottom: 58%;
 content: '';
-left: 220px;
+left: 88%;
 position: absolute;
 z-index: 99;
 }
@@ -10062,8 +10067,88 @@ src: local('Berlin Sans FB Bold'), url('BRLNSB.woff') format('woff');
     font-family: "Berlin Sans FB";
     font-weight: 400;
     line-height: 1.15;
+}
+
+.topfloatcontainer {
+    float: initial;
+    display: flex;
+    margin-top: -60px;
+    margin-bottom: 25px;
+}
+
+.topfloatcontainer_title {
+    float: initial;
+    display: flex;
+    margin-top: -60px;
+    margin-bottom: 25px;
+}
+
+
+.illustration {
+    width: 45%;
+}
+
+
+@media all and (max-width:1000px) /*800px for tablets and phones.*/
+{
+    div.illustration{
+        display: block; 
+        float: none; 
+        width: 90%;
+    }
+
+    .topfloatcontainer_title {
+        float: initial;
+        display: block;
+        margin-top: -60px;
+        margin-bottom: 25px;
+    }
 
 }
+
+.title2 {
+    font-size:65px; color:#4550e6; 
+    font-family: "Berlin Sans FB"; 
+    margin-left:-0px
+}
+.h1:has(> .invisibletitle) {
+    height: 0px
+}
+.version {
+    font-size: 30px; 
+    color: #999b9e; 
+    font-family: "Berlin Sans FB"; 
+    margin-left:5px
+}
+.title1 {
+    font-size:65px; 
+    font-family: "Berlin Sans FB"
+} 
+.col-xl-2 {
+    flex: 0 0 20.667%;
+    max-width: 20.667%;
+}
+.col-xl-8 {
+    flex: 0 0 68.667%;
+    max-width: 73.667%;
+}
+.titlep {
+    margin-top: -100px;
+    margin-bottom: -10px;
+}
+.invisibletitle {
+    font-size:0px
+}
+.prev-next-area a.right-next {
+    float: right;
+    visibility: hidden;
+}
+.title {
+    padding-top: 75px;
+    padding-left: 22px;
+    width:95%
+}
+
 
 img.math {
     vertical-align: middle;

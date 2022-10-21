@@ -34,12 +34,12 @@ Parametric distance distributions
                 Signature: (r, mean, std)
                 Constants: [r]
                 Parameter Table: 
-                ======= ======= ======= ======== ======== ======= ==================== 
-                Name    Lower   Upper    Type    Frozen   Units   Description         
-                ======= ======= ======= ======== ======== ======= ==================== 
-                mean        1      20   nonlin     No      nm     Mean                
-                std      0.05     2.5   nonlin     No      nm     Standard deviation  
-                ======= ======= ======= ======== ======== ======= ==================== 
+                ====== ======= ======= ======= ======== ======== ====== ==================== 
+                Name   Lower   Start   Upper    Type    Frozen   Unit   Description         
+                ====== ======= ======= ======= ======== ======== ====== ==================== 
+                mean       1     3.5      20   nonlin     No      nm    Mean                
+                std     0.05     0.2     2.5   nonlin     No      nm    Standard deviation  
+                ====== ======= ======= ======= ======== ======== ====== ==================== 
 
                 
 In least-squares fitting, non-parametric distance distributions make fewer assumptions about the distribution than parametric distance distributions. They are more flexible and introduce less bias.
@@ -57,12 +57,12 @@ In DeerLab, all inter-molecular contributions to the dipolar modulation (i.e. th
         Signature: (t, conc, lam)
         Constants: [t]
         Parameter Table: 
-        ====== ======= ======= ======== ======== ======= ==================== 
-         Name   Lower   Upper    Type    Frozen   Units   Description         
-        ====== ======= ======= ======== ======== ======= ==================== 
-         conc    0.01   5e+03   nonlin     No      μM     Spin concentration  
-         lam        0       1   nonlin     No             Pathway amplitude   
-        ====== ======= ======= ======== ======== ======= ==================== 
+        ====== ======= ======= ======= ======== ======== ====== ==================== 
+        Name   Lower   Start   Upper    Type    Frozen   Unit   Description         
+        ====== ======= ======= ======= ======== ======== ====== ==================== 
+        conc    0.01      50   5e+03   nonlin     No      μM    Spin concentration  
+        lam        0       1       1   nonlin     No            Pathway amplitude   
+        ====== ======= ======= ======= ======== ======== ====== ==================== 
 
 
 DeerLab's :ref:`background models<modelsref_bg>` fall into two categories, physical and phenomenological: 
