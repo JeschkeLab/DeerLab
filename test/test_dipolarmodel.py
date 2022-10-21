@@ -270,7 +270,7 @@ V3pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':0
 V4pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':tau1},{'amp':0.1,'reftime':tau1+tau2}],bg=Bfcn)@Pr
 Vfwd5pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':tau3},{'amp':0.1,'reftime':tau1}],bg=Bfcn)@Pr
 Vrev5pdeer = 1e5*dipolarkernel(tdeer,r,pathways=[{'amp':0.6},{'amp':0.3,'reftime':tau3},{'amp':0.1,'reftime':tau2}],bg=Bfcn)@Pr
-Vsifter = 1e5*dipolarkernel(tsifter,r,pathways=[{'amp':0.3},{'amp':0.5,'reftime':tau2-tau1,'harmonic':1},{'amp':0.1,'reftime':2*tau2,'harmonic':1/2},{'amp':0.1,'reftime':-2*tau2,'harmonic':1/2}],bg=Bfcn)@Pr
+Vsifter = 1e5*dipolarkernel(tsifter,r,pathways=[{'amp':0.3},{'amp':0.5,'reftime':tau2-tau1,'harmonic':1},{'amp':0.1,'reftime':2*tau2,'harmonic':1/2},{'amp':0.1,'reftime':-2*tau1,'harmonic':1/2}],bg=Bfcn)@Pr
 Vridme  = 1e5*dipolarkernel(tridme,r,pathways=[{'amp':0.3},{'amp':0.5,'reftime':0},{'amp':0.1,'reftime':tau2},{'amp':0.1,'reftime':-tau1}],bg=Bfcn)@Pr
 
 
@@ -422,3 +422,31 @@ def test_excitationbandwidth():
     assert np.allclose(Vref,Vorisel,rtol=1e-4)
 # ======================================================================
 
+# ======================================================================
+def test_multispin_Nparam_1(): 
+    "Check that the multi-spin model has the correct number of nonlinear parameters"
+
+    model = dipolarmodel(t,r,Pmodel=dd_gauss,spins=2)
+
+    assert model.Nnonlin==5 and model.Nlin==1 and model.Nparam==6
+# ======================================================================
+
+# ======================================================================
+def test_multispin_Nparam_2(): 
+    "Check that the multi-spin model has the correct number of nonlinear parameters"
+
+    model = dipolarmodel(t,r,spins=3,npathways=1)
+
+    assert model.Nnonlin==13 and model.Nlin==1 and model.Nparam==14
+# ======================================================================
+
+# ======================================================================
+def test_multispin_Nparam_3(): 
+    "Check that the multi-spin model has the correct number of nonlinear parameters"
+
+    triangles = [[0,1,5],[0,3,4],[1,2,4],[2,3,5]]
+
+    model = dipolarmodel(t,r,spins=4,npathways=1,triangles=triangles)
+
+    assert model.Nnonlin==31 and model.Nlin==1 and model.Nparam==32
+# ======================================================================

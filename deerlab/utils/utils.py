@@ -813,3 +813,42 @@ def sophegrid(octants,maxphi,size):
 
     return phi,theta,weights
 # --------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------
+def choleskycovmat(Q,cholfactors):
+    """
+    Covariance matrix by Cholesky decomposition 
+    -------------------------------------------
+
+    Parameters
+    ----------
+    Q : integer
+        Dimension of the covariance matrix.
+    cholfactors : array_like
+        List of Cholesky decomposition factors. The first ``Q`` values correspond to the 
+        ``Q``-diagonal values of the Cholesky decomposition matrix. The remaning values are used to
+        fill the lower triangular matrix row by row. 
+    
+    Returns
+    -------
+    Σ : ndarray 
+        Covariance matrix.
+    """
+
+    #Check that the correct number of Cholesky factors has been specified
+    N = Q*(Q+1)/2
+    if len(cholfactors)!=N: 
+        raise ValueError(f'The Cholesky decomposition factors vector must have {N} elements')
+
+    # Initialize Cholesky decomposition matrix
+    L = np.zeros((Q,Q))
+
+    # Fill the Cholesky factors as a lower triangular matrix
+    tril_idx = np.tril_indices(Q,0)
+    L[tril_idx] = cholfactors
+
+    # Cholesky decomposition of the covariance matrix
+    Σ = L@L.T
+
+    return Σ 
+# ----------------------------------------------------------------------------------

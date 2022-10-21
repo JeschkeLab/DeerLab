@@ -4,17 +4,20 @@
 # Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.dipolarkernel import dipolarkernel  
+from deerlab.dipolarkernel import dipolarkernel, dipolarbackground
 from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
 from deerlab.model import Model,Penalty
 from deerlab import bg_hom3d
+from deerlab.utils import choleskycovmat
 from deerlab.constants import *
 from math import factorial
 from itertools import permutations
+from scipy.stats import multivariate_normal
+
 #===============================================================================
 def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None, experiment=None, spins=2,
-                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3):
+                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, triangles=None):
     """
     Generate a dipolar EPR signal model.
 
@@ -104,6 +107,17 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
     # Determine number of dipolar interactions in the spins system
     Q = int(spins*(spins-1)/2)
 
+    if spins>2:
+        triangles_required = factorial(spins)/(factorial(3)*factorial(spins-3))
+        if spins==3 and triangles is None: 
+            triangles = [1,2,3]
+        elif spins>3 and triangles is None: 
+            raise SyntaxError(f'For systems with {spins} spins, a list of {triangles_required:n} triangles is required.')        
+        elif spins>3 and len(triangles)!=triangles_required:
+            raise SyntaxError(f'For systems with {spins} spins, a list of {triangles_required:n} triangles is required.') 
+        if np.min(triangles)!=0: 
+            triangles = [np.array(triangle)-1 for triangle in triangles]
+
     #------------------------------------------------------------------------
     def dipolarpathways(*param):
         """ 
@@ -137,7 +151,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
         # Amplitude of the unmodulated pair-wise dipolar pathway
         λu = param[-1]
         # Initialize containers
-        pathways = []
+        pathways,threespin_pathways = [],[]
         Λ0 = 1
         # Construct all possible multi-spin dipolar pathways
         for idx, pairpathway in enumerate(pairpathways):
@@ -161,16 +175,21 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
                     if λ3k>minamp:
                         # Construct all the permutations of the multi-spin pathway (without repetitions) 
                         for perm in set(set(permutations([0,1]+[None]*(Q-2)))):
+                            # Check if the permutation corresponds to a valid interaction triangle
+                            q1,q2 = [np.where(perm==n)[0] for n in [0,1]]
+                            for triangle in triangles: 
+                                if q1 not in triangle and q2 not in triangle:
+                                    continue # If not valid, move on to the next one
                             trefs = [pairpathway['reftime'] if n==0 else pairpathway2['reftime'] if n==1 else None for n in perm]
-                            δs = [pairpathway['harmonic'] if n==0 else pairpathway2['harmonic'] if n==1 else None for n in perm]
+                            δs = [pairpathway['harmonic'] if n==0 else pairpathway2['harmonic'] if n==1 else 0 for n in perm]
                             # Add three-spin interaction dipolar pathway to the list
-                            pathways.append({'amp':λ3k, 'reftime': tuple(trefs), 'harmonic': tuple(δs)})
+                            threespin_pathways.append({'amp':λ3k, 'reftime': tuple(trefs), 'harmonic': tuple(δs)})
                             # Update the unmodulated amplitude
                             Λ0 -= λ3k
         # Add pathway with unmodulated contribution
         pathways.append({'amp':Λ0})
 
-        return pathways
+        return pathways,threespin_pathways
     #------------------------------------------------------------------------
 
     # Construct the signature of the dipolarpathways() function dynamically
@@ -190,10 +209,32 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
     # Create the dipolar pathways model object
     PathsModel = Model(dipolarpathways,signature=variables)
 
+    #-----------------------------------------------------------------------
+    def _Pmultivar(param):
+        rmeans,cholesky_factors = param[Psubset][:Q], param[Psubset][Q:]
+        np.random.seed(seed=1)
+        Σ = choleskycovmat(Q,cholesky_factors)
+        Pmultivar = multivariate_normal(rmeans, cov=Σ)
+        return Pmultivar
+    #-----------------------------------------------------------------------
+
     # Determine if distance distributions is non-parametric
     Pnonparametric = Pmodel is None
     if Pnonparametric:
         Pmodel = freedist(r)
+    # For multi-spin systems, there is no longer freedom of choice for distance distributions
+    if spins>2:
+        # Prepare the normal multivariate distance distribution model
+        variables = []
+        variables += [f'rmean{q+1}' for q in range(Q)]
+        variables += [f'chol{q+1}{q+1}' for q in range(Q)]
+        for q in range(Q):
+            variables += [f'chol{j+1}{q+1}' for j in np.arange(q+1,Q)]
+        Pmodel = Model(_Pmultivar,signature=variables)
+        [getattr(Pmodel,f'rmean{q+1}').set(lb=0,ub=10,par0=3,unit='nm',description=f'Average inter-spin distance  #{q+1}') for q in range(Q)]
+        [getattr(Pmodel,f'chol{q+1}{q+1}').set(lb=0,ub=6,par0=0.4,unit='nm',description=f'Cholesky factor ℓ{q+1}{q+1}') for q in range(Q)]
+        for q in range(Q):
+            [getattr(Pmodel,f'chol{j+1}{q+1}').set(lb=-1,ub=1,par0=0.0,unit='nm',description=f'Cholesky factor ℓ{j+1}{q+1}') for j in np.arange(q+1,Q)]
     Nconstants = len(Pmodel._constantsInfo)
 
     # Populate the basic information on the dipolar pathways parameters
@@ -242,7 +283,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
     kernelmethod = 'fresnel' if orisel is None and np.isinf(excbandwidth) else 'grid' 
 
     #------------------------------------------------------------------------
-    def Vnonlinear_fcn(*nonlin):
+    def Vtwospin_nonlinear_fcn(*nonlin):
         """ Non-linear part of the dipolar signal function """
         # Make input arguments as array to access subsets easily
         nonlin = np.atleast_1d(nonlin)
@@ -267,8 +308,101 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
         return Vnonlin
     #------------------------------------------------------------------------
 
+    #------------------------------------------------------------------------
+    def Vmultispin_nonlinear_fcn(*nonlin):
+        """ Non-linear part of the dipolar signal function """
+        # Make input arguments as array to access subsets easily
+        nonlin = np.atleast_1d(nonlin)
+        # Construct the basis function of the intermolecular contribution
+        if Bmodel is None: 
+            Bfcn = np.ones_like(t)
+        elif hasattr(Bmodel,'lam'):
+            Bfcn = lambda t,lam: Bmodel.nonlinmodel(t,*np.concatenate([nonlin[Bsubset],[lam]]))
+        else:
+            Bfcn = lambda t,_: Bmodel.nonlinmodel(t,*nonlin[Bsubset])
+
+        # Sample from the multi-variate distance distribution
+        Nsamples = 1000000
+        np.random.seed(seed=1)
+        rsamples = Pmodel.nonlinmodel(nonlin[Psubset]).rvs(Nsamples)
+        rsamples = np.maximum(rsamples,1e-16) # Avoid values exactly at zero 
+
+        # Enforce the generalized triangle inequiality
+        Ndistances = np.shape(rsamples)[1]
+        for triangle in triangles: # Loop over all triangle combinations
+            idx = triangle
+            triangle_condition = np.full_like(rsamples,False)
+            for n in range(Ndistances): # Evaluate all triangle inequalities
+                idx = np.roll(idx,-1,axis=0)
+                triangle_condition[:,n] = np.sum(rsamples[:,idx[:-1]],axis=1) > rsamples[:,idx[-1]]
+            triangle_condition = np.all(triangle_condition,axis=1)
+            # Discard samples that do not satisfy triangle inequalities
+            rsamples = rsamples[triangle_condition,:]
+
+        # Generate all multi-spin dipolar pathways
+        twospin_pathways, threespin_pathways = PathsModel.nonlinmodel(*nonlin[PathsSubset])
+
+        # Start by accounting for the unmodulated contribution
+        Λ0 = twospin_pathways.pop(-1)['amp']
+        Vintra = Λ0
+
+        # Account for all two-spin intramolecular contributions
+        for q in range(Q):
+
+            # Get the marginal univariate distance distribution
+            Punimarg,bins = np.histogram(rsamples[:,n], bins=100)
+            rq = (bins[:-1] + bins[1:])/2
+            Punimarg = Punimarg/np.trapz(Punimarg,rq)
+
+            # Get the two-spin pathways modulated by the q-th dipolar interaction
+            pathways_q = [pathway for pathway in twospin_pathways if pathway['harmonic'][q]!=0]
+
+            # Construct the corresponding dipolar kernel
+            Ktwospin = dipolarkernel(t,rq, pathways=pathways_q, 
+                                        excbandwidth=excbandwidth, orisel=orisel,
+                                        g=g, method=kernelmethod, gridsize=gridsize)
+
+            # Two-spin intramolecular contribution from all pathways modulated by the q-th interaction
+            Vintra += Ktwospin@Punimarg 
+
+        # Account for all three-spin intramolecular contributions
+        for triangle in triangles:
+            
+            # Get the marginal trivariate distance distribution
+            Ptrimarg,bins = np.histogramdd(rsamples[:,triangle],bins=10, density=True)
+            r1,r2,r3 = [ (bins_q[:-1] + bins_q[1:])/2 for bins_q in bins ]
+
+            # Get the subset of the most distance combinations with most distribution mass (speed-up)
+            subset = Ptrimarg > np.max(Ptrimarg)/100
+            Ptrimarg = Ptrimarg[subset]
+            Ptrimarg = Ptrimarg/np.sum(Ptrimarg)
+            r1,r2,r3 = [rq[subset] for rq in np.meshgrid(r1,r2,r3, indexing='ij')]
+
+            # Get the three-spin pathways modulated by the triangle interaction
+            pathways_triangle = [pathway for pathway in threespin_pathways if np.sum([pathway['harmonic'][q]!=0 for q in triangle])==2]
+
+            # Construct the corresponding dipolar kernel
+            Kthreespin = dipolarkernel(t,[r1,r2,r3], pathways=pathways_triangle, integralop=False, 
+                                        excbandwidth=excbandwidth, orisel=orisel,
+                                        g=g, method='grid', gridsize=gridsize)
+
+            # Three-spin intramolecular contribution from all pathways modulated by the triangle interaction
+            Vintra += Kthreespin@Ptrimarg 
+
+        # Compute the multi-spin dipolar intermolecular contribution
+        Vinter = dipolarbackground(t, twospin_pathways+threespin_pathways, Bfcn)
+
+        # Construct the full dipolar signal 
+        Vnonlin = Vintra*Vinter
+
+        return Vnonlin
+    #------------------------------------------------------------------------
+
     # Create the dipolar model object
-    DipolarSignal = Model(Vnonlinear_fcn,signature=signature)
+    if spins==2:
+        DipolarSignal = Model(Vtwospin_nonlinear_fcn,signature=signature)
+    else:
+        DipolarSignal = Model(Vmultispin_nonlinear_fcn,signature=signature)
 
     # Add the linear parameters from the subset models            
     for lparam in linearparam:
@@ -279,7 +413,7 @@ def dipolarmodel(t, r, Pmodel=None, Bmodel=bg_hom3d, npathways=1, harmonics=None
 
     # If there are no linear paramters, add a linear scaling parameter 
     if DipolarSignal.Nlin==0:
-        DipolarSignal.addlinear('scale',lb=0,par0=1)
+        DipolarSignal.addlinear('scale',lb=0,par0=1,description='Overall echo amplitude/scale')
 
     # Import all parameter information from the subset models
     for name,param in zip(DipolarSignal._parameter_list(order='vector'),parameters):
