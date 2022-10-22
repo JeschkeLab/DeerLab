@@ -844,9 +844,11 @@ def choleskycovmat(Q,cholfactors):
     L = np.zeros((Q,Q))
 
     # Fill the Cholesky factors as a lower triangular matrix
-    tril_idx = np.tril_indices(Q,0)
-    L[tril_idx] = cholfactors
-
+    for q in range(Q):
+        tril_idx = np.where(np.eye(Q,k=q) == 1)
+        L[tril_idx] = cholfactors[:(Q-q)]
+        cholfactors = cholfactors[(Q-q):]
+        
     # Cholesky decomposition of the covariance matrix
     Σ = L@L.T
 

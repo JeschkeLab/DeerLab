@@ -148,7 +148,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         amplitude ``V(t=0)=1``. The default is ``True``.
     
     gridsize : scalar, optional
-        Number of points on the grid of powder orientations to be used in the ``'grid'`` kernel calculation method. By default set to 1000 knots.
+        Number of points on the grid of powder orientations to be used in the ``'grid'`` kernel calculation method. By default set to 1000 points.
         If the expected memory costs of the combined sizes of the ``t`` vector(s), ``r`` vector(s) and grid exceed the ``memorylimit`` value, 
         a ``MemoryError`` will be raised. 
 
@@ -284,7 +284,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     # Check that requested kernel does not exceed the memory limit
     memory_requirement = 8/1e9 # GB/float
-    memory_requirement *= np.prod([len(t_) for t_ in t])*np.prod([len(r_) for r_ in r]) 
+    memory_requirement *= np.prod([len(t_) for t_ in t])*len(r[0])
     if method=='grid': 
         memory_requirement = memory_requirement*gridsize
     if memory_requirement > memorylimit: 
