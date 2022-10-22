@@ -746,9 +746,6 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
             # Augmented residual
             res_reg = _penalty_augmentation(alpha, L, xfit,'residual')
             res = np.concatenate((res,res_reg))
-        
-        # Scale by the number of elements (aesthetic) 
-        res = res/len(res)
 
         return res
     #===========================================================================
