@@ -56,6 +56,10 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
         Only when ``spins>3``. Enables the assumption of spectral permutability, i.e. the assumption that all spins in the system
         have the same spectral distribution. If enabled, all pairwise pathways of the different dipolar interactions are assumed to 
         have the same amplitude. If disabled, all the individual pathway amplitudes are parametrized separately. Enabled by default.   
+    minamp : float scalar, optional
+        Only when ``spins>3``. Threshold amplitude for neglecting three-spin interaction pathways. To enhance performance, all dipolar 
+        pathways arising from three-spin interactions with an amplitude ``lam<minamp`` are approximated as having zero amplitude. 
+        The default threshold is ``1e-3``. 
     orisel : callable  or ``None``, optional
         Probability distribution of possible orientations of the interspin vector to account
         for orientation selection. Must be a function taking a value of the angle θ ∈ [0,π/2]
