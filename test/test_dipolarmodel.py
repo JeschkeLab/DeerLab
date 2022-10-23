@@ -511,7 +511,7 @@ def test_threespin_simulation():
 
     model = dipolarmodel(t,spins=3,npathways=1)
     
-    Vsim = model(mod=0.5, reftime=0, lamu=0.7, conc=50, rmean1=3, rmean2=3.2, rmean3=2.8,
+    Vsim = model(lam1=0.5, reftime1=0, lamu=0.7, conc=50, rmean1=3, rmean2=3.2, rmean3=2.8,
                chol11=0.3, chol22=0.2, chol33=0.3, chol21=0, chol31=0, chol32=0, scale=1)
     
     # Check that there are modulations
@@ -524,7 +524,7 @@ def test_fourspin_simulation():
 
     triangles = [[0,1,5],[0,3,4],[1,2,4],[2,3,5]]
     model = dipolarmodel(t,spins=4,npathways=1,triangles=triangles)
-    Vsim = model(mod=0.1, reftime=0, lamu=0.3, conc=50, rmean1=3, rmean2=3, rmean3=4, rmean4=3.5, 
+    Vsim = model(lam1=0.1, reftime1=0, lamu=0.3, conc=50, rmean1=3, rmean2=3, rmean3=4, rmean4=3.5, 
             rmean5=4.5, rmean6=4.5, chol11=0.2, chol22=0.2, chol33=0.2, chol44=0.2, chol55=0.2, chol66=0.2,
             chol21=0, chol31=0, chol41=0, chol51=0, chol61=0, chol32=0, chol42=0, chol52=0, chol62=0, 
             chol43=0, chol53=0, chol63=0, chol54=0, chol64=0, chol65=0, scale=1)

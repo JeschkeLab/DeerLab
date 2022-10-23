@@ -7,7 +7,7 @@ import numpy as np
 from deerlab.dipolarkernel import dipolarkernel, dipolarbackground
 from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
-from deerlab.model import Model,Penalty
+from deerlab.model import Model,Penalty, link
 from deerlab import bg_hom3d
 from deerlab.utils import choleskycovmat
 from deerlab.constants import *
@@ -17,7 +17,7 @@ from scipy.stats import multivariate_normal
 
 #===============================================================================
 def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2, harmonics=None, experiment=None,
-                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, triangles=None):
+                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, specperm=True, triangles=None):
     """
     Generate a dipolar EPR signal model.
 
@@ -48,10 +48,14 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
         Number of spins in system. If not specified it defaults to two-spin systems. For multi-spins
         systems indicated by ``spins>2`` three-spin interactions are accounted for by the model automatically. 
     triangles : list of lists, optional 
-        Only required for ``spins>3``. List of ``(Nspins)!/(3!*(Nspins-3)!)`` triangles formed by the different interspin distances. 
+        Only required when ``spins>3``. List of ``(Nspins)!/(3!*(Nspins-3)!)`` triangles formed by the different interspin distances. 
         Each triangle is specified by a list of indices of the interspin 
         distances forming the triangle, e.g. for a three-spin system ``triangles=[[1,2,3]]`` where the first, 
         second, and third interspin distances connect to form a triangle.  
+    specperm : boolean, optional 
+        Only when ``spins>3``. Enables the assumption of spectral permutability, i.e. the assumption that all spins in the system
+        have the same spectral distribution. If enabled, all pairwise pathways of the different dipolar interactions are assumed to 
+        have the same amplitude. If disabled, all the individual pathway amplitudes are parametrized separately. Enabled by default.   
     orisel : callable  or ``None``, optional
         Probability distribution of possible orientations of the interspin vector to account
         for orientation selection. Must be a function taking a value of the angle θ ∈ [0,π/2]
@@ -148,46 +152,47 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
         """
         param = np.atleast_1d(param)
 
-        # Construct pair-wise dipolar pathways given by the parameter set
-        λs = param[np.arange(0,len(param),2)]
-        trefs = param[np.arange(1,len(param),2)]
-
-        # Unmodulated pathway
-        Λ0 = np.maximum(0,1 - np.sum(λs)) 
-        pairpathways = [{'amp':Λ0}]
-        # Modulated pathways
-        for λ,tref,δ in zip(λs,trefs,harmonics):
-            pairpathways.append({'amp': λ, 'reftime': tref, 'harmonic': δ})    
-
-        # For two-spin systems these are all the required pathways
         if spins==2:
+            # Construct pair-wise dipolar pathways given by the parameter set
+            λs = param[np.arange(0,len(param),2)]
+            trefs = param[np.arange(1,len(param),2)]
+
+            # Unmodulated pathway
+            Λ0 = np.maximum(0,1 - np.sum(λs)) 
+            pairpathways = [{'amp':Λ0}]
+
+            # Modulated pathways
+            for λ,tref,δ in zip(λs,trefs,harmonics):
+                pairpathways.append({'amp': λ, 'reftime': tref, 'harmonic': δ})    
+
+            # For two-spin systems these are all the required pathways
             return pairpathways
 
-        # Remove the unmodulated dipolar pathway
-        pairpathways.pop(0)
+        # Construct multispin dipolar pathways given by the parameter set
+        λs = [param[np.arange(q,len(param),Q)] for q in range(Q)]
+        trefs = param[np.arange(Q,len(param),Q)]
+
         # Amplitude of the unmodulated pair-wise dipolar pathway
         λu = param[-1]
         # Initialize containers
         pathways,threespin_pathways = [],[]
         Λ0 = 1
         # Construct all possible multi-spin dipolar pathways
-        for idx, pairpathway in enumerate(pairpathways):
-            # Compute amplitude of the two-spin interaction pathway 
-            λp = pairpathway['amp']
-            λ2k = factorial(Q-1)*λp*λu**(Q-1)
+        for idx in range(npathways):
             # Construct all the permutations of the two-spin interaction pathways (without repetitions)
             for perm in set(set(permutations([0]+[None]*(Q-1)))):
-                trefs = [pairpathway['reftime'] if n==0 else None for n in perm]
-                δs = [pairpathway['harmonic'] if n==0 else 0 for n in perm]
+                q = int(np.where(np.array(perm)==0)[0])
+                # Compute amplitude of the two-spin interaction pathway 
+                λp = λs[q][idx]
+                λ2k = factorial(Q-1)*λp*λu**(Q-1)
+                tref = [trefs[idx] if n==0 else None for n in perm]
+                δs = [harmonics[idx] if n==0 else 0 for n in perm]
                 # Add two-spin interaction dipolar pathway to the list
-                pathways.append({'amp':λ2k, 'reftime': tuple(trefs), 'harmonic': tuple(δs)})
+                pathways.append({'amp':λ2k, 'reftime': tuple(tref), 'harmonic': tuple(δs)})
                 # Update the unmodulated amplitude
                 Λ0 -= λ2k
                 # Consider now three-spin interactions                
-                for pairpathway2 in pairpathways[idx + 1:]:
-                    # Compute amplitude of the three-spin interaction pathway 
-                    λm = pairpathway['amp']
-                    λ3k = 2*factorial(Q-2)*λp*λm*λu**(Q-2)
+                for idx2 in np.arange(idx + 1,npathways):
                     # If the pathway has negligible amplitude, ignore it (speed-up) 
                     if λ3k>minamp:
                         # Construct all the permutations of the multi-spin pathway (without repetitions) 
@@ -197,10 +202,13 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
                             for triangle in triangles: 
                                 if q1 not in triangle and q2 not in triangle:
                                     continue # If not valid, move on to the next one
-                            trefs = [pairpathway['reftime'] if n==0 else pairpathway2['reftime'] if n==1 else None for n in perm]
-                            δs = [pairpathway['harmonic'] if n==0 else pairpathway2['harmonic'] if n==1 else 0 for n in perm]
+                            # Compute amplitude of the three-spin interaction pathway 
+                            λm = λs[q2][idx]
+                            λ3k = 2*factorial(Q-2)*λp*λm*λu**(Q-2)
+                            tref = [trefs[idx] if n==0 else trefs[idx2] if n==1 else None for n in perm]
+                            δs = [harmonics[idx] if n==0 else harmonics[idx2] if n==1 else 0 for n in perm]
                             # Add three-spin interaction dipolar pathway to the list
-                            threespin_pathways.append({'amp':λ3k, 'reftime': tuple(trefs), 'harmonic': tuple(δs)})
+                            threespin_pathways.append({'amp':λ3k, 'reftime': tuple(tref), 'harmonic': tuple(δs)})
                             # Update the unmodulated amplitude
                             Λ0 -= λ3k
         # Add pathway with unmodulated contribution
@@ -210,14 +218,18 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
     #------------------------------------------------------------------------
 
     # Construct the signature of the dipolarpathways() function dynamically
-    if npathways == 1:
+    if npathways == 1 and spins==2:
         # Use single-pathway notation, with amplitude as modulation depth
         variables = ['mod','reftime']
     else:
         # Use general notation
         variables = []
         for n in range(npathways):
-            variables.append(f'lam{n+1}')
+            if spins==2:
+                variables.append(f'lam{n+1}')
+            else:
+                for q in range(Q):
+                    variables.append(f'lam{n+1}_{q+1}')
             variables.append(f'reftime{n+1}')
     # Add unmodulated pairwise pathway amplitude for multi-spin systems
     if spins>2:
@@ -225,6 +237,10 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
 
     # Create the dipolar pathways model object
     PathsModel = Model(dipolarpathways,signature=variables)
+
+    if spins>2 and specperm:
+        links = {f'lam{n+1}': [f'lam{n+1}_{q+1}' for q in range(Q)] for n in range(npathways)}
+        PathsModel = link(PathsModel, **links)
 
     #-----------------------------------------------------------------------
     def _Pmultivar(param):
@@ -255,7 +271,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
     Nconstants = len(Pmodel._constantsInfo)
 
     # Populate the basic information on the dipolar pathways parameters
-    if npathways==1:
+    if spins==2 and npathways==1:
         # Special case: use modulation depth notation instead of general pathway amplitude
         getattr(PathsModel,f'mod').set(lb=0,ub=1,par0=0.01,description=f'Modulation depth',unit='')
         getattr(PathsModel,f'reftime').set(par0=0,description=f'Refocusing time',unit='μs')
@@ -265,7 +281,11 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
             pairwise = ''
             if spins>2: 
                 pairwise = ' pairwise'   
-            getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{n+1}',unit='')
+            if spins==2 or specperm:
+                getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{n+1}',unit='')
+            else:
+                for q in range(Q):
+                    getattr(PathsModel,f'lam{n+1}_{q+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{n+1} on interaction #{q+1}',unit='')
             getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of{pairwise} pathway #{n+1}',unit='μs')
     if spins>2: 
         getattr(PathsModel,f'lamu').set(lb=0,ub=1,par0=0.5,description='Amplitude of unmodulated pairwise pathway',unit='')
@@ -371,7 +391,8 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
             Punimarg,bins = np.histogram(rsamples[:,q], bins=100)
             rq = (bins[:-1] + bins[1:])/2
             rs = [rq]*Q 
-            Punimarg = Punimarg/np.sum(Punimarg)
+            if np.sum(Punimarg)>0:
+                Punimarg = Punimarg/np.sum(Punimarg)
 
             # Get the two-spin pathways modulated by the q-th dipolar interaction
             pathways_q = [pathway for pathway in twospin_pathways if pathway['harmonic'][q]!=0]
@@ -395,7 +416,8 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
                 # Get the subset of the most distance combinations with most distribution mass (speed-up)
                 subset = Ptrimarg > np.max(Ptrimarg)/100
                 Ptrimarg = Ptrimarg[subset]
-                Ptrimarg = Ptrimarg/np.sum(Ptrimarg)
+                if np.sum(Ptrimarg)>0:
+                    Ptrimarg = Ptrimarg/np.sum(Ptrimarg)
                 r1,r2,r3 = [rq[subset] for rq in np.meshgrid(r1,r2,r3, indexing='ij')]
 
                 # Get the three-spin pathways modulated by the triangle interaction
@@ -443,7 +465,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
     if experiment is not None:
 
         # Compile the parameter names to change in the model
-        if npathways>1:
+        if spins>2 or npathways>1:
             reftime_names = [f'reftime{n+1}' for n in range(npathways)]
         else: 
             reftime_names = ['reftime']
