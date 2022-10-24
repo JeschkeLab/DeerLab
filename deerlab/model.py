@@ -913,7 +913,7 @@ def _print_fitresults(fitresult,model):
     """Construct summary table of fit results to print"""
 
     #-----------------------------------------------------
-    def colortxt(str, color, is_tty=stdout.isatty()):
+    def colortxt(str, color, spaces, is_tty=stdout.isatty()):
         """ANSI codes for colored terminal text"""
         if color=='red': color = '\033[91m'
         if color=='yellow': color = '\033[93m'
@@ -921,7 +921,7 @@ def _print_fitresults(fitresult,model):
         if is_tty:
             return str
         else: 
-            return f"{color}  {str}   \033[00m" 
+            return f"{color}" +" "*spaces + f"{str}"+" "*spaces + "\033[00m" 
     #-----------------------------------------------------
 
     # Start printout string
@@ -944,22 +944,22 @@ def _print_fitresults(fitresult,model):
         rmsd = stats[n]['rmsd']
         autocorr = stats[n]['autocorr']
         # Use colored text to warn of very poor fits
-        autocorrcolor = lambda str: colortxt(str,'white')
+        autocorrcolor = lambda str: colortxt(str,'white',7)
         if autocorr>0.5 and autocorr<1:
             # Relatively acceptable autocorrelations (yellow)
-            autocorrcolor = lambda str: colortxt(str,'yellow')
+            autocorrcolor = lambda str: colortxt(str,'yellow',7)
         elif autocorr>1:
             # Worrisome autocorrelations (red)
-            autocorrcolor = lambda str: colortxt(str,'red')
-        chicolor = lambda str: colortxt(str,'white')
+            autocorrcolor = lambda str: colortxt(str,'red',7)
+        chicolor = lambda str: colortxt(str,'white',3)
         # Standard deviation of reduced 𝛘2 statistic's uncertainty (Gaussian limit)
         chi2red_sigma = np.sqrt(2/len(modelfits[n]))*3 
         if abs(1-chi2red)>3*chi2red_sigma and abs(1-chi2red)<6*chi2red_sigma:
             # Poor case (yellow), 𝛘2 exceeds thrice the expected uncertainty 
-            chicolor = lambda str: colortxt(str,'yellow')
+            chicolor = lambda str: colortxt(str,'yellow',3)
         elif abs(1-chi2red)>6*chi2red_sigma:
             # Horrible case (red), 𝛘2 exceeds six times the expected uncertainty 
-            chicolor = lambda str: colortxt(str,'red')
+            chicolor = lambda str: colortxt(str,'red',3)
         # Convert numbers to well-formatted strings
         noiselvl,chi2red,autocorr,rmsd = [f'{var:.3f}' if var<1e3 or var>1e-3 else f'{var:.2e}' for var in [noiselvl,chi2red,autocorr,rmsd]] 
         table.append([f'#{1+n}',noiselvl,chicolor(chi2red),autocorrcolor(autocorr),rmsd])
