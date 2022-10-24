@@ -41,7 +41,7 @@ def _plot(ys,yfits,yuqs,noiselvls,axis=None,xlabel=None,gof=False,fontsize=13):
     nrows = len(ys) + np.sum(complexy)
     if gof:
         ncols = 4
-        fig,axs = plt.subplots(nrows,ncols,figsize=[4*ncols,4*nrows],dpi=500, constrained_layout=True)
+        fig,axs = plt.subplots(nrows,ncols,figsize=[4*ncols,4*nrows], constrained_layout=True)
     else: 
         ncols = 1
         fig,axs = plt.subplots(nrows,ncols,figsize=[7*ncols,4*nrows])

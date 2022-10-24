@@ -25,7 +25,6 @@ import matplotlib.pyplot as plt
 
 # File location
 file = "../data/experimental_mbp_protein_4pdeer.DTA"
-file = r"C:\Users\Luis\polybox\projects\DeerLab\DeerLab\examples\data/experimental_mbp_protein_4pdeer.DTA"
 
 # Experiment information
 t0 = 0.040
@@ -45,6 +44,8 @@ r = np.arange(3,4.5,0.05)
 
 # Loop over different dipolar models with varying number of pathways
 for Npathways in [1,2,3]:
+    print(f'Model with {Npathways} dipolar pathways:')
+
     # Construct the experiment model with different pathways
     experiment = dl.ex_4pdeer(tau1,tau2,pathways=np.arange(1,Npathways+1,1))
 
@@ -62,6 +63,7 @@ for Npathways in [1,2,3]:
 
     # Plot the fit of the model to the data along its goodness-of-fit tests
     results.plot(axis=t, xlabel='t (μs)', gof=True)
+    plt.suptitle(f'Model with {Npathways} dipolar pathways:')
     plt.show()
 
 #%% [markdown]
