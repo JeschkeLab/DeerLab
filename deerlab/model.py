@@ -14,6 +14,7 @@ import inspect
 from copy import copy,deepcopy
 from functools import partial
 import difflib
+from sys import stdout
 
 #===================================================================================
 class Parameter(): 
@@ -907,15 +908,21 @@ def _evaluate(params,model,*constants):
     return response
 # ----------------------------------------------------------------------------
 
-
 #--------------------------------------------------------------------------
 def _print_fitresults(fitresult,model):
     """Construct summary table of fit results to print"""
 
-    # ANSI codes for colored terminal text
-    redtxt    = lambda str: f"\033[91m  {str}   \033[00m"
-    yellowtxt = lambda str: f"\033[93m  {str}   \033[00m"
-    whitetxt = lambda str: str
+    #-----------------------------------------------------
+    def colortxt(str, color, is_tty=stdout.isatty()):
+        """ANSI codes for colored terminal text"""
+        if color=='red': color = '\033[91m'
+        if color=='yellow': color = '\033[93m'
+        if color=='white': color = ''
+        if is_tty:
+            return str
+        else: 
+            return f"{color}  {str}   \033[00m" 
+    #-----------------------------------------------------
 
     # Start printout string
     string = ''
@@ -937,22 +944,22 @@ def _print_fitresults(fitresult,model):
         rmsd = stats[n]['rmsd']
         autocorr = stats[n]['autocorr']
         # Use colored text to warn of very poor fits
-        autocorrcolor = whitetxt
+        autocorrcolor = lambda str: colortxt(str,'white')
         if autocorr>0.5 and autocorr<1:
             # Relatively acceptable autocorrelations (yellow)
-            autocorrcolor = yellowtxt
+            autocorrcolor = lambda str: colortxt(str,'yellow')
         elif autocorr>1:
             # Worrisome autocorrelations (red)
-            autocorrcolor = redtxt
-        chicolor = whitetxt
+            autocorrcolor = lambda str: colortxt(str,'red')
+        chicolor = lambda str: colortxt(str,'white')
         # Standard deviation of reduced 𝛘2 statistic's uncertainty (Gaussian limit)
         chi2red_sigma = np.sqrt(2/len(modelfits[n]))*3 
         if abs(1-chi2red)>3*chi2red_sigma and abs(1-chi2red)<6*chi2red_sigma:
             # Poor case (yellow), 𝛘2 exceeds thrice the expected uncertainty 
-            chicolor = yellowtxt
+            chicolor = lambda str: colortxt(str,'yellow')
         elif abs(1-chi2red)>6*chi2red_sigma:
             # Horrible case (red), 𝛘2 exceeds six times the expected uncertainty 
-            chicolor = redtxt
+            chicolor = lambda str: colortxt(str,'red')
         # Convert numbers to well-formatted strings
         noiselvl,chi2red,autocorr,rmsd = [f'{var:.3f}' if var<1e3 or var>1e-3 else f'{var:.2e}' for var in [noiselvl,chi2red,autocorr,rmsd]] 
         table.append([f'#{1+n}',noiselvl,chicolor(chi2red),autocorrcolor(autocorr),rmsd])
@@ -1016,6 +1023,7 @@ def _print_fitresults(fitresult,model):
     # Add auto-formatted table string
     string += 'Model parameters: \n'
     string += formatted_table(table,alignment)
+    string += '\n'
     return string
 #--------------------------------------------------------------------------
 
