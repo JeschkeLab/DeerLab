@@ -65,7 +65,7 @@ for Npathways in [1,2,3]:
     plt.show()
 
 #%% [markdown]
-# The first dataset is clearly underparametrized as it results in 
+# The first model is clearly underparametrized as it results in 
 # non-normal residuals and strong correlations. This is supported by the large chi-squared value.
 # Adding the second pathway seems to improve the description of the data, 
 # as the residuals are now better distributed. However, there appears to be some autocorrelations 
