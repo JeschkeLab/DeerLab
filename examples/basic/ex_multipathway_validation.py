@@ -57,15 +57,19 @@ for Npathways in [1,2,3]:
     # Fit the data to the current model
     results = dl.fit(Vmodel,Vexp,penalties=compactness)
 
+    # Print the summary of the results
+    print(results)
+
     # Plot the fit of the model to the data along its goodness-of-fit tests
     results.plot(axis=t, xlabel='t (μs)', gof=True)
     plt.show()
 
 #%% [markdown]
 # The first dataset is clearly underparametrized as it results in 
-# non-normal residuals and strong correlations. Adding the second pathway
-# seems to improve the description of the data, as the residuals are now better
-# distributed. However, there appears to be some autocorrelations left. 
+# non-normal residuals and strong correlations. This is supported by the large chi-squared value.
+# Adding the second pathway seems to improve the description of the data, 
+# as the residuals are now better distributed. However, there appears to be some autocorrelations 
+# left and the chi-squared value still presents too large values. 
 # Adding the third pathway results in the best description of the data, 
 # with normally distributed residuals and no significant autocorrelations.
 
