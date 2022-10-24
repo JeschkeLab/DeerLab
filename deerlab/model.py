@@ -912,6 +912,11 @@ def _evaluate(params,model,*constants):
 def _print_fitresults(fitresult,model):
     """Construct summary table of fit results to print"""
 
+    # ANSI codes for colored terminal text
+    redtxt    = lambda str: f"\033[91m  {str}   \033[00m"
+    yellowtxt = lambda str: f"\033[93m  {str}   \033[00m"
+    whitetxt = lambda str: str
+
     # Start printout string
     string = ''
     # Get number of models in the fit
@@ -922,7 +927,7 @@ def _print_fitresults(fitresult,model):
 
     # Construct table of goodness-of-fit statistics
     table = []
-    table.append([f'Dataset','Noise level','Reduced 𝛘2','RMSD','AIC']) # Header
+    table.append([f'Dataset','Noise level','Reduced 𝛘2','Residual autocorr.','RMSD']) # Header
     alignment = ['^','^','^','^','^'] # Tab alignment
     stats = np.atleast_1d(fitresult.stats)
     noiselevels = np.atleast_1d(fitresult.noiselvl)
@@ -930,14 +935,32 @@ def _print_fitresults(fitresult,model):
         noiselvl = noiselevels[n]
         chi2red = stats[n]['chi2red']
         rmsd = stats[n]['rmsd']
-        aic = stats[n]['aic']
-        noiselvl,chi2red,rmsd,aic = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [noiselvl,chi2red,rmsd,aic]] 
-        table.append([f'#{1+n}',noiselvl,chi2red,rmsd,aic])
+        autocorr = stats[n]['autocorr']
+        # Use colored text to warn of very poor fits
+        autocorrcolor = whitetxt
+        if autocorr>0.5 and autocorr<1:
+            # Relatively acceptable autocorrelations (yellow)
+            autocorrcolor = yellowtxt
+        elif autocorr>1:
+            # Worrisome autocorrelations (red)
+            autocorrcolor = redtxt
+        chicolor = whitetxt
+        # Standard deviation of reduced 𝛘2 statistic's uncertainty (Gaussian limit)
+        chi2red_sigma = np.sqrt(2/len(modelfits[n]))*3 
+        if abs(1-chi2red)>3*chi2red_sigma and abs(1-chi2red)<6*chi2red_sigma:
+            # Poor case (yellow), 𝛘2 exceeds thrice the expected uncertainty 
+            chicolor = yellowtxt
+        elif abs(1-chi2red)>6*chi2red_sigma:
+            # Horrible case (red), 𝛘2 exceeds six times the expected uncertainty 
+            chicolor = redtxt
+        # Convert numbers to well-formatted strings
+        noiselvl,chi2red,autocorr,rmsd = [f'{var:.3f}' if var<1e3 or var>1e-3 else f'{var:.2e}' for var in [noiselvl,chi2red,autocorr,rmsd]] 
+        table.append([f'#{1+n}',noiselvl,chicolor(chi2red),autocorrcolor(autocorr),rmsd])
     # Add auto-formatted table string
     string += 'Goodness-of-fit: \n'
     string += formatted_table(table,alignment) + '\n'
 
-    
+    # Construct table of model hyperparameters
     hasregularization = fitresult.regparam!=0
     haspenalties = fitresult.penweights
     if hasregularization or haspenalties:
@@ -956,7 +979,7 @@ def _print_fitresults(fitresult,model):
                 alignment.append('^')
                 tags.append(f'Penalty weight #{n+1}')        
                 values.append(penweight) 
-        values = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in values] 
+        values = [f'{var:.3f}' if var<1e3 and var>1e-3 else f'{var:.2e}' for var in values] 
         table = [tags,values] 
         string += formatted_table(table,alignment) + '\n'
 
@@ -972,7 +995,7 @@ def _print_fitresults(fitresult,model):
                 try:
                     if isinstance(value, (list, tuple, np.ndarray)): value = value[0]
                 except: pass
-                value = f'{value:.3f}' if value<1e4 else f'{value:.3g}'
+                value = f'{value:.3f}' if abs(value)<1e3 and abs(value)>1e-3 else f'{value:.2e}'
                 ci = '(frozen)'
             else:
                 # If parameter is scalar, report values and CIs
@@ -981,7 +1004,7 @@ def _print_fitresults(fitresult,model):
                     ci = ''
                 else:
                     ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
-                    value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
+                    value,ci_lower,ci_upper = [f'{var:.3f}' if abs(var)<1e3 and abs(var)>1e-3 else f'{var:.2e}' for var in [value,ci_lower,ci_upper]]
                     ci = f'({ci_lower},{ci_upper})'
         else:
             # If parameter is vectorial, print just dots
