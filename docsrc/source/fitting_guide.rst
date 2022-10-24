@@ -224,6 +224,37 @@ A summary of the fit can be accessed by printing the ``FitResult`` object as ret
      scale       0.999   (0.999,0.999)             None    Scaling factor  
     =========== ======= ========================= ======= ================ 
 
+
+The ``FitResult`` object
+************************
+
+Once the fitting routine is finished, the ``fit`` function will return a ``FitResult`` object containing multiple quantities of interest. 
+
+Estimated parameters (``FitResult.<param>``)
+    The ``FitResult`` will contain an attribute ``<param>`` of the same name as each parameter in the model. This will be the estimated maximum likelihood estimator of the model parameter for the given data and penalties.   
+Estimated parameter uncertainty (``FitResult.<param>Uncert``)
+    The ``FitResult`` will contain an attribute ``<param>Uncert`` of the same name as each parameter in the model. This will contain the full uncertainty estimate of the parameter in the form of an ``UQResult`` object (see here for details).  
+Estimated model response (``FitResult.model``)
+    It is the maximum likelihood estimate of the model's response. It can be computed as well from the model and the fitted parameter values. 
+Estimated model response (``FitResult.modelUncert``)
+    The uncertainty estimate of the model's response in the form of an ``UQResult`` object propagated from the uncertainty on the parameters.  
+Statistical descriptors (``FitResult.stats``)    
+    A dictionary of statistical quantities such as reduced chi-square, RMSD or AIC values quantifying the goodness-of-fit and model complexity. The reduced chi-square statistic ``FitResult.stats['chi2red']`` allows the assessment of whether the fit describes the data or not. A comparable value to 1 will indicate a good fit of the input data. The AIC ``FitResult.stats['aic']`` and other information-based quantities allow the comparison between fits based on alternate models and selecting the most appropriate model. 
+Penalty and regularization weights (``FitResult.regparam`` and ``FitResult.penweights``)
+    Contain the regularization and penalty values used to find the maximum likelihood estimator. 
+
+The fit of the model to the data can be quickly assessed by calling the ``FitResult.plot()`` method. Since the ``FitResult`` has not 
+information on the abscissa values of the data, these must be specified separately. Similarly, we can also specify a label for the abscissa. :: 
+
+    # Plot the data and fit
+    result.plot(axis=x, xlabel='x')
+
+.. image:: ./images/advanced_guide1.png
+   :width: 450px
+
+
+.. _fitting_goodnessoffit:
+
 Assessing the goodness-of-fit
 ****************************** 
 
@@ -245,28 +276,23 @@ If yellow or red goodness-of-fit quantities are obtained after an analysis, the 
 - Expand the model to account for them or approximate their presence. 
 - If the model cannot be expanded to account for them, make use of the ``fit`` function's ``masks`` optional argument to specify data masks so that those features are not accounted for during the analysis. 
 
-The ``FitResult`` object
-************************
+Complementary, the goodness-of-fit can be assessed visually by calling the ``plot(gof=True)`` method of the ``FitResult`` object. ::
+    
+    # Plot the data, fit, and other goodness-of-fit tests
+    result.plot(axis=x, xlabel='x', gof=True)
 
-Once the fitting routine is finished, the ``fit`` function will return a ``FitResult`` object containing multiple quantities of interest. 
 
-Estimated parameters (``FitResult.<param>``)
-    The ``FitResult`` will contain an attribute ``<param>`` of the same name as each parameter in the model. This will be the estimated maximum likelihood estimator of the model parameter for the given data and penalties.   
-Estimated parameter uncertainty (``FitResult.<param>Uncert``)
-    The ``FitResult`` will contain an attribute ``<param>Uncert`` of the same name as each parameter in the model. This will contain the full uncertainty estimate of the parameter in the form of an ``UQResult`` object (see here for details).  
-Estimated model response (``FitResult.model``)
-    It is the maximum likelihood estimate of the model's response. It can be computed as well from the model and the fitted parameter values. 
-Estimated model response (``FitResult.modelUncert``)
-    The uncertainty estimate of the model's response in the form of an ``UQResult`` object propagated from the uncertainty on the parameters.  
-Statistical descriptors (``FitResult.stats``)    
-    A dictionary of statistical quantities such as reduced chi-square, RMSD or AIC values quantifying the goodness-of-fit and model complexity. The reduced chi-square statistic ``FitResult.stats['chi2red']`` allows the assessment of whether the fit describes the data or not. A comparable value to 1 will indicate a good fit of the input data. The AIC ``FitResult.stats['aic']`` and other information-based quantities allow the comparison between fits based on alternate models and selecting the most appropriate model. 
-Penalty and regularization weights (``FitResult.regparam`` and ``FitResult.penweights``)
-    Contain the regularization and penalty values used to find the maximum likelihood estimator. 
+.. image:: ./images/advanced_guide2.png
+   :width: 900px
+   
+
+By doing so, several plots will be added to the previous figure. The first plot shows the data and the model fit (along its 95% confidence intervals). The second panel shows the residual values of the model fit. These values should resemble white noise, i.e. have constant variance and mean zero. The mean value of the residual is shown as a solid line. The estimated noise level (standard deviation) of the residual is shown as dashed lines. The third panel shows an histogram of the residual values. The residuals should be normally distributed. To assess this, the standard normal distribution is shown as a shaded grey area. Ideally, both the histogram and shaded distributed should overlap nicely, indicating normally distributed residuals. The last panel shows an autocorrelogram of the residuals and the grey shaded area represents the confidence region that would be expected of a purely random vector. Ideally, all autocorrelations at lags larger than 1 should be withing the shaded grey area. Any autocorrelations outside the grey shaded area can be considered as a potential autocorrelation in the data.  
+
 
 Evaluating and propagating from the results
 *******************************************
 
-The ``FitResul`` object provides commodity methods ``evaluate`` and ``propagate`` to quickly evaluate other models that might depend on the fitted parameters and propagate the uncertainty in the parameter estimates to those models. To evaluate a model ``modelB`` that shares parameters with ``modelA`` (which has been fitted), we can use the ``evaluate`` method :: 
+The ``FitResult`` object provides commodity methods ``evaluate`` and ``propagate`` to quickly evaluate other models that might depend on the fitted parameters and propagate the uncertainty in the parameter estimates to those models. To evaluate a model ``modelB`` that shares parameters with ``modelA`` (which has been fitted), we can use the ``evaluate`` method :: 
 
     # Fit modelA to the data
     fitresult = dl.fit(modelA,y)

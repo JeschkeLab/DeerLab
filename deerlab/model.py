@@ -1160,9 +1160,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Regularization parameter value used for the regularization of the linear parameters.
     plot : callable
         Function to display the results. It will display the fitted data.
-        The function returns the figure object (``matplotlib.figure.Figure``)
-        object as output, which can be modified. A vector for the x-axis and its label can
-        be specified by calling ``FitResult.plot(axis=axis,xlabel='xlabel')``.
+        A vector for the x-axis and its label can be specified by calling ``FitResult.plot(axis=axis,xlabel='xlabel')``.
+        A set of goodness-of-fit plots can be displayed by enabling the ``gof`` option by calling ``FitResult.plot(gof=True)``.        
     stats : dict
         Goodness of fit statistical estimators
 
