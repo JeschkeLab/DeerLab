@@ -1096,10 +1096,11 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'cvx'``.
+        The default is ``'qp'``.
 
     verbose : scalar integer, optional
         Level of verbosity during the analysis:
