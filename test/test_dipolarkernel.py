@@ -3,7 +3,7 @@ import numpy as np
 from numpy import pi, inf, NaN
 from deerlab.bg_models import bg_hom3d,bg_exp
 from deerlab.dd_models import dd_gauss
-from deerlab.dipolarkernel import dipolarkernel,elementarykernel
+from deerlab.dipolarkernel import dipolarkernel,elementarykernel_twospin
 from deerlab.utils import assert_docstring
 from deerlab.constants import ge
 
@@ -77,9 +77,7 @@ def test_negative_time_fresnel():
     Kneg = dipolarkernel(tneg,r,method='fresnel')
     Kpos = dipolarkernel(tpos,r,method='fresnel')
 
-    delta = abs(Kneg - np.flipud(Kpos))
-
-    assert np.all(delta<1e-12)
+    assert np.all(abs(Kneg - np.flipud(Kpos))<1e-12)
 #=======================================================================
 
 
@@ -105,13 +103,13 @@ def test_negative_time_integral():
 
     tneg = np.linspace(-5,0,50)
     tpos = np.linspace(0,5,50) 
-    r = np.linspace(2,6,10)
+    r = 5
     Kneg = dipolarkernel(tneg,r,method='integral')
     Kpos = dipolarkernel(tpos,r,method='integral')
 
     delta = abs(Kneg - np.flipud(Kpos))
 
-    assert np.all(delta<1e-12)
+    assert np.allclose(Kneg,np.flipud(Kpos))
 #=======================================================================
 
 def test_value_fresnel():
@@ -170,7 +168,7 @@ def test_value_grid():
     # Generate kernel numerically
     t = 1 # µs
     r = 1 # nm
-    K = dipolarkernel(t,r,method='grid',nKnots=2e6)
+    K = dipolarkernel(t,r,method='grid',gridsize=2e6)
 
     # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
     # and CODATA 2018 values for ge, muB, mu0, and h.
@@ -187,7 +185,7 @@ def test_complex_value_grid():
     # Generate kernel numerically
     t = 1 # µs
     r = 1 # nm
-    K = dipolarkernel(t,r,method='grid',nKnots=2e6,complex=True)
+    K = dipolarkernel(t,r,method='grid',gridsize=2e6,complex=True)
 
     # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
     # and CODATA 2018 values for ge, muB, mu0, and h.
@@ -204,7 +202,7 @@ def test_complex_value_grid_negative_time():
     # Generate kernel numerically
     t = -1 # µs
     r = 1 # nm
-    K = dipolarkernel(t,r,method='grid',nKnots=2e6,complex=True)
+    K = dipolarkernel(t,r,method='grid',gridsize=2e6,complex=True)
 
     # Kernel value for 1us and 1nm computed using Mathematica (FresnelC and FresnelS) 
     # and CODATA 2018 values for ge, muB, mu0, and h.
@@ -239,7 +237,7 @@ def test_lambda():
     Kref = ((1-lam) + lam*dipolarkernel(t,r, integralop=False))
     K = dipolarkernel(t,r,mod=lam, integralop=False)
 
-    assert np.all(abs(K-Kref) < 1e-14)
+    assert np.allclose(K,Kref)
 #=======================================================================
 
 def test_background():
@@ -250,10 +248,10 @@ def test_background():
     B = bg_exp(t,0.5)
 
     lam = 0.25
-    KBref = (1 - lam + lam*dipolarkernel(t,r, integralop=False))*B[:,np.newaxis]
-    KB = dipolarkernel(t,r,mod=lam, bg=B, integralop=False)
+    Kref = (1 - lam + lam*dipolarkernel(t,r, integralop=False))*B[:,np.newaxis]
+    K = dipolarkernel(t,r,mod=lam, bg=B, integralop=False)
     
-    assert np.all(abs(KB - KBref) < 1e-5)
+    assert np.allclose(K,Kref)
 #=======================================================================
 
 def test_nobackground():
@@ -262,10 +260,10 @@ def test_nobackground():
     t = np.linspace(0,3,80)
     r = np.linspace(2,6,100)
 
-    K1 = dipolarkernel(t,r)
-    
-    K2 = dipolarkernel(t,r,bg=None)
-    assert np.all(abs(K2 - K1) < 1e-5)
+    Kref = dipolarkernel(t,r)
+    K = dipolarkernel(t,r,bg=None)
+
+    assert np.allclose(K,Kref)
 #=======================================================================
 
 def test_multipath():
@@ -283,17 +281,17 @@ def test_multipath():
     T0 = [0, tau2-t2]
 
     paths = []
-    paths.append([1-prob])
-    paths.append([prob**2, 0])
-    paths.append([prob*(1-prob), tau2-t2])
+    paths.append({'amp':1-prob})
+    paths.append({'amp':prob**2, 'reftime': 0})
+    paths.append({'amp':prob*(1-prob), 'reftime': tau2-t2})
 
     K = dipolarkernel(t,r,pathways=paths, integralop=False)
 
     Kref = 1-prob
     for p in range(len(lam)):
-        Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
+        Kref = Kref + lam[p]*elementarykernel_twospin(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
 
-    assert np.all(abs(K-Kref) < 1e-3)
+    assert np.allclose(K,Kref)
 #=======================================================================
 
 def test_multipath_background():
@@ -315,23 +313,21 @@ def test_multipath_background():
     # Reference
     Kref = 1-prob
     for p in range(len(lam)):
-        Kref = Kref + lam[p]*elementarykernel(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
-    Kref = Kref
-    
+        Kref = Kref + lam[p]*elementarykernel_twospin(t-T0[p],r,'fresnel',[],[],[ge,ge],None,False)
     Bref = 1
     for p in range(len(lam)):
         Bref = Bref*Bmodel((t-T0[p]),lam[p])
-    KBref = Kref*Bref[:,np.newaxis]
+    Kref = Kref*Bref[:,np.newaxis]
 
     paths = []
-    paths.append([1-prob])
-    paths.append([prob**2, 0])
-    paths.append([prob*(1-prob), tau2-t2])
+    paths.append({'amp': 1-prob})
+    paths.append({'amp': prob**2, 'reftime': 0})
+    paths.append({'amp': prob*(1-prob), 'reftime': tau2-t2})
 
     # Output
-    KB = dipolarkernel(t,r,pathways=paths, bg=Bmodel, integralop=False)
+    K = dipolarkernel(t,r,pathways=paths, bg=Bmodel, integralop=False)
 
-    assert np.all(abs(KB - KBref) < 1e-3)
+    assert np.allclose(K,Kref)
 #=======================================================================
 
 
@@ -347,22 +343,21 @@ def test_multipath_harmonics():
     t = (tau1 + tau2) - (t1 + t2)
     prob = 0.8
     lam = [prob**2, prob*(1-prob)]
-    T0 = [0, tau2-t2]
+    tref = [0, tau2-t2]
     n = [2, 3]
 
     paths = []
-    paths.append([1-prob])
-    paths.append([prob**2, 0, 2])
-    paths.append([prob*(1-prob), tau2-t2,3])
+    paths.append({'amp': 1-prob})
+    paths.append({'amp': lam[0], 'reftime': tref[0], 'harmonic': n[0]})
+    paths.append({'amp': lam[1], 'reftime': tref[1], 'harmonic': n[1]})
 
     K = dipolarkernel(t,r,pathways=paths, integralop=False)
 
     Kref = 1-prob
     for p in range(len(lam)):
-        Kref = Kref + lam[p]*elementarykernel(n[p]*(t-T0[p]),r,'fresnel',[],[],[ge,ge],None,False)
-    Kref = Kref
+        Kref = Kref + lam[p]*elementarykernel_twospin(n[p]*(t - tref[p]),r,'fresnel',[],[],[ge,ge],None,False)
 
-    assert np.max(K-Kref) < 1e-3
+    assert np.allclose(K,Kref)
 #=======================================================================
 
 def test_excbandwidth_inf_grid():
@@ -408,18 +403,18 @@ def test_excbandwidth():
     t = np.linspace(0,2,501) # µs
 
     # Kernel using numerical integrals and approx. bandwidth treatment
-    K = dipolarkernel(t,r,excbandwidth=excitewidth,method='grid')
+    K = dipolarkernel(t,r,excbandwidth=excitewidth,method='grid',gridsize=5000)
 
     # Manual calculation using numerical powder average (reference)
-    nKnots = 5001
-    costheta = np.linspace(0,1,nKnots)
+    gridsize = 5001
+    costheta = np.linspace(0,1,gridsize)
     wdd = 2*pi*52.04/r**3 # Mrad/s
     q = 1-3*costheta**2
     D_ = 0
     for orientation in q:
         w = wdd*orientation
         D_ = D_ + np.cos(w*abs(t))*np.exp(-w**2/excitewidth**2)
-    K0 = D_/nKnots
+    K0 = D_/gridsize
     K0 = K0.reshape((len(t),1))
 
     assert np.max(K0-K)<1e-4
@@ -477,7 +472,6 @@ def test_integralop():
 def test_nonuniform_r():
 #=======================================================================
     "Check that normalization is correct when using a non-uniform distance axis"
-    
 
     t = 0
     r = np.sqrt(np.linspace(1,7**2,200))
@@ -495,8 +489,8 @@ def test_orisel_uni_grid():
     r = 1
     Ptheta = lambda theta: np.ones_like(theta)
 
-    Kref = dipolarkernel(t,r,method='grid',nKnots=1e5)
-    K = dipolarkernel(t,r,method='grid',nKnots=1e5,orisel=Ptheta)
+    Kref = dipolarkernel(t,r,method='grid',gridsize=1e5)
+    K = dipolarkernel(t,r,method='grid',gridsize=1e5,orisel=Ptheta)
     
     assert np.max(K - Kref) < 1e-10
 #=======================================================================
@@ -529,8 +523,8 @@ def test_orisel_value_grid():
     # and CODATA 2018 values for ge, muB, mu0, and h
     Kref = 0.02031864642707554
 
-    K = dipolarkernel(t,r,method='grid',nKnots=1e7,orisel=Ptheta)
-    print(K/Kref)
+    K = dipolarkernel(t,r,method='grid',gridsize=1e7,orisel=Ptheta)
+
     assert abs(K - Kref) < 1e-4
 #=======================================================================
 
@@ -570,3 +564,163 @@ def test_memory_limit():
     with pytest.raises(MemoryError):
         K = dipolarkernel(t,r)
 # ======================================================================
+
+def test_twodimensional_size():
+#=======================================================================
+    "Check the contrusction of kernels with two time dimensions"
+
+    t1 = np.linspace(0,5,10)
+    t2 = np.linspace(0,3,20)
+    r = np.array(3.5)
+    pathways= [
+    {'amp': 0.7},
+    {'reftime': [0,0], 'amp': 0.3, 'harmonic': [1,0]}    
+    ]
+    K = dipolarkernel([t1,t2],r,pathways=pathways, method='grid', gridsize=5)
+
+    assert np.allclose(np.shape(K), np.array([10,20,1]))
+#=======================================================================
+
+def test_twodimensional_twospins_t1modulated():
+#=======================================================================
+    "Check the contrusction of kernels with two time dimensions on two spin systems"
+
+    t1 = np.linspace(0,5,50)
+    t2 = np.linspace(0,3,50)
+    r = np.array(3.5)
+    pathways= [
+        {'amp': 0.7},
+        {'reftime': [0,0], 'amp': 0.3, 'harmonic': [1,0]}    
+    ]
+    K = dipolarkernel([t1,t2],r,pathways=pathways)
+    Kref = dipolarkernel(t1,r,mod=0.3)
+
+    assert np.allclose(K.squeeze(),Kref)
+#=======================================================================
+
+def test_twodimensional_twospins_t2modulated():
+#=======================================================================
+    "Check the contrusction of kernels with two time dimensions on two spin systems"
+
+    t1 = np.linspace(0,5,50)
+    t2 = np.linspace(0,3,50)
+    r = np.array(3.5)
+    pathways= [
+        {'amp': 0.7},
+        {'reftime': [0,0], 'amp': 0.3, 'harmonic': [0,1]}    
+    ]
+    K = dipolarkernel([t1,t2],r,pathways=pathways)
+    Kref = dipolarkernel(t2,r,mod=0.3)
+
+    assert np.allclose(K.squeeze().T,Kref)
+#=======================================================================
+
+def test_threespin_matrixshape():
+#=======================================================================
+    "Check that three-spin kernels are still bidimensional"
+
+    t = np.linspace(0,5,20)
+    r1 = np.linspace(1,4,10)
+    r2 = np.linspace(1,4,10)
+    r3 = np.linspace(1,4,10)
+    pathways= [
+    {'amp': 0.7},
+    {'reftime': (0,0,None),'amp': 0.3, 'harmonic': (1,1,0)}    
+    ]
+    K = dipolarkernel(t,[r1,r2,r3],pathways=pathways)
+
+    assert np.allclose(np.shape(K), np.array([20,10]))
+#=======================================================================
+
+def test_threespin_grid_value():
+#=======================================================================
+    "Check that the three-spin kernels are accurate"
+
+    t = np.array(0.1)
+    r1 = np.array(3.5)
+    r2 = np.array(3.2)
+    r3 = np.array(4.2)
+    pathways= [{'reftime': (0,0,None),'amp': 1, 'harmonic': (1,1,0)}]
+    K = dipolarkernel(t,[r1,r2,r3],pathways=pathways,gridsize=15000)
+
+    Kref = 0.5136853637 # Computed with Mathematica 11.3 (NIntegrate)
+
+    assert abs(K - Kref)<1e-2
+#=======================================================================
+
+def test_threespin_grid_complexvalue():
+#=======================================================================
+    "Check that the three-spin kernels are accurate"
+
+    t = np.array(0.25)
+    r1 = np.array(3.5)
+    r2 = np.array(3.2)
+    r3 = np.array(4.2)
+    pathways= [{'reftime': (0,0,None),'amp': 1, 'harmonic': (1,1,0)}]
+    K = dipolarkernel(t,[r1,r2,r3],pathways=pathways,gridsize=15000, complex=True)
+
+    Kref = -0.0236232 + 0.109215j  # Computed with Mathematica 11.3 (NIntegrate)
+
+    assert abs(K - Kref)<1e-2
+#=======================================================================
+
+def test_threespin_twodimensional():
+#=======================================================================
+    "Check that three-spin and bidimensional kernels are of the correct size"
+
+    t1 = np.linspace(0,5,20)
+    t2 = np.linspace(0,5,30)
+    r1 = np.linspace(1,4,10)
+    r2 = np.linspace(1,4,10)
+    r3 = np.linspace(1,4,10)
+    pathways= [
+    {'amp': 0.7},
+    {'reftime': ([0,0],[0,0],[None,None]),'amp': 0.3, 'harmonic': ([1,0],[0,1],[0,0])}    
+    ]
+    K = dipolarkernel([t1,t2],[r1,r2,r3],pathways=pathways)
+
+    assert np.allclose(np.shape(K), np.array([20,30,10]))
+#=======================================================================
+
+def test_args_arraytype_mod():
+#=======================================================================
+    "Check that input arguments are insensitive to type of array"
+    t = 0.5
+    r = 5
+    mod = 0.3
+    K1 = dipolarkernel(t,r,mod=mod)
+    mod = np.array(0.3)
+    K2 = dipolarkernel(t,r,mod=mod)
+    mod = np.array([0.3])
+    K3 = dipolarkernel(t,r,mod=mod)
+
+    assert K1==K2 and K2==K3
+#=======================================================================
+
+def test_args_arraytype_t():
+#=======================================================================
+    "Check that input arguments are insensitive to type of array"
+    r = 5
+    t = 0.3
+    K1 = dipolarkernel(t,r)
+    t = np.array(0.3)
+    K2 = dipolarkernel(t,r)
+    t = np.array([0.3])
+    K3 = dipolarkernel(t,r)
+
+    assert K1==K2 and K2==K3
+#=======================================================================
+
+def test_args_arraytype_r():
+#=======================================================================
+    "Check that input arguments are insensitive to type of array"
+    t = 0.3
+    r = 5
+    K1 = dipolarkernel(t,r)
+    r = np.array(5)
+    K2 = dipolarkernel(t,r)
+    r = np.array([5])
+    K3 = dipolarkernel(t,r)
+
+    assert K1==K2 and K2==K3
+#=======================================================================

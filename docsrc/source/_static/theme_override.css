@@ -10148,3 +10148,10 @@ src: local('Berlin Sans FB Bold'), url('BRLNSB.woff') format('woff');
     padding-left: 22px;
     width:95%
 }
+
+
+img.math {
+    vertical-align: middle;
+    margin-top: 0;
+    margin-bottom: 0;
+}

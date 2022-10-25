@@ -61,7 +61,7 @@ templates_path = ['_templates']
 # ----------------------------------------------------------------------
 from sphinx_gallery.sorting import ExplicitOrder
 sphinx_gallery_conf = {
-    'filename_pattern': 'ex_',
+    'filename_pattern': 'ex_(?!long_)',
     'examples_dirs': '../../examples',   # path to your example scripts
     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
     'remove_config_comments': True,

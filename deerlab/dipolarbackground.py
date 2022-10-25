@@ -61,8 +61,10 @@ def dipolarbackground(t, pathways, Bmodel):
         B = dl.dipolarbackground(t, pathways, Bmodel)
     """
 
-    # Ensure that all inputs are numpy arrays
-    t = np.atleast_1d(t)
+    # Mare sure that t is a list
+    if not isinstance(t,(list)): t = [t]
+    D  = len(t) # Number of experimental time-coordinates 
+    t = [np.expand_dims(np.atleast_1d(t[d]), axis=tuple(np.delete(np.arange(D), d))) for d in range(D)]
 
     if not callable(Bmodel):
         raise TypeError(
@@ -77,29 +79,40 @@ def dipolarbackground(t, pathways, Bmodel):
     # Identify physical background model
     takes_lambda = nArgs == 2
 
-    # Extract modulated pathways, skipping unmodulated ones
-    pathways = [path for path in pathways if len(np.atleast_1d(path)) > 1]
+    # Ensure correct data types of the pathways and its components
+    #pathways = [{key: np.atleast_1d(value).astype(float) for key,value in pathway.items()} for pathway in pathways]
 
     # Check structure of pathways
-    for i, path in enumerate(pathways):
-        if len(path) == 2:
-            # If harmonic is not defined, append default delta=1
-            pathways[i] = np.append(path, 1)
-        elif len(path) != 3:
-            # Otherwise paths are not correctly defined
-            raise KeyError(
-                f"The pathway #{i} must be a list of two or three elements [lam, T0] or [lam, T0, delta]"
-            )
+    for k,pathway in enumerate(pathways):
+        if not 'amp' in pathway.keys():
+            raise SyntaxError('All pathways must contain at least an \'amp\' field.')
+        if not 'reftime' in pathway.keys():
+            pathways[k]['reftime'] = ([None]*len(t)) 
+            pathways[k]['harmonic'] = (np.zeros(D))
+        for key in ['reftime','harmonic']:
+            if key in pathway.keys():
+                if not isinstance(pathway[key], tuple):
+                    pathway[key] = tuple([pathway[key]])
+                pathway[key] = tuple([np.atleast_1d(tref) for tref in pathway[key]])
+        if 'amp' in pathway.keys() and 'reftime' in pathway.keys() and not 'harmonic' in pathway.keys():
+            # If harmonic is not defined, append default n=1
+            pathways[k]['harmonic'] = tuple([np.ones(D)]*len(pathways[k]['reftime']))
+    # Remove unmodulated pathways
+    [pathways.pop(k) for k,pathway in enumerate(pathways) if np.all(pathway['harmonic']==np.zeros(len(t)))]
 
     # Construction of multi-pathway background function
     B = 1
-    if takes_lambda:
-        # Physical background models
-        for lam, t0, delta in pathways:
-            B *= Bmodel(delta * (t - t0), lam)
-    else:
-        # Phenomenological background models
-        for _, t0, delta in pathways:
-            B *= Bmodel(delta * (t - t0))
+    for pathway in pathways:
+        λ,tref,δ = [pathway['amp'],pathway['reftime'],pathway['harmonic']]
+        for δq,trefq in zip(δ,tref):
+            if len(trefq)!=len(t): 
+                raise SyntaxError(f"Some pathway's number of refocusing times and harmonics do not match the number of time coordinates.")
+            # Set trefs defined as None to an arbitrary numerical value
+            trefq = [trefq[d] if δqd!=0 else 0 for d,δqd in enumerate(δq)]
+            tdip = np.sum(np.array([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δq,trefq)],dtype=object), axis=0).astype(float)
+            if takes_lambda:
+                B *= Bmodel(tdip, λ)
+            else:
+                B *= Bmodel(tdip)
 
     return B

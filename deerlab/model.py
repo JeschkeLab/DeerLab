@@ -1388,6 +1388,7 @@ def _linked_model_with_constants(nonlinfcn,mapping,constantsInfo,linear_reduce_i
         for info,constant in zip(constantsInfo,constants):
             args.insert(info['argidx'],constant)                
     A = nonlinfcn(*args)
+    if isinstance(A,tuple): return A # For internal use, undocumented 
     if len(A.shape)<2: A = np.expand_dims(A,1)
     Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
     return Amapped
