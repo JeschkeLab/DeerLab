@@ -1049,7 +1049,7 @@ def insert_snlls_optionals_docstrings():
 #==============================================================================================
 @insert_snlls_optionals_docstrings()
 def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None, mask=None, weights=None,
-                regparam='aic',reg='auto',regparamrange=None,**kwargs):
+                regparam='aic',reg='auto',regparamrange=None, bootcores=1,**kwargs):
     r"""
     Fit the model(s) to the dataset(s)
 
@@ -1082,6 +1082,10 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     bootstrap : scalar, optional,
         Bootstrap samples for uncertainty quantification. If ``bootstrap>0``, the uncertainty quantification will be 
         performed via the boostrapping method with based on the number of samples specified as the argument.
+    
+    bootcores : scalar, optional
+        Number of CPU cores/processes for parallelization of the bootstrap uncertainty quantification. If ``cores=1`` no parallel 
+        computing is used. If ``cores=-1`` all available CPUs are used. The default is one core (no parallelization).
 
     reg : boolean or string, optional
         Determines the use of regularization on the solution of the linear problem.
@@ -1127,10 +1131,11 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'cvx'``.
+        The default is ``'qp'``.
 
     verbose : scalar integer, optional
         Level of verbosity during the analysis:
@@ -1293,7 +1298,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
             if not isinstance(fit.model,list): fit.model = [fit.model]
             return (fit.param,*fit.model)
         # Bootstrapped uncertainty quantification
-        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl)
+        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores)
         # Include information on the boundaries for better uncertainty estimates
         paramlb = model._vecsort(model._getvector('lb'))[np.concatenate(param_idx)] 
         paramub = model._vecsort(model._getvector('ub'))[np.concatenate(param_idx)] 
@@ -1329,10 +1334,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                 param.unfreeze() 
             if np.all(param.linear):
                 if param.normalization is not None:
-                    non_normalized = FitResult_param_[key] # Non-normalized value
+                    def _scale(x):
+                        x = x + np.finfo(float).eps
+                        return np.mean(x/param.normalization(x))
+                    FitResult_param_[f'{key}_scale'] = _scale(FitResult_param_[key]) # Normalization factor
                     FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
-                    FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
-                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: np.mean(x/param.normalization(x)))
+
+                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(_scale)
                     FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
