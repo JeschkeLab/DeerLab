@@ -9812,9 +9812,9 @@ margin-left: 2.5em;
 margin-top: -2.1em;
 }
 .sphx-glr-script-out .highlight pre {
-background-color: #fafae2;
+background-color: #fff;
 border: 0;
-max-height: 30em;
+max-height: fit-content;
 overflow: auto;
 padding-left: 1ex;
 margin: 0px;
@@ -9898,7 +9898,7 @@ max-width: 100%;
 }
 
 .sphx-glr-multi-img {
-max-width: 42%;
+max-width: 100%;
 height: auto;
 }
 

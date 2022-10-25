@@ -57,15 +57,23 @@ For just a quick display of the results, you can use the ``plot()`` method of th
 .. image:: ./images/beginners_guide1.png
    :width: 450px
 
-For a quick summary of the fit results, including goodness-of-fit statistics and the fitted model parameter values (including 95% confidence intervals), can be accessed by just printing the ``results`` object :: 
+For a quick summary of the fit results, including goodness-of-fit statistics, used model hyperparameters, and the fitted model parameter values (including 95% confidence intervals), can be accessed by just printing the ``results`` object: :: 
 
     >>>print(results)
     Goodness-of-fit: 
-    ========= ============= ============ ========== ========== 
-    Dataset   Noise level   Reduced 𝛘2     RMSD       AIC     
-    ========= ============= ============ ========== ========== 
-       #1       1426.905       1.036      1443.706   3631.484  
-    ========= ============= ============ ========== ========== 
+    ========= ============= ============ ==================== ==========
+     Dataset   Noise level   Reduced 𝛘2   Residual autocorr.     RMSD
+    ========= ============= ============ ==================== ==========
+       #1       1426.905       1.036            0.127          1443.706
+    ========= ============= ============ ==================== ==========
+
+    Model hyperparameters:
+    ========================== ===================
+     Regularization parameter   Penalty weight #1
+    ========================== ===================
+            0.002                   0.060
+    ========================== ===================
+
     Model parameters: 
     =========== ========= ========================= ======= ====================================== 
      Parameter   Value     95%-Confidence interval   Units   Description                           
@@ -77,6 +85,11 @@ For a quick summary of the fit results, including goodness-of-fit statistics and
      P_scale     1.001e5                             None    Normalization factor of P 
     =========== ========= ========================= ======= ====================================== 
 
+The first table contains all the goodness-of-fit statistics (see below). The second table summarizes all the hyperparameters used 
+in the final evaluation of the model. If regularization is enabled (as is the case when using non-parametric distance distributions)
+its final value will be shown. If additional penalties have been added to the fit, their regularization parameters (i.e. penalty weights) will be shown as well.  
+
+The third table summarizes all the model parameter estimates along with their uncertainties and model descriptions. 
 The values of vectorized parameters such as ``P`` are not shown in this summary and shown instead as ``...``. The additional value ``P_scale`` corresponds to the overall scaling factor of the distance distribution (and hence of the dipolar signal) since the fitted distance distribution is normalized such that ``trapz(P,r)==1``.    
 
 Any specific quantities can be extracted from the ``results`` object. For each parameter in the model, the ``results`` output contains an attribute ``results.<parameter>`` named after the parameter containing the fitted value of that parameter, as well as another attribute ``results.<parameter>Uncert`` containing the uncertainty estimates of that parameter, from which confidence intervals can be constructed (the :ref:`uncertainty guide <uncertainty>` for details). For example: :: 
@@ -89,6 +102,20 @@ Any specific quantities can be extracted from the ``results`` object. For each p
     results.mod # Fitted modulation depth 
     results.modUncert.ci(95) # Modulation depth 95% confidence intervals
 
+Assessing the goodness-of-fit
+****************************** 
+
+The results summary shown above contains several key quantities to quickly assess whether the model estimate obtained by the ``fit`` 
+function is a proper descriptor of the data. For each dataset analyzed, several quantities are returned. The ``Noise level`` value shows 
+either the estimated noise level of that dataset or the one specified by the user. The ``Reduced 𝛘2`` value indicates how good the model fit describes the data. Values close to 1 indicate a good fit of the data. The ``Residual autocorr.`` value (computed as `\vert 2 - d_\mathrm{DW} \vert`, where `d_\mathrm{DW}` is the Durbin–Watson statistic) indicates the degree of (first-order) autocorrelation in the fit residual. Values larger than 0.5 indicate a significant amount of autocorrelation, meaning that either the noise if not independent or that the model might not have fully captured all features in the data. Such autocorrelation con commonly originate from a simplified distance distribution model failing to capture all dipolar modulations or a insufficient set of dipolar pathways that fail to capture all contributions to the data. The ``RMSD`` value does not provide any insight by itself, however, it can be used to compare the goodness-of-fit between different models.
+
+To facilitate the inspection of the goodness-of-fit, DeerLab will highlight those values that indicate a potential failure of the analysis. If either or both the ``Reduced 𝛘2`` or ``Residual autocorr.`` values are highlighted in yellow, it will indicate that there is a significant possibility that the model does not properly describe the data. In such cases, one must inspect, e.g. visually using ``results.plot(gof=True)`` (see :ref:`here <fitting_goodnessoffit>` for details), whether the model estimate actually is a good descriptor of the data. If the values are shown in red, it will indicate that the model does certainly not properly describe the data. 
+
+If yellow or red goodness-of-fit quantities are obtained after an analysis, the following steps can be taken to amend that: 
+
+- Check for outliers or features in the data not accounted for by the model. 
+- Expand the model to account for them or approximate their presence. 
+- If the model cannot be expanded to account for them, make use of the ``fit`` function's ``masks`` optional argument to specify data masks so that those features are not accounted for during the analysis. 
 
 
 Exporting the figure and the data

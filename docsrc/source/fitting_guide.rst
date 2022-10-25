@@ -209,11 +209,12 @@ A summary of the fit can be accessed by printing the ``FitResult`` object as ret
 
     >>>print(result)
     Goodness-of-fit: 
-    ========= ============= ============ ======= =========== 
-    Dataset   Noise level   Reduced 𝛘2   RMSD       AIC     
-    ========= ============= ============ ======= =========== 
-       #1         0.049        1.058      0.050   -3002.842  
-    ========= ============= ============ ======= =========== 
+    ========= ============= ============ ==================== =======
+     Dataset   Noise level   Reduced 𝛘2   Residual autocorr.   RMSD
+    ========= ============= ============ ==================== =======
+       #1         0.049        1.058            0.127          0.050 
+    ========= ============= ============ ==================== =======
+
     Model parameters: 
     =========== ======= ========================= ======= ================ 
      Parameter   Value   95%-Confidence interval   Units   Description     
@@ -222,7 +223,7 @@ A summary of the fit can be accessed by printing the ``FitResult`` object as ret
      std         0.204   (0.196,0.212)             None    None            
      scale       0.999   (0.999,0.999)             None    Scaling factor  
     =========== ======= ========================= ======= ================ 
-    
+
 
 The ``FitResult`` object
 ************************
@@ -242,10 +243,56 @@ Statistical descriptors (``FitResult.stats``)
 Penalty and regularization weights (``FitResult.regparam`` and ``FitResult.penweights``)
     Contain the regularization and penalty values used to find the maximum likelihood estimator. 
 
+The fit of the model to the data can be quickly assessed by calling the ``FitResult.plot()`` method. Since the ``FitResult`` has not 
+information on the abscissa values of the data, these must be specified separately. Similarly, we can also specify a label for the abscissa. :: 
+
+    # Plot the data and fit
+    result.plot(axis=x, xlabel='x')
+
+.. image:: ./images/advanced_guide1.png
+   :width: 450px
+
+
+.. _fitting_goodnessoffit:
+
+Assessing the goodness-of-fit
+****************************** 
+
+The results summary shown above contains several key quantities to quickly assess whether the model estimate obtained by the ``fit`` 
+function is a proper descriptor of the data. For each dataset analyzed, several quantities are returned. The ``Noise level`` value shows 
+either the estimated noise level of that dataset or the one specified by the user. The ``Reduced 𝛘2`` value indicates how good the model fit 
+describes the data. Values close to one indicate a good fit of the data. The ``Residual autocorr.`` value (computed as `\vert 2 - d_\mathrm{DW} \vert`,
+where `d_\mathrm{DW}` is the Durbin–Watson statistic) indicates the degree of (first-order) autocorrelation in the fit residual. Values larger than 0.5 
+indicate a significant amount of autocorrelation, meaning that either the noise if not independent or that the model might not have fully captured all
+features in the data. The ``RMSD`` value does not provide any insight by itself, however, it can be used to compare the goodness-of-fit between different models.
+
+To facilitate the inspection of the goodness-of-fit, DeerLab will highlight with colors those values that indicate a potential failure of the analysis.
+If either or both the ``Reduced 𝛘2`` or ``Residual autocorr.`` values are highlighted in yellow, this indicates that there is the significant possibility
+that the model does not properly describe the data. If these values are shown in red, it will indicate that the model does not properly describe the data. 
+
+If yellow or red goodness-of-fit quantities are obtained after an analysis, the following steps can be taken to amend that: 
+
+- Check for outliers or features in the data not accounted for by the model. 
+- Expand the model to account for them or approximate their presence. 
+- If the model cannot be expanded to account for them, make use of the ``fit`` function's ``masks`` optional argument to specify data masks so that those features are not accounted for during the analysis. 
+
+Complementary, the goodness-of-fit can be assessed visually by calling the ``plot(gof=True)`` method of the ``FitResult`` object. ::
+    
+    # Plot the data, fit, and other goodness-of-fit tests
+    result.plot(axis=x, xlabel='x', gof=True)
+
+
+.. image:: ./images/advanced_guide2.png
+   :width: 900px
+   
+
+By doing so, several plots will be added to the previous figure. The first plot shows the data and the model fit (along its 95% confidence intervals). The second panel shows the residual values of the model fit. These values should resemble white noise, i.e. have constant variance and mean zero. The mean value of the residual is shown as a solid line. The estimated noise level (standard deviation) of the residual is shown as dashed lines. The third panel shows an histogram of the residual values. The residuals should be normally distributed. To assess this, the standard normal distribution is shown as a shaded grey area. Ideally, both the histogram and shaded distributed should overlap nicely, indicating normally distributed residuals. The last panel shows an autocorrelogram of the residuals and the grey shaded area represents the confidence region that would be expected of a purely random vector. Ideally, all autocorrelations at lags larger than 1 should be withing the shaded grey area. Any autocorrelations outside the grey shaded area can be considered as a potential autocorrelation in the data.  
+
+
 Evaluating and propagating from the results
 *******************************************
 
-The ``FitResul`` object provides commodity methods ``evaluate`` and ``propagate`` to quickly evaluate other models that might depend on the fitted parameters and propagate the uncertainty in the parameter estimates to those models. To evaluate a model ``modelB`` that shares parameters with ``modelA`` (which has been fitted), we can use the ``evaluate`` method :: 
+The ``FitResult`` object provides commodity methods ``evaluate`` and ``propagate`` to quickly evaluate other models that might depend on the fitted parameters and propagate the uncertainty in the parameter estimates to those models. To evaluate a model ``modelB`` that shares parameters with ``modelA`` (which has been fitted), we can use the ``evaluate`` method :: 
 
     # Fit modelA to the data
     fitresult = dl.fit(modelA,y)
