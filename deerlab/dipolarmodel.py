@@ -17,7 +17,7 @@ from scipy.stats import multivariate_normal
 
 #===============================================================================
 def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2, harmonics=None, experiment=None,
-                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, specperm=True, triangles=None):
+                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, samespins=True, triangles=None):
     """
     Generate a dipolar EPR signal model.
 
@@ -52,7 +52,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
         Each triangle is specified by a list of indices of the interspin 
         distances forming the triangle, e.g. for a three-spin system ``triangles=[[1,2,3]]`` where the first, 
         second, and third interspin distances connect to form a triangle.  
-    specperm : boolean, optional 
+    samespins : boolean, optional 
         Only when ``spins>3``. Enables the assumption of spectral permutability, i.e. the assumption that all spins in the system
         have the same spectral distribution. If enabled, all pairwise pathways of the different dipolar interactions are assumed to 
         have the same amplitude. If disabled, all the individual pathway amplitudes are parametrized separately. Enabled by default.   
@@ -242,7 +242,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
     # Create the dipolar pathways model object
     PathsModel = Model(dipolarpathways,signature=variables)
 
-    if spins>2 and specperm:
+    if spins>2 and samespins:
         links = {f'lam{n+1}': [f'lam{n+1}_{q+1}' for q in range(Q)] for n in range(npathways)}
         PathsModel = link(PathsModel, **links)
 
@@ -285,7 +285,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
             pairwise = ''
             if spins>2: 
                 pairwise = ' pairwise'   
-            if spins==2 or specperm:
+            if spins==2 or samespins:
                 getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{n+1}',unit='')
             else:
                 for q in range(Q):
