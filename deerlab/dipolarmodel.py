@@ -27,7 +27,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
         Vector of dipolar evolution times, in microseconds.
     r : array_like, optional
         Vector of spin-spin distances, in nanometers. If not specified, it defaults to the range 
-        1.5nm-10nm with a resolution of 0.05nm. Has no effect on models with ``spins>2``.
+        1.5nm-8nm with a resolution of 0.05nm. Has no effect on models with ``spins>2``.
     Pmodel : :ref:`Model`, optional
         Model for the distance distribution. If not specified, a non-parametric
         distance distribution defined over ``r`` is used. For models with ``spins>2`` a multivariate 
@@ -84,7 +84,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
 
     # If distance axis not specified default to a long range one
     if r is None: 
-        r = np.arange(1.5,10,0.05)
+        r = np.arange(1.5,8,0.05)
 
     # Input parsing and validation
     if not isinstance(Pmodel,Model) and Pmodel is not None:
