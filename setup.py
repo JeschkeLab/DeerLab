@@ -30,6 +30,7 @@ setup(
                         'memoization>=0.3.1',
                         'pytest>=6.2.2',
                         'setuptools>=53.0.0',
+                        'quadprog>=0.1.11',
                         ],
     classifiers=[
         'Development Status :: 4 - Beta',

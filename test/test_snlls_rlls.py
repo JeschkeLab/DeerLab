@@ -254,7 +254,7 @@ def test_cost_value():
     V = K@P + whitegaussnoise(t,0.01)
     fit = snlls(V,K,lbl=np.zeros_like(r))
 
-    assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
+    assert isinstance(fit.cost,float) and np.round(fit.cost/(np.sum(fit.residuals**2)/len(fit.residuals)),5)==1
 #============================================================
 
 def test_convergence_criteria():
