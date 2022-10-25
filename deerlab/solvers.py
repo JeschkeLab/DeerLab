@@ -14,6 +14,9 @@ from deerlab.classes import UQResult, FitResult
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian, isempty
 import time 
 from functools import partial
+from copy import deepcopy
+from quadprog import solve_qp
+
 
 def timestamp():
 # ===========================================================================================
@@ -25,7 +28,7 @@ def timestamp():
     return '[%d-%d-%d %d:%d:%d]' % ( timeObj.tm_mday, timeObj.tm_mon, timeObj.tm_year, timeObj.tm_hour, timeObj.tm_min, timeObj.tm_sec)
 # ===========================================================================================
 
-def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
+def _plot(ys,yfits,yuqs,noiselvls,axis=None,xlabel=None,gof=False,fontsize=13):
 # ===========================================================================================
     """
     Plot method for the FitResult object
@@ -34,13 +37,22 @@ def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
     Plots the input dataset(s), their fits, and uncertainty bands.
     """
 
-    complexy = np.any([np.iscomplex(y).any() for y in ys])
+    # Check which datasets are complex-valued
+    complexy = [np.iscomplex(y).any() for y in ys]
 
-    nSignals = len(ys)
-    ncols = 2 if complexy else 1
-    fig,axs = plt.subplots(nSignals,ncols,figsize=[7*ncols,4*nSignals])
+    # Determine the distribution of the subplots in the figure
+    nrows = len(ys) + np.sum(complexy)
+    if gof:
+        ncols = 4
+        fig,axs = plt.subplots(nrows,ncols,figsize=[4*ncols,4*nrows], constrained_layout=True)
+    else: 
+        ncols = 1
+        fig,axs = plt.subplots(nrows,ncols,figsize=[7*ncols,4*nrows])
     axs = np.atleast_1d(axs)
+    axs = axs.flatten() 
+    n = 0 # Index for subplots
 
+    # If abscissa of the datasets are not specified, resort to default 
     if axis is None: 
         axis = [np.arange(len(y)) for y in ys]
     if not isinstance(axis,list): 
@@ -49,31 +61,84 @@ def _plot(ys,yfits,yuqs,axis=None,xlabel=None):
     if xlabel is None: 
         xlabel = 'Array elements'
 
+    # Go through every dataset
+    for i,(y,yfit,yuq,noiselvl) in enumerate(zip(ys,yfits,yuqs,noiselvls)): 
 
-    n = 0
-    for i,(y,yfit,yuq) in enumerate(zip(ys,yfits,yuqs)): 
-        # Plot the experimental signal and fit
-        axs[n].plot(axis[i],y.real,'.',color='grey')
-        axs[n].plot(axis[i],yfit.real,color='#4550e6')
-        if yuq.type!='void': 
-            axs[i].fill_between(axis[i],yuq.ci(95)[:,0].real,yuq.ci(95)[:,1].real,alpha=0.4,linewidth=0,color='#4550e6')
-        axs[n].set_xlabel(xlabel)
-        axs[n].set_ylabel(f'Dataset #{i+1}')
-        axs[n].legend(('Data (real)','Fit','95%-CI'),loc='best',frameon=False)
-        n += 1
-        
-        if complexy: 
-            axs[n].plot(axis[i],y.imag,'.',color='grey')
-            axs[n].plot(axis[i],yfit.imag,color='tab:orange')
+        # If dataset is complex-valued, plot the real and imaginary parts separately
+        if complexy[i]:
+            components = [np.real,np.imag]
+            componentstrs = [' (real)',' (imag)']
+        else:
+            components = [np.real]
+            componentstrs = ['']
+        for component,componentstr in zip(components,componentstrs):
+
+            # Plot the experimental signal and fit
+            axs[n].plot(axis[i],component(y),'.',color='grey',label='Data'+componentstr)
+            axs[n].plot(axis[i],component(yfit),color='#4550e6',label='Model fit')
             if yuq.type!='void': 
-                axs[n].fill_between(axis[i],yuq.ci(95)[:,0].imag,yuq.ci(95)[:,1].imag,alpha=0.4,color='tab:orange',linewidth=0)
-            axs[n].set_xlabel(xlabel)
-            axs[n].set_ylabel(f'Dataset #{i+1}')
-            axs[n].legend(('Data (imag)','Fit','95%-CI'),loc='best',frameon=False)
+                axs[i].fill_between(axis[i],component(yuq.ci(95)[:,0]),component(yuq.ci(95)[:,1]),alpha=0.4,linewidth=0,color='#4550e6',label='95%-confidence interval')
+            axs[n].set_xlabel(xlabel,size=fontsize)
+            axs[n].set_ylabel(f'Dataset #{i+1}'+componentstr,size=fontsize)
+            axs[n].spines.right.set_visible(False)
+            axs[n].spines.top.set_visible(False) 
+            axs[n].legend(loc='best',frameon=False)
+            plt.autoscale(enable=True, axis='both', tight=True)
             n += 1
 
-    plt.tight_layout()
-    plt.autoscale(enable=True, axis='both', tight=True)
+            # Plot the visual guides to assess the goodness-of-fit (if requested)
+            if gof: 
+                # Get the residual
+                residuals = component(yfit - y)
+
+                # Plot the residual values along the estimated noise level and mean value
+                axs[n].plot(axis[i],residuals,'.',color='grey')
+                axs[n].hlines(np.mean(residuals),axis[i][0],axis[i][-1],color='#4550e6',label='Mean')
+                axs[n].hlines(np.mean(residuals)+noiselvl,axis[i][0],axis[i][-1],color='#4550e6',linestyle='dashed',label='Estimated noise level')
+                axs[n].hlines(np.mean(residuals)-noiselvl,axis[i][0],axis[i][-1],color='#4550e6',linestyle='dashed')
+                axs[n].set_xlabel(xlabel,size=fontsize)        
+                axs[n].set_ylabel(f'Residual #{i+1}'+componentstr,size=fontsize)      
+                axs[n].spines.right.set_visible(False)
+                axs[n].spines.top.set_visible(False) 
+                axs[n].legend(loc='best',frameon=False)
+                plt.axis("tight")
+                n += 1
+
+                # Plot the histogram of the residuals weighted by the noise level, compared to the standard normal distribution
+                bins = np.linspace(-4,4,20)
+                axs[n].hist(residuals/noiselvl,bins,density=True,color='b',alpha=0.6, label='Residuals')
+                bins = np.linspace(-4,4,300)
+                N0 = dl.dd_gauss(bins,0,1)
+                axs[n].get_yaxis().set_visible(False)
+                axs[n].fill(bins,N0,'k',alpha=0.4, label='$\mathcal{N}(0,1)$')
+                axs[n].set_xlabel('Normalized residuals',size=fontsize)       
+                axs[n].set_yticks([])
+                axs[n].spines.right.set_visible(False)
+                axs[n].spines.left.set_visible(False)
+                axs[n].spines.top.set_visible(False) 
+                axs[n].legend(loc='best',frameon=False)
+                n += 1
+
+                # Plot the autocorrelogram of the residuals, along the confidence region for a white noise vector
+                maxLag = len(residuals)-1
+                axs[n].acorr(residuals, usevlines=True, normed=True, maxlags=maxLag, lw=2,color='#4550e6',label='Residual autocorrelation')
+                threshold = 1.96/np.sqrt(len(residuals))
+                axs[n].fill_between(np.linspace(0,maxLag),-threshold,threshold,color='k',alpha=0.3,linewidth=0,label='White noise confidence region')
+                axs[n].get_yaxis().set_visible(False)
+                plt.axis("tight")
+                axs[n].set_xbound(lower=-0.5, upper=maxLag)
+                axs[n].spines.right.set_visible(False)
+                axs[n].spines.left.set_visible(False)
+                axs[n].spines.top.set_visible(False)
+                axs[n].set_xlabel('Lags',size=fontsize)       
+                axs[n].legend(loc='best',frameon=False)
+                n += 1
+
+    # Adjust fontsize
+    for ax in axs:
+        for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+            label.set_fontname('Calibri')
+            label.set_fontsize(fontsize)
 
     return fig
 # ===========================================================================================
@@ -221,6 +286,8 @@ def _prepare_linear_lsq(A,lb,ub,reg,L,tol,maxiter,nnlsSolver):
             linSolver = lambda AtA, Aty: fnnls(AtA, Aty, tol=tol, maxiter=maxiter)
         elif nnlsSolver == 'cvx':
             linSolver = lambda AtA, Aty: cvxnnls(AtA, Aty, tol=tol, maxiter=maxiter)
+        elif nnlsSolver == 'qp':
+            linSolver = lambda AtA, Aty: qpnnls(AtA, Aty)
         parseResult = lambda result: result
     
     # Ensure correct formatting and shield against float-point errors
@@ -235,7 +302,7 @@ def _model_evaluation(ymodels,parfit,paruq,uq):
     Model evaluation
     ================
 
-    Evaluates the model(s) response(s) at the fitted solution and progates the uncertainty in the fit
+    Evaluates the model(s) response(s) at the fitted solution and propagates the uncertainty in the fit
     parameters to the model response. 
     """
     modelfit, modelfituq = [],[]
@@ -288,23 +355,6 @@ def _penalty_augmentation(alpha,L,P,type):
 # ===========================================================================================
 
 # ===========================================================================================
-def _optimize_scale(y,yfit,subsets):
-    """
-    Dataset scale optimization
-    ==========================
-
-    For two datasets, find the least-squares scaling factor that fits one to each other.
-    """
-    scales, scales_vec = [], np.zeros_like(yfit) 
-    for subset in subsets:
-        yfit_,y_ = (np.atleast_2d(y[subset]) for y in [yfit, y]) # Rescale the subsets corresponding to each signal
-        scale = np.squeeze(np.linalg.lstsq(yfit_.T,y_.T,rcond=None)[0])
-        scales.append(scale) # Store the optimized scales of each signal
-        scales_vec[subset] = scale 
-    return scales, scales_vec
-# ===========================================================================================
-
-# ===========================================================================================
 def _unfrozen_subset(param,frozen,parfrozen):
     param,frozen,parfrozen = np.atleast_1d(param,frozen,parfrozen)
     param = param.tolist()
@@ -339,7 +389,7 @@ def _insertfrozen(parfit,parfrozen,frozen):
 # ===========================================================================================
 
 
-def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None, verbose=0,
+def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='qp', reg='auto', weights=None, verbose=0,
           regparam='aic', regparamrange=None, multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
           ftol=1e-8, xtol=1e-8, max_nfev=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None, mask=None,
           nonlin_frozen=None, uq=True):
@@ -433,10 +483,11 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'cvx'``.
+        The default is ``'qp'``.
 
     noiselvl : array_like, optional
         Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
@@ -535,10 +586,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Vector of residuals at the solution.
 
     """
-        
+
     if verbose>0: 
         print(f'{timestamp()} Preparing the SNLLS analysis...')
-
     
     # Ensure that all arrays are numpy.nparray
     par0 = np.atleast_1d(par0)
@@ -575,7 +625,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         mask = np.concatenate([mask,mask])   
     Amodel__ = Amodel
     if np.iscomplexobj(A0):
-       # If the design matrix is complex-valued
+    # If the design matrix is complex-valued
         Amodel = lambda p: np.concatenate([Amodel__(p).real,Amodel__(p).imag]) 
         A0 = np.concatenate([A0.real,A0.imag]) 
         A0 = Amodel(par0)
@@ -816,7 +866,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Compute the fit residual
     _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset_inv(nonlinfit,nonlin_frozen))
     res = _ResidualsFcn(nonlinfit)
-    fvals = np.sum(res**2) 
+    fvals = np.sum(res**2)/len(res) 
 
     if verbose>0: 
         print(f'{timestamp()} Least-squares routine finished.')
@@ -918,7 +968,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof)
 
     # Display function
-    plotfcn = partial(_plot,ys,yfits,yuq)
+    plotfcn = partial(_plot,ys,yfits,yuq,noiselvl)
 
     if len(stats) == 1: 
         stats = stats[0]
@@ -1075,7 +1125,7 @@ def fnnls(AtA, Atb, tol=None, maxiter=None, verbose=False):
 
 #=====================================================================================
 
-def cvxnnls(AtA, Atb, tol=None, maxiter=None):
+def cvxnnls(AtA, Atb, tol=None, maxiter=None,x0=None):
 #=====================================================================================
     r"""
     Non-negative least-squares (NNLS) via the CVXOPT package.
@@ -1124,8 +1174,8 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None):
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
     if maxiter is None:
         maxiter = 5*N
-
-    x0 = np.zeros(N)
+    if x0 is None:
+        x0 = np.zeros(N)
 
     cAtA = cvx.matrix(AtA)
     cAtb = -cvx.matrix(Atb)
@@ -1144,4 +1194,52 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None):
     except: 
         P = x0
     return P
+#=====================================================================================
+
+#=====================================================================================
+def qpnnls(AtA, Atb):
+    r"""
+    Non-negative least-squares (NNLS) via the quadprog package.
+
+    Solves the problem 
+    
+    .. math:: \min \Vert b - Ax \Vert^2 
+    
+    where ``AtA`` `= A^TA` and ``Atb`` `= A^Tb`. 
+    This routine uses the the Goldfarb/Idnani dual algorithm [1]_.
+
+    Parameters
+    ----------
+    AtA : matrix_like 
+        Matrix `A^TA`
+    Atb : array_like 
+        Vector `A^Tb`
+        
+    Returns
+    -------
+    x : ndarray 
+        Solution vector.
+
+    References
+    ----------
+    ... [1] D. Goldfarb and A. Idnani (1983). A numerically stable dual
+            method for solving strictly convex quadratic programs.
+            Mathematical Programming, 27, 1-33.
+
+    """
+    N = np.shape(AtA)[1]
+    I = np.eye(N)
+    lb = np.zeros(N)
+    meq = 0
+    try: 
+        # Solve the quadratic program
+        x = solve_qp(AtA, Atb, I, lb, meq)[0]
+    except:
+        try:
+            # If AtA matrix is not positive definite, find nearest one
+            x = solve_qp(dl.utils.nearest_psd(AtA), Atb, I, lb, meq)[0]
+        except:
+            # For very rare cases
+            x = cvxnnls(AtA, Atb)
+    return x
 #=====================================================================================

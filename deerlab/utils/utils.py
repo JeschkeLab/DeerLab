@@ -121,14 +121,21 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None
         return V, Kmulti, weights, mask, subset, sigmas
 #===============================================================================
 
+from pyparsing import *
+ESC = Literal('\x1b')
+escapeSeq = Combine(ESC + '[' + Optional(delimitedList(Word(nums),';')) + oneOf(list(alphas)))
+rm_ansi = lambda s : Suppress(escapeSeq).transformString(s)
+
+
 #===============================================================================
 def formatted_table(table,align=None):
     """Generate auto-formatted table in string form from a list of rows."""
-    
+
     # Determine the maximal number of characters in each column
     N = []
     for column in range(len(table[0])):    
-        N.append(max([len(str(row[column])) for row in table]))
+        row_lengths = [len(rm_ansi(str(row[column]))) for row in table]
+        N.append(max(row_lengths))
 
     # If not specified, use left-alignment
     if align is None:

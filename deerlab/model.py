@@ -14,6 +14,7 @@ import inspect
 from copy import copy,deepcopy
 from functools import partial
 import difflib
+from sys import stdout
 
 #===================================================================================
 class Parameter(): 
@@ -907,10 +908,21 @@ def _evaluate(params,model,*constants):
     return response
 # ----------------------------------------------------------------------------
 
-
 #--------------------------------------------------------------------------
 def _print_fitresults(fitresult,model):
     """Construct summary table of fit results to print"""
+
+    #-----------------------------------------------------
+    def colortxt(str, color, spaces, is_tty=stdout.isatty()):
+        """ANSI codes for colored terminal text"""
+        if color=='red': color = '\033[91m'
+        if color=='yellow': color = '\033[93m'
+        if color=='white': color = ''
+        if is_tty:
+            return str
+        else: 
+            return f"{color}" +" "*spaces + f"{str}"+" "*spaces + "\033[00m" 
+    #-----------------------------------------------------
 
     # Start printout string
     string = ''
@@ -922,7 +934,7 @@ def _print_fitresults(fitresult,model):
 
     # Construct table of goodness-of-fit statistics
     table = []
-    table.append([f'Dataset','Noise level','Reduced 𝛘2','RMSD','AIC']) # Header
+    table.append([f'Dataset','Noise level','Reduced 𝛘2','Residual autocorr.','RMSD']) # Header
     alignment = ['^','^','^','^','^'] # Tab alignment
     stats = np.atleast_1d(fitresult.stats)
     noiselevels = np.atleast_1d(fitresult.noiselvl)
@@ -930,14 +942,32 @@ def _print_fitresults(fitresult,model):
         noiselvl = noiselevels[n]
         chi2red = stats[n]['chi2red']
         rmsd = stats[n]['rmsd']
-        aic = stats[n]['aic']
-        noiselvl,chi2red,rmsd,aic = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [noiselvl,chi2red,rmsd,aic]] 
-        table.append([f'#{1+n}',noiselvl,chi2red,rmsd,aic])
+        autocorr = stats[n]['autocorr']
+        # Use colored text to warn of very poor fits
+        autocorrcolor = lambda str: colortxt(str,'white',7)
+        if autocorr>0.5 and autocorr<1:
+            # Relatively acceptable autocorrelations (yellow)
+            autocorrcolor = lambda str: colortxt(str,'yellow',7)
+        elif autocorr>1:
+            # Worrisome autocorrelations (red)
+            autocorrcolor = lambda str: colortxt(str,'red',7)
+        chicolor = lambda str: colortxt(str,'white',3)
+        # Standard deviation of reduced 𝛘2 statistic's uncertainty (Gaussian limit)
+        chi2red_sigma = np.sqrt(2/len(modelfits[n]))*3 
+        if abs(1-chi2red)>3*chi2red_sigma and abs(1-chi2red)<6*chi2red_sigma:
+            # Poor case (yellow), 𝛘2 exceeds thrice the expected uncertainty 
+            chicolor = lambda str: colortxt(str,'yellow',3)
+        elif abs(1-chi2red)>6*chi2red_sigma:
+            # Horrible case (red), 𝛘2 exceeds six times the expected uncertainty 
+            chicolor = lambda str: colortxt(str,'red',3)
+        # Convert numbers to well-formatted strings
+        noiselvl,chi2red,autocorr,rmsd = [f'{var:.3f}' if var<1e3 or var>1e-3 else f'{var:.2e}' for var in [noiselvl,chi2red,autocorr,rmsd]] 
+        table.append([f'#{1+n}',noiselvl,chicolor(chi2red),autocorrcolor(autocorr),rmsd])
     # Add auto-formatted table string
     string += 'Goodness-of-fit: \n'
     string += formatted_table(table,alignment) + '\n'
 
-    
+    # Construct table of model hyperparameters
     hasregularization = fitresult.regparam!=0
     haspenalties = fitresult.penweights
     if hasregularization or haspenalties:
@@ -956,7 +986,7 @@ def _print_fitresults(fitresult,model):
                 alignment.append('^')
                 tags.append(f'Penalty weight #{n+1}')        
                 values.append(penweight) 
-        values = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in values] 
+        values = [f'{var:.3f}' if var<1e3 and var>1e-3 else f'{var:.2e}' for var in values] 
         table = [tags,values] 
         string += formatted_table(table,alignment) + '\n'
 
@@ -972,7 +1002,7 @@ def _print_fitresults(fitresult,model):
                 try:
                     if isinstance(value, (list, tuple, np.ndarray)): value = value[0]
                 except: pass
-                value = f'{value:.3f}' if value<1e4 else f'{value:.3g}'
+                value = f'{value:.3f}' if abs(value)<1e3 and abs(value)>1e-3 else f'{value:.2e}'
                 ci = '(frozen)'
             else:
                 # If parameter is scalar, report values and CIs
@@ -981,7 +1011,7 @@ def _print_fitresults(fitresult,model):
                     ci = ''
                 else:
                     ci_lower,ci_upper = getattr(fitresult,param+'Uncert').ci(95)
-                    value,ci_lower,ci_upper = [f'{var:.3f}' if var<1e4 else f'{var:.3g}' for var in [value,ci_lower,ci_upper]]
+                    value,ci_lower,ci_upper = [f'{var:.3f}' if abs(var)<1e3 and abs(var)>1e-3 else f'{var:.2e}' for var in [value,ci_lower,ci_upper]]
                     ci = f'({ci_lower},{ci_upper})'
         else:
             # If parameter is vectorial, print just dots
@@ -993,6 +1023,7 @@ def _print_fitresults(fitresult,model):
     # Add auto-formatted table string
     string += 'Model parameters: \n'
     string += formatted_table(table,alignment)
+    string += '\n'
     return string
 #--------------------------------------------------------------------------
 
@@ -1018,7 +1049,7 @@ def insert_snlls_optionals_docstrings():
 #==============================================================================================
 @insert_snlls_optionals_docstrings()
 def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None, mask=None, weights=None,
-                regparam='aic',reg='auto',regparamrange=None,**kwargs):
+                regparam='aic',reg='auto',regparamrange=None, bootcores=1,**kwargs):
     r"""
     Fit the model(s) to the dataset(s)
 
@@ -1051,6 +1082,10 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     bootstrap : scalar, optional,
         Bootstrap samples for uncertainty quantification. If ``bootstrap>0``, the uncertainty quantification will be 
         performed via the boostrapping method with based on the number of samples specified as the argument.
+    
+    bootcores : scalar, optional
+        Number of CPU cores/processes for parallelization of the bootstrap uncertainty quantification. If ``cores=1`` no parallel 
+        computing is used. If ``cores=-1`` all available CPUs are used. The default is one core (no parallelization).
 
     reg : boolean or string, optional
         Determines the use of regularization on the solution of the linear problem.
@@ -1096,10 +1131,11 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'cvx'``.
+        The default is ``'qp'``.
 
     verbose : scalar integer, optional
         Level of verbosity during the analysis:
@@ -1129,9 +1165,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Regularization parameter value used for the regularization of the linear parameters.
     plot : callable
         Function to display the results. It will display the fitted data.
-        The function returns the figure object (``matplotlib.figure.Figure``)
-        object as output, which can be modified. A vector for the x-axis and its label can
-        be specified by calling ``FitResult.plot(axis=axis,xlabel='xlabel')``.
+        A vector for the x-axis and its label can be specified by calling ``FitResult.plot(axis=axis,xlabel='xlabel')``.
+        A set of goodness-of-fit plots can be displayed by enabling the ``gof`` option by calling ``FitResult.plot(gof=True)``.        
     stats : dict
         Goodness of fit statistical estimators
 
@@ -1263,7 +1298,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
             if not isinstance(fit.model,list): fit.model = [fit.model]
             return (fit.param,*fit.model)
         # Bootstrapped uncertainty quantification
-        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl)
+        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores)
         # Include information on the boundaries for better uncertainty estimates
         paramlb = model._vecsort(model._getvector('lb'))[np.concatenate(param_idx)] 
         paramub = model._vecsort(model._getvector('ub'))[np.concatenate(param_idx)] 
@@ -1299,10 +1334,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                 param.unfreeze() 
             if np.all(param.linear):
                 if param.normalization is not None:
-                    non_normalized = FitResult_param_[key] # Non-normalized value
+                    def _scale(x):
+                        x = x + np.finfo(float).eps
+                        return np.mean(x/param.normalization(x))
+                    FitResult_param_[f'{key}_scale'] = _scale(FitResult_param_[key]) # Normalization factor
                     FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
-                    FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
-                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: np.mean(x/param.normalization(x)))
+
+                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(_scale)
                     FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]

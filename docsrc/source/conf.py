@@ -69,6 +69,7 @@ sphinx_gallery_conf = {
     'subsection_order': ExplicitOrder(['../../examples/basic',
                                        '../../examples/advanced',
                                        '../../examples/other']),
+    'capture_repr': ()
 }
 
 # Configuration of Sphinx-CopyButton

@@ -31,6 +31,7 @@ setup(
                         'pytest>=6.2.2',
                         'setuptools>=53.0.0',
                         'numexpr >=2.7.3',
+                        'quadprog>=0.1.11',
                         ],
     classifiers=[
         'Development Status :: 4 - Beta',

@@ -209,7 +209,7 @@ def test_cost_value():
     ub = [20, 1]
     model = lambda p: K@dd_gauss(r,*p)
     fit = snlls(V,model,par0,lb,ub)
-    assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
+    assert isinstance(fit.cost,float) and np.round(fit.cost/(np.sum(fit.residuals**2)/len(fit.residuals)),5)==1
 # ======================================================================
 
 def test_global_weights():
