@@ -14,6 +14,9 @@ from deerlab.classes import UQResult, FitResult
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian, isempty
 import time 
 from functools import partial
+from copy import deepcopy
+from quadprog import solve_qp
+
 
 def timestamp():
 # ===========================================================================================
@@ -221,6 +224,8 @@ def _prepare_linear_lsq(A,lb,ub,reg,L,tol,maxiter,nnlsSolver):
             linSolver = lambda AtA, Aty: fnnls(AtA, Aty, tol=tol, maxiter=maxiter)
         elif nnlsSolver == 'cvx':
             linSolver = lambda AtA, Aty: cvxnnls(AtA, Aty, tol=tol, maxiter=maxiter)
+        elif nnlsSolver == 'qp':
+            linSolver = lambda AtA, Aty: qpnnls(AtA, Aty)
         parseResult = lambda result: result
     
     # Ensure correct formatting and shield against float-point errors
@@ -235,7 +240,7 @@ def _model_evaluation(ymodels,parfit,paruq,uq):
     Model evaluation
     ================
 
-    Evaluates the model(s) response(s) at the fitted solution and progates the uncertainty in the fit
+    Evaluates the model(s) response(s) at the fitted solution and propagates the uncertainty in the fit
     parameters to the model response. 
     """
     modelfit, modelfituq = [],[]
@@ -288,23 +293,6 @@ def _penalty_augmentation(alpha,L,P,type):
 # ===========================================================================================
 
 # ===========================================================================================
-def _optimize_scale(y,yfit,subsets):
-    """
-    Dataset scale optimization
-    ==========================
-
-    For two datasets, find the least-squares scaling factor that fits one to each other.
-    """
-    scales, scales_vec = [], np.zeros_like(yfit) 
-    for subset in subsets:
-        yfit_,y_ = (np.atleast_2d(y[subset]) for y in [yfit, y]) # Rescale the subsets corresponding to each signal
-        scale = np.squeeze(np.linalg.lstsq(yfit_.T,y_.T,rcond=None)[0])
-        scales.append(scale) # Store the optimized scales of each signal
-        scales_vec[subset] = scale 
-    return scales, scales_vec
-# ===========================================================================================
-
-# ===========================================================================================
 def _unfrozen_subset(param,frozen,parfrozen):
     param,frozen,parfrozen = np.atleast_1d(param,frozen,parfrozen)
     param = param.tolist()
@@ -339,7 +327,7 @@ def _insertfrozen(parfit,parfrozen,frozen):
 # ===========================================================================================
 
 
-def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None, verbose=0,
+def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='qp', reg='auto', weights=None, verbose=0,
           regparam='aic', regparamrange=None, multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
           ftol=1e-8, xtol=1e-8, max_nfev=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None, mask=None,
           nonlin_frozen=None, uq=True):
@@ -433,10 +421,11 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'cvx'``.
+        The default is ``'qp'``.
 
     noiselvl : array_like, optional
         Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
@@ -535,10 +524,9 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Vector of residuals at the solution.
 
     """
-        
+
     if verbose>0: 
         print(f'{timestamp()} Preparing the SNLLS analysis...')
-
     
     # Ensure that all arrays are numpy.nparray
     par0 = np.atleast_1d(par0)
@@ -575,7 +563,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         mask = np.concatenate([mask,mask])   
     Amodel__ = Amodel
     if np.iscomplexobj(A0):
-       # If the design matrix is complex-valued
+    # If the design matrix is complex-valued
         Amodel = lambda p: np.concatenate([Amodel__(p).real,Amodel__(p).imag]) 
         A0 = np.concatenate([A0.real,A0.imag]) 
         A0 = Amodel(par0)
@@ -816,7 +804,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Compute the fit residual
     _ResidualsFcn = lambda nonlinfit: ResidualsFcn(_unfrozen_subset_inv(nonlinfit,nonlin_frozen))
     res = _ResidualsFcn(nonlinfit)
-    fvals = np.sum(res**2) 
+    fvals = np.sum(res**2)/len(res) 
 
     if verbose>0: 
         print(f'{timestamp()} Least-squares routine finished.')
@@ -1075,7 +1063,7 @@ def fnnls(AtA, Atb, tol=None, maxiter=None, verbose=False):
 
 #=====================================================================================
 
-def cvxnnls(AtA, Atb, tol=None, maxiter=None):
+def cvxnnls(AtA, Atb, tol=None, maxiter=None,x0=None):
 #=====================================================================================
     r"""
     Non-negative least-squares (NNLS) via the CVXOPT package.
@@ -1124,8 +1112,8 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None):
         tol = 10*eps*np.linalg.norm(AtA,1)*max(np.shape(AtA))
     if maxiter is None:
         maxiter = 5*N
-
-    x0 = np.zeros(N)
+    if x0 is None:
+        x0 = np.zeros(N)
 
     cAtA = cvx.matrix(AtA)
     cAtb = -cvx.matrix(Atb)
@@ -1144,4 +1132,52 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None):
     except: 
         P = x0
     return P
+#=====================================================================================
+
+#=====================================================================================
+def qpnnls(AtA, Atb):
+    r"""
+    Non-negative least-squares (NNLS) via the quadprog package.
+
+    Solves the problem 
+    
+    .. math:: \min \Vert b - Ax \Vert^2 
+    
+    where ``AtA`` `= A^TA` and ``Atb`` `= A^Tb`. 
+    This routine uses the the Goldfarb/Idnani dual algorithm [1]_.
+
+    Parameters
+    ----------
+    AtA : matrix_like 
+        Matrix `A^TA`
+    Atb : array_like 
+        Vector `A^Tb`
+        
+    Returns
+    -------
+    x : ndarray 
+        Solution vector.
+
+    References
+    ----------
+    ... [1] D. Goldfarb and A. Idnani (1983). A numerically stable dual
+            method for solving strictly convex quadratic programs.
+            Mathematical Programming, 27, 1-33.
+
+    """
+    N = np.shape(AtA)[1]
+    I = np.eye(N)
+    lb = np.zeros(N)
+    meq = 0
+    try: 
+        # Solve the quadratic program
+        x = solve_qp(AtA, Atb, I, lb, meq)[0]
+    except:
+        try:
+            # If AtA matrix is not positive definite, find nearest one
+            x = solve_qp(dl.utils.nearest_psd(AtA), Atb, I, lb, meq)[0]
+        except:
+            # For very rare cases
+            x = cvxnnls(AtA, Atb)
+    return x
 #=====================================================================================

@@ -1100,10 +1100,11 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'cvx'`` - Optimization of the NNLS problem using the cvxopt package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'cvx'``.
+        The default is ``'qp'``.
 
     verbose : scalar integer, optional
         Level of verbosity during the analysis:
@@ -1303,10 +1304,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                 param.unfreeze() 
             if np.all(param.linear):
                 if param.normalization is not None:
-                    non_normalized = FitResult_param_[key] # Non-normalized value
+                    def _scale(x):
+                        x = x + np.finfo(float).eps
+                        return np.mean(x/param.normalization(x))
+                    FitResult_param_[f'{key}_scale'] = _scale(FitResult_param_[key]) # Normalization factor
                     FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
-                    FitResult_param_[f'{key}_scale'] = np.mean(non_normalized/FitResult_param_[key]) # Normalization factor
-                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: np.mean(x/param.normalization(x)))
+
+                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(_scale)
                     FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
