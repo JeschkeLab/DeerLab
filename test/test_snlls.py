@@ -457,7 +457,7 @@ def test_cost_value():
     # Separable LSQ fit
     fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl)
 
-    assert isinstance(fit.cost,float) and np.round(fit.cost/np.sum(fit.residuals**2),5)==1
+    assert isinstance(fit.cost,float) and np.round(fit.cost/(np.sum(fit.residuals**2)/len(fit.residuals)),5)==1
 #============================================================
 
 def test_confinter_values():
