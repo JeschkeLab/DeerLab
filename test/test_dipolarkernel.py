@@ -797,3 +797,16 @@ def test_interpolation_threespin():
 
     assert np.allclose(K,Kref,rtol=1e-5)
 #=======================================================================
+
+def test_interpolation_outofrange():
+#=======================================================================
+    "Test whether interpolation rolls back if outside of range"
+
+    t = np.linspace(0,5,40) # µs
+    r = np.linspace(1,4,30) # nm
+    tinterp = np.linspace(0,4,40) # µs
+    Kref = dipolarkernel(t,r,method='fresnel')
+    K = dipolarkernel(t,r,method='fresnel',tinterp=tinterp)
+
+    assert np.allclose(K.shape,Kref.shape)
+#=======================================================================
