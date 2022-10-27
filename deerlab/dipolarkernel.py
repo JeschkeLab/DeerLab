@@ -8,7 +8,7 @@ import numpy as np
 from numpy import inf
 from scipy.integrate import quad_vec, quad
 from scipy.special import fresnel
-from scipy.interpolate import make_interp_spline
+from scipy.interpolate import make_interp_spline,interp1d
 # Other packages
 import numexpr as ne
 import types
@@ -20,7 +20,7 @@ from deerlab.utils import sophegrid
 from deerlab.constants import *
 
 def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', excbandwidth=inf, orisel=None, g=None, 
-                  integralop=True, gridsize=1000, complex=False, clearcache=False, memorylimit=8):
+                  integralop=True, gridsize=1000, complex=False, clearcache=False, memorylimit=8, tinterp=None):
 #===================================================================================================
     r"""
     Compute the (multi-pathway) dipolar kernel operator. 
@@ -158,6 +158,11 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     memorylimit : scalar, optional
         Memory limit to be allocated for the dipolar kernel. If the requested kernel exceeds this limit, the 
         execution will be stopped. The default is 8GB.  
+
+    tinterp : array_like, optional 
+        Effective dipolar evolution time vector used for interpolation. If specified, the elementary dipolar kernel is computed based on ``tinterp`` 
+        and all contributions from the different pathways are interpolated based on it. This results in a significant reduction of the computation time. 
+        The vector ``tinterp`` must cover all possible time shifts of the original ``t`` by the different refocusing times of the dipolar pathways.     
 
     Returns
     --------
@@ -360,9 +365,26 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     else: 
         Λ0 = 0
 
-    # Define kernel matrix auxiliary function
-    K0_2spin = lambda tdip,r: elementarykernel_twospin(tdip,r,method,excbandwidth,gridsize,g,orisel,complex)
-    K0_3spin = lambda tdip: elementarykernel_threespin(tdip,r,'grid',excbandwidth,gridsize,g,orisel,complex)
+    if tinterp is not None:
+        # Construct interpolator, this way elementarykernel_twospin is executed only once independently of how many pathways there are
+        Kinterpolator = [interp1d(tinterp,elementarykernel_twospin(tinterp,r_q,method,excbandwidth,gridsize,g,orisel,complex),axis=0,kind='cubic') for r_q in r]
+    
+    # Define kernel matrix auxiliary functions
+    def K0_2spin(tdip,q):
+    #------------------------------------------------------------------------
+        if tinterp is None:
+            # Exact elementary dipolar kernel construction
+            K0 = elementarykernel_twospin(tdip,r[q],method,excbandwidth,gridsize,g,orisel,complex)
+        else:
+            # Interpolated elementary dipolar kernel
+            K0 = Kinterpolator[q](tdip)
+        return K0
+    #------------------------------------------------------------------------
+    
+    def K0_3spin(tdip):
+    #------------------------------------------------------------------------
+        return elementarykernel_threespin(tdip,r,'grid',excbandwidth,gridsize,g,orisel,complex)
+    #------------------------------------------------------------------------
 
     # Build dipolar kernel matrix, summing over all pathways
     K = Λ0
@@ -383,7 +405,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
             # Construc the effective dipolar evolution time for the modulated dipolar interactions
             tdip = np.sum(np.array([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δ[q],tref[q])],dtype=object), axis=0).astype(float)
             # Compute and accumulate the two-spin dipolar pathway contribution to the dipolar kernel
-            K += λ*K0_2spin(tdip,r[q])
+            K += λ*K0_2spin(tdip,q)
 
         elif Nspin==3:
             # Construct effective dipolar evolution time for all dipolar interactions
@@ -454,7 +476,7 @@ def elementarykernel_twospin(tdip,r,method,ωex,gridsize,g,Pθ,complex):
         Pθ = lambda θ: Pθ_(θ)/Pθnorm
 
     def elementarykernel_fresnel(tdip):
-    #==========================================================================
+    #------------------------------------------------------------------------
         """Calculate kernel using Fresnel integrals (fast and accurate)"""
 
         # Calculation using Fresnel integrals
@@ -477,10 +499,10 @@ def elementarykernel_twospin(tdip,r,method,ωex,gridsize,g,Pθ,complex):
 
         K0 = np.where(ɸ==0,1,K0)
         return K0
-    #==========================================================================
+    #------------------------------------------------------------------------
 
     def elementarykernel_grid(tdip,ωex,gridsize,Pθ):
-    #==========================================================================
+    #------------------------------------------------------------------------
         """Calculate kernel using grid-based powder integration (converges very slowly with gridsize)"""
 
         # Orientational grid
@@ -502,24 +524,24 @@ def elementarykernel_twospin(tdip,r,method,ωex,gridsize,g,Pθ,complex):
             # Without orientation selection
             K0 = np.sum(_echomodulation(ωr_,tdip_,cosθ_,ωex,complex),axis=-1)/gridsize
         return K0
-    #==========================================================================
+    #------------------------------------------------------------------------
 
     def elementarykernel_integral(tdip,ωex,Pθ):
-    #==========================================================================
+    #------------------------------------------------------------------------
         """Calculate kernel using explicit numerical integration """
         K0 = np.zeros((np.size(tdip),np.size(ωr)))
         for n,ωr_ in enumerate(ωr):
-            #==================================================================
             def integrand(cosθ):
+            #------------------------------------------------------------------------
                 integ = _echomodulation(ωr_,tdip,cosθ,ωex,complex)
                 # If given, include orientation selection
                 if orientationselection:
                     integ = integ*Pθ(np.arccos(cosθ))  
                 return integ
-            #==================================================================   
+            #------------------------------------------------------------------------
             K0[:,n] = quad_vec(integrand,0,1,limit=1000)[0].squeeze()
         return K0
-    #==========================================================================
+    #------------------------------------------------------------------------
 
     if method=='fresnel':
         K0 = elementarykernel_fresnel(tdip)
@@ -595,7 +617,7 @@ def elementarykernel_threespin(tdips,rs,method,ωex,gridsize,g,Pθ,complex):
 
 
     def elementarykernel_threespin_grid(tsdip,gridsize,Pθ):
-    #==========================================================================
+    #------------------------------------------------------------------------
         """Calculate kernel using grid-based powder integration (converges very slowly with gridsize)"""
 
         # Orientational grid
@@ -619,7 +641,7 @@ def elementarykernel_threespin(tdips,rs,method,ωex,gridsize,g,Pθ,complex):
             # Without orientation selection
             K0 = np.sum(_echomodulation_threespin(tsdip_,ωr_,rs_,θ_,φ_,weights_,complex),axis=-1)
         return K0
-    #==========================================================================
+    #------------------------------------------------------------------------
 
 
     if  method=='grid': 
