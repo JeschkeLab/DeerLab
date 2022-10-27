@@ -17,7 +17,7 @@ from scipy.stats import multivariate_normal
 
 #===============================================================================
 def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2, harmonics=None, experiment=None,
-                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, samespins=True, triangles=None):
+                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, samespins=True, triangles=None, interp=True,):
     """
     Generate a dipolar EPR signal model.
 
@@ -75,7 +75,8 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
     g : scalar, 2-element array, optional
         Electron g-values of the two spins, ``[g1, g2]``. If a single g is specified, ``[g, g]`` is used.
         If not specified, g = 2.002319... is used for both spins.
-
+    interp : boolean, optional 
+        Enable dipolar kernel interpolation for computation time reduction. By default enabled. 
     Returns
     -------
     Vmodel : :ref:`Model`
@@ -325,27 +326,35 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
 
     kernelmethod = 'fresnel' if orisel is None and np.isinf(excbandwidth) else 'grid' 
 
+    dt = np.mean(np.diff(t))
+    tinterp = None
+
     #------------------------------------------------------------------------
     def Vtwospin_nonlinear_fcn(*nonlin):
         """ Non-linear part of the dipolar signal function """
+
         # Make input arguments as array to access subsets easily
         nonlin = np.atleast_1d(nonlin)
+
         # Construct the basis function of the intermolecular contribution
         if Bmodel is None: 
             Bfcn = np.ones_like(t)
         elif hasattr(Bmodel,'lam'):
             Bfcn = lambda t,lam: Bmodel.nonlinmodel(t,*np.concatenate([nonlin[Bsubset],[lam]]))
         else:
-            
             Bfcn = lambda t,_: Bmodel.nonlinmodel(t,*nonlin[Bsubset])
+
         # Construct the definition of the dipolar pathways
         pathways = PathsModel.nonlinmodel(*nonlin[PathsSubset])
+
         # Construct the dipolar kernel
-        Kdipolar = dipolarkernel(t,r,pathways=pathways, bg=Bfcn,
+        Kdipolar = dipolarkernel(t, r, pathways=pathways, bg=Bfcn, tinterp=tinterp,
                                  excbandwidth=excbandwidth, orisel=orisel,
                                   g=g, method=kernelmethod, gridsize=gridsize)
+
         # Compute the non-linear part of the distance distribution
         Pnonlin = Pmodel.nonlinmodel(*[r]*Nconstants,*nonlin[Psubset])
+
         # Forward calculation of the non-linear part of the dipolar signal
         Vnonlin = Kdipolar@Pnonlin
         return Vnonlin
@@ -402,7 +411,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
             pathways_q = [pathway for pathway in twospin_pathways if pathway['harmonic'][q]!=0]
 
             # Construct the corresponding dipolar kernel
-            Ktwospin = dipolarkernel(t,rs, pathways=pathways_q, integralop=False,
+            Ktwospin = dipolarkernel(t,rs, pathways=pathways_q, integralop=False, tinterp=tinterp,
                                         excbandwidth=excbandwidth, orisel=orisel,
                                         g=g, method=kernelmethod, gridsize=gridsize)
 
@@ -481,6 +490,12 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
                 lb = experiment.reftimes[n] - 3*experiment.pulselength,
                 ub = experiment.reftimes[n] + 3*experiment.pulselength
                 )
+        # Update the interpolation vector for faster evaluation
+        if interp:
+            tinterp = np.arange( 
+                    min(t)-max(experiment.reftimes) - 3*experiment.pulselength - dt,
+                    max(t)+max(experiment.reftimes) + 3*experiment.pulselength + dt,
+                    dt)
 
     # Set other dipolar model specific attributes
     DipolarSignal.description = 'Dipolar signal model'
