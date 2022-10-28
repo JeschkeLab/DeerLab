@@ -54,7 +54,7 @@ def correctphase(V, full_output=False, offset=False):
             Vim_corr -= np.average(Vim_corr,axis=0)
             return np.sum(Vim_corr**2)
         # Find one of the minima numerically
-        phimin = np.atleast_1d(fminbound(objfcn, 0, np.pi, xtol=0.01))
+        phimin = np.atleast_1d(fminbound(objfcn, 0, np.pi, xtol=1.74e-3))
 
     else:
         # The follwing determines the phase that minimizes the cost
