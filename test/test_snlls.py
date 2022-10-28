@@ -705,25 +705,51 @@ def test_complex_model_uncertainty():
     assert (ciwidth.real < ciwidth.imag).all()
 # ======================================================================
  
+# Construct data
+x = np.linspace(0,7,100)
+def model(p):
+    center, std = p
+    y = dd_gauss(x,center, std)
+    return y
+# Construct mask 
+mask = np.ones_like(x).astype(bool)   
+mask[(x>2.5) & (x<3.5)] = False 
+# Distort data outside of mask
+y = model([3, 0.5])  
+yref = y.copy()
+y[~mask] = 0 
+
 def test_masking():
 # ======================================================================
     "Check that datapoints can be masked out"
-
-    x = np.linspace(0,7,100)
-    def model(p):
-        center, std = p
-        y = dd_gauss(x,center, std)
-        return y
-
-    mask = np.ones_like(x).astype(bool)   
-    mask[(x>2.5) & (x<3.5)] = False 
-
-    y = model([3, 0.5])  
-    yref = y.copy()
-    y[~mask] = 0 
 
     fitmasked = snlls(y,model,par0=[4,0.2],lb=[1,0.05],ub=[6,5], mask=mask)
     fit = snlls(y,model,par0=[4,0.2],lb=[1,0.05],ub=[6,5])
 
     assert np.allclose(fitmasked.model,yref) and not np.allclose(fit.model,yref) 
+# ======================================================================
+
+def test_masking_noiselvl():
+# ======================================================================
+    "Check that masking leads to correct noise level estimates"
+
+    noiselvl = 0.02
+    yexp = y + whitegaussnoise(x,noiselvl,seed=1)
+
+    fitmasked = snlls(yexp,model,par0=[4,0.2],lb=[1,0.05],ub=[6,5], mask=mask)
+    fit = snlls(yexp,model,par0=[4,0.2],lb=[1,0.05],ub=[6,5])
+
+    assert fitmasked.noiselvl!=fit.noiselvl and abs(fitmasked.noiselvl/noiselvl-1)<0.1
+# ======================================================================
+
+def test_masking_chi2red():
+# ======================================================================
+    "Check that masking is accounted for by the goodness-of-fit"
+
+    yexp = y + whitegaussnoise(x,0.02,seed=1)
+
+    fitmasked = snlls(yexp,model,par0=[4,0.2],lb=[1,0.05],ub=[6,5], mask=mask)
+    fit = snlls(yexp,model,par0=[4,0.2],lb=[1,0.05],ub=[6,5])
+
+    assert fitmasked.stats['chi2red']<fit.stats['chi2red'] and abs(fitmasked.stats['chi2red']-1)<0.2
 # ======================================================================

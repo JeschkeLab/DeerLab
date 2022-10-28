@@ -316,7 +316,7 @@ def _model_evaluation(ymodels,parfit,paruq,uq):
 # ===========================================================================================
 
 # ===========================================================================================
-def _goodness_of_fit_stats(ys,yfits,noiselvl,nParam):
+def _goodness_of_fit_stats(ys,yfits,noiselvl,nParam,masks):
     """
     Evaluation of goodness-of-fit statistics
     ========================================
@@ -325,9 +325,9 @@ def _goodness_of_fit_stats(ys,yfits,noiselvl,nParam):
     and returns a list of dictionaries with the statistics for each dataset.
     """
     stats = []
-    for y,yfit,sigma in zip(ys,yfits,noiselvl):
-        Ndof = len(y) - nParam
-        stats.append(goodness_of_fit(y, yfit, Ndof, sigma))
+    for y,yfit,sigma,mask in zip(ys,yfits,noiselvl,masks):
+        Ndof = len(y[mask]) - nParam
+        stats.append(goodness_of_fit(y[mask], yfit[mask], Ndof, sigma))
     return stats 
 # ===========================================================================================
 
@@ -584,7 +584,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Value of the cost function at the solution.
     residuals : ndarray
         Vector of residuals at the solution.
-
+    noiselvl : ndarray
+        Estimated or user-given noise standard deviations.
     """
 
     if verbose>0: 
@@ -592,7 +593,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     
     # Ensure that all arrays are numpy.nparray
     par0 = np.atleast_1d(par0)
-    
+
     # Parse multiple datsets and non-linear operators into a single concatenated vector/matrix
     y, Amodel, weights, mask, subsets, noiselvl = parse_multidatasets(y, Amodel, weights, noiselvl, masks=mask, subsets=subsets)    
     
@@ -954,6 +955,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
     # Make lists of data and fits
     ys = [y[subset] for subset in subsets]
+    masks = [mask[subset] for subset in subsets]
     if complexy: 
         ys = [ys[n] + 1j*y[imagsubset] for n,imagsubset in enumerate(imagsubsets)]
     yfits = modelfit.copy()
@@ -965,7 +967,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Goodness-of-fit
     # ---------------
     Ndof = Nnonlin + Ndof_lin 
-    stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof)
+    stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof,masks)
 
     # Display function
     plotfcn = partial(_plot,ys,yfits,yuq,noiselvl)
@@ -977,7 +979,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
     return FitResult(nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
                      linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
-                     stats=stats, cost=fvals, residuals=res)
+                     stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl)
 # ===========================================================================================
 
 
