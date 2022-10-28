@@ -1163,10 +1163,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Uncertainty quantification of the fitted model response.        
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
-    plot : callable
-        Function to display the results. It will display the fitted data.
-        A vector for the x-axis and its label can be specified by calling ``FitResult.plot(axis=axis,xlabel='xlabel')``.
-        A set of goodness-of-fit plots can be displayed by enabling the ``gof`` option by calling ``FitResult.plot(gof=True)``.        
+    penweights : scalar or list thereof 
+        Penalty weight value(s) used for the penalties specified through ``penalties``.
     stats : dict
         Goodness of fit statistical estimators
 
@@ -1178,13 +1176,17 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         * ``stats['bic']`` - Bayesian information criterion
     cost : float
         Value of the cost function at the solution.
-
+    noiselvl : ndarray
+        Estimated or user-given noise standard deviations of the individual datasets.
+    plot(axis=None,xlabel='',gof=False) : callable
+        Function to display the results. It will display the fitted data.
+        A vector for the x-axis and its label can be specified by calling ``FitResult.plot(axis=x,xlabel='xlabel')``.
+        A set of goodness-of-fit plots can be displayed by enabling the ``gof`` option by calling ``FitResult.plot(gof=True)``.        
     evaluate(model, constants) : callable
         Function to evaluate a model at the fitted parameter values. Takes a model object or callable function ``model`` to be evaluated.
         All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.   
         Any model constants present required by the model must be specified as a second argument ``constants``.  
         It returns the model's response at the fitted parameter values as an ndarray. 
-
     propagate(model,constants,lb,ub) : callable
         Function to propagate the uncertainty in the fit results to a model's response. Takes a model object or callable function ``model`` to be evaluated.
         All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.  
