@@ -1,6 +1,7 @@
 import numpy as np
+from scipy.optimize import fminbound
 
-def correctphase(V, full_output=False):
+def correctphase(V, full_output=False, offset=False):
     r"""
     Phase correction of complex-valued data.
 
@@ -19,6 +20,10 @@ def correctphase(V, full_output=False):
 
     full_output : boolean, optional
         If ``True``, return additional output arguments. (default: ``False``)
+
+    offset : boolean 
+        Enables numerical phase correction while accounting for a non-zero mean imaginary offset. 
+        By default disabled. 
 
     Returns
     -------
@@ -42,39 +47,49 @@ def correctphase(V, full_output=False):
     if data1d:
         V_2d = V_2d[:, np.newaxis]
 
-    # The follwing determines the phase that minimizes the cost
-    # function = sum of squares of imaginary part of V*exp(1j*phi)
-    # This cost function has the analytical form
-    #
-    #   (A+B) + (B-A)*cos(2*phi) + C*sin(2*phi)
-    #    = offset + amp*cos(2*phi-phi0)
-    #
-    # where
-    #    A = sum_k real(V_k)^2 / 2
-    #    B = sum_k imag(V_k)^2 / 2
-    #    C = sum_k real(V_k)*imag(V_k)
-    #
-    #    offset = A+B
-    #    amp = sqrt((B-A)^2+C^2)
-    #    phi0 = atan2(C, B-A)
-    #
-    # The cost function has two minima:
-    #    phi = phi0/2 + pi/2   and   phi = phi0/2 + 3*pi/2
-    
-    # Calculate phase that minimizes cost function
-    Vr = np.real(V_2d)
-    Vi = np.imag(V_2d)
-    A = np.sum(Vr**2, axis=0)/2
-    B = np.sum(Vi**2, axis=0)/2
-    C = np.sum(Vr*Vi, axis=0)
-    phi0 = np.arctan2(C, B-A)
-    phimin = phi0/2 + np.pi/2  # one of the two minimizers
+    if offset:
+        # Account for a potential imaginary component with non-zero mean
+        def objfcn(phi):
+            Vim_corr = np.imag(V_2d*np.exp(1j*phi))
+            Vim_corr -= np.average(Vim_corr,axis=0)
+            return np.sum(Vim_corr**2)
+        # Find one of the minima numerically
+        phimin = np.atleast_1d(fminbound(objfcn, 0, np.pi, xtol=1.74e-3))
+
+    else:
+        # The follwing determines the phase that minimizes the cost
+        # function = sum of squares of imaginary part of V*exp(1j*phi)
+        # This cost function has the analytical form
+        #
+        #   (A+B) + (B-A)*cos(2*phi) + C*sin(2*phi)
+        #    = offset + amp*cos(2*phi-phi0)
+        #
+        # where
+        #    A = sum_k real(V_k)^2 / 2
+        #    B = sum_k imag(V_k)^2 / 2
+        #    C = sum_k real(V_k)*imag(V_k)
+        #
+        #    offset = A+B
+        #    amp = sqrt((B-A)^2+C^2)
+        #    phi0 = atan2(C, B-A)
+        #
+        # The cost function has two minima:
+        #    phi = phi0/2 + pi/2   and   phi = phi0/2 + 3*pi/2
+
+        # Calculate phase that minimizes cost function
+        Vr = np.real(V_2d)
+        Vi = np.imag(V_2d)
+        A = np.sum(Vr**2, axis=0)/2
+        B = np.sum(Vi**2, axis=0)/2
+        C = np.sum(Vr*Vi, axis=0)
+        phi0 = np.arctan2(C, B-A)
+        phimin = phi0/2 + np.pi/2  # one of the two minimizers
     
     # Apply phase rotation
     V_2d *= np.exp(1j*phimin)[None,:]
     
     # Pick minimizer that yields positive average of real part
-    reAvg = np.average(V_2d, axis=0)
+    reAvg = np.average(V_2d.real, axis=0)
     idx = reAvg < 0
     phimin[idx] += np.pi
     V_2d[:,idx] = -V_2d[:,idx]
@@ -84,6 +99,11 @@ def correctphase(V, full_output=False):
         V_2d = np.squeeze(V_2d, axis=1)
     Vreal = np.real(V_2d)
     Vimag = np.imag(V_2d)
+
+    if offset: 
+        Vreal += np.abs(np.average(Vimag, axis=0))
+        Vimag -= np.average(Vimag, axis=0)
+
     if full_output:
         return Vreal, Vimag, phimin
     else:
