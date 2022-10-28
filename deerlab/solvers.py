@@ -316,7 +316,7 @@ def _model_evaluation(ymodels,parfit,paruq,uq):
 # ===========================================================================================
 
 # ===========================================================================================
-def _goodness_of_fit_stats(ys,yfits,noiselvl,nParam):
+def _goodness_of_fit_stats(ys,yfits,noiselvl,nParam,masks):
     """
     Evaluation of goodness-of-fit statistics
     ========================================
@@ -325,9 +325,9 @@ def _goodness_of_fit_stats(ys,yfits,noiselvl,nParam):
     and returns a list of dictionaries with the statistics for each dataset.
     """
     stats = []
-    for y,yfit,sigma in zip(ys,yfits,noiselvl):
-        Ndof = len(y) - nParam
-        stats.append(goodness_of_fit(y, yfit, Ndof, sigma))
+    for y,yfit,sigma,mask in zip(ys,yfits,noiselvl,masks):
+        Ndof = len(y[mask]) - nParam
+        stats.append(goodness_of_fit(y[mask], yfit[mask], Ndof, sigma))
     return stats 
 # ===========================================================================================
 
@@ -954,6 +954,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
     # Make lists of data and fits
     ys = [y[subset] for subset in subsets]
+    masks = [mask[subset] for subset in subsets]
     if complexy: 
         ys = [ys[n] + 1j*y[imagsubset] for n,imagsubset in enumerate(imagsubsets)]
     yfits = modelfit.copy()
@@ -965,7 +966,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     # Goodness-of-fit
     # ---------------
     Ndof = Nnonlin + Ndof_lin 
-    stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof)
+    stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof,masks)
 
     # Display function
     plotfcn = partial(_plot,ys,yfits,yuq,noiselvl)
