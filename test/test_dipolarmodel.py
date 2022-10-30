@@ -56,6 +56,41 @@ def test_names():
         assert hasattr(model,param)
 # ======================================================================
 
+# ======================================================================
+def test_pathway_labelling(): 
+    "Check that the model has correct parameter names"
+
+    exp = ex_4pdeer(1,2,pathways=[1])
+    model = dipolarmodel(t,r,dd_gauss,bg_hom3d,experiment=exp)
+    parameters = ['mean','std','conc','mod','reftime','scale']
+    
+    for param in parameters:
+        assert hasattr(model,'reftime') and not hasattr(model,'reftime1') and hasattr(model,'mod') and not hasattr(model,'lam1')
+# ======================================================================
+
+# ======================================================================
+def test_pathway_labelling2(): 
+    "Check that the model has correct parameter names"
+
+    exp = ex_4pdeer(1,2,pathways=[1,2])
+    model = dipolarmodel(t,r,dd_gauss,bg_hom3d,experiment=exp)
+    parameters = ['mean','std','conc','mod','reftime','scale']
+    
+    for param in parameters:
+        assert hasattr(model,'reftime1') and hasattr(model,'reftime2') and hasattr(model,'lam2') and hasattr(model,'lam2')
+# ======================================================================
+
+# ======================================================================
+def test_pathway_labelling3(): 
+    "Check that the model has correct parameter names"
+
+    exp = ex_4pdeer(1,2,pathways=[2,4])
+    model = dipolarmodel(t,r,dd_gauss,bg_hom3d,experiment=exp)
+    parameters = ['mean','std','conc','mod','reftime','scale']
+    
+    for param in parameters:
+        assert hasattr(model,'reftime2') and hasattr(model,'reftime4') and hasattr(model,'lam2') and hasattr(model,'lam4')
+# ======================================================================
 
 t = np.linspace(-0.5,5,100)
 r = np.linspace(2,5,50)

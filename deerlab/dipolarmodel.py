@@ -226,15 +226,20 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
         # Use single-pathway notation, with amplitude as modulation depth
         variables = ['mod','reftime']
     else:
-        # Use general notation
+        if experiment is not None:
+            # If experiment is specified, use labels of the pathways 
+            labels = experiment.labels
+        else:
+            # Otherwise, just label them in order
+            labels = np.arange(1,npathways+1)
         variables = []
         for n in range(npathways):
             if spins==2:
-                variables.append(f'lam{n+1}')
+                variables.append(f'lam{labels[n]}')
             else:
                 for q in range(Q):
-                    variables.append(f'lam{n+1}_{q+1}')
-            variables.append(f'reftime{n+1}')
+                    variables.append(f'lam{labels[n]}_{q+1}')
+            variables.append(f'reftime{labels[n]}')
     # Add unmodulated pairwise pathway amplitude for multi-spin systems
     if spins>2:
         variables.append('lamu')
@@ -243,7 +248,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
     PathsModel = Model(dipolarpathways,signature=variables)
 
     if spins>2 and samespins:
-        links = {f'lam{n+1}': [f'lam{n+1}_{q+1}' for q in range(Q)] for n in range(npathways)}
+        links = {f'lam{labels[n]}': [f'lam{labels[n]}_{q+1}' for q in range(Q)] for n in range(npathways)}
         PathsModel = link(PathsModel, **links)
 
     #-----------------------------------------------------------------------
@@ -286,11 +291,11 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
             if spins>2: 
                 pairwise = ' pairwise'   
             if spins==2 or samespins:
-                getattr(PathsModel,f'lam{n+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{n+1}',unit='')
+                getattr(PathsModel,f'lam{labels[n]}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{labels[n]}',unit='')
             else:
                 for q in range(Q):
-                    getattr(PathsModel,f'lam{n+1}_{q+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{n+1} on interaction #{q+1}',unit='')
-            getattr(PathsModel,f'reftime{n+1}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of{pairwise} pathway #{n+1}',unit='μs')
+                    getattr(PathsModel,f'lam{labels[n]}_{q+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{labels[n]} on interaction #{q+1}',unit='')
+            getattr(PathsModel,f'reftime{labels[n]}').set(par0=0,lb=-20,ub=20,description=f'Refocusing time of{pairwise} pathway #{labels[n]}',unit='μs')
     if spins>2: 
         getattr(PathsModel,f'lamu').set(lb=0,ub=1,par0=0.5,description='Amplitude of unmodulated pairwise pathway',unit='')
         
@@ -465,14 +470,20 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
     for name,param in zip(DipolarSignal._parameter_list(order='vector'),parameters):
         getattr(DipolarSignal,name).set(**_importparameter(param))
 
+    DipolarSignal.description = 'Dipolar signal model'
     # Set prior knowledge on the parameters if experiment is specified
     if experiment is not None:
 
+        # Specify experiment in model description
+        DipolarSignal.description = f'{experiment.name} dipolar signal model'
+
         # Compile the parameter names to change in the model
-        if spins>2 or npathways>1:
-            reftime_names = [f'reftime{n+1}' for n in range(npathways)]
-        else: 
+        if spins==2 and npathways==1:
             reftime_names = ['reftime']
+            lam_names = ['mod']
+        else:
+            reftime_names = [f'reftime{labels[n]}' for n in range(npathways)]
+            lam_names = [f'lam{labels[n]}' for n in range(npathways)]
 
         # Specify start values and boundaries according to experimental timings
         for n in range(npathways):
@@ -481,9 +492,6 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
                 lb = experiment.reftimes[n] - 3*experiment.pulselength,
                 ub = experiment.reftimes[n] + 3*experiment.pulselength
                 )
-
-    # Set other dipolar model specific attributes
-    DipolarSignal.description = 'Dipolar signal model'
 
     return DipolarSignal
 #===============================================================================
@@ -567,8 +575,10 @@ def _checkpathways(pathways,Nmax):
     # Check that pathways are correctly specified
     if len(pathways)>Nmax: 
         raise ValueError(f"The number of pathways cannot exceed {Nmax}.")
-    if np.any(np.array(pathways)<1) or not np.all([not p%1 for p in pathways]): 
+    if np.any(np.array(pathways)<1) or not np.all([not p%1 for p in pathways]) or np.any(np.array(pathways)>Nmax): 
         raise ValueError(f"The pathways must be specified by integer numbers in the range 1-{Nmax}.")
+    if len(np.unique(pathways))!=len(pathways):
+        raise ValueError("Some pathways are duplicated.")
 #===============================================================================
 
 
@@ -578,11 +588,12 @@ class ExperimentInfo():
     r"""
     Represents information about a dipolar EPR experiment"""
 
-    def __init__(self,name,reftimes,harmonics,pulselength):
+    def __init__(self,name,reftimes,harmonics,pulselength,pathwaylabels):
         self.npathways = len(reftimes)
         self.reftimes = reftimes
         self.harmonics = harmonics
         self.pulselength = pulselength
+        self.labels = pathwaylabels
         self.name = name
 #===============================================================================
 
@@ -633,14 +644,17 @@ def ex_3pdeer(tau, pathways=None, pulselength=0.016):
     reftimes = [ tau, 0]
     # Theoretical dipolar harmonics
     harmonics = [ 1, 1]
+    # Pathway labels
+    pathwaylabels = np.arange(1,len(reftimes)+1)
 
     # Sort according to pathways order
     if pathways is not None:
         _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
+        pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
 
-    return ExperimentInfo('3-pulse DEER',reftimes,harmonics,pulselength)
+    return ExperimentInfo('3-pulse DEER', reftimes, harmonics, pulselength, pathwaylabels)
 #===============================================================================
 
 #===============================================================================
@@ -693,14 +707,17 @@ def ex_4pdeer(tau1, tau2, pathways=None, pulselength=0.016):
     reftimes = [tau1, tau1+tau2, 0, tau2]
     # Theoretical dipolar harmonics
     harmonics = [1, 1, 1, 1]
+    # Pathway labels
+    pathwaylabels = np.arange(1,len(reftimes)+1)
 
     # Sort according to pathways order
     if pathways is not None:
         _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
+        pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
 
-    return ExperimentInfo('4-pulse DEER', reftimes, harmonics, pulselength)
+    return ExperimentInfo('4-pulse DEER', reftimes, harmonics, pulselength, pathwaylabels)
 #===============================================================================
 
 #===============================================================================
@@ -759,14 +776,17 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
     reftimes = [ tau3, tau2, tau2-tau3, tau1+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau1]
     # Theoretical dipolar harmonics
     harmonics = [ 1, 1, 1, 1, 1, 1, 1, 1]
-    
+    # Pathway labels
+    pathwaylabels = np.arange(1,len(reftimes)+1)
+
     # Sort according to pathways order
     if pathways is not None:
         _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways]
-    
-    return ExperimentInfo('Reverse 5-pulse DEER',reftimes,harmonics,pulselength)
+        pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
+
+    return ExperimentInfo('Reverse 5-pulse DEER', reftimes, harmonics, pulselength, pathwaylabels)
 #===============================================================================
 
 
@@ -826,20 +846,23 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
     reftimes = [tau3, tau1, tau1-tau3, tau2+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau2]
     # Theoretical dipolar harmonics
     harmonics = [1, 1, 1, 1, 1, 1, 1, 1]
+    # Pathway labels
+    pathwaylabels = np.arange(1,len(reftimes)+1)
 
     # Sort according to pathways order
     if pathways is not None:
         _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
+        pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
 
-    return ExperimentInfo('Forward 5-pulse DEER',reftimes,harmonics,pulselength)
+    return ExperimentInfo('Forward 5-pulse DEER', reftimes, harmonics, pulselength, pathwaylabels)
 #===============================================================================
 
 #===============================================================================
 def ex_sifter(tau1, tau2, pathways=None, pulselength=0.016):
     r"""
-    Generate a SIFTER dipolar experiment model. 
+    Generate a 4-pulse SIFTER dipolar experiment model. 
 
     .. image:: ../images/sequence_sifter.svg
         :width: 450px
@@ -885,14 +908,17 @@ def ex_sifter(tau1, tau2, pathways=None, pulselength=0.016):
     reftimes = [ tau2-tau1, 2*tau2, -2*tau1]
     # Theoretical dipolar harmonics
     harmonics = [ 1, 1/2, 1/2]
+    # Pathway labels
+    pathwaylabels = np.arange(1,len(reftimes)+1)
 
     # Sort according to pathways order
     if pathways is not None:
         _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways]
+        pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
 
-    return ExperimentInfo('SIFTER',reftimes,harmonics,pulselength)
+    return ExperimentInfo('4-pulse SIFTER', reftimes, harmonics, pulselength, pathwaylabels)
 #===============================================================================
 
 
@@ -946,12 +972,15 @@ def ex_ridme(tau1, tau2, pathways=None, pulselength=0.016):
     reftimes = [ 0, tau2, -tau1, tau2-tau1]
     # Theoretical dipolar harmonics
     harmonics = [ 1, 1, 1, 1]
+    # Pathway labels
+    pathwaylabels = np.arange(1,len(reftimes)+1)
 
     # Sort according to pathways order
     if pathways is not None:
         _checkpathways(pathways,Nmax=len(reftimes))
         reftimes = [reftimes[pathway-1] for pathway in pathways]
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
+        pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
 
-    return ExperimentInfo('RIDME',reftimes,harmonics,pulselength)
+    return ExperimentInfo('RIDME', reftimes, harmonics, pulselength, pathwaylabels)
 #===============================================================================
