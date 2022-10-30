@@ -598,35 +598,30 @@ class ExperimentInfo():
 #===============================================================================
 
 #===============================================================================
-def ex_3pdeer(tau, pathways=None, pulselength=0.016):
+def ex_3pdeer(tau, pathways=[1,2], pulselength=0.016):
     r"""
     Generate a 3-pulse DEER dipolar experiment model. 
+    
+    The figure below shows the dipolar pathways in 3-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
+    harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
+    The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
 
+    .. figure:: ../images/ex_3pdeer_pathways.png
+        :width: 350px
 
-    .. image:: ../images/sequence_3pdeer.svg
-        :width: 450px
+        Source: L. Fábregas-Ibáñez, Advanced data analysis and modeling in dipolar EPR spectroscopy, Doctoral dissertation, 2022
 
-
-    This experiment model has the following modulated dipolar pathways. The 
-    theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:    
-
-    ========= ================== ===========
-     Pathway    Refocusing time    Harmonic
-    ========= ================== ===========
-        1             0              1
-        2             𝜏              1
-    ========= ================== ===========
 
     Parameters 
     ----------
 
     tau : float scalar
-        Static interpulse delay. 
+        Static interpulse delay `\tau`. 
 
     pathways :  array_like, optional 
-        Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, both pathways are included in the order given in the table above.
+        Pathways to include in the model. The pathways are specified as a list of pathways labels `p`. 
+        By default, both pathways are included as shown in the table above.
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
@@ -658,39 +653,33 @@ def ex_3pdeer(tau, pathways=None, pulselength=0.016):
 #===============================================================================
 
 #===============================================================================
-def ex_4pdeer(tau1, tau2, pathways=None, pulselength=0.016):
+def ex_4pdeer(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
     r"""
     Generate a 4-pulse DEER dipolar experiment model. 
     
-    .. image:: ../images/sequence_4pdeer.svg
-        :width: 450px
+    The figure below shows the dipolar pathways in 4-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
+    harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
+    The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
 
+    .. figure:: ../images/ex_4pdeer_pathways.png
+        :width: 350px
 
-    This experiment model has the following modulated dipolar pathways. The 
-    theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:
+        Source: L. Fábregas-Ibáñez, Advanced data analysis and modeling in dipolar EPR spectroscopy, Doctoral dissertation, 2022
 
-    ========= ================== ===========
-     Pathway    Refocusing time    Harmonic
-    ========= ================== ===========
-        1            𝜏1              1
-        2          𝜏1 + 𝜏2           1
-        3             0              1
-        4            𝜏2              1
-    ========= ================== ===========
 
     Parameters 
     ----------
 
     tau1 : float scalar
-        1st static interpulse delay. 
+        1st static interpulse delay `\tau_1`. 
    
     tau2 : float scalar
-        2nd static interpulse delay. 
+        2nd static interpulse delay `\tau_2`. 
 
     pathways :  array_like, optional 
-        Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all 4 pathways are included in the order given in the table above.
+        Pathways to include in the model. The pathways are specified as a list of pathways labels `p`. 
+        By default, pathways 1-4 are included as shown in the table above.
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
@@ -699,12 +688,14 @@ def ex_4pdeer(tau1, tau2, pathways=None, pulselength=0.016):
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
-        constraints into the model.
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better constraints into the model.
 
     """
     # Theoretical refocusing pathways
-    reftimes = [tau1, tau1+tau2, 0, tau2]
+    reftimes = [tau1, 
+           tau1+tau2,
+                   0,
+                 tau2]
     # Theoretical dipolar harmonics
     harmonics = [1, 1, 1, 1]
     # Pathway labels
@@ -721,45 +712,36 @@ def ex_4pdeer(tau1, tau2, pathways=None, pulselength=0.016):
 #===============================================================================
 
 #===============================================================================
-def ex_rev5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
+def ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5], pulselength=0.016):
     r"""
     Generate a reverse 5-pulse DEER dipolar experiment model. 
-    
-    .. image:: ../images/sequence_5pdeer_reverse.svg
-        :width: 450px
+        
+    The figure below shows the dipolar pathways in reverse 5-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
+    harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
+    The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
 
-    This experiment model has the following modulated dipolar pathways. The 
-    theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:
+    .. figure:: ../images/ex_rev5pdeer_pathways.png
+        :width: 350px
 
-    ========= ================== ===========
-     Pathway    Refocusing time    Harmonic
-    ========= ================== ===========
-        1            𝜏3              1
-        2            𝜏2              1
-        3           𝜏2-𝜏3            1
-        4           𝜏1+𝜏3            1
-        5          𝜏1+𝜏2-𝜏3          1
-        6             0              1
-        7           𝜏1+𝜏2            1
-        8            𝜏1              1
-    ========= ================== ===========
+        Source: L. Fábregas-Ibáñez, Advanced data analysis and modeling in dipolar EPR spectroscopy, Doctoral dissertation, 2022
+
 
     Parameters 
     ----------
 
     tau1 : float scalar
-        1st static interpulse delay. 
+        1st static interpulse delay `\tau_1`. 
    
     tau2 : float scalar
-        2nd static interpulse delay. 
+        2nd static interpulse delay `\tau_2`. 
 
     tau3 : float scalar
-        3rd static interpulse delay. 
+        3rd static interpulse delay `\tau_3`. 
 
     pathways :  array_like, optional 
-        Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all 8 pathways are included in the order given in the table above.
+        Pathways to include in the model. The pathways are specified as a list of pathways labels `p`. 
+        By default, pathways 1-5 are included as shown in the table above.
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
@@ -773,7 +755,14 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
 
     """
     # Theoretical refocusing pathways
-    reftimes = [ tau3, tau2, tau2-tau3, tau1+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau1]
+    reftimes = [  tau3,
+             tau2-tau3,
+             tau1+tau3,
+        tau1+tau2-tau3,
+                  tau2,
+             tau1+tau2,
+                     0,
+                  tau1]
     # Theoretical dipolar harmonics
     harmonics = [ 1, 1, 1, 1, 1, 1, 1, 1]
     # Pathway labels
@@ -791,45 +780,36 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
 
 
 #===============================================================================
-def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
+def ex_fwd5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5], pulselength=0.016):
     r"""
     Generate a forward 5-pulse DEER dipolar experiment model. 
-    
-    .. image:: ../images/sequence_5pdeer_forward.svg
-        :width: 450px
+        
+    The figure below shows the dipolar pathways in forward 5-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
+    harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
+    The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
 
-    This experiment model has the following modulated dipolar pathways. The 
-    theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:    
+    .. figure:: ../images/ex_fwd5pdeer_pathways.png
+        :width: 350px
 
-    ========= ================== ===========
-     Pathway    Refocusing time    Harmonic
-    ========= ================== ===========
-        1            𝜏3              1
-        2            𝜏1              1
-        3           𝜏1-𝜏3            1
-        4           𝜏2+𝜏3            1
-        5          𝜏1+𝜏2-𝜏3          1
-        6             0              1
-        7           𝜏1+𝜏2            1
-        8            𝜏2              1
-    ========= ================== ===========
+        Source: L. Fábregas-Ibáñez, Advanced data analysis and modeling in dipolar EPR spectroscopy, Doctoral dissertation, 2022
+
 
     Parameters 
     ----------
 
     tau1 : float scalar
-        1st static interpulse delay. 
+        1st static interpulse delay `\tau_1`. 
    
     tau2 : float scalar
-        2nd static interpulse delay. 
+        2nd static interpulse delay `\tau_2`. 
 
     tau3 : float scalar
-        3rd static interpulse delay. 
+        3rd static interpulse delay `\tau_3`. 
 
     pathways :  array_like, optional 
-        Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all pathways are included in the order given in the table above.
+        Pathways to include in the model. The pathways are specified as a list of pathways labels `p`. 
+        By default, pathways 1-5 are included as shown in the table above.
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
@@ -838,12 +818,19 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
-        constraints into the model.
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better constraints into the model.
+
 
     """
     # Theoretical refocusing pathways
-    reftimes = [tau3, tau1, tau1-tau3, tau2+tau3, tau1+tau2-tau3, 0, tau1+tau2, tau2]
+    reftimes = [  tau3, 
+             tau1-tau3,
+             tau2+tau3,
+        tau1+tau2-tau3, 
+                  tau1,
+             tau1+tau2,
+                     0,
+                  tau2]
     # Theoretical dipolar harmonics
     harmonics = [1, 1, 1, 1, 1, 1, 1, 1]
     # Pathway labels
@@ -860,37 +847,33 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=None, pulselength=0.016):
 #===============================================================================
 
 #===============================================================================
-def ex_sifter(tau1, tau2, pathways=None, pulselength=0.016):
+def ex_sifter(tau1, tau2, pathways=[1,2,3], pulselength=0.016):
     r"""
     Generate a 4-pulse SIFTER dipolar experiment model. 
+        
+    The figure below shows the dipolar pathways in 4-pulse SIFTER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
+    harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
+    The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
 
-    .. image:: ../images/sequence_sifter.svg
-        :width: 450px
+    .. figure:: ../images/ex_sifter_pathways.png
+        :width: 350px
 
-    This experiment model has the following modulated dipolar pathways. The 
-    theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:    
+        Source: L. Fábregas-Ibáñez, Advanced data analysis and modeling in dipolar EPR spectroscopy, Doctoral dissertation, 2022
 
-    ========= ================== ===========
-     Pathway    Refocusing time    Harmonic
-    ========= ================== ===========
-        1            𝜏2-𝜏1            1
-        2             2𝜏2            1/2
-        3            -2𝜏1            1/2
-    ========= ================== ===========
 
     Parameters 
     ----------
 
     tau1 : float scalar
-        1st static interpulse delay. 
+        1st static interpulse delay `\tau_1`. 
 
     tau2 : float scalar
-        2nd static interpulse delay. 
+        2nd static interpulse delay `\tau_2`. 
 
     pathways :  array_like, optional 
-        Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all 3 pathways are included and ordered as given in the table above.
+        Pathways to include in the model. The pathways are specified as a list of pathways labels `p`. 
+        By default, all 3 pathways are included as shown in the table above.
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
@@ -899,13 +882,14 @@ def ex_sifter(tau1, tau2, pathways=None, pulselength=0.016):
     Returns
     -------
     experiment : ``ExperimentInfo`` object
-        Experiment object. Can be passed to ``dipolarmodel`` to introduce better
-        constraints into the model.
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better constraints into the model.
 
     """
 
     # Theoretical refocusing times
-    reftimes = [ tau2-tau1, 2*tau2, -2*tau1]
+    reftimes = [ tau2-tau1, 
+                    2*tau2,
+                   -2*tau1]
     # Theoretical dipolar harmonics
     harmonics = [ 1, 1/2, 1/2]
     # Pathway labels
@@ -923,38 +907,32 @@ def ex_sifter(tau1, tau2, pathways=None, pulselength=0.016):
 
 
 #===============================================================================
-def ex_ridme(tau1, tau2, pathways=None, pulselength=0.016):
+def ex_ridme(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
     r"""
-    Generate a RIDME dipolar experiment model. 
+    Generate a 5-pulse RIDME dipolar experiment model. 
+        
+    The figure below shows the dipolar pathways in 5-pulse RIDME. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
+    harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
+    The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
 
-    .. image:: ../images/sequence_ridme.svg
-        :width: 450px
+    (Note that the model does not account for any relaxation-induced effects)
 
-    This experiment model has the following modulated dipolar pathways. The 
-    theoretical refocusing times of the individual pathways are calculated 
-    from the input pulse sequence delays:
-
-    ========= ================== ===========
-     Pathway    Refocusing time    Harmonic
-    ========= ================== ===========
-        1             0               1
-        2             𝜏2              1
-        3            -𝜏1              1
-        4            𝜏2-𝜏1            1
-    ========= ================== ===========
+    .. figure:: ../images/ex_ridme_pathways.png
+        :width: 350px
 
     Parameters 
     ----------
 
     tau1 : float scalar
-        1st static interpulse delay. 
+        1st static interpulse delay `\tau_1`. 
 
     tau2 : float scalar
-        2nd static interpulse delay.  
+        2nd static interpulse delay `\tau_2`.  
 
     pathways :  array_like, optional 
-        Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-        By default, all 4 pathways are included in the order given in the table above.
+        Pathways to include in the model. The pathways are specified as a list of pathways labels `p`. 
+        By default, pathways 1-4 are included as shown in the table above.
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
@@ -969,7 +947,10 @@ def ex_ridme(tau1, tau2, pathways=None, pulselength=0.016):
     """
 
     # Theoretical refocusing times
-    reftimes = [ 0, tau2, -tau1, tau2-tau1]
+    reftimes = [   0,
+                tau2,
+               -tau1,
+           tau2-tau1]
     # Theoretical dipolar harmonics
     harmonics = [ 1, 1, 1, 1]
     # Pathway labels
@@ -982,5 +963,80 @@ def ex_ridme(tau1, tau2, pathways=None, pulselength=0.016):
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
         pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
 
-    return ExperimentInfo('RIDME', reftimes, harmonics, pulselength, pathwaylabels)
+    return ExperimentInfo('5-pulse RIDME', reftimes, harmonics, pulselength, pathwaylabels)
+#===============================================================================
+
+
+#===============================================================================
+def ex_dqc(tau1, tau2, tau3, pathways=[1,2,3], pulselength=0.016):
+    r"""
+    Generate a 6-pulse DQC dipolar experiment model. 
+        
+    The figure below shows the dipolar pathways in 6-pulse DQC. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
+    harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
+    The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
+
+    .. figure:: ../images/ex_dqc_pathways.png
+        :width: 700px
+
+        Source: L. Fábregas-Ibáñez, Advanced data analysis and modeling in dipolar EPR spectroscopy, Doctoral dissertation, 2022
+
+
+    Parameters 
+    ----------
+
+    tau1 : float scalar
+        1st static interpulse delay `\tau_1`. 
+
+    tau2 : float scalar
+        2nd static interpulse delay `\tau_2`. 
+
+    tau3 : float scalar
+        3rd static interpulse delay `\tau_3`. 
+
+    pathways :  array_like, optional 
+        Pathways to include in the model. The pathways are specified as a list of pathways labels `p`. 
+        By default, pathways 1, 2, and 3 are included as shown in the table above.
+
+    pulselength : float scalar, optional 
+        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
+        boundaries of the pathay refocusing times.
+
+    Returns
+    -------
+    experiment : ``ExperimentInfo`` object
+        Experiment object. Can be passed to ``dipolarmodel`` to introduce better constraints into the model.
+
+    """
+
+    # Theoretical refocusing times
+    reftimes = [ tau2-tau1, 
+                   -2*tau1,
+                    2*tau2,
+            tau2-tau1-tau3,
+            -2*(tau1-tau3),
+            -2*(tau1+tau3),
+             2*(tau2+tau3),
+             2*(tau1-tau3)]
+    # Theoretical dipolar harmonics
+    harmonics = [ 1, 
+                1/2,
+                1/2,
+                  1,
+                1/2,
+                1/2,
+                1/2,
+                1/2]
+    # Pathway labels
+    pathwaylabels = np.arange(1,len(reftimes)+1)
+
+    # Sort according to pathways order
+    if pathways is not None:
+        _checkpathways(pathways,Nmax=len(reftimes))
+        reftimes = [reftimes[pathway-1] for pathway in pathways]
+        harmonics = [harmonics[pathway-1] for pathway in pathways]
+        pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
+
+    return ExperimentInfo('6-pulse DQC', reftimes, harmonics, pulselength, pathwaylabels)
 #===============================================================================

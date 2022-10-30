@@ -373,7 +373,7 @@ def test_ex_rev5pdeer_type():
 def test_ex_rev5pdeer_fit(): 
     "Check the reverse 5-pulse DEER experimental model in fitting."
 
-    experiment = ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
+    experiment = ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,5,3])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vrev5pdeer,ftol=1e-4)
 
@@ -404,7 +404,7 @@ def test_ex_fwd5pdeer_type():
 def test_ex_fwd5pdeer_fit(): 
     "Check the forward 5-pulse DEER experimental model in fitting."
 
-    experiment = ex_fwd5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
+    experiment = ex_fwd5pdeer(tau1,tau2,tau3, pathways=[1,5,2])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vfwd5pdeer,ftol=1e-4)
 
