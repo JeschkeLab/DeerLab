@@ -5,7 +5,7 @@ from deerlab.utils import assert_docstring
 
 def test_basics():
 #============================================================
-    "Check the basic behaviour correcting a phased signal"
+    "Check the basic behavior correcting a phased signal"
 
     V = np.arange(100)
     Vphased = V*np.exp(-1j*4/7*pi)
@@ -51,8 +51,20 @@ def test_posrealsum():
 #============================================================
 
 
-# ======================================================================
 def test_docstring():
+# ======================================================================
     "Check that the docstring includes all variables and keywords."
     assert_docstring(correctphase)
 # ======================================================================
+
+
+def test_offset():
+#============================================================
+    "Check the basic behavior correcting a phased signal"
+
+    V = np.random.rand(100)
+    Vphased = V*np.exp(-1j*4/7*pi) + 1j*5
+    Vcorr = correctphase(Vphased,offset=True)
+
+    assert max(np.real(V) - np.real(Vcorr)) < 1e-4
+#============================================================
