@@ -724,3 +724,89 @@ def test_args_arraytype_r():
 
     assert K1==K2 and K2==K3
 #=======================================================================
+
+def test_interpolation_value():
+#=======================================================================
+    "Test whether kernel matrix element (calculated by interpolation speedup) is correct."
+
+    # Generate kernel numerically
+    t = 1 # µs
+    r = 1 # nm
+    tinterp = np.arange(0,2,0.005) # µs
+    K = dipolarkernel(t,r,method='fresnel',tinterp=tinterp)
+
+    # Kernel value for 1µs and 1nm computed using Mathematica (FresnelC and FresnelS) 
+    # and CODATA 2018 values for ge, µB, µ0, and h.
+    Kref = 0.024697819895260188
+
+    assert abs(K-Kref) < 1e-14
+#=======================================================================
+
+def test_interpolation_matrix_shape():
+#=======================================================================
+    "Test whether interpolation returns the correct kernel shape"
+
+    t = np.linspace(0,5,40) # µs
+    r = np.linspace(1,4,30) # nm
+    tinterp = t # µs
+    Kref = dipolarkernel(t,r,method='fresnel')
+    K = dipolarkernel(t,r,method='fresnel',tinterp=tinterp)
+
+    assert np.allclose(K.shape,Kref.shape)
+#=======================================================================
+
+def test_interpolation_vector():
+#=======================================================================
+    "Test whether interpolation returns the same vector as without"
+
+    t = np.linspace(0,5,100) # µs
+    r = 4 # nm
+    tinterp = t # µs
+    Kref = dipolarkernel(t,r,method='fresnel')
+    K = dipolarkernel(t,r,method='fresnel',tinterp=tinterp)
+
+    assert np.allclose(K,Kref)
+#=======================================================================
+
+def test_interpolation_reftimes():
+#=======================================================================
+    "Test whether interpolation returns the corrected time-shifted vector"
+
+    t = np.linspace(0,5,100) # µs
+    r = 4 # nm
+    tinterp = np.linspace(-2,7,400) # µs
+    pathways = [{'amp':1, 'reftime':1}]
+    Kref = dipolarkernel(t,r,pathways=pathways, method='fresnel')
+    K = dipolarkernel(t,r,pathways=pathways, method='fresnel',tinterp=tinterp)
+
+    assert np.allclose(K,Kref,rtol=1e-5)
+#=======================================================================
+
+def test_interpolation_threespin():
+#=======================================================================
+    "Check that the three-spin kernels are accurate"
+
+    t = np.linspace(0,5,100)
+    r1 = np.array(3.5)
+    r2 = np.array(3.2)
+    r3 = np.array(4.2)
+    tinterp = np.linspace(-1,4,500)
+    pathways= [{'reftime': (None,1,None),'amp': 1, 'harmonic': (0,1,0)}]
+    Kref = dipolarkernel(t,[r1,r2,r3],pathways=pathways)
+    K = dipolarkernel(t,[r1,r2,r3],pathways=pathways,tinterp=tinterp)
+
+    assert np.allclose(K,Kref,rtol=1e-5)
+#=======================================================================
+
+def test_interpolation_outofrange():
+#=======================================================================
+    "Test whether interpolation rolls back if outside of range"
+
+    t = np.linspace(0,5,40) # µs
+    r = np.linspace(1,4,30) # nm
+    tinterp = np.linspace(0,4,40) # µs
+    Kref = dipolarkernel(t,r,method='fresnel')
+    K = dipolarkernel(t,r,method='fresnel',tinterp=tinterp)
+
+    assert np.allclose(K.shape,Kref.shape)
+#=======================================================================

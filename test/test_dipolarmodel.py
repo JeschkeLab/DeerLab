@@ -326,7 +326,7 @@ def test_ex_3pdeer_fit():
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,V3pdeer,ftol=1e-5)
 
-    assert np.allclose(V3pdeer,result.model,atol=1e-1) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V3pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -346,7 +346,7 @@ def test_ex_4pdeer_fit():
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,V4pdeer,ftol=1e-4)
 
-    assert np.allclose(V4pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V4pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -377,7 +377,7 @@ def test_ex_rev5pdeer_fit():
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vrev5pdeer,ftol=1e-4)
 
-    assert np.allclose(Vrev5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vrev5pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -408,7 +408,7 @@ def test_ex_fwd5pdeer_fit():
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vfwd5pdeer,ftol=1e-4)
 
-    assert np.allclose(Vfwd5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vfwd5pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -439,7 +439,7 @@ def test_ex_sifter_fit():
     Vmodel = dipolarmodel(tsifter,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vsifter,ftol=1e-4)
 
-    assert np.allclose(Vsifter,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vsifter,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -470,7 +470,7 @@ def test_ex_ridme_fit():
     Vmodel = dipolarmodel(tridme,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vridme,ftol=1e-4)
 
-    assert np.allclose(Vridme,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vridme,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
