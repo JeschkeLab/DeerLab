@@ -42,7 +42,7 @@ results = dl.fit(Vmodel,Vexp)
 results.plot(axis=t,xlabel='Time $t$ (μs)')
 plt.show()
 
-# From the fit results, extract the distribution and the covariance matrix
+# From the fit results, extract the distribution
 Pfit = results.P
 Pci50 = results.PUncert.ci(50)
 Pci95 = results.PUncert.ci(95)

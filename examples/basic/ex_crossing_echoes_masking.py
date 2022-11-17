@@ -63,6 +63,7 @@ plt.title('Phase-corrected imaginary part')
 plt.tight_layout()
 plt.show()
 
+# sphinx_gallery_thumbnail_number = 3
 # %%
 
 # Estimate the noise level in the data
