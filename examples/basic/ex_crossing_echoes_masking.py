@@ -24,7 +24,8 @@ import deerlab as dl
 violet = '#4550e6'
 # %%
 
-data = np.load(r"C:\Users\Luis\polybox\projects\DeerLab\DeerLab\examples\data\example_4pdeer_5.npz")
+# Load the experimental data
+data = np.load('..\data\example_4pdeer_5.npz')
 t = data['t']
 Vexp = data['V']
 
