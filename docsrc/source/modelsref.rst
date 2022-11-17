@@ -33,6 +33,7 @@ to refine the dipolar signal models by introducing experimental information.
   ex_rev5pdeer
   ex_fwd5pdeer
   ex_sifter
+  ex_dqc
   ex_ridme
 
 Distance distribution models 
