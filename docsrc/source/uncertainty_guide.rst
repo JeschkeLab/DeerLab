@@ -22,6 +22,7 @@ Uncertainty quantification methods
 ----------------------------------
 
 DeerLab provides three different methods for the estimation of uncertainty: 
+
 - Moment-based or asymptotic method (least accurate, fastest)
 - Profile-likelihood method   (accurate, slow)
 - Bootstrapping method (most accurate, slowest)
