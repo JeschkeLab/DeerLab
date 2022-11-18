@@ -56,6 +56,41 @@ def test_names():
         assert hasattr(model,param)
 # ======================================================================
 
+# ======================================================================
+def test_pathway_labelling(): 
+    "Check that the model has correct parameter names"
+
+    exp = ex_4pdeer(1,2,pathways=[1])
+    model = dipolarmodel(t,r,dd_gauss,bg_hom3d,experiment=exp)
+    parameters = ['mean','std','conc','mod','reftime','scale']
+    
+    for param in parameters:
+        assert hasattr(model,'reftime') and not hasattr(model,'reftime1') and hasattr(model,'mod') and not hasattr(model,'lam1')
+# ======================================================================
+
+# ======================================================================
+def test_pathway_labelling2(): 
+    "Check that the model has correct parameter names"
+
+    exp = ex_4pdeer(1,2,pathways=[1,2])
+    model = dipolarmodel(t,r,dd_gauss,bg_hom3d,experiment=exp)
+    parameters = ['mean','std','conc','mod','reftime','scale']
+    
+    for param in parameters:
+        assert hasattr(model,'reftime1') and hasattr(model,'reftime2') and hasattr(model,'lam2') and hasattr(model,'lam2')
+# ======================================================================
+
+# ======================================================================
+def test_pathway_labelling3(): 
+    "Check that the model has correct parameter names"
+
+    exp = ex_4pdeer(1,2,pathways=[2,4])
+    model = dipolarmodel(t,r,dd_gauss,bg_hom3d,experiment=exp)
+    parameters = ['mean','std','conc','mod','reftime','scale']
+    
+    for param in parameters:
+        assert hasattr(model,'reftime2') and hasattr(model,'reftime4') and hasattr(model,'lam2') and hasattr(model,'lam4')
+# ======================================================================
 
 t = np.linspace(-0.5,5,100)
 r = np.linspace(2,5,50)
@@ -291,7 +326,7 @@ def test_ex_3pdeer_fit():
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,V3pdeer,ftol=1e-5)
 
-    assert np.allclose(V3pdeer,result.model,atol=1e-1) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V3pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -311,7 +346,7 @@ def test_ex_4pdeer_fit():
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,V4pdeer,ftol=1e-4)
 
-    assert np.allclose(V4pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(V4pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -338,11 +373,11 @@ def test_ex_rev5pdeer_type():
 def test_ex_rev5pdeer_fit(): 
     "Check the reverse 5-pulse DEER experimental model in fitting."
 
-    experiment = ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
+    experiment = ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,5,3])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vrev5pdeer,ftol=1e-4)
 
-    assert np.allclose(Vrev5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vrev5pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -369,11 +404,11 @@ def test_ex_fwd5pdeer_type():
 def test_ex_fwd5pdeer_fit(): 
     "Check the forward 5-pulse DEER experimental model in fitting."
 
-    experiment = ex_fwd5pdeer(tau1,tau2,tau3, pathways=[1,2,3])
+    experiment = ex_fwd5pdeer(tau1,tau2,tau3, pathways=[1,5,2])
     Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vfwd5pdeer,ftol=1e-4)
 
-    assert np.allclose(Vfwd5pdeer,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vfwd5pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -404,7 +439,7 @@ def test_ex_sifter_fit():
     Vmodel = dipolarmodel(tsifter,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vsifter,ftol=1e-4)
 
-    assert np.allclose(Vsifter,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vsifter,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
@@ -435,7 +470,7 @@ def test_ex_ridme_fit():
     Vmodel = dipolarmodel(tridme,r,Bmodel=bg_hom3d,experiment=experiment)
     result = fit(Vmodel,Vridme,ftol=1e-4)
 
-    assert np.allclose(Vridme,result.model,atol=1e-2) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vridme,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
 # ======================================================================
 
 # ======================================================================
