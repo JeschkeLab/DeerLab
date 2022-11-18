@@ -1,6 +1,6 @@
 # %%
 """
-Simulating a 5-pulse DEER signal
+Simulating a two-pathway 5-pulse DEER signal
 ============================================================
 
 An example on how to simulate a 5-pulse DEER dipolar signal.  
@@ -13,6 +13,7 @@ a Gaussian distance distribution
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
+violet = '#4550e6'
 
 # %%
 
@@ -49,8 +50,8 @@ Vsim = Vmodel(mean=rmean, std=rstd, conc=conc, scale=1, lam1=lam1, lam2=lam2, re
 
 # Plot the simulated signal
 plt.figure(figsize=[4,3])
-plt.plot(t,Vsim,'k',lw=2,label='V(t)')
-plt.plot(t,Vinter_fcn(lam1,lam2,conc),'--',color='#f84862',lw=2,label='(1-λ)$V_{inter}$')
+plt.plot(t,Vsim,lw=2,label='V(t)',color=violet)
+plt.plot(t,Vinter_fcn(lam1,lam2,conc),'--',color=violet,lw=2,label='(1-λ)$V_{inter}$')
 plt.legend()
 plt.xlabel('Time (μs)')
 plt.ylabel('V(t)')
