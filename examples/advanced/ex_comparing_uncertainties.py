@@ -5,7 +5,7 @@ Comparing confidence intervals for regularization results
 
 A simple example of uncertainty estimation of results obtained from dipolar signals.
 This example runs the analysis of a 4-pulse DEER signal and compares the uncertainty of the
-distance distribution between the covariance (curvature matrix) and bootstrap methods.
+distance distribution between the moment-based (curvature matrix) and bootstrap methods.
 
 By plotting the results, one can see that the bootstrapped confidence intervals 
 are narrower in comparison to the ones obtained via the curvature

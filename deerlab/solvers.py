@@ -924,7 +924,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         covmatrix[:,frozen] = 0
 
         # Construct the uncertainty quantification object
-        paramuq = UQResult('covariance', parfit, covmatrix, lbs, ubs)
+        paramuq = UQResult('moment', parfit, covmatrix, lbs, ubs)
 
         # Split the uncertainty quantification of nonlinear/linear parts
         paramuq_nonlin = uq_subset(paramuq,nonlin_subset,lb,ub)
