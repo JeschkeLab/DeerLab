@@ -1,3 +1,3 @@
-.. rubric:: Basic
+.. rubric:: Basic - Analysis
 
-These are basic examples for routine operations in DeerLab.
+These are basic examples for routine dipolar EPR analyses in DeerLab.

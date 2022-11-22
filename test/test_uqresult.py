@@ -44,7 +44,7 @@ profile1 = {'y': likelihood2obj(pdf1), 'x':x}
 profile2 = {'y': likelihood2obj(pdf2), 'x':x}
 
 # Construct uncertainty quantification objects
-uq_covariance = UQResult('covariance',data=np.array(means),covmat=covmat)
+uq_moment = UQResult('moment',data=np.array(means),covmat=covmat)
 uq_bootstrap = UQResult('bootstrap',data=np.vstack(samples).T)
 uq_profile = UQResult('profile',data=np.array(means),profiles=[profile1,profile2],threshold=threshold,noiselvl=σ)
 
@@ -83,39 +83,39 @@ def assert_uq(uq,attr):
 #------------------------------------------------------------
 
 # ------------------------------------------------------------
-def test_uq_covariance_mean():
+def test_uq_moment_mean():
     'Check the means of the uncertainty distributions'
-    assert_uq(uq_covariance,'mean')
+    assert_uq(uq_moment,'mean')
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-def test_uq_covariance_median():
+def test_uq_moment_median():
     'Check the medians of the uncertainty distributions'
-    assert_uq(uq_covariance,'median')
+    assert_uq(uq_moment,'median')
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-def test_uq_covariance_std():
+def test_uq_moment_std():
     'Check the standard deviations of the uncertainty distributions'
-    assert_uq(uq_covariance,'std')
+    assert_uq(uq_moment,'std')
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-def test_uq_covariance_ci():
+def test_uq_moment_ci():
     'Check the confidence intervals of the uncertainty distributions'
-    assert_uq(uq_covariance,'ci')
+    assert_uq(uq_moment,'ci')
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-def test_uq_covariance_percentile():
+def test_uq_moment_percentile():
     'Check the percentiles of the uncertainty distributions'
-    assert_uq(uq_covariance,'percentile')
+    assert_uq(uq_moment,'percentile')
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-def test_uq_covariance_pardist():
+def test_uq_moment_pardist():
     'Check the estimated uncertainty distributions'
-    assert_uq(uq_covariance,'pardist')
+    assert_uq(uq_moment,'pardist')
 # ------------------------------------------------------------
 
 #------------------------------------------------------------

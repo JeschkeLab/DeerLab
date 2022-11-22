@@ -19,9 +19,6 @@
 |title_version|
 
 
-.. warning:: DeerLab is currently in the pre-release stage (version numbers v0.x.y) and under active development. Major changes are likely before the first stable version (v1.0.0) is released.
-
-
 .. raw:: html 
 
     <div class="float-container">

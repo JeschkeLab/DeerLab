@@ -86,14 +86,13 @@ for n,param in enumerate(['conc','mod']):
     plt.subplot(2,2,2+n+1)
     profile = profile_uq[param].profile
     threshold = profile_uq[param].threshold(0.95)
-    plt.plot(profile['x'],profile['y'] - threshold,'-',color=violet, linewidth=3, label='Profile')
-    plt.hlines(0,min(profile['x']),max(profile['x']), linewidth=3, linestyles='--',color='grey',alpha=0.6, label='Threshold')
+    plt.plot(profile['x'],profile['y'],'-',color=violet, linewidth=3, label='Profile')
+    plt.hlines(threshold,min(profile['x']),max(profile['x']), linewidth=3, linestyles='--',color='grey',alpha=0.6, label='Threshold')
     plt.autoscale(True,'both',tight=True)
-    plt.ylim([7*np.min(profile['y'] - threshold),1e8])  
+    plt.ylim([np.min(profile['y']),1.1*threshold])  
     plt.xlabel(f'{getattr(Vmodel,param).description} ({getattr(Vmodel,param).unit})')
     plt.ylabel('Profile objective function')
     plt.legend(frameon=False,loc='best')
-
 plt.tight_layout()
 plt.show()
 
