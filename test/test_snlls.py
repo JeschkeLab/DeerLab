@@ -211,7 +211,7 @@ def test_confinter_model():
     ub = 1
     lbl = np.full(len(r), 0)
     # Separable LSQ fit
-    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl)
+    fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,modeluq=True)
     Vfit =  fit.model
     Vuq = fit.modelUncert
     Vci50 = Vuq.ci(50)
@@ -699,7 +699,7 @@ def test_complex_model_uncertainty():
     y = y + whitegaussnoise(x,0.01)
     y = y + 1j*whitegaussnoise(x,0.05)
 
-    fitResult = snlls(y,model,par0=[2*np.pi/5,4,0.2],lb=[-np.pi,1,0.05],ub=[np.pi,6,5])
+    fitResult = snlls(y,model,par0=[2*np.pi/5,4,0.2],lb=[-np.pi,1,0.05],ub=[np.pi,6,5],modeluq=True)
     ciwidth = np.sum(fitResult.modelUncert.ci(95)[:,1] - fitResult.modelUncert.ci(95)[:,0])
 
     assert (ciwidth.real < ciwidth.imag).all()

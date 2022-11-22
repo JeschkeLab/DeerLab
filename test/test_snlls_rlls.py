@@ -138,7 +138,7 @@ def test_confinter_Vfit():
     K = dipolarkernel(t,r,mod=0.2)
     V = K@P + whitegaussnoise(t,0.05)
 
-    fit = snlls(V,K,lbl=np.zeros_like(r))
+    fit = snlls(V,K,lbl=np.zeros_like(r),modeluq=True)
 
     assert_confidence_intervals(fit.modelUncert,fit.model)
 #============================================================

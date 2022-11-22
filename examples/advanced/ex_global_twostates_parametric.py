@@ -98,7 +98,6 @@ for i in range(Nsignals):
 
     # Get the fitted signals and confidence bands
     Vfit = fit.model[i]
-    Vfit_ci = fit.modelUncert[i].ci(95)
 
     # Get the fitted distributions of the two states
     PAfit = fracAfit[i] * dl.dd_gauss(r, fit.meanA, fit.stdA)
@@ -108,7 +107,6 @@ for i in range(Nsignals):
     plt.subplot(Nsignals, 2, 2 * i + 1)
     plt.plot(ts[i], Vexps[i], ".", color="grey")
     plt.plot(ts[i], Vfit, color=violet)
-    plt.fill_between(ts[i], Vfit_ci[:, 0], Vfit_ci[:, 1], color=violet, alpha=0.3)
     plt.xlabel("Time t (µs)")
     plt.ylabel(f"V$_{i+1}$(t) (arb.u)")
     plt.legend(["Data", "Fit"], loc="best", frameon=False)
