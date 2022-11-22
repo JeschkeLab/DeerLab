@@ -362,7 +362,7 @@ class Model():
         if np.all(frozen): 
             param_uq = UQResult('void')
         else:
-            if uq_full.type=='covariance':
+            if uq_full.type=='moment':
                 param_uq = uq_full.propagate(subset_model,lb=param_lb, ub=param_ub)
             elif uq_full.type=='bootstrap':
                 param_uq = UQResult('bootstrap',data=uq_full.samples[:,paramidx],lb=param_lb, ub=param_ub)

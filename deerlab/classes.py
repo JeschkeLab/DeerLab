@@ -87,7 +87,7 @@ class UQResult:
     type : string
         Uncertainty quantification approach:
 
-            * ``'covariance'`` - Covariance-based uncertainty analysis
+            * ``'moment'`` - Moment-based uncertainty analysis
             * ``'bootstrap'`` - Bootstrapped uncertainty analysis
             * ``'profile'`` - Likelihood profile uncertainty analysis
             * ``'void'`` - Empty uncertainty analysis
@@ -124,8 +124,8 @@ class UQResult:
     def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None,threshold=None,profiles=None,noiselvl=None):
 
         #Parse inputs schemes
-        if uqtype=='covariance':
-            # Scheme 1: UQResult('covariance',parfit,covmat,lb,ub)
+        if uqtype=='moment':
+            # Scheme 1: UQResult('moment',parfit,covmat,lb,ub)
             self.type = uqtype
             parfit = data
             nParam = len(parfit)
@@ -154,7 +154,7 @@ class UQResult:
             self.mean, self.median, self.std, self.covmat, self.nparam = ([] for _ in range(5))
             return
         else:
-            raise NameError('uqtype not found. Must be: ''covariance'', ''bootstrap'' or ''void''.')
+            raise NameError('uqtype not found. Must be: ''moment'', ''bootstrap'' or ''void''.')
 
         if lb is None:
             lb = np.full(nParam, -np.inf)
@@ -168,7 +168,7 @@ class UQResult:
         self.nparam = nParam
 
         # Create confidence intervals structure
-        if uqtype=='covariance':
+        if uqtype=='moment':
             self.mean = parfit
             self.median = parfit
             self.std = np.sqrt(np.diag(covmat))
@@ -231,7 +231,7 @@ class UQResult:
             The parameter vectors are concatenated on the order they are passed. 
         """
         newargs = []
-        if self.type=='covariance':
+        if self.type=='moment':
             # Original metadata
             newargs.append(self.mean)
             newargs.append(self.covmat)
@@ -248,7 +248,7 @@ class UQResult:
             if uq.type=='void':
                 raise TypeError('Void UQResults cannot be joined.')
             # Concatenate metadata of external UQResult objects
-            if self.type=='covariance':
+            if self.type=='moment':
                 newargs[0] = np.concatenate([newargs[0], uq.mean])
                 newargs[1] = block_diag(newargs[1], uq.covmat)
                 newargs[2] = np.concatenate([newargs[2], uq.__lb])
@@ -283,7 +283,7 @@ class UQResult:
             raise ValueError('The input must be a valid integer number.')
         isdelta = False
 
-        if self.type == 'covariance':
+        if self.type == 'moment':
             # Generate Gaussian distribution based on covariance matrix
             sig = np.sqrt(self.covmat[n,n])
             xmean = self.mean[n]
@@ -395,7 +395,6 @@ class UQResult:
     #--------------------------------------------------------------------------------
 
 
-    # Covariance-based confidence intervals
     #--------------------------------------------------------------------------------
     def ci(self,coverage):
         """
@@ -425,8 +424,8 @@ class UQResult:
         confint = np.zeros((self.nparam,2))
         if iscomplex: confint = confint.astype(complex)
 
-        if self.type=='covariance':
-            # Compute covariance-based confidence intervals
+        if self.type=='moment':
+            # Compute moment-based confidence intervals
             # Clip at specified box boundaries
             standardError = norm.ppf(p)*np.sqrt(np.diag(self.covmat))
             confint[:,0] = np.maximum(self.__lb, self.mean.real - standardError)
@@ -475,7 +474,6 @@ class UQResult:
 
 
 
-    # Error Propagation (covariance-based only)
     #--------------------------------------------------------------------------------
     def propagate(self,model,lb=None,ub=None,samples=None):
         """
@@ -518,7 +516,7 @@ class UQResult:
         else:
             Nsamples = samples
 
-        if self.type=='covariance':
+        if self.type=='moment':
 
             if iscomplex:
                 model_ = model 
@@ -541,7 +539,7 @@ class UQResult:
                 modelcovmat = modelcovmat[np.ix_(Nreal,Nreal)] + 1j* modelcovmat[np.ix_(Nimag,Nimag)]
 
             # Construct new uncertainty object
-            return  UQResult('covariance',modelfit,modelcovmat,lb,ub)
+            return  UQResult('moment',modelfit,modelcovmat,lb,ub)
 
         elif self.type=='bootstrap':
 

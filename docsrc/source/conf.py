@@ -66,7 +66,9 @@ sphinx_gallery_conf = {
     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
     'remove_config_comments': True,
     'download_all_examples': False,
-    'subsection_order': ExplicitOrder(['../../examples/basic',
+    'subsection_order': ExplicitOrder(['../../examples/basic_simulations',
+                                       '../../examples/basic',
+                                       '../../examples/intermediate',
                                        '../../examples/advanced',
                                        '../../examples/other']),
     'capture_repr': ()
