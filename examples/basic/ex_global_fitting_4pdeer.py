@@ -66,7 +66,6 @@ for n in range(len(results.model)):
 
     # Extract fitted dipolar signal
     Vfit = results.model[n]
-    Vci = results.modelUncert[n].ci(95)
 
     # Extract fitted distance distribution
     Pfit = results.P
@@ -78,7 +77,6 @@ for n in range(len(results.model)):
     plt.plot(ts[n],Vs[n],'.',color='grey',label='Data')
     # Plot the fitted signal 
     plt.plot(ts[n],Vfit,linewidth=3,color=violet,label='Fit')
-    plt.fill_between(ts[n],Vci[:,0],Vci[:,1],color=violet,alpha=0.3)
     plt.legend(frameon=False,loc='best')
     plt.xlabel('Time $t$ (μs)')
     plt.ylabel('$V(t)$ (arb.u.)')
