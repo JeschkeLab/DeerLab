@@ -17,8 +17,8 @@ import numpy as  np
 import deerlab as dl 
 
 # Load experimental data
-#files = [f'../data/triradical_protein_deer_{dB}dB.DTA' for dB in [0,6,9]]
-files = [f'D:\lufa\projects\DeerLab\DeerLab\\examples\data\\triradical_protein_deer_{dB}dB.DTA' for dB in [0,6,9]]
+files = [f'../data/triradical_protein_deer_{dB}dB.DTA' for dB in [0,6,9]]
+
 # Experiment information
 t0  = 0.280 # Acquisition deadtime, μs
 tau1 = 0.40 # First interpulse delay, μs

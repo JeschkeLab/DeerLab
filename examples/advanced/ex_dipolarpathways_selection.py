@@ -66,7 +66,7 @@ for n in range(len(Vmodels)):
     # Get the fits of the dipolar signal models
     Vfit = fits[n].model
     # Get the confidence intervals of the dipolar signal models
-    Vci = fits[n].modelUncert.ci(95)
+    Vci = fits[n].propagate(Vmodels[n]).ci(95)
     # Plot the experimental data
     ax1.plot(t,n/2+Vexp,'.',color='grey')
     # Plot the dipolar signal fits and their confidence bands
