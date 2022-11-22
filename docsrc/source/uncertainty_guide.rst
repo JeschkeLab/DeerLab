@@ -109,7 +109,8 @@ Confidence intervals
     For vector quantities, confidence intervals are always returned as a ``Nx2``-array, where each of the ``N`` elements of the vector has two values, the lower and upper boundaries of the confidence interval. ::
 
         # Get the confidence intervals on the model response vector
-        response_ci = fitresult.modelUncert.ci(95)
+        model_uq = fitresult.propagate(model)
+        response_ci = model_uq.ci(95)
 
         response_ci[:,0] # lower bound of the 95%-CI of the distance distribution
         response_ci[:,1] # upper bound of the 95%-CI of the distance distribution
@@ -119,4 +120,4 @@ Uncertainty distributions
     A complete description of the uncertainty is the uncertainty distributions for the fit parameter. These can be requested from the ``pardist`` method. Using ``pardist(n)`` will return the uncertainty probability density function and its abscissa values for the corresponding quantity's ``n``-th element. For example, ::
 
         pardist = fitresult.<parameter>Uncert.pardist(0) # Get the parameter uncertainty distribution
-        modeldist5 = fitresult.modelUncert.pardist(4) # Get the uncertainty distribution of the model's response 5th element
+        modeldist5 = model_uq.pardist(4) # Get the uncertainty distribution of the model's response 5th element

@@ -61,7 +61,7 @@ for n,results in enumerate([results_with, results_without]):
 
     # Extract fitted dipolar signal
     Vfit = results.model
-    Vci = results.modelUncert.ci(95)
+    Vci = results.propagate(Vmodel).ci(95)
 
     # Extract fitted distance distribution
     Pfit = results.P

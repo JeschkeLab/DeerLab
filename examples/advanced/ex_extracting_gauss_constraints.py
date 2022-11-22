@@ -57,8 +57,9 @@ results = dl.fit(Pmodel,Pfit,r)
 
 # Extract the fit results
 PGauss = results.model
-PGauss_ci50 = results.modelUncert.ci(50)
-PGauss_ci95 = results.modelUncert.ci(95)
+PGauss_uq = results.propagate(Pmodel,r,lb=np.zeros_like(r))
+PGauss_ci50 = PGauss_uq.ci(50)
+PGauss_ci95 = PGauss_uq.ci(95)
 
 # Print the parameters nicely
 print(f'Gaussian components with (95%-confidence intervals):')
