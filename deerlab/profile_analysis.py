@@ -64,7 +64,7 @@ def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, n
     fitresult = fit(model, y, *args, **kargs)
 
     # Prepare the statistical threshold function
-    threshold = lambda coverage: noiselvl**2*chi2.ppf(coverage, df=1) + fitresult.cost
+    threshold = lambda coverage: noiselvl**2*chi2.ppf(coverage, df=1)/len(fitresult.residuals) + fitresult.cost
 
 
     if parameters=='all':

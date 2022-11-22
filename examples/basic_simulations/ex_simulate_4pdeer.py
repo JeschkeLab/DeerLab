@@ -1,18 +1,19 @@
 # %%
 """
-Simulating a 4-pulse DEER signal
+Simulating a three-pathway 4-pulse DEER signal
 ============================================================
 
-An example on how to simulate a 4-pulse DEER dipolar signal.  
+An example on how to simulate a three-pathway 4-pulse DEER dipolar signal.  
 
-Specifically, we simulate a single-pathway 4-pulse DEER dipolar signal arising from 
-a Gaussian distance distribution
+Specifically, we simulate a three-pathway 4-pulse DEER dipolar signal arising from 
+a Gaussian distance distribution.
 """
 
 # Import the required libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import deerlab as dl
+violet = '#4550e6'
 
 # %%
 
@@ -51,8 +52,8 @@ Vsim = Vmodel(mean=rmean, std=rstd, conc=conc, scale=1, lam1=lam1, lam2=lam23, l
 
 # Plot the simulated signal
 plt.figure(figsize=[4,3])
-plt.plot(t,Vsim,'k',lw=2,label='V(t)')
-plt.plot(t,Vinter_fcn(lam1,lam23,conc),'--',color='#f84862',lw=2,label='(1-λ)$V_{inter}$')
+plt.plot(t,Vsim,lw=2,label='V(t)',color=violet)
+plt.plot(t,Vinter_fcn(lam1,lam23,conc),'--',color=violet,lw=2,label='(1-λ)$V_{inter}$')
 plt.legend()
 plt.xlabel('Time (μs)')
 plt.ylabel('V(t)')
