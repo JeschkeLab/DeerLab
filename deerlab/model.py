@@ -362,7 +362,7 @@ class Model():
         if np.all(frozen): 
             param_uq = UQResult('void')
         else:
-            if uq_full.type=='covariance':
+            if uq_full.type=='moment':
                 param_uq = uq_full.propagate(subset_model,lb=param_lb, ub=param_ub)
             elif uq_full.type=='bootstrap':
                 param_uq = UQResult('bootstrap',data=uq_full.samples[:,paramidx],lb=param_lb, ub=param_ub)
@@ -1158,9 +1158,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     paramUncert : :ref:`UQResult`
         Uncertainty quantification of the parameter vector ordered according to the model parameter indices.
     model : ndarray
-        Fitted model response.
-    modelUncert : :ref:`UQResult`
-        Uncertainty quantification of the fitted model response.        
+        Fitted model response.     
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
     penweights : scalar or list thereof 
@@ -1308,10 +1306,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         fitresults.param = fitresults.paramUncert.median
         # Get the uncertainty estimates for the model response
         fitresults.model = [param_uq[n].median for n in range(1,len(param_uq))]
-        fitresults.modelUncert = [param_uq[n] for n in range(1,len(param_uq))]
         if len(fitresults.model)==1: 
             fitresults.model = fitresults.model[0]
-            fitresults.modelUncert = fitresults.modelUncert[0]
     # Get some basic information on the parameter vector
     keys = model._parameter_list(order='vector')
 
@@ -1320,7 +1316,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','cost','plot','residuals','stats','regparam']}
     _paramlist = model._parameter_list('vector')
 
     # Prepare the propagate() and evaluate() methods

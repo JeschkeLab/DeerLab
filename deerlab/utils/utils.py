@@ -731,14 +731,14 @@ try:
     import inspect
     #===============================================================================
     def assert_docstring(function):
-        input_args = inspect.getfullargspec(function).args
+        input_args = inspect.getfullargspec(function).args + inspect.getfullargspec(function).kwonlyargs
         docstring = function.__doc__
 
         for arg in input_args:
             try:
                 assert arg in docstring
             except: 
-                raise AssertionError(f'The argument {arg} is not documented.')
+                raise AssertionError(f'The argument "{arg}" is not documented.')
     #===============================================================================
 
 

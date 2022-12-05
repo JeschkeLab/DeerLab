@@ -5,7 +5,7 @@ Bootstrapped confidence intervals in routine analysis
 
 How to obtain bootstrapped confidence intervals for simple routine operations.
 
-Unless specified otherwise, the function ``fit`` will return asymptotic confidence intervals based on the covariance matrix 
+Unless specified otherwise, the function ``fit`` will return moment-based confidence intervals based on the covariance matrix
 of the objective function used to fit the data. These are quick to calculate and therefore very comfortable for quick estimates of
 the uncertainty during routine analysis or testing. 
 
@@ -58,7 +58,7 @@ print(results)
 
 # Extract fitted dipolar signal
 Vfit = results.model
-Vci = results.modelUncert.ci(95)
+Vci = results.propagate(Vmodel).ci(95)
 
 # Extract fitted distance distribution
 Pfit = results.P

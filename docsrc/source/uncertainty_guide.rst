@@ -22,28 +22,29 @@ Uncertainty quantification methods
 ----------------------------------
 
 DeerLab provides three different methods for the estimation of uncertainty: 
- - Covariance-based or asymptotic method (least accurate, fastest)
- - Profile-likelihood method   (accurate, slow)
- - Bootstrapping method (most accurate, slowest)
+
+- Moment-based or asymptotic method (least accurate, fastest)
+- Profile-likelihood method   (accurate, slow)
+- Bootstrapping method (most accurate, slowest)
 
 The following section will provide the basic concepts related to these methods: 
 
-Covariance-based or asymptotic method 
+Moment-based or asymptotic method 
 *************************************
 
-Covariance-based uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness, the ``fit`` function in DeerLab will employ it by default unless another method is requested.
+Moment-based uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness, the ``fit`` function in DeerLab will employ it by default unless another method is requested.
 
-This method estimates the uncertainty based on the curvature of the optimization surface. It assumes the uncertainty distributions of all parameters to be normally distributed, centered at the fitted values (i.e., the maximum-likelihood estimates), and their variance to be given by the curvature of the objective function. This curvature is determined via the Jacobian of the objective optimization function and the corresponding covariance matrix. 
+This method estimates the uncertainty based on the curvature of the optimization surface. It assumes the uncertainty distributions of all parameters to be normally distributed, centered at the fitted values (i.e., the maximum-likelihood estimates), and their variance to be given by the curvature of the objective function. This curvature is determined via the Jacobian of the objective optimization function and the corresponding covariance matrix. This assumes that the function being analyzed can be well approximated as a first-order Taylor expansion. Therefore, for highly non-linear functions, this method can results in unstable estimates of the uncertainty. 
 
 In addition, the method does not consider the boundaries of the parameters, i.e., they are assumed to be unconstrained. However, in DeerLab, confidence intervals and uncertainty distributions are clipped at the boundaries, as is standard practice. 
 
-All these assumptions and approximations can lead to a less accurate estimate of the uncertainty. It is common for covariance-based confidence intervals to be overestimated and broader than those returned by the other methods offered by DeerLab. Due to the assumption of a normal uncertainty distribution, covariance-based confidence intervals will always be symmetrical about the fitted values, which might not always be accurate. However, their cheap computation cost makes them ideal for immediate and preliminary estimations of uncertainty. 
+All these assumptions and approximations can lead to a less accurate estimate of the uncertainty. It is common for moment-based confidence intervals to be overestimated and broader than those returned by the other methods offered by DeerLab. Due to the assumption of a normal uncertainty distribution, moment-based confidence intervals will always be symmetrical about the fitted values, which might not always be accurate. However, their cheap computation cost makes them ideal for immediate and preliminary estimations of uncertainty. 
 
 
 Profile-likelihood method
 *************************************
 
-Likelihood-based uncertainty estimated from the profile-likelihood method represents a significant improvement in accuracy with respect to the covariance-based estimates. This method is, however, limited to non-linear model parameters. 
+Likelihood-based uncertainty estimated from the profile-likelihood method represents a significant improvement in accuracy with respect to the moment-based estimates. This method is, however, limited to non-linear model parameters. 
 
 This method estimates the uncertainty based on the profile-likelihood of a non-linear model parameter. The profile of a model parameter is computed by fitting the model to the data repeatedly while keeping that parameter fixed at different values. This results in an isometric profile of the likelihood or objective function. A likelihood uncertainty distribution or confidence intervals can be derived from this profile using a statistical criterion.
 
@@ -66,11 +67,11 @@ Selecting the uncertainty method
 
 The choice of uncertainty quantification method can be easily controlled via optional keyword arguments in the ``fit`` function. The program will then internally employ the appropriate methods to report the requested uncertainty estimates.
 
-Covariance-based method
+Moment-based method
 ************************
-The covariance-based method is the default method. Therefore, the ``fit`` function can be passed without any additional inputs: ::
+The moment-based method is the default method. Therefore, the ``fit`` function can be passed without any additional inputs: ::
 
-    # Fit the model to the data and quantify the uncertainty based on covariance
+    # Fit the model to the data and quantify the uncertainty
     fitresult = dl.fit(model, y)
 
 When using bootstrapping, the parameter fits ``fit.<parameter>`` will not correspond to the maximum-likelihood but to the median of the bootstrapped uncertainty quantification (a better and more accurate estimate).   
@@ -109,7 +110,8 @@ Confidence intervals
     For vector quantities, confidence intervals are always returned as a ``Nx2``-array, where each of the ``N`` elements of the vector has two values, the lower and upper boundaries of the confidence interval. ::
 
         # Get the confidence intervals on the model response vector
-        response_ci = fitresult.modelUncert.ci(95)
+        model_uq = fitresult.propagate(model)
+        response_ci = model_uq.ci(95)
 
         response_ci[:,0] # lower bound of the 95%-CI of the distance distribution
         response_ci[:,1] # upper bound of the 95%-CI of the distance distribution
@@ -119,4 +121,4 @@ Uncertainty distributions
     A complete description of the uncertainty is the uncertainty distributions for the fit parameter. These can be requested from the ``pardist`` method. Using ``pardist(n)`` will return the uncertainty probability density function and its abscissa values for the corresponding quantity's ``n``-th element. For example, ::
 
         pardist = fitresult.<parameter>Uncert.pardist(0) # Get the parameter uncertainty distribution
-        modeldist5 = fitresult.modelUncert.pardist(4) # Get the uncertainty distribution of the model's response 5th element
+        modeldist5 = model_uq.pardist(4) # Get the uncertainty distribution of the model's response 5th element

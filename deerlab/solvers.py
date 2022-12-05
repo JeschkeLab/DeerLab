@@ -297,7 +297,7 @@ def _prepare_linear_lsq(A,lb,ub,reg,L,tol,maxiter,nnlsSolver):
 # ===========================================================================================
 
 # ===========================================================================================
-def _model_evaluation(ymodels,parfit,paruq,uq):
+def _model_evaluation(ymodels,parfit,paruq,uq,modeluq):
     """
     Model evaluation
     ================
@@ -308,7 +308,7 @@ def _model_evaluation(ymodels,parfit,paruq,uq):
     modelfit, modelfituq = [],[]
     for ymodel in ymodels: 
         modelfit.append(ymodel(parfit))
-        if uq: 
+        if uq and modeluq: 
             modelfituq.append(paruq.propagate(ymodel))
         else:
             modelfituq.append(UQResult('void'))
@@ -392,7 +392,7 @@ def _insertfrozen(parfit,parfrozen,frozen):
 def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='qp', reg='auto', weights=None, verbose=0,
           regparam='aic', regparamrange=None, multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
           ftol=1e-8, xtol=1e-8, max_nfev=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None, mask=None,
-          nonlin_frozen=None, uq=True):
+          nonlin_frozen=None, uq=True, modeluq=False):
     r""" Separable non-linear least squares (SNLLS) solver
 
     Fits a linear set of parameters `\theta_\mathrm{lin}` and non-linear parameters `\theta_\mathrm{nonlin}`
@@ -531,7 +531,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         will be optimized, if set to a numerical value it will be fixed to it and ignored during the optimization.
 
     uq : boolean, optional
-        Enable/disable the uncertainty quantification analysis, by default it is enabled.
+        Enable/disable the uncertainty quantification analysis. Enabled by default.
+
+    modeluq : boolean, optional
+        Enable/disable the propagation of the parameter uncertainties to the model's response (can be computationally costly). Disabled by default
 
     subsets : array_like, optional 
         Vector of dataset subset indices, if the datasets are passed concatenated instead of a list.
@@ -561,7 +564,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     paramUncert : :ref:`UQResult`
         Uncertainty quantification of the full parameter set.
     modelUncert : :ref:`UQResult`
-        Uncertainty quantification of the fitted model.
+        Uncertainty quantification of the fitted model. Only computed if ``modeluq=True``.
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
     plot : callable
@@ -924,7 +927,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         covmatrix[:,frozen] = 0
 
         # Construct the uncertainty quantification object
-        paramuq = UQResult('covariance', parfit, covmatrix, lbs, ubs)
+        paramuq = UQResult('moment', parfit, covmatrix, lbs, ubs)
 
         # Split the uncertainty quantification of nonlinear/linear parts
         paramuq_nonlin = uq_subset(paramuq,nonlin_subset,lb,ub)
@@ -951,7 +954,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         def ymodel(n):
             return lambda p: ymodel_(n)(p) + 1j*(Amodel(p[nonlin_idx])@p[lin_idx])[imagsubsets[n]]
     ymodels = [ymodel(n) for n in range(len(subsets))]
-    modelfit,modelfituq = _model_evaluation(ymodels,parfit,paramuq,uq)
+    modelfit,modelfituq = _model_evaluation(ymodels,parfit,paramuq,uq,modeluq)
 
     # Make lists of data and fits
     ys = [y[subset] for subset in subsets]

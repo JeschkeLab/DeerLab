@@ -46,12 +46,12 @@ Vmodel_truncated = dl.dipolarmodel(t_truncated,r)
 
 # Compute uncertainty with the likelihood profile method for the spin concentration and modulation depth parameters
 grids = {
-    'conc': np.linspace(1,400,15),
-    'mod': np.linspace(0.25,0.4,15),
+    'conc': np.linspace(1,250,20),
+    'mod': np.linspace(0.25,0.35,20),
 }
 
-profile_long = dl.profile_analysis(Vmodel,Vexp,samples=10, parameters=['conc','mod'], grids=grids) 
-profile_short = dl.profile_analysis(Vmodel_truncated,Vexp_truncated,samples=10, parameters=['conc','mod'], grids=grids) 
+profile_long = dl.profile_analysis(Vmodel,Vexp, parameters=['conc','mod'], grids=grids) 
+profile_short = dl.profile_analysis(Vmodel_truncated,Vexp_truncated, parameters=['conc','mod'], grids=grids) 
 
 #%%
 
@@ -61,10 +61,10 @@ for n,param in enumerate(['conc','mod']):
     for profile_uq,color in zip([profile_long,profile_short],[green,red]):
         profile = profile_uq[param].profile
         threshold = profile_uq[param].threshold(0.95)
-        plt.plot(profile['x'],profile['y'] - threshold,'-',color=color, linewidth=3)
+        plt.plot(profile['x'],profile['y']-threshold,'-',color=color, linewidth=3)
         plt.hlines(0,min(profile['x']),max(profile['x']), linewidth=3, linestyles='--',color='grey',alpha=0.6)
     plt.autoscale(True,'both',tight=True)
-    plt.ylim([1.5*np.min(profile['y'] - threshold),0.01])  
+    plt.ylim([1.1*(np.min(profile['y'])-threshold),1.5*threshold])  
     plt.xlabel(f'{getattr(Vmodel,param).description} ({getattr(Vmodel,param).unit})')
     plt.ylabel('Profile objective function')
     plt.legend(['Profile (long trace)','Profile (short trace)','Threshold'],frameon=False,loc='best')

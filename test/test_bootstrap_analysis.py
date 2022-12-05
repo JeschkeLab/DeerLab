@@ -1,6 +1,6 @@
 
 import numpy as np
-from deerlab import dipolarkernel, whitegaussnoise, bootstrap_analysis, snlls
+from deerlab import whitegaussnoise, bootstrap_analysis, snlls
 from deerlab.dd_models import dd_gauss
 from deerlab.utils import assert_docstring
 
@@ -25,7 +25,7 @@ def fitfcn_global(ys):
 
 def fitfcn_multiout(yexp):
     fit = snlls(yexp,model,[1,3],uq=False)
-    return fit.nonlin*fit.lin, fit.model 
+    return fit.nonlin*fit.lin, fit.model, fit.nonlin[0]
 
 def fitfcn_complex(yexp):
     fit = snlls(yexp,model,[1,3],uq=False)
@@ -58,10 +58,10 @@ def test_multiple_ouputs():
 # ======================================================================
     "Check that both bootstrap handles the correct number outputs"
 
-    parfit,yfit = fitfcn_multiout(yexp)
+    parfit,yfit,_ = fitfcn_multiout(yexp)
     paruq = bootstrap_analysis(fitfcn_multiout,yexp,model(parfit),10)
 
-    assert len(paruq)==2 and all(abs(paruq[0].mean - parfit)) and all(abs(paruq[1].mean - yfit))
+    assert len(paruq)==3 and all(abs(paruq[0].mean - parfit)) and all(abs(paruq[1].mean - yfit))
 # ======================================================================
 
 def test_multiple_datasets():

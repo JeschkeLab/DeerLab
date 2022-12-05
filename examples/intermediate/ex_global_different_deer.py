@@ -66,14 +66,12 @@ for n,(t,V) in enumerate(zip([t4p,t5p],[V4p,V5p])):
 
     # Extract fitted dipolar signal
     Vfit = results.model[n]
-    Vci = results.modelUncert[n].ci(95)
 
     plt.subplot(2,2,1+n*2)
     # Plot experimental data
     plt.plot(t,V,'.',color='grey',label='Data')
     # Plot the fitted signal 
     plt.plot(t,Vfit,linewidth=3,color=violet,label='Fit')
-    plt.fill_between(t,Vci[:,0],Vci[:,1],color=violet,alpha=0.3)
     plt.legend(frameon=False,loc='best')
     plt.xlabel('Time $t$ (μs)')
     plt.ylabel('$V(t)$ (arb.u.)')

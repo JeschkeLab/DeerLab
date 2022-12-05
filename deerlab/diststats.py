@@ -67,12 +67,12 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         * ``'moment4'`` - 4th moment (kurtosis) (see `more <https://en.wikipedia.org/wiki/Kurtosis>`__)
 
     uq : dict of :ref:`UQResult`
-        Dictionary of the parameters covariance-based uncertainty quantification. 
+        Dictionary of the parameters moment-based uncertainty quantification. 
         See above for the dictionary keys. Only calculated if ``Puq`` is provided.
 
     Notes
     -----
-    For the ``'mode'``, ``'modes'`` and ``'modality'`` parameters, covariance-based uncertainties are not 
+    For the ``'mode'``, ``'modes'`` and ``'modality'`` parameters, moment-based uncertainties are not 
     available. Uncertainties can, however, be calculated via bootsrapping of these quantities, e.g. ::
 
         def analyze_rmode(V):

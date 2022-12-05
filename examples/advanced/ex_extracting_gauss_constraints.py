@@ -42,7 +42,7 @@ results = dl.fit(Vmodel,Vexp)
 results.plot(axis=t,xlabel='Time $t$ (μs)')
 plt.show()
 
-# From the fit results, extract the distribution and the covariance matrix
+# From the fit results, extract the distribution
 Pfit = results.P
 Pci50 = results.PUncert.ci(50)
 Pci95 = results.PUncert.ci(95)
@@ -57,8 +57,9 @@ results = dl.fit(Pmodel,Pfit,r)
 
 # Extract the fit results
 PGauss = results.model
-PGauss_ci50 = results.modelUncert.ci(50)
-PGauss_ci95 = results.modelUncert.ci(95)
+PGauss_uq = results.propagate(Pmodel,r,lb=np.zeros_like(r))
+PGauss_ci50 = PGauss_uq.ci(50)
+PGauss_ci95 = PGauss_uq.ci(95)
 
 # Print the parameters nicely
 print(f'Gaussian components with (95%-confidence intervals):')

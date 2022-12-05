@@ -236,8 +236,6 @@ Estimated parameter uncertainty (``FitResult.<param>Uncert``)
     The ``FitResult`` will contain an attribute ``<param>Uncert`` of the same name as each parameter in the model. This will contain the full uncertainty estimate of the parameter in the form of an ``UQResult`` object (see here for details).  
 Estimated model response (``FitResult.model``)
     It is the maximum likelihood estimate of the model's response. It can be computed as well from the model and the fitted parameter values. 
-Estimated model response (``FitResult.modelUncert``)
-    The uncertainty estimate of the model's response in the form of an ``UQResult`` object propagated from the uncertainty on the parameters.  
 Statistical descriptors (``FitResult.stats``)    
     A dictionary of statistical quantities such as reduced chi-square, RMSD or AIC values quantifying the goodness-of-fit and model complexity. The reduced chi-square statistic ``FitResult.stats['chi2red']`` allows the assessment of whether the fit describes the data or not. A comparable value to 1 will indicate a good fit of the input data. The AIC ``FitResult.stats['aic']`` and other information-based quantities allow the comparison between fits based on alternate models and selecting the most appropriate model. 
 Penalty and regularization weights (``FitResult.regparam`` and ``FitResult.penweights``)
