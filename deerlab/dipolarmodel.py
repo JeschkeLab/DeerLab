@@ -1026,9 +1026,9 @@ def ex_dqc(tau1, tau2, tau3, pathways=[1,2,3], pulselength=0.016):
     """
 
     # Theoretical refocusing times
-    reftimes = [ tau2-tau1, 
+    reftimes = [ tau2-tau1,
+                    2*tau2, 
                    -2*tau1,
-                    2*tau2,
             tau2-tau1-tau3,
             -2*(tau1-tau3),
             -2*(tau1+tau3),
