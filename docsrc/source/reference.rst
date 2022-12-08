@@ -45,6 +45,7 @@ Reference Index
     snlls 
     fnnls
     cvxnnls
+    goodness_of_fit
     
 .. rubric:: Dipolar EPR functions
 
@@ -72,10 +73,12 @@ Reference Index
 
     store_pickle
     read_pickle
+    sophegrid
+    choleskycovmat
     hccm
     Jacobian
     nearest_psd
     movmean
     ovl
     der_snr
-    
+    formatted_table
