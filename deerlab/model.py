@@ -519,7 +519,7 @@ class Model():
         variable = np.atleast_1d(variable)
 
         # Get a list of all model parameters that are linear
-        linear = np.concatenate([np.atleast_1d(getattr(self, param).linear) for param in dir(self) if isinstance(getattr(self, param), Parameter)])
+        linear = np.concatenate([np.atleast_1d(getattr(self,param).linear) for param in dir(self) if isinstance(getattr(self,param),Parameter)]) 
 
         # Sort the list of linear parameters
         linear = self._vecsort(linear)
@@ -581,18 +581,7 @@ class Model():
             Vector of the specified attribute for all parameters in the model.
 
         """
-        # Initialize an empty list to store the attribute values
-        vector = []
-        
-        # Iterate over all attributes of the model
-        for param in dir(self):
-            # Check if the attribute is a parameter
-            if isinstance(getattr(self,param),Parameter):
-                # If it is, get the specified attribute and append it to the vector
-                vector.append(np.atleast_1d(getattr(getattr(self,param),attribute)))
-        
-        # Return the concatenated vector
-        return np.concatenate(vector)   
+        return np.concatenate([np.atleast_1d(getattr(getattr(self,param),attribute)) for param in dir(self) if isinstance(getattr(self,param),Parameter)])    
     #---------------------------------------------------------------------------------------
 
     #-----------------------------------------------------------------------------
@@ -692,11 +681,11 @@ class Model():
         self._error_if_already_exists(key)
 
         # Update number of parameters
+        idx = self.Nparam
         self.Nparam += 1
         self.Nnonlin += 1
 
         # Construct the new parameter object and added to the model
-        idx = self.Nparam
         newparam = Parameter(name=key, linear=False, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, unit=unit, description=description)
         setattr(self,key,newparam)
         Nconstants = len(self._constantsInfo)

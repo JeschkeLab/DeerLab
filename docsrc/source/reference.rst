@@ -63,10 +63,7 @@ Reference Index
 
 .. rubric:: Utility functions 
 
-All functions in ``deerlab.utils`` are private functions used internally by other functions.
-Stable functionality is not guaranteed.
-
-.. currentmodule:: deerlab.utils
+.. currentmodule:: deerlab
 
 .. autosummary::
     :toctree: _autosummary

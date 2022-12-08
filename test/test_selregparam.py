@@ -1,5 +1,5 @@
 
-from deerlab.utils.utils import assert_docstring
+from deerlab.utils import assert_docstring
 import numpy as np
 from deerlab import dipolarkernel, regoperator, selregparam, whitegaussnoise
 from deerlab.dd_models import dd_gauss,dd_gauss2

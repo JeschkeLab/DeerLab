@@ -71,8 +71,7 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
 
     candidates : list, optional
         List or array of candidate regularization parameter values to be evaluated with the ``'grid'`` algorithm. 
-        If not specified, these are automatically computed from the GSVD of the 
-        design matrix and regularization operator. 
+        If not specified, these are automatically computed from a grid within ``searchrange``.
 
     regop : 2D array_like, optional
         Regularization operator matrix, the default is the second-order differential operator.

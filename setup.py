@@ -4,9 +4,8 @@ setup(
     name='DeerLab',
     version=open('VERSION').read().splitlines()[0].replace("v", ""),
     author='Luis Fábregas Ibáñez , Stefan Stoll and other contributors',
-    package_dir={'deerlab': 'deerlab',
-                'deerlab.utils': 'deerlab/utils'},
-    packages=['deerlab','deerlab.utils'],
+    package_dir={'deerlab': 'deerlab'},
+    packages=['deerlab','deerlab'],
     url='https://github.com/JeschkeLab/DeerLab',
     project_urls = {
         'Documentation': 'https://jeschkelab.github.io/DeerLab/',

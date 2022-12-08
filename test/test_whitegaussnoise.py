@@ -1,4 +1,4 @@
-from deerlab.utils.utils import assert_docstring
+from deerlab.utils import assert_docstring
 import numpy as np
 import pytest
 from deerlab import whitegaussnoise
