@@ -7,37 +7,39 @@ from types import FunctionType
 from functools import wraps
 import pickle
 
-def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None, subsets=None):
+def parse_multidatasets(y_, A, weights, noiselvl, precondition=False, masks=None, subsets=None):
 #===============================================================================
+    """
     
+    """
     # Make copies to avoid modifying the originals
-    V = V_.copy()
+    y = y_.copy()
 
-    Vlist = []
-    # If multiple signals are specified as a list...
-    if type(V) is list and all([type(Vs) is np.ndarray for Vs in V]):
-        nSignals = len(V)
+    ylist = []
+    # If multiple datasets are specified as a list...
+    if type(y) is list and all([type(ys) is np.ndarray for ys in y]):
+        nDatasets = len(y)
 
-    elif type(V) is np.ndarray:
-        nSignals = 1
-        V = [V]
+    elif type(y) is np.ndarray:
+        nDatasets = 1
+        y = [y]
     else:
-        raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
+        raise TypeError('The input dataset(s) must be numpy array or a list of numpy arrays.')
     
     # Pre-scale the signals, important when using global fits with arbitrary scales
-    prescales = np.ones(nSignals)
-    for i in range(nSignals):
+    prescales = np.ones(nDatasets)
+    for i in range(nDatasets):
         if precondition:
             prescales[i] = max(V[i])
-            Vlist.append(V[i]/prescales[i])
+            ylist.append(y[i]/prescales[i])
         else:
-            Vlist.append(V[i])
+            ylist.append(y[i])
 
     # Get the indices to extract the subsets again
-    Ns = [len(V) for V in Vlist]
+    Ns = [len(y) for y in ylist]
     if subsets is None:
-        subset = [None]*nSignals
-        for i in  range(len(Vlist)):
+        subset = [None]*nDatasets
+        for i in  range(len(ylist)):
             if i==0:
                 prev = 0
             else:
@@ -48,10 +50,10 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None
 
     # Parse the masks
     if masks is None: 
-        masks = [np.full_like(V,True).astype(bool) for V in Vlist]
+        masks = [np.full_like(y,True).astype(bool) for y in ylist]
     elif not isinstance(masks,list):
         masks = [masks]
-    if len(masks)!= len(Vlist): 
+    if len(masks)!= len(ylist): 
         raise SyntaxError('The number of masks does not match the number of signals.')
     mask = np.concatenate(masks, axis=0) 
 
@@ -59,38 +61,38 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None
     sigmas = np.zeros(len(subset))
     if noiselvl is None:
         for i in range(len(subset)):
-            sigmas[i] = der_snr(Vlist[i][masks[i]])
+            sigmas[i] = der_snr(ylist[i][masks[i]])
     else: 
         noiselvl = np.atleast_1d(noiselvl)
         sigmas = noiselvl.copy()
 
 
     # Concatenate the datasets along the list axis
-    V = np.concatenate(Vlist, axis=0)
+    y = np.concatenate(ylist, axis=0)
 
     # -----------------------------------------------------------------
-    def prepareKernel(K,nSignals):
+    def prepare_model_matrix(A,nDatasets):
         # If multiple kernels are specified as a list...
-        if type(K) is tuple:
-            K = [Ks for Ks in K]
-        if type(K) is list and all([type(Ks) is np.ndarray for Ks in K]):
-            nKernels = len(K)
-            K = np.concatenate(K, axis=0) # ...concatenate them along the list 
-        elif type(K) is np.ndarray:
+        if type(A) is tuple:
+            A = [As for As in A]
+        if type(A) is list and all([type(As) is np.ndarray for As in A]):
+            nKernels = len(A)
+            A = np.concatenate(A, axis=0) # ...concatenate them along the list 
+        elif type(A) is np.ndarray:
             nKernels = 1
         else:
-            raise TypeError('The input kernel(s) must be numpy array or a list of numpy arrays.')
+            raise TypeError('The input model matrix must be numpy array or a list of numpy arrays.')
         # Check that the same number of signals and kernel have been passed
-        if nSignals!=nKernels:
-            raise KeyError('The same number of kernels and signals must be specified as lists.')
-        return K
+        if nDatasets!=nKernels:
+            raise KeyError('The same number of model matrices and datasets must be specified as lists.')
+        return A
     # -----------------------------------------------------------------
-    if type(K) is FunctionType:
-        Kmulti = lambda p: prepareKernel(K(p),nSignals)
-    elif K is None: 
+    if type(A) is FunctionType:
+        Kmulti = lambda p: prepare_model_matrix(A(p),nDatasets)
+    elif A is None: 
         Kmulti = None
     else:
-        Kmulti = prepareKernel(K,nSignals)
+        Kmulti = prepare_model_matrix(A,nDatasets)
 
     # If global weights are not specified, set default based on noise levels
     if weights is None:
@@ -106,32 +108,31 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None
         weights = np.atleast_1d(weights)
         if len(weights)==1:
                 weights = np.repeat(weights,len(subset))
-        if len(weights)!=len(Vlist) and len(weights)!=np.sum([len(V) for V in Vlist]):
+        if len(weights)!=len(ylist) and len(weights)!=np.sum([len(y) for y in ylist]):
             raise KeyError('If multiple signals are passed, the same number of weights are required.')
-        if len(weights)!=np.sum([len(V) for V in Vlist]):
+        if len(weights)!=np.sum([len(y) for y in ylist]):
             weights_ = []
             for i in range(len(weights)):
-                weights_ = np.concatenate((weights_,weights[i]*np.ones(len(Vlist[i]))))
+                weights_ = np.concatenate((weights_,weights[i]*np.ones(len(ylist[i]))))
             weights = weights_
     else:
         raise TypeError('The input weights(s) must be numpy array or a list of numpy arrays.')
 
-
     if precondition:
-        return V, Kmulti, weights, mask, subset, sigmas, prescales
+        return y, Kmulti, weights, mask, subset, sigmas, prescales
     else:
-        return V, Kmulti, weights, mask, subset, sigmas
+        return y, Kmulti, weights, mask, subset, sigmas
 #===============================================================================
-
-from pyparsing import *
-ESC = Literal('\x1b')
-escapeSeq = Combine(ESC + '[' + Optional(delimitedList(Word(nums),';')) + oneOf(list(alphas)))
-rm_ansi = lambda s : Suppress(escapeSeq).transformString(s)
 
 
 #===============================================================================
 def formatted_table(table,align=None):
     """Generate auto-formatted table in string form from a list of rows."""
+
+    from pyparsing import Literal,Combine,Suppress,Optional,delimitedList,Word,nums,alphas,oneOf
+    ESC = Literal('\x1b')
+    escapeSeq = Combine(ESC + '[' + Optional(delimitedList(Word(nums),';')) + oneOf(list(alphas)))
+    rm_ansi = lambda s : Suppress(escapeSeq).transformString(s)
 
     # Determine the maximal number of characters in each column
     N = []

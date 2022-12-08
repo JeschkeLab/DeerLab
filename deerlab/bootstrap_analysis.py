@@ -15,11 +15,16 @@ def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, noiselvl=None, resampling='g
     r""" 
     Bootstrap analysis for uncertainty quantification
 
+    This function creates new synthetic datasets by using the noiseless model
+    prediction ``Vfit`` and adding noise, according to the specified method. 
+    The ``fcn`` function is then applied to each of the new datasets to calculate
+    the uncertainty of the variables returned by ``fcn``.
+
     Parameters
     ----------
     fcn : callable
-        Function to be analyzed. Must be a callable function accepting a signal
-        array as input and returning a tuple with all variables to be analyzed.
+        Function to be analyzed. Must be a callable function ``fcn(V)`` accepting
+        a dataset array as input and returning a tuple with all variables to be analyzed.
         All variables must be numerical arrays (no strings or booleans) and 
         must preserve shape between calls.
 

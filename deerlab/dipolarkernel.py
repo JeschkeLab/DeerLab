@@ -181,7 +181,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     Examples
     --------
-    To specify single-pathway model with an unmodulated offset and a single dipolar pathway that refocuses at time `t=0`, use::
+    To specify a model with an unmodulated offset and a single dipolar pathway that refocuses at time `t=0`, use::
 
         lam = 0.4  # modulation depth
         pathways = [

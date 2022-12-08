@@ -7,12 +7,13 @@
 import numpy as np
 
 def regoperator(r,d=2,includeedges=False):
-    r""" Computes the discrete approximation to the derivative operators used as regularization operators.
+    r""" 
+    Computes the discrete approximation to the derivative operators used as regularization operators.
 
     Parameters
     ----------
     r : array_like with shape(n,)
-        Distance axis, in nanometers.
+        An array of distances, in nanometers
     d : int scalar, optional
         Derivative order, the default is 2.
     includeedges :  boolean, optional

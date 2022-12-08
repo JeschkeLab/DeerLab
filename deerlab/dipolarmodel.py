@@ -77,6 +77,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, npathways=1,  spins=2,
         If not specified, g = 2.002319... is used for both spins.
     interp : boolean, optional 
         Enable dipolar kernel interpolation for computation time reduction. By default enabled. 
+    
     Returns
     -------
     Vmodel : :ref:`Model`

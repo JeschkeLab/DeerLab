@@ -74,7 +74,7 @@
 
 .. toctree::
     :hidden:
-    :caption: Reference
+    :caption: Reference Index
 
     ./reference
 

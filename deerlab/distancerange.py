@@ -7,12 +7,19 @@ from deerlab.utils import isempty
 
 def distancerange(t, nr=None):
     r""" 
-    Empirical distance range given a DEER time axis
+    Empirical distance range given a dipolar EPR experiment time axis
+
+    This function calculates the empirical distance range for a DEER time axis. 
+    The distance range is determined by the time step and the Nyquist criterion 
+    for the minimum distance, and by the requirement that at least half an 
+    oscillation should be observable over the measured time window for the 
+    maximum distance. The function allows to specify the length of the output 
+    distance axis. If not given, only the minimum and maximum distances are returned.
 
     Parameters
     ----------
     t : array_like
-        Time axis, in microseconds.
+        Time axis, in microseconds. The time points at which the dipolar signal was measured.
     nr : scalar, integer
         Length of output distance axis. If not given, only min and max distance are returned.
 
@@ -20,7 +27,7 @@ def distancerange(t, nr=None):
     -------
     r : ndarray or tuple
         Distance axis, in nanometers, running between empirical lower and upper limits ``rmin`` and ``rmax``.
-        Either an ndarray (if ``nr`` is given) or a tuple (if ``nr`` is not given).
+        Either an ndarray ``r`` (if ``nr`` is given) or a tuple ``(rmin,rmax)`` (if ``nr`` is not given).
 
     Notes
     -----

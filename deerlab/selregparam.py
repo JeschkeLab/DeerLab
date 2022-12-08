@@ -13,13 +13,24 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     r"""
     Selection of optimal regularization parameter based on a selection criterion.
 
+    This function is used to compute the optimal regularization parameter in a linear
+    least squares problem. The regularization parameter can be determined using different
+    methods, which are specified in the ``method`` parameter. The function accepts multiple
+    datasets and corresponding model matrices, which can be globally evaluated. The optimization
+    of the regularization parameter can be performed using the ``brent`` algorithm, which is
+    the default, or the slower ``grid`` search algorithm. The function returns the optimal 
+    regularization parameter, and if ``full_output`` is ``True``, it also returns the 
+    regularization parameter candidates, as well as the values of the selection functional,
+    the residual, and penalty norms all evaluated at the different regularization parameter candidates.
+
     Parameters 
     ----------
     y : array_like or list of array_like
-        Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.
+        Dataset, multiple datasets can be globally evaluated by passing a list of datasets.
 
     A : 2D-array_like or list of 2D-array_like
-        Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.
+        Model (design) matrix, if a list of datasets is specified, a corresponding list of
+        matrices must be passed as well.
 
     solver : callable
         Linear least-squares solver. Must be a callable function with signature ``solver(AtA,Aty)``.
@@ -43,7 +54,7 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
         * ``'mcl'`` - Mallows' C_L (MCL)
     
     weights : array_like, optional
-        Array of weighting coefficients for the individual signals in global fitting.
+        Array of weighting coefficients for the individual datasets in global fitting.
         If not specified all datasets are weighted inversely proportional to their noise levels.
 
     algorithm : string, optional
@@ -61,11 +72,10 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     candidates : list, optional
         List or array of candidate regularization parameter values to be evaluated with the ``'grid'`` algorithm. 
         If not specified, these are automatically computed from the GSVD of the 
-        dipolar kernel and regularization operator. 
+        design matrix and regularization operator. 
 
     regop : 2D array_like, optional
         Regularization operator matrix, the default is the second-order differential operator.
-
         
     full_output : boolean, optional
         If enabled the function will return additional output arguments in a tuple, the default is False.
@@ -96,7 +106,7 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     """
 #=========================================================           
 
-    # If multiple datasets are passed, concatenate the signals and kernels
+    # If multiple datasets are passed, concatenate the datasets and kernels
     y, A, weights,_,__, noiselvl = dl.utils.parse_multidatasets(y, A, weights, noiselvl)
 
     # The L-curve criteria require a grid-evaluation
