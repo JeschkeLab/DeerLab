@@ -46,18 +46,6 @@ DeerLab installs the following packages:
 * `tqdm <https://github.com/tqdm/tqdm>`_ - A lightweight package for smart progress meters.
 * `dill <https://github.com/uqfoundation/dill>`_ - An extension of Python's pickle module for serializing and de-serializing python objects.
 
-Installing from Anaconda
-*************************
-
-DeerLab is also distributed via the Anaconda repository and the ``conda`` package manager.
-
-Open the Anaconda prompt (preferably with administrative privileges) or activate the Anaconda environment. Next install DeerLab via the ``conda`` package manager as follows::
-
-	conda install deerlab -c JeschkeLab 
-
-The package manager will automatically take care of installing all DeerLab dependencies. 
-
-
 Importing DeerLab
 ------------------
 
@@ -75,10 +63,6 @@ To upgrade an existing DeerLab installation to the latest released version, use 
 
 		python -m pip install --upgrade deerlab
 
-or if you are using Anaconda use the following command from the Anaconda prompt::
-
-		conda update deerlab
-
 Other installations 
 -------------------
 
@@ -88,11 +72,7 @@ Installing specific versions
 Any DeerLab version released after v0.10.0 can be installed via ``pip`` using the following command matching the x.y.z to the desired version::
 
 		python -m pip install deerlab==x.y.z
-
-or via ``conda`` if you use Anaconda as follows::
-
-		conda install deerlab=x.y.z
-
+        
 DeerLab version prior to 0.10 are written in MATLAB and are still available from an `archived repository <https://github.com/JeschkeLab/DeerLab-Matlab>`_. 
 Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.
 

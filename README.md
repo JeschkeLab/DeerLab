@@ -1,7 +1,6 @@
 # DeerLab
 
 [![https://jeschkelab.github.io/DeerLab/](https://img.shields.io/pypi/v/deerlab)](https://pypi.org/project/DeerLab/)
-[![https://img.shields.io/conda/v/JeschkeLab/deerlab](https://img.shields.io/conda/v/JeschkeLab/deerlab)](https://anaconda.org/jeschkelab/deerlab)
 [![Website](https://img.shields.io/website?down_message=offline&label=Documentation&up_message=online&url=https%3A%2F%2Fjeschkelab.github.io%2FDeerLab%2Findex.html)](https://jeschkelab.github.io/DeerLab/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/deerlab)](https://www.python.org/downloads/)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/deerlab?color=brightgreen)
@@ -23,15 +22,11 @@ All additional dependencies are automatically downloaded and installed during th
  
 ## Setup
 
-A pre-built distribution can be installed from the PyPI repository using `pip` or from the Anaconda repository using `conda`.
+A pre-built distribution can be installed from the PyPI repository using `pip`.
 
 From a terminal (preferably with admin privileges) use the following command to install from PyPI:
 
     python -m pip install deerlab
-
-or the following command to install from Anaconda:
-
-    conda install deerlab -c JeschkeLab
 
 More details on the installation and updating of DeerLab can be found [here](https://jeschkelab.github.io/DeerLab/installation.html).
 
