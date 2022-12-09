@@ -1141,3 +1141,50 @@ def test_pickle_model():
         os.remove("pickled_model.pkl") 
         raise exception
 # ======================================================================
+
+
+# Construct mask 
+mask = np.ones_like(x).astype(bool)   
+mask[(x>3.8) & (x<4.2)] = False 
+# Distort data outside of mask
+yref = mock_data_fcn(x)
+ycorrupted = yref.copy()
+ycorrupted[~mask] = 0 
+
+def test_fit_masking(): 
+#================================================================
+    "Check that masking works"
+    model = _getmodel_axis('parametric')
+
+    result = fit(model,ycorrupted,x)
+    resultmasked = fit(model,ycorrupted,x,mask=mask)
+
+    assert np.allclose(resultmasked.model,yref) and not np.allclose(result.model,yref) 
+#================================================================
+
+def test_masking_noiselvl():
+# ======================================================================
+    "Check that masking leads to correct noise level estimates"
+    model = _getmodel_axis('parametric')
+
+    noiselvl = 0.02
+    yexp = ycorrupted + whitegaussnoise(x,noiselvl,seed=1)
+
+    result = fit(model,yexp,x)
+    resultmasked = fit(model,yexp,x,mask=mask)
+
+    assert resultmasked.noiselvl!=result.noiselvl and abs(resultmasked.noiselvl/noiselvl-1)<0.1
+# ======================================================================
+
+def test_masking_chi2red():
+# ======================================================================
+    "Check that masking is accounted for by the goodness-of-fit"
+    model = _getmodel_axis('parametric')
+
+    yexp = ycorrupted + whitegaussnoise(x,0.02,seed=1)
+
+    result = fit(model,yexp,x)
+    resultmasked = fit(model,yexp,x,mask=mask)
+
+    assert resultmasked.stats['chi2red']<result.stats['chi2red'] and abs(resultmasked.stats['chi2red']-1)<0.2
+# ======================================================================

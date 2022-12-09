@@ -1127,6 +1127,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Uncertainty quantification of the fitted model response.        
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
+    penweights : scalar or list thereof 
+        Penalty weight value(s) used for the penalties specified through ``penalties``.
     plot : callable
         Function to display the results. It will display the fitted data.
         The function returns the figure object (``matplotlib.figure.Figure``)
@@ -1143,13 +1145,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         * ``stats['bic']`` - Bayesian information criterion
     cost : float
         Value of the cost function at the solution.
-
+    noiselvl : ndarray
+        Estimated or user-given noise standard deviations of the individual datasets.    
     evaluate(model, constants) : callable
         Function to evaluate a model at the fitted parameter values. Takes a model object or callable function ``model`` to be evaluated.
         All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.   
         Any model constants present required by the model must be specified as a second argument ``constants``.  
         It returns the model's response at the fitted parameter values as an ndarray. 
-
     propagate(model,constants,lb,ub) : callable
         Function to propagate the uncertainty in the fit results to a model's response. Takes a model object or callable function ``model`` to be evaluated.
         All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.  
