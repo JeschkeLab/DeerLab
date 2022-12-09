@@ -230,15 +230,7 @@
     <span class="k">else</span><span class="p">:</span> 
         <span class="n">subset</span> <span class="o">=</span> <span class="n">subsets</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>        
 
-    <span class="c1"># Noise level estimation/parsing</span>
-    <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">noiselvl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)):</span>
-            <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">der_snr</span><span class="p">(</span><span class="n">Vlist</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">noiselvl</span><span class="p">)</span>
-        <span class="n">sigmas</span> <span class="o">=</span> <span class="n">noiselvl</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
+    <span class="c1"># Parse the masks</span>
     <span class="k">if</span> <span class="n">masks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
         <span class="n">masks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span> <span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">Vlist</span><span class="p">]</span>
     <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
@@ -246,6 +238,16 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span><span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Vlist</span><span class="p">):</span> 
         <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;The number of masks does not match the number of signals.&#39;</span><span class="p">)</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+
+    <span class="c1"># Noise level estimation/parsing</span>
+    <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">noiselvl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)):</span>
+            <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">der_snr</span><span class="p">(</span><span class="n">Vlist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">masks</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">noiselvl</span><span class="p">)</span>
+        <span class="n">sigmas</span> <span class="o">=</span> <span class="n">noiselvl</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
 
     <span class="c1"># Concatenate the datasets along the list axis</span>
     <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">Vlist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -339,6 +341,84 @@
     <span class="n">table2print</span> <span class="o">+=</span> <span class="n">table_lines</span> <span class="c1"># Add a line</span>
     <span class="k">return</span> <span class="n">table2print</span>
 <span class="c1">#===============================================================================</span>
+
+
+<span class="c1">#===============================================================================</span>
+<span class="k">def</span> <span class="nf">goodness_of_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">xfit</span><span class="p">,</span><span class="n">Ndof</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Goodness of Fit statistics</span>
+<span class="sd">    ==========================</span>
+
+<span class="sd">    Computes multiple statistical indicators of goodness of fit.</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">    ------</span>
+<span class="sd">        stats = goodness_of_fit(x,xfit,Ndof)</span>
+
+<span class="sd">    Arguments: </span>
+<span class="sd">    ----------</span>
+<span class="sd">    x (N-element array)</span>
+<span class="sd">        Original data</span>
+<span class="sd">    xfit (N-element array)</span>
+<span class="sd">        Fit</span>
+<span class="sd">    Ndog (scalar, int)</span>
+<span class="sd">        Number of degrees of freedom</span>
+<span class="sd">    noiselvl (scalar)</span>
+<span class="sd">        Standard dexiation of the noise in x.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    stats (dict)</span>
+<span class="sd">        Statistical indicators:</span>
+<span class="sd">            stats[&#39;chi2red&#39;] - Reduced chi-squared</span>
+<span class="sd">            stats[&#39;rmsd&#39;] - Root mean-squared dexiation</span>
+<span class="sd">            stats[&#39;R2&#39;] - R-squared test</span>
+<span class="sd">            stats[&#39;aic&#39;] - Akaike information criterion</span>
+<span class="sd">            stats[&#39;aicc&#39;] - Corrected Akaike information criterion</span>
+<span class="sd">            stats[&#39;bic&#39;] - Bayesian information criterion</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">noiselvl</span>
+    <span class="n">Ndof</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">Ndof</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">residuals</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">xfit</span>
+    
+    <span class="c1"># Special case: no noise, and perfect fit</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residuals</span><span class="p">),</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;chi2red&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;R2&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;rmsd&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;aic&#39;</span><span class="p">:</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="s1">&#39;aicc&#39;</span><span class="p">:</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="s1">&#39;bic&#39;</span><span class="p">:</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="s1">&#39;autocorr&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+
+    <span class="c1"># Get number of xariables</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># Extrapolate number of parameters</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Ndof</span> <span class="o">-</span> <span class="n">N</span>
+
+    <span class="c1"># Reduced Chi-squared test</span>
+    <span class="n">chi2red</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">Ndof</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="c1"># Autocorrelation based on Durbin–Watson statistic</span>
+    <span class="n">autocorr_DW</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">residuals</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">residuals</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residuals</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="c1"># R-squared test</span>
+    <span class="n">R2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">residuals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">xfit</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xfit</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Root-mean square dexiation</span>
+    <span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">residuals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="c1"># Log-likelihood</span>
+    <span class="n">loglike</span> <span class="o">=</span> <span class="n">N</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">residuals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># Akaike information criterion</span>
+    <span class="n">aic</span> <span class="o">=</span>  <span class="n">loglike</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">Q</span>
+
+    <span class="c1"># Corrected Akaike information criterion</span>
+    <span class="n">aicc</span> <span class="o">=</span> <span class="n">loglike</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">Q</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">Q</span><span class="o">*</span><span class="p">(</span><span class="n">Q</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="n">Q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Bayesian information criterion</span>
+    <span class="n">bic</span> <span class="o">=</span>  <span class="n">loglike</span> <span class="o">+</span> <span class="n">Q</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;chi2red&#39;</span><span class="p">:</span><span class="n">chi2red</span><span class="p">,</span><span class="s1">&#39;R2&#39;</span><span class="p">:</span><span class="n">R2</span><span class="p">,</span><span class="s1">&#39;rmsd&#39;</span><span class="p">:</span><span class="n">rmsd</span><span class="p">,</span><span class="s1">&#39;aic&#39;</span><span class="p">:</span><span class="n">aic</span><span class="p">,</span><span class="s1">&#39;aicc&#39;</span><span class="p">:</span><span class="n">aicc</span><span class="p">,</span><span class="s1">&#39;bic&#39;</span><span class="p">:</span><span class="n">bic</span><span class="p">,</span><span class="s1">&#39;autocorr&#39;</span><span class="p">:</span><span class="n">autocorr_DW</span><span class="p">}</span>
+<span class="c1">#===============================================================================</span>
+
+
 
 
 <span class="c1">#===============================================================================</span>

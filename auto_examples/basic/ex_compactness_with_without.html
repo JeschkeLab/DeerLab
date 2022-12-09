@@ -248,7 +248,7 @@ on the results of the analysis of a 4-pulse DEER signal.</p>
 ========= ============= ============ ======= ===========
  Dataset   Noise level   Reduced 𝛘2   RMSD       AIC
 ========= ============= ============ ======= ===========
-   #1         0.005        0.741      0.004   -1082.358
+   #1         0.005        0.741      0.004   -1082.394
 ========= ============= ============ ======= ===========
 Model hyperparameters:
 ========================== ===================
@@ -260,11 +260,11 @@ Model parameters:
 =========== ==================== ========================= ====== ======================================
  Parameter   Value                95%-Confidence interval   Unit   Description
 =========== ==================== ========================= ====== ======================================
- mod         0.298                (0.293,0.302)                    Modulation depth
+ mod         0.298                (0.295,0.301)                    Modulation depth
  reftime     0.300                (0.298,0.303)              μs    Refocusing time
- conc        153.346              (136.783,169.910)          μM    Spin concentration
+ conc        153.309              (153.309,153.309)          μM    Spin concentration
  P           ...                  (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     0.9943121720135191                             None   Normalization factor of P
+ P_scale     0.9943057132279484                             None   Normalization factor of P
 =========== ==================== ========================= ====== ======================================
 Goodness-of-fit:
 ========= ============= ============ ======= ===========
@@ -284,9 +284,9 @@ Model parameters:
 =========== ==================== ========================= ====== ======================================
  mod         0.313                (0.074,0.553)                    Modulation depth
  reftime     0.299                (0.298,0.301)              μs    Refocusing time
- conc        121.995              (0.010,692.538)            μM    Spin concentration
+ conc        122.000              (0.010,692.552)            μM    Spin concentration
  P           ...                  (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     1.0006571908558801                             None   Normalization factor of P
+ P_scale     1.0006572257954696                             None   Normalization factor of P
 =========== ==================== ========================= ====== ======================================
 </pre></div>
 </div>
@@ -307,8 +307,8 @@ Model parameters:
     <span class="n">Pci50</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">PUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 
     <span class="c1"># Extract the unmodulated contribution</span>
-    <span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">,</span><span class="n">conc</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">P_scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mod</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
-    <span class="n">Bfit</span> <span class="o">=</span> <span class="n">Bfcn</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">mod</span><span class="p">,</span><span class="n">results</span><span class="o">.</span><span class="n">conc</span><span class="p">)</span>
+    <span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">reftime</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">P_scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mod</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">reftime</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
+    <span class="n">Bfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span>
     <span class="n">Bci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -336,7 +336,7 @@ Model parameters:
 </pre></div>
 </div>
 <img alt="With compactness criterion, Without compactness criterion" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_compactness_with_without_001.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  45.373 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  54.086 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-compactness-with-without-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/a3c1c74684d45c93f00dacd93f862905/ex_compactness_with_without.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_compactness_with_without.py</span></code></a></p>

@@ -433,7 +433,7 @@
 <span class="c1"># ===========================================================================================</span>
 
 <span class="c1"># ===========================================================================================</span>
-<span class="k">def</span> <span class="nf">_goodness_of_fit_stats</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">nParam</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_goodness_of_fit_stats</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">nParam</span><span class="p">,</span><span class="n">masks</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluation of goodness-of-fit statistics</span>
 <span class="sd">    ========================================</span>
@@ -442,9 +442,9 @@
 <span class="sd">    and returns a list of dictionaries with the statistics for each dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">y</span><span class="p">,</span><span class="n">yfit</span><span class="p">,</span><span class="n">sigma</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">):</span>
-        <span class="n">Ndof</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">nParam</span>
-        <span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">goodness_of_fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yfit</span><span class="p">,</span> <span class="n">Ndof</span><span class="p">,</span> <span class="n">sigma</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">y</span><span class="p">,</span><span class="n">yfit</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">mask</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">masks</span><span class="p">):</span>
+        <span class="n">Ndof</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span> <span class="o">-</span> <span class="n">nParam</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">goodness_of_fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">yfit</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">Ndof</span><span class="p">,</span> <span class="n">sigma</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">stats</span> 
 <span class="c1"># ===========================================================================================</span>
 
@@ -717,7 +717,8 @@
 <span class="sd">        Value of the cost function at the solution.</span>
 <span class="sd">    residuals : ndarray</span>
 <span class="sd">        Vector of residuals at the solution.</span>
-
+<span class="sd">    noiselvl : ndarray</span>
+<span class="sd">        Estimated or user-given noise standard deviations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
         
     <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> 
@@ -726,7 +727,7 @@
     
     <span class="c1"># Ensure that all arrays are numpy.nparray</span>
     <span class="n">par0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">par0</span><span class="p">)</span>
-    
+
     <span class="c1"># Parse multiple datsets and non-linear operators into a single concatenated vector/matrix</span>
     <span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">subsets</span><span class="p">,</span> <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">parse_multidatasets</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">noiselvl</span><span class="p">,</span> <span class="n">masks</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">subsets</span><span class="o">=</span><span class="n">subsets</span><span class="p">)</span>    
     
@@ -1088,6 +1089,7 @@
 
     <span class="c1"># Make lists of data and fits</span>
     <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span> <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">subsets</span><span class="p">]</span>
+    <span class="n">masks</span> <span class="o">=</span> <span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span> <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">subsets</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">complexy</span><span class="p">:</span> 
         <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">ys</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="n">imagsubset</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">imagsubset</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">imagsubsets</span><span class="p">)]</span>
     <span class="n">yfits</span> <span class="o">=</span> <span class="n">modelfit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1099,7 +1101,7 @@
     <span class="c1"># Goodness-of-fit</span>
     <span class="c1"># ---------------</span>
     <span class="n">Ndof</span> <span class="o">=</span> <span class="n">Nnonlin</span> <span class="o">+</span> <span class="n">Ndof_lin</span> 
-    <span class="n">stats</span> <span class="o">=</span> <span class="n">_goodness_of_fit_stats</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">Ndof</span><span class="p">)</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">_goodness_of_fit_stats</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">Ndof</span><span class="p">,</span><span class="n">masks</span><span class="p">)</span>
 
     <span class="c1"># Display function</span>
     <span class="n">plotfcn</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_plot</span><span class="p">,</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">yuq</span><span class="p">)</span>
@@ -1111,7 +1113,7 @@
 
     <span class="k">return</span> <span class="n">FitResult</span><span class="p">(</span><span class="n">nonlin</span><span class="o">=</span><span class="n">nonlinfit</span><span class="p">,</span> <span class="n">lin</span><span class="o">=</span><span class="n">linfit</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="n">parfit</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">modelfit</span><span class="p">,</span> <span class="n">nonlinUncert</span><span class="o">=</span><span class="n">paramuq_nonlin</span><span class="p">,</span>
                      <span class="n">linUncert</span><span class="o">=</span><span class="n">paramuq_lin</span><span class="p">,</span> <span class="n">paramUncert</span><span class="o">=</span><span class="n">paramuq</span><span class="p">,</span> <span class="n">modelUncert</span><span class="o">=</span><span class="n">modelfituq</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">plotfcn</span><span class="p">,</span>
-                     <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span> <span class="n">cost</span><span class="o">=</span><span class="n">fvals</span><span class="p">,</span> <span class="n">residuals</span><span class="o">=</span><span class="n">res</span><span class="p">)</span></div>
+                     <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span> <span class="n">cost</span><span class="o">=</span><span class="n">fvals</span><span class="p">,</span> <span class="n">residuals</span><span class="o">=</span><span class="n">res</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">)</span></div>
 <span class="c1"># ===========================================================================================</span>
 
 

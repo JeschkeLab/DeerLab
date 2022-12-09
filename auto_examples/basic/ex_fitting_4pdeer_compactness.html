@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model" href="ex_fitting_4pdeer_gauss.html" />
-    <link rel="prev" title="Basic analysis of a 4-pulse DEER signal" href="ex_fitting_4pdeer.html" />
+    <link rel="prev" title="Bootstrapped confidence intervals in routine analysis" href="ex_bootstrapping.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -258,9 +258,9 @@ Model parameters:
 =========== ==================== ========================= ====== ======================================
  mod         0.302                (0.300,0.304)                    Modulation depth
  reftime     0.299                (0.298,0.301)              μs    Refocusing time
- conc        148.111              (144.372,151.849)          μM    Spin concentration
+ conc        148.111              (144.373,151.850)          μM    Spin concentration
  P           ...                  (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     0.9995830566359535                             None   Normalization factor of P
+ P_scale     0.9995813523211364                             None   Normalization factor of P
 =========== ==================== ========================= ====== ======================================
 </pre></div>
 </div>
@@ -274,8 +274,8 @@ Model parameters:
 <span class="n">Pci50</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">PUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 
 <span class="c1"># Extract the unmodulated contribution</span>
-<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">,</span><span class="n">conc</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">P_scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mod</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
-<span class="n">Bfit</span> <span class="o">=</span> <span class="n">Bfcn</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">mod</span><span class="p">,</span><span class="n">results</span><span class="o">.</span><span class="n">conc</span><span class="p">)</span>
+<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">reftime</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">P_scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mod</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">reftime</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
+<span class="n">Bfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span>
 <span class="n">Bci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
@@ -304,7 +304,7 @@ Model parameters:
 </pre></div>
 </div>
 <img alt="ex fitting 4pdeer compactness" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_fitting_4pdeer_compactness_001.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  31.521 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  37.151 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-fitting-4pdeer-compactness-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/a7d9a350793e22deec26d3c4fc2ac1b0/ex_fitting_4pdeer_compactness.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_fitting_4pdeer_compactness.py</span></code></a></p>
@@ -322,11 +322,11 @@ Model parameters:
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="ex_fitting_4pdeer.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="ex_bootstrapping.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Basic analysis of a 4-pulse DEER signal</p>
+            <p class="prev-next-title">Bootstrapped confidence intervals in routine analysis</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="ex_fitting_4pdeer_gauss.html" title="next page">

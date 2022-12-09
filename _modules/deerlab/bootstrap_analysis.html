@@ -313,7 +313,7 @@
 
     <span class="c1"># Assert that all outputs are strictly numerical</span>
     <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">varargout</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">var</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">var</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Non-numeric output arguments by the analyzed function are not accepted.&#39;</span><span class="p">)</span>
     
     <span class="c1"># Check that the full bootstrap analysis will not exceed the memory limits</span>

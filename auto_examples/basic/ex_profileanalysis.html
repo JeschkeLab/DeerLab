@@ -243,7 +243,7 @@ to download the full example code</p>
 ========= ============= ============ ======= ===========
  Dataset   Noise level   Reduced 𝛘2   RMSD       AIC
 ========= ============= ============ ======= ===========
-   #1         0.005        0.835      0.004   -1460.008
+   #1         0.005        0.835      0.004   -1460.043
 ========= ============= ============ ======= ===========
 Model hyperparameters:
 ==========================
@@ -255,11 +255,11 @@ Model parameters:
 =========== ==================== ========================= ====== ======================================
  Parameter   Value                95%-Confidence interval   Unit   Description
 =========== ==================== ========================= ====== ======================================
- mod         0.303                (0.301,0.305)                    Modulation depth
+ mod         0.302                (0.300,0.305)                    Modulation depth
  reftime     0.299                (0.298,0.301)              μs    Refocusing time
- conc        147.932              (144.069,151.795)          μM    Spin concentration
+ conc        148.107              (144.239,151.976)          μM    Spin concentration
  P           ...                  (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     1.0000339036920376                             None   Normalization factor of P
+ P_scale     0.9995499356686878                             None   Normalization factor of P
 =========== ==================== ========================= ====== ======================================
 </pre></div>
 </div>
@@ -273,8 +273,8 @@ Model parameters:
 <span class="n">Pci50</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">PUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 
 <span class="c1"># Extract the unmodulated contribution</span>
-<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">,</span><span class="n">conc</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">P_scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mod</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
-<span class="n">Bfit</span> <span class="o">=</span> <span class="n">Bfcn</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">mod</span><span class="p">,</span><span class="n">results</span><span class="o">.</span><span class="n">conc</span><span class="p">)</span>
+<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">reftime</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">P_scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mod</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">reftime</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
+<span class="n">Bfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span>
 <span class="n">Bci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
@@ -317,7 +317,7 @@ Model parameters:
 </pre></div>
 </div>
 <img alt="ex profileanalysis" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_profileanalysis_001.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  42.082 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  45.686 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-profileanalysis-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/5cdee89b615bc609b9b7b554fed9d5a0/ex_profileanalysis.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_profileanalysis.py</span></code></a></p>

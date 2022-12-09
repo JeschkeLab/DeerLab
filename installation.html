@@ -195,11 +195,6 @@
      Installing from PyPI
     </a>
    </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#installing-from-anaconda">
-     Installing from Anaconda
-    </a>
-   </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -300,15 +295,6 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.8</s
 <li><p><a class="reference external" href="https://github.com/uqfoundation/dill">dill</a> - An extension of Python’s pickle module for serializing and de-serializing python objects.</p></li>
 </ul>
 </section>
-<section id="installing-from-anaconda">
-<h3>Installing from Anaconda<a class="headerlink" href="#installing-from-anaconda" title="Permalink to this headline">¶</a></h3>
-<p>DeerLab is also distributed via the Anaconda repository and the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager.</p>
-<p>Open the Anaconda prompt (preferably with administrative privileges) or activate the Anaconda environment. Next install DeerLab via the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">deerlab</span> <span class="o">-</span><span class="n">c</span> <span class="n">JeschkeLab</span>
-</pre></div>
-</div>
-<p>The package manager will automatically take care of installing all DeerLab dependencies.</p>
-</section>
 </section>
 <section id="importing-deerlab">
 <h2>Importing DeerLab<a class="headerlink" href="#importing-deerlab" title="Permalink to this headline">¶</a></h2>
@@ -324,10 +310,6 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.8</s
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">deerlab</span>
 </pre></div>
 </div>
-<p>or if you are using Anaconda use the following command from the Anaconda prompt:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="n">deerlab</span>
-</pre></div>
-</div>
 </section>
 <section id="other-installations">
 <h2>Other installations<a class="headerlink" href="#other-installations" title="Permalink to this headline">¶</a></h2>
@@ -335,10 +317,6 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.8</s
 <h3>Installing specific versions<a class="headerlink" href="#installing-specific-versions" title="Permalink to this headline">¶</a></h3>
 <p>Any DeerLab version released after v0.10.0 can be installed via <code class="docutils literal notranslate"><span class="pre">pip</span></code> using the following command matching the x.y.z to the desired version:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">deerlab</span><span class="o">==</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
-</pre></div>
-</div>
-<p>or via <code class="docutils literal notranslate"><span class="pre">conda</span></code> if you use Anaconda as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">deerlab</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
 </pre></div>
 </div>
 <p>DeerLab version prior to 0.10 are written in MATLAB and are still available from an <a class="reference external" href="https://github.com/JeschkeLab/DeerLab-Matlab">archived repository</a>.

@@ -182,6 +182,11 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-v0-14-5-december-2022">
+   Release v0.14.5 - December 2022
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-v0-14-4-august-2022">
    Release v0.14.4 - August 2022
   </a>
@@ -277,6 +282,22 @@
 <li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> : Something which was not working as expected or leading to errors has been fixed.</p></li>
 <li><p><span class="raw-html"><span class="badge changelog_api">API Change</span></span> : This will require changes in your scripts or code.</p></li>
 </ul>
+<section id="release-v0-14-5-december-2022">
+<h2>Release v0.14.5 - December 2022<a class="headerlink" href="#release-v0-14-5-december-2022" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> The distribution of DeerLab through Anaconda and its <code class="docutils literal notranslate"><span class="pre">conda</span></code> manager has been deprecated as of this release (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/400">#400</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fix errors in the background function plots used in the examples showing 4-pulse DEER analyses.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">fit</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Expose the <code class="docutils literal notranslate"><span class="pre">cores</span></code> option of <code class="docutils literal notranslate"><span class="pre">bootstrap_analysis</span></code> to parallelize bootstrap analysis from the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/387">#387</a>).</p></li>
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Correct behavior of masking during fitting (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/394">#394</a>). When using the <code class="docutils literal notranslate"><span class="pre">mask</span></code> option of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function, certain steps such as noise estimation and goodness-of-fit assessment were not taking into account the mask during the analysis.</p></li>
+</ul>
+<p class="rubric"><code class="docutils literal notranslate"><span class="pre">bootstrap_analysis</span></code></p>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge changelog_fix">Fix</span></span> Fix error prompted when analyzing scalar variables (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/402">#402</a>).</p></li>
+</ul>
+</section>
 <section id="release-v0-14-4-august-2022">
 <h2>Release v0.14.4 - August 2022<a class="headerlink" href="#release-v0-14-4-august-2022" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">

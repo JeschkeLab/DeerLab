@@ -1202,7 +1202,7 @@
 <span class="c1">#==============================================================================================</span>
 <div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../_autosummary/deerlab.fit.html#deerlab.fit">[docs]</a><span class="nd">@insert_snlls_optionals_docstrings</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">model_</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">constants</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">penalties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootstrap</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span><span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">regparamrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span><span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">regparamrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootcores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fit the model(s) to the dataset(s)</span>
 
@@ -1235,6 +1235,10 @@
 <span class="sd">    bootstrap : scalar, optional,</span>
 <span class="sd">        Bootstrap samples for uncertainty quantification. If ``bootstrap&gt;0``, the uncertainty quantification will be </span>
 <span class="sd">        performed via the boostrapping method with based on the number of samples specified as the argument.</span>
+<span class="sd">    </span>
+<span class="sd">    bootcores : scalar, optional</span>
+<span class="sd">        Number of CPU cores/processes for parallelization of the bootstrap uncertainty quantification. If ``cores=1`` no parallel </span>
+<span class="sd">        computing is used. If ``cores=-1`` all available CPUs are used. The default is one core (no parallelization).</span>
 
 <span class="sd">    reg : boolean or string, optional</span>
 <span class="sd">        Determines the use of regularization on the solution of the linear problem.</span>
@@ -1311,6 +1315,8 @@
 <span class="sd">        Uncertainty quantification of the fitted model response.        </span>
 <span class="sd">    regparam : scalar</span>
 <span class="sd">        Regularization parameter value used for the regularization of the linear parameters.</span>
+<span class="sd">    penweights : scalar or list thereof </span>
+<span class="sd">        Penalty weight value(s) used for the penalties specified through ``penalties``.</span>
 <span class="sd">    plot : callable</span>
 <span class="sd">        Function to display the results. It will display the fitted data.</span>
 <span class="sd">        The function returns the figure object (``matplotlib.figure.Figure``)</span>
@@ -1327,13 +1333,13 @@
 <span class="sd">        * ``stats[&#39;bic&#39;]`` - Bayesian information criterion</span>
 <span class="sd">    cost : float</span>
 <span class="sd">        Value of the cost function at the solution.</span>
-
+<span class="sd">    noiselvl : ndarray</span>
+<span class="sd">        Estimated or user-given noise standard deviations of the individual datasets.    </span>
 <span class="sd">    evaluate(model, constants) : callable</span>
 <span class="sd">        Function to evaluate a model at the fitted parameter values. Takes a model object or callable function ``model`` to be evaluated.</span>
 <span class="sd">        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.   </span>
 <span class="sd">        Any model constants present required by the model must be specified as a second argument ``constants``.  </span>
 <span class="sd">        It returns the model&#39;s response at the fitted parameter values as an ndarray. </span>
-
 <span class="sd">    propagate(model,constants,lb,ub) : callable</span>
 <span class="sd">        Function to propagate the uncertainty in the fit results to a model&#39;s response. Takes a model object or callable function ``model`` to be evaluated.</span>
 <span class="sd">        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.  </span>
@@ -1447,7 +1453,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span> <span class="n">fit</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="p">[</span><span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">]</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">param</span><span class="p">,</span><span class="o">*</span><span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
         <span class="c1"># Bootstrapped uncertainty quantification</span>
-        <span class="n">param_uq</span> <span class="o">=</span> <span class="n">bootstrap_analysis</span><span class="p">(</span><span class="n">bootstrap_fcn</span><span class="p">,</span><span class="n">ysplit</span><span class="p">,</span><span class="n">fitresults</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">samples</span><span class="o">=</span><span class="n">bootstrap</span><span class="p">,</span><span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">)</span>
+        <span class="n">param_uq</span> <span class="o">=</span> <span class="n">bootstrap_analysis</span><span class="p">(</span><span class="n">bootstrap_fcn</span><span class="p">,</span><span class="n">ysplit</span><span class="p">,</span><span class="n">fitresults</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">samples</span><span class="o">=</span><span class="n">bootstrap</span><span class="p">,</span><span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">cores</span><span class="o">=</span><span class="n">bootcores</span><span class="p">)</span>
         <span class="c1"># Include information on the boundaries for better uncertainty estimates</span>
         <span class="n">paramlb</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;lb&#39;</span><span class="p">))[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">param_idx</span><span class="p">)]</span> 
         <span class="n">paramub</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;ub&#39;</span><span class="p">))[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">param_idx</span><span class="p">)]</span> 

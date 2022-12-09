@@ -44,7 +44,7 @@
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Bootstrapped confidence intervals in routine analysis" href="ex_bootstrapping.html" />
+    <link rel="next" title="Distance restraints from 4-pulse DEER data, non-parametric distribution" href="ex_restraints_4pdeer.html" />
     <link rel="prev" title="Analysis of a 4-pulse DEER signal with a compactness penalty" href="ex_fitting_4pdeer_compactness.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -242,21 +242,21 @@ distribution and a homogeneous background.</p>
 ========= ============= ============ ======= ===========
  Dataset   Noise level   Reduced 𝛘2   RMSD       AIC
 ========= ============= ============ ======= ===========
-   #1         0.005        0.842      0.004   -1442.838
+   #1         0.005        3.471      0.008   -1070.369
 ========= ============= ============ ======= ===========
 Model parameters:
 =========== ========= ========================= ====== =================================
  Parameter   Value     95%-Confidence interval   Unit   Description
 =========== ========= ========================= ====== =================================
- mod         0.301     (0.299,0.303)                    Modulation depth
- reftime     0.300     (0.299,0.301)              μs    Refocusing time
- conc        149.186   (145.835,152.538)          μM    Spin concentration
- mean1       4.010     (4.000,4.020)              nm    1st Gaussian mean
- std1        0.111     (0.099,0.123)              nm    1st Gaussian standard deviation
- mean2       3.463     (3.400,3.526)              nm    2nd Gaussian mean
- std2        0.269     (0.210,0.328)              nm    2nd Gaussian standard deviation
- amp1        1.214     (1.190,1.238)                    1st Gaussian amplitude
- amp2        0.781     (0.756,0.806)                    2nd Gaussian amplitude
+ mod         0.293     (0.289,0.297)                    Modulation depth
+ reftime     0.296     (0.290,0.301)              μs    Refocusing time
+ conc        151.223   (145.061,157.384)          μM    Spin concentration
+ mean1       3.892     (3.869,3.915)              nm    1st Gaussian mean
+ std1        0.253     (0.234,0.273)              nm    1st Gaussian standard deviation
+ mean2       19.281    (19.281,19.281)            nm    2nd Gaussian mean
+ std2        0.677     (0.677,0.677)              nm    2nd Gaussian standard deviation
+ amp1        0.985     (0.984,0.987)                    1st Gaussian amplitude
+ amp2        1.000     (1.000,1.000)                    2nd Gaussian amplitude
 =========== ========= ========================= ====== =================================
 </pre></div>
 </div>
@@ -273,8 +273,8 @@ Model parameters:
 <span class="n">Pci50</span> <span class="o">=</span> <span class="n">Puncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="o">/</span><span class="n">scale</span>
 
 <span class="c1"># Extract the unmodulated contribution</span>
-<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">,</span><span class="n">conc</span><span class="p">:</span> <span class="n">scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mod</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
-<span class="n">Bfit</span> <span class="o">=</span> <span class="n">Bfcn</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">mod</span><span class="p">,</span><span class="n">results</span><span class="o">.</span><span class="n">conc</span><span class="p">)</span>
+<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">reftime</span><span class="p">:</span> <span class="n">scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mod</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">reftime</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
+<span class="n">Bfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span>
 <span class="n">Bci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
@@ -303,7 +303,7 @@ Model parameters:
 </pre></div>
 </div>
 <img alt="ex fitting 4pdeer gauss" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_fitting_4pdeer_gauss_001.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  2.483 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.080 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-fitting-4pdeer-gauss-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/17dd4138b3b5ba0b2d9247f40ed4e48f/ex_fitting_4pdeer_gauss.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_fitting_4pdeer_gauss.py</span></code></a></p>
@@ -328,10 +328,10 @@ Model parameters:
             <p class="prev-next-title">Analysis of a 4-pulse DEER signal with a compactness penalty</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="ex_bootstrapping.html" title="next page">
+    <a class='right-next' id="next-link" href="ex_restraints_4pdeer.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Bootstrapped confidence intervals in routine analysis</p>
+        <p class="prev-next-title">Distance restraints from 4-pulse DEER data, non-parametric distribution</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
