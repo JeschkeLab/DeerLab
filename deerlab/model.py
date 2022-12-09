@@ -1018,7 +1018,7 @@ def insert_snlls_optionals_docstrings():
 #==============================================================================================
 @insert_snlls_optionals_docstrings()
 def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None, mask=None, weights=None,
-                regparam='aic',reg='auto',regparamrange=None,**kwargs):
+                regparam='aic',reg='auto',regparamrange=None, bootcores=1,**kwargs):
     r"""
     Fit the model(s) to the dataset(s)
 
@@ -1051,6 +1051,10 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     bootstrap : scalar, optional,
         Bootstrap samples for uncertainty quantification. If ``bootstrap>0``, the uncertainty quantification will be 
         performed via the boostrapping method with based on the number of samples specified as the argument.
+    
+    bootcores : scalar, optional
+        Number of CPU cores/processes for parallelization of the bootstrap uncertainty quantification. If ``cores=1`` no parallel 
+        computing is used. If ``cores=-1`` all available CPUs are used. The default is one core (no parallelization).
 
     reg : boolean or string, optional
         Determines the use of regularization on the solution of the linear problem.
@@ -1127,6 +1131,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Uncertainty quantification of the fitted model response.        
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
+    penweights : scalar or list thereof 
+        Penalty weight value(s) used for the penalties specified through ``penalties``.
     plot : callable
         Function to display the results. It will display the fitted data.
         The function returns the figure object (``matplotlib.figure.Figure``)
@@ -1143,13 +1149,13 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         * ``stats['bic']`` - Bayesian information criterion
     cost : float
         Value of the cost function at the solution.
-
+    noiselvl : ndarray
+        Estimated or user-given noise standard deviations of the individual datasets.    
     evaluate(model, constants) : callable
         Function to evaluate a model at the fitted parameter values. Takes a model object or callable function ``model`` to be evaluated.
         All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.   
         Any model constants present required by the model must be specified as a second argument ``constants``.  
         It returns the model's response at the fitted parameter values as an ndarray. 
-
     propagate(model,constants,lb,ub) : callable
         Function to propagate the uncertainty in the fit results to a model's response. Takes a model object or callable function ``model`` to be evaluated.
         All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.  
@@ -1263,7 +1269,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
             if not isinstance(fit.model,list): fit.model = [fit.model]
             return (fit.param,*fit.model)
         # Bootstrapped uncertainty quantification
-        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl)
+        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores)
         # Include information on the boundaries for better uncertainty estimates
         paramlb = model._vecsort(model._getvector('lb'))[np.concatenate(param_idx)] 
         paramub = model._vecsort(model._getvector('ub'))[np.concatenate(param_idx)] 

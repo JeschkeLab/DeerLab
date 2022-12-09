@@ -129,7 +129,7 @@ def bootstrap_analysis(fcn,Vexp,Vfit, samples=1000, noiselvl=None, resampling='g
 
     # Assert that all outputs are strictly numerical
     for var in varargout:
-        if not all(isnumeric(x) for x in var):
+        if not all(isnumeric(x) for x in np.atleast_1d(var)):
             raise ValueError('Non-numeric output arguments by the analyzed function are not accepted.')
     
     # Check that the full bootstrap analysis will not exceed the memory limits

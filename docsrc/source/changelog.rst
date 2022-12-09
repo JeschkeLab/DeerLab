@@ -15,6 +15,20 @@ Release Notes
 - |api| : This will require changes in your scripts or code.
 
 
+Release v0.14.5 - December 2022
+---------------------------------
+
+- |fix| The distribution of DeerLab through Anaconda and its ``conda`` manager has been deprecated as of this release (:pr:`400`).
+- |fix| Fix errors in the background function plots used in the examples showing 4-pulse DEER analyses. 
+
+.. rubric:: ``fit``
+- |fix| Expose the ``cores`` option of ``bootstrap_analysis`` to parallelize bootstrap analysis from the ``fit`` function (:pr:`387`).
+- |fix| Correct behavior of masking during fitting (:pr:`394`). When using the ``mask`` option of the ``fit`` function, certain steps such as noise estimation and goodness-of-fit assessment were not taking into account the mask during the analysis.
+
+.. rubric:: ``bootstrap_analysis``
+- |fix| Fix error prompted when analyzing scalar variables (:pr:`402`).
+
+
 Release v0.14.4 - August 2022
 ---------------------------------
 
