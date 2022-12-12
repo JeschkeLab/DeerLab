@@ -65,9 +65,9 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
             
             * ``'reftimes'`` - Each refocusing time is represented individually as a parameter.
             * ``'delays'`` - The pulse delays are introduced as parameters from which the refocusing times are computed. Requires ``experiment`` to be specified.
-            * ``'shift'`` - A time-shift is introduced as a parameters to represent the variability of the refocusing times from their theoretical values. Requires ``experiment`` to be specified.
+            * ``'shift'`` - A time shift is introduced as a parameter to represent the variability of the refocusing times from their theoretical values. Requires ``experiment`` to be specified.
 
-        The default is ``'retimes'``. 
+        The default is ``'reftimes'``. 
     
     npathways : integer scalar, optional
         Number of dipolar pathways. If not specified, a single dipolar pathway is used.
