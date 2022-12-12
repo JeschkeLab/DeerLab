@@ -10,16 +10,24 @@ from scipy.signal import find_peaks
 from scipy.integrate import cumtrapz
 
 def diststats(r, P, Puq=None, verbose=False, threshold=None):
-    r""" Computes statistical quantities for the location, spread, and shape 
-    of a distance distribution, with or without their corresponding uncertainties.
+    r""" 
+    Computes statistical quantities for the location, spread, and shape of
+    a distance distribution, with or without their corresponding uncertainties.
 
+    This function calculates various statistical quantities of a distance distribution,
+    such as its mean, median, mode, etc. It can also calculate the uncertainty
+    of these quantities using moment-based or bootstrapped uncertainty quantification, if provided. 
+    The function allows to specify whether to print a summary of the results and the 
+    peak detection threshold for the calculation of the mode of the distribution.
+    
     Parameters
     ----------
     r : array_like
-        Distance axis, in nm. 
+        Distance axis, in nm. The distances in the distribution.
     
     P : array_like
-        Distance distribution, does not have to be normalized.
+        Distance distribution, does not have to be normalized. The probability or
+        relative frequency of the distances in `r`.
     
     Puq : :ref:`UQResult`, optional
         Uncertainty quantification of the distance distribution. If Puq is not given, a

@@ -92,11 +92,11 @@ To update to the latest version, go the local directory where DeerLab has been d
 
 Now in the DeerLab directory run the installation script as follows to install DeerLab:: 
 
-		python -m setup.py install
+		python -m setup install
 
 In order to install DeerLab but be able to edit the code or update frequently without having to re-install the package, use the command::
 
-		python -m setup.py develop
+		python -m setup develop
 
 Any changes made to the source code will then immediate effect.
 

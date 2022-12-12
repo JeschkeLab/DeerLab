@@ -19,9 +19,9 @@ Release v0.14.0 - April 2022
 
 .. rubric:: Overall changes
 
-- |feature| |api| Complete overhaul of the DeerLab modelling and fitting interface. Check the new documentation for help and details. (:pr:`218`, :pr:`223`, :pr:`228`, :pr:`237`, :pr:`225`, :pr:`243`). 
+- |feature| |api| Complete overhaul of the DeerLab modeling and fitting interface. Check the new documentation for help and details. (:pr:`218`, :pr:`223`, :pr:`228`, :pr:`237`, :pr:`225`, :pr:`243`). 
   
-  * A new modelling system has been introduced. DeerLab main interface runs on a new ``Model`` object class. Models implement and provide the distinction between linear and non-linear parameters.
+  * A new modeling system has been introduced. DeerLab main interface runs on a new ``Model`` object class. Models implement and provide the distinction between linear and non-linear parameters.
   * Model parameters are no longer (solely) identified by their indexing inside a parameter vector, but are referenced by name. This avoids the need for a user to recall the ordering of the parameters. This is now all handled internally. For example, before ``paramA = parameters[idxA]`` is now ``model.paramA``.   
   * Any model parameter is accessible from the model object and its boundaries, start values and other properties can be easily modified. For example, to change the lower boundary of a parameter: ``model.paramA.lb = 0``.  
   * A new general ``fit`` function that fits arbitrary ``Model`` objects to single or multiple datasets has been implemented. The function automatically handles the selection of solvers to optimally fit the data to the model. 
@@ -37,7 +37,7 @@ Release v0.14.0 - April 2022
   * Add many new tests and removed tests related to deprecated functionality. 
   * All the built-in parametric models are now pre-compiled ``Model`` objects instead of just functions.
   * The function ``fitmodel`` has been deprecated and removed. The original has been substituted (and greatly expanded) by the new    ``dipolarmodel`` and ``fit`` functions. 
-  * The function ``fitmultimodel`` has been deprecated and removed. The original functionality can be easily scripted with the new modelling system. An example of has been added, describing how to script the same functionality. 
+  * The function ``fitmultimodel`` has been deprecated and removed. The original functionality can be easily scripted with the new modeling system. An example of has been added, describing how to script the same functionality. 
 
 - |feature| Introduced the profile-likelihood methodology both for uncertainty quantification based on likelihood-confidence intervals, and for identifiability analysis (:pr:`222`).
 
@@ -58,7 +58,7 @@ Release v0.14.0 - April 2022
 
   * Full HTML/CSS overhaul. The new web design based on the PyData theme has a clearer design, with more readable pages and code blocks.
   * Deprecates the use of the RTD theme. This removes the hard constraint of using Sphinx 1.8.0. Now the documentation builds with the latest Sphinx release.
-  * Add a user-guide for the new modelling and fitting system.
+  * Add a user-guide for the new modeling and fitting system.
   * Re-organize all of the website content.
   * Improved the dipolar EPR starting guide, and adapted it to the new system.
   * Fixed some minor errors in the examples.
@@ -71,7 +71,7 @@ Release v0.14.0 - April 2022
 - |enhancement| Generalized the regularized linear least-squares functionality. Now it can handle arbitrary bounds on linear parameters and adapts the linear LSQ solver back end accordingly (:pr:`216`).
 - |efficiency| Improved performance of post-optimization model evaluation/propagation for large datasets (:issue:`200`, :pr:`238`).  
 - |efficiency| Implemented (adaptable) memory limits for potentially memory-intense functions (:issue:`201`, :pr:`239`). 
-- |api| The function ``correctscale`` has been deprecated (:pr:`293`). Its limited functionality is included in the now broader functionality provided by the new modelling and fitting system.
+- |api| The function ``correctscale`` has been deprecated (:pr:`293`). Its limited functionality is included in the now broader functionality provided by the new modeling and fitting system.
 - |api| The functions ``fitregmodel`` and ``fitparamodel`` have been deprecated and their core functionality merged into ``snlls``. The ``snlls`` function now handles any kind of least-squares problem and automatically employs optimal combinations of solvers to find the solution to the problems (:pr:`218`). 
 - |api| Renamed the function ``bootan`` to ``bootstrap_analysis`` (:pr:`227`).
 - |api| Deprecated TV and Huber regularization. Accordingly the keyword arguments ``regtype``, ``huberparameter`` have been removed throughout (:pr:`216`).
@@ -89,7 +89,7 @@ Release v0.14.0 - April 2022
 - |fix| Corrected the math in the documentation of some distance distribution models (:pr:`215`).
 - |fix| Corrected the behavior of dataset weights. These are no longer normalized at runtime and kept as specified by the users (:issue:`248`, :pr:`250`).
 - |fix| While testing, now skips a unit test if an error with the Tk backend of Matplotlib occurs (:pr:`211`).
-- |fix| Fix multiple bugs and errors related to the new modelling and fitting system (:pr:`226`, :issue:`233`, :pr:`235`, :issue:`241`, :pr:`242`, :issue:`244`, :pr:`245`, :pr:`246`, :pr:`249`).
+- |fix| Fix multiple bugs and errors related to the new modeling and fitting system (:pr:`226`, :issue:`233`, :pr:`235`, :issue:`241`, :pr:`242`, :issue:`244`, :pr:`245`, :pr:`246`, :pr:`249`).
 - |fix| Correct behavior of multistart optimization for one-sided parameter boundaries (:pr:`252`).
 - |fix| Fix bug when globally fitting multiple datasets. The global weights were not being manipulated correctly in the estimation of the linear parameters leading to incorrect results (:pr:`302`)
 

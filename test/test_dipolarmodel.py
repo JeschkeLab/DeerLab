@@ -1,5 +1,5 @@
 from deerlab.dipolarkernel import dipolarkernel
-from deerlab.utils.utils import ovl
+from deerlab.utils import ovl
 from deerlab.whitegaussnoise import whitegaussnoise
 import numpy as np
 import matplotlib.pyplot as plt

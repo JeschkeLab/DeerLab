@@ -18,7 +18,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     Parameters
     ----------
     fullbasename : string
-        Full name of data file.
+        Full name of data file, including the extension ('.DSC' or '.DTA').
     
     full_output : boolean, optional
         Return the parameter file entries as a third output. Disabled by default.
@@ -29,7 +29,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     Returns
     -------
     t : ndarray
-        Time axis in microseconds.Its structure depends on the dimensionality of the experimental datasets:
+        Time axis in microseconds. Its structure depends on the dimensionality of the experimental datasets:
 
         * 1D-datasets: the time axis of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``
         * 2D-datasets: the ``M`` time-axes of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th axis can be accessed via ``t[:,i]``.

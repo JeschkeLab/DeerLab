@@ -10155,3 +10155,75 @@ img.math {
     margin-top: 0;
     margin-bottom: 0;
 }
+
+div.gallery {
+      margin: 5px;
+      border: 1px solid #ccc;
+      float: left;
+      width: 180px;
+    }
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: left;
+}
+
+.publications-float-container {
+    border: 3px solid #fff;
+    height: 300px;
+    display: flex;
+    padding-left: 30px;
+}
+
+.publications-float-child-left {
+    width: 30%;
+    float: left;
+    padding: 20px;
+    height: inherit
+}  
+
+.publications-float-child-right {
+    width: 70%;
+    float: left;
+    padding: 20px;
+    height: inherit;
+}  
+
+.download-publication {
+    background-color: #4550e6;
+    width: fit-content;
+    padding: 5px 16px;
+    color: #d2d5f9;
+    border-radius: 37px;
+    border-color: aqua;
+    border: solid #d0d3f9;
+  }
+
+.publication-title {
+    font-weight: bold;
+    padding-bottom: 10px;
+    padding-top: 15px;
+    font-size: 105%;
+    line-height: normal;
+  }
+
+.publication-metadata {
+    padding-bottom: 30px;
+}
+
+.publication-image{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    height: 100%;
+    width: auto;
+}

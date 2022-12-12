@@ -14,6 +14,12 @@ def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, n
     r""" 
     Profile likelihood analysis for uncertainty quantification
 
+    This function performs a profile likelihood analysis to estimate the uncertainty 
+    of non-linear model parameters. The profile likelihood is defined as the maximum
+    likelihood of a model given a fixed value of the parameter of interest. This 
+    function allows to specify the model parameters to profile, the number of samples
+    to use to estimate the profile function, and the noise level of the datasets.
+
     Parameters
     ----------
     model : :ref:`Model`

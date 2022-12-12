@@ -7,6 +7,6 @@ Advanced
 .. toctree::
     :maxdepth: 2
 
-    ./modelling_guide
+    ./modeling_guide
     ./fitting_guide
     ./uncertainty_guide

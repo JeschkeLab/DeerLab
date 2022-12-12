@@ -11,7 +11,7 @@ from scipy.optimize import least_squares, lsq_linear
 # DeerLab dependencies
 import deerlab as dl
 from deerlab.classes import UQResult, FitResult
-from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian, isempty
+from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
 import time 
 from functools import partial
 from copy import deepcopy
@@ -154,9 +154,9 @@ def _check_bounds(lb,ub,par0=None,N=None):
     if par0 is not None:
         N = len(par0)
 
-    if lb is None or isempty(lb):
+    if lb is None:
         lb = np.full(N, -np.inf)
-    if ub is None or isempty(ub):
+    if ub is None:
         ub = np.full(N, np.inf)
     lb, ub = np.atleast_1d(lb, ub)
 

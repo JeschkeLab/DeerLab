@@ -7,7 +7,7 @@
 
 ## About
 
-DeerLab is a comprehensive free scientific software package for Python focused on modelling, penalized least-squares regression, and uncertainty quantification. 
+DeerLab is a comprehensive free scientific software package for Python focused on modeling, penalized least-squares regression, and uncertainty quantification. 
 It provides highly specialized on the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy data. Dipolar EPR spectroscopy techniques include DEER (double electron-electron resonance), RIDME (relaxation-induced dipolar modulation enhancement), and others. 
 
 The documentation can be found [here](https://jeschkelab.github.io/DeerLab/index.html).

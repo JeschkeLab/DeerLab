@@ -2,19 +2,20 @@
 {%- set userguide_dropdown_navigation = [
     ('Basics', pathto('basics')),
     ('Getting Started', pathto('getting_started')),
-    ('Modelling', pathto('dipolar_guide_modelling')),
+    ('Modeling', pathto('dipolar_guide_modeling')),
     ('Fitting', pathto('dipolar_guide_fitting')),
     ('Theory', pathto('theory')),]
   -%}
 
 {%- set advancedguide_dropdown_navigation = [
-('Modelling Guide', pathto('modelling_guide')),
+('Modeling Guide', pathto('modeling_guide')),
 ('Fitting Guide', pathto('fitting_guide')),
 ('Uncertainty Guide', pathto('uncertainty_guide')),]
 -%}
 
 {%- set more_dropdown_navigation = [
   ('Release Notes', pathto('changelog')),
+  ('Publications', pathto('publications')),
   ('Contributing', pathto('contributing')),
   ('Support', pathto('support')),
   ('License', pathto('license')),
@@ -58,7 +59,7 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="{{ pathto('reference') }}">Reference</a>
+            <a class="nav-link nav-link" href="{{ pathto('reference') }}">Reference Index</a>
           </li>
 
         {%- for title, link in drop_down_navigation %}
