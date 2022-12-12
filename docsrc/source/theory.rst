@@ -14,10 +14,6 @@ The theory underlying DeerLab is not fully general and makes a series of assumpt
 
 All spin labels are spin-1/2 or can be treated as such. High-spin systems are not handled by DeerLab.
 
-.. rubric:: No multi-spin effects
-
-There are no more than two spin labels on a protein (or other cluster). Multi-spin effects are not handled by DeerLab.
-
 .. rubric:: No delocalization
 
 The unpaired electron spin density on the spin labels can be treated as localized in a single point. Delocalized spin systems are not handled by DeerLab.
