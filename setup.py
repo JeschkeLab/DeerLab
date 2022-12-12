@@ -14,7 +14,7 @@ setup(
     python_requires='>=3.8',
     license='LICENSE.txt',
     include_package_data = True,
-    keywords='data analysis modelling least-squares EPR spectroscopy DEER PELDOR'.split(),
+    keywords='data analysis modeling least-squares EPR spectroscopy DEER PELDOR'.split(),
     description='Comprehensive package for data analysis of dipolar EPR spectroscopy',
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type="text/markdown",

@@ -10,7 +10,7 @@ This is the introductory guide to DeerLab for any dipolar electron paramagnetic 
 
     ./basics
     ./getting_started
-    ./dipolar_guide_modelling
+    ./dipolar_guide_modeling
     ./dipolar_guide_fitting
     ./theory
 

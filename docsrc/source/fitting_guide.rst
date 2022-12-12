@@ -38,7 +38,7 @@ If the model has parameters without assigned start values, the ``fit`` function 
     # Fit the model to the data with other start values 
     result = dl.fit(model, y, par0=par0_list)
 
-However, the list must be ordered according to the model parameter ordering. Therefore, we recommend specifying the start values on the model (as shown :ref:`here <modelling_modifying_parameters>`).  
+However, the list must be ordered according to the model parameter ordering. Therefore, we recommend specifying the start values on the model (as shown :ref:`here <modeling_modifying_parameters>`).  
 
 Specifying the noise level(s)
 *****************************
@@ -54,7 +54,7 @@ IF not specified, the program will estimate it from the dataset(s) directly usin
 Fitting models with constants
 *****************************
 
-Models with constants (see :ref:`here <modelling_constants>` for details) can be fitted as shown above, with the added requirement that the constants must be specified as well when calling ``fit``. Constants can be specified after the data as positional arguments :: 
+Models with constants (see :ref:`here <modeling_constants>` for details) can be fitted as shown above, with the added requirement that the constants must be specified as well when calling ``fit``. Constants can be specified after the data as positional arguments :: 
 
     # Fit the model (with two constants) to the data
     result = dl.fit(model, y, constant1, constant2) 
@@ -63,7 +63,7 @@ Models with constants (see :ref:`here <modelling_constants>` for details) can be
 Fitting multi-dataset models
 ****************************
 
-Models merged using the ``merge`` function (see :ref:`here <modelling_merging>` for details) can describe multiple datasets with a single model object and a common parameter set. To fit such a merged model to multiple datasets, the ``fit`` function can be used as above by passing a list of datasets ``[y1,y2,...,yN]`` instead of a single dataset  ::
+Models merged using the ``merge`` function (see :ref:`here <modeling_merging>` for details) can describe multiple datasets with a single model object and a common parameter set. To fit such a merged model to multiple datasets, the ``fit`` function can be used as above by passing a list of datasets ``[y1,y2,...,yN]`` instead of a single dataset  ::
 
     # Fit the model to multiple datasets
     result = dl.fit(model, [y1,y2,y3]
@@ -139,7 +139,7 @@ Selection functional
 Constructing a penalty
 **********************
 
-Penalties can be constructed in a similar way to :ref:`how models are constructed <modelling_construction>`. Since penalties depend on a model's parameters, and by extension, are specific for a given model, it is recommended to construct penalties after the model has been entirely constructed.  
+Penalties can be constructed in a similar way to :ref:`how models are constructed <modeling_construction>`. Since penalties depend on a model's parameters, and by extension, are specific for a given model, it is recommended to construct penalties after the model has been entirely constructed.  
 
 The first step is to construct the penalty function. First, it must be a callable function taking a series of positional arguments. The names of the arguments must match the names of the model parameters that the penalty depends on. Second, the function must return a vector, taking the following into account: 
 
@@ -172,7 +172,7 @@ Upon constructing the penalty, the penalty weight is introduced in the backgroun
 Example: Gaussian smoothness penalty
 *************************************
 
-In this example, let us construct a penalty that imposes the smoothness of a Gaussian function. As a model, we will take the ``gauss`` model defined in :ref:`another example <modelling_example1>`. The function has to penalize roughness for imposing smoothness, which can be quantified by a discrete differential operator of second order (which we can generate using DeerLab's ``regoperator``). As a selection criterion, we will use the AIC functional.  ::
+In this example, let us construct a penalty that imposes the smoothness of a Gaussian function. As a model, we will take the ``gauss`` model defined in :ref:`another example <modeling_example1>`. The function has to penalize roughness for imposing smoothness, which can be quantified by a discrete differential operator of second order (which we can generate using DeerLab's ``regoperator``). As a selection criterion, we will use the AIC functional.  ::
 
     # Differential operator of second order
     L = dl.regoperator(x,2)

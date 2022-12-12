@@ -227,7 +227,7 @@ string = f"""
         <div class="title">
             <p class="titlep"><span class="title1">DeerLab</span><span class="title2">Docs</span><span class="version">{version}</span></p>
             <span style="color:#586069; font-size:20px; line-height:1.5;">
-            DeerLab is a comprehensive free scientific software package for Python focused on modelling, penalized least-squares regression, and uncertainty quantification. It also provides specialized models and tools for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy techniques such as DEER (double electron-electron resonance), and others. 
+            DeerLab is a comprehensive free scientific software package for Python focused on modeling, penalized least-squares regression, and uncertainty quantification. It also provides specialized models and tools for the analysis of dipolar EPR (electron paramagnetic resonance) spectroscopy techniques such as DEER (double electron-electron resonance), and others. 
             </span>
         <br>
         <a href="./user_guide.html" class="btn-quick", style="margin-top:20px;">   Get started → </a>

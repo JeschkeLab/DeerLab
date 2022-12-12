@@ -1,6 +1,6 @@
-.. _dipolar_modelling:
+.. _dipolar_modeling:
 
-Modelling
+Modeling
 =========================
 
 DeerLab provides a very flexible framework to model dipolar signals originating from any dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. The DeerLab function ``dipolarmodel`` already defines the core model structure based on dipolar pathways, with the following components to be chosen:     
@@ -99,5 +99,5 @@ A full summary of the constructed model(s) can be inspected by printing the mode
     ========= ======= ======= ======= ======== ======== ====== ====================================== 
 
 
-From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the :ref:`modelling guide <modelling_guide>` for more details and instructions on model manipulation.
+From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the :ref:`modeling guide <modeling_guide>` for more details and instructions on model manipulation.
 
