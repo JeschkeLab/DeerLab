@@ -61,7 +61,6 @@ for n,results in enumerate([results_with, results_without]):
 
     # Extract fitted dipolar signal
     Vfit = results.model
-    Vci = results.propagate(Vmodel).ci(95)
 
     # Extract fitted distance distribution
     Pfit = results.P
@@ -77,7 +76,6 @@ for n,results in enumerate([results_with, results_without]):
     # Plot experimental and fitted data
     plt.plot(t,Vexp,'.',color='grey',label='Data')
     plt.plot(t,Vfit,linewidth=3,color=colors[n],label='Fit')
-    plt.fill_between(t,Vci[:,0],Vci[:,1],color=colors[n],alpha=0.3)
     plt.plot(t,Bfit,'--',linewidth=3,color=colors[n],label='Unmodulated contribution')
     plt.fill_between(t,Bci[:,0],Bci[:,1],color=colors[n],alpha=0.3)
     plt.legend(frameon=False,loc='best')

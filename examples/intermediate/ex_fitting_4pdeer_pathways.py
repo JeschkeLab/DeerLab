@@ -47,7 +47,6 @@ print(results)
 
 # Extract fitted dipolar signal
 Vfit = results.model
-Vci = results.propagate(Vmodel).ci(95)
 
 # Extract fitted distance distribution
 Pfit = results.P
@@ -63,7 +62,6 @@ plt.subplot(221)
 plt.plot(t,Vexp,'.',color='grey',label='Data')
 # Plot the fitted signal 
 plt.plot(t,Vfit,linewidth=3,color=violet,label='Fit')
-plt.fill_between(t,Vci[:,0],Vci[:,1],color=violet,alpha=0.3)
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time $t$ (μs)')
 plt.ylabel('$V(t)$ (arb.u.)')
