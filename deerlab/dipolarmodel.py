@@ -171,6 +171,9 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
     if len(harmonics)!=npathways: 
         raise ValueError('The number of harmonics must match the number of dipolar pathways.')
 
+    if parametrization!='reftimes': 
+        if experiment is None:
+            raise SyntaxError(f"The '{parametrization}' parametrization requires 'experiment' to be specified.")
     # Determine number of dipolar interactions in the spins system
     Q = int(spins*(spins-1)/2)
 
