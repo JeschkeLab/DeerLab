@@ -58,4 +58,4 @@ Here is the citation in bibtex format:
 
 DeerLab is licensed under the [MIT License](LICENSE).
 
-Copyright © 2019-2022: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
+Copyright © 2019-2023: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
