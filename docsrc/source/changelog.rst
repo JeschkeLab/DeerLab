@@ -14,8 +14,153 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
-Release v0.14.0 - April 2022
----------------------------------
+Release ``v1.0.0`` - December 2022
+------------------------------------------
+
+- |feature| Introduces multi-spin dipolar EPR spectroscopy models (:pr:`385`). 
+
+  * Implements multi-spin models in ``dipolarmodel`` by taking into account all possible two-spin an three-spin interaction pathways in a multi-pin system. Add a new optional argument ``spins`` to specify the number of spins in a molecule. From that number and the ``npathways`` or ``experiment`` arguments, ``dipolarmodel`` automatically constructs the full set of multi-spin pathways (including permutations) within the pair-wise pathway factorization approximation. Adds a new keyword argument ``triangles``, required for ``spins>3`` to specify triads of indices of interspin vectors that are connected forming a triangle (must be specified by the user since it defines the geometry of the spins system).  
+  * Adds a new argument ``specperm`` to ``dipolarmodel``, to enable/disable the assumption of spectral permutability of the multi-spin system.  This option allows to account for multi-spin system with chemically or spectrally different spin-1/2 centers. 
+  * Adds and changes the optional argument ``nKnots`` in ``dipolarkernel`` and ``dipolarmodel`` to ``gridsize``. Changing the specification from knots to grid points allows a finer control of the computation costs due to the highly non-linear scaling of grid points with number of knots in a spherical grid.
+  * Implements a new utility function ``sophegrid`` to generate SOPHE grids based on a port of the Easyspin ``sphgrid`` function. 
+  * The multi-spin models in ``dipolarmodel`` have at the moment a hard-coded unimodal normal multi-variate distance distribution at its core. This could be adapted in the future to be modular to specify multi-modal distributions and other multi-variate basis functions. 
+
+
+- |feature| Implements different parametrization strategies for dipolar EPR models (:pr:`409`). Implements a new optional argument ``parametrization`` for ``dipolarmodel``, which specifies the parametrization strategy of the dipolar pathway refocusing times. Can be one of the following:
+              
+  * ``'reftimes'`` - Each refocusing time is represented individually as a parameter. The current behavior.
+  * ``'delays'``` - The pulse delays are introduced as parameters from which the refocusing times are computed
+  * ``'shift'`` - A time shift is introduced as a parameter to represent the variability of the refocusing times from their theoretical values.  
+
+
+- |feature| Expands the toolset for asserting the goodness-of-fit of model estimates robustly (:pr:`388`). 
+
+  * Adds new option ``gof`` to ``FitResults.plot()`` method to add plots to aid goodness-of-fit assessment. Besides the plot of the data and the model fit, now adds a plot of the residuals with its mean and noise level estimates shown as lines, a plot of the normalized residual histogram compared to the standard normal distribution, and a plot of the autocorrelation in the data along the confidence region expected from white noise.
+  * Adds a new quantity, ``Residuals autocorr.`` to the results summary. The value of this quantity is computed as ``abs(2 - dDW)``, where ``dDW`` is the Durbin–Watson statistic. It allows a quick assessment of the autocorrelation in the fit residuals. This quantity is also returned by the ``fit`` function as  ``FitResults.stats['autocorr']``
+  * Remove the AIC quantity specified for each dataset from the fit's summary. 
+  * Add a new automatic system that colorizes the ``chi2red`` and ``Residuals autocorr.`` values depending on their severity, indicating a wrong estimate. Yellow coloring alerts the user of potential failures and red of confidently wrong estimates.
+
+
+- |efficiency| |fix| Implements a new NNLS solver function ``qpnnls`` that uses the Goldfarb/Idnani dual algorithm implemented in the ``quadprog`` package (:pr:`390`). The resulting NNLS solver is more efficient than the current implementation with ``cvxopt`` without sacrificing any accuracy. Since NNLS problem-solving is the bottleneck of most applications of DeerLab, it results in a significant improvement in speed when analyzing any models with linear parameters. Since it substitutes ``cvxopt`` as the default solver engine, it removes the hard dependency on the `cvxopt` package and its issues related to the Apple M1 chip (:issue:`407`). 
+
+- |efficiency| Implements a new, more efficient evaluation of multi-pathway dipolar models based to greatly enhance the performance of dipolar EPR spectroscopy analyses (:pr:`393`). Combined with the new NNLS solver, the analysis time of, e.g., 4-pulse and 5-pulse DEER multi-pathway models, has been reduced on average about 70-80%.   
+
+- |enhancement| Improves the interface and definition of dipolar pathways in ``dipolarmodel`` (:pr:`396`).   
+
+  * Labels the parameters of the different dipolar pathways included in ``dipolarmodel`` via the ``experiment`` argument based on the pathway label numbers rather than numerically by order of specification.
+  * Harmonizes the pathway ordering of the ``ex_rev5pdeer`` and ``ex_fwd_5pdeer`` models according to published literature.
+  * Adds new figures to the ``ex_`` model functions to show the table of dipolar pathways along a schematic illustration of their intramolecular contributions. Improved the docstrings of the ``ex_`` models in general.
+
+- |enhancement| |fix| Improves and expands the documentation (:pr:`397`, :pr:`408`).
+
+  * Adds multiple new examples, fixes errors in existing ones.
+  * Fixes several graphical bugs in the website. 
+  * Thoroughly documents all public and private functions in the code. 
+  * Adds release instructions for maintainers. 
+  * Adds a ``Publications`` page to the documentation linking to all literature for concepts introduced by DeerLab.   
+
+- |api| Removes the subpackage ``deerlab.utils`` and makes its functions part of the main package for simpler maintenance (:pr:`408`). Removes multiple unused private functions.
+
+.. rubric:: ``fit``
+- |enhancement| The function now returns a full uncertainty quantification for the normalization factor of any model parameter with a normalization condition (:pr:`372`).
+- |efficiency| |api| Removes the automatic computation of the ``modelUncert`` output containing the propagated uncertainty estimate of the model's response (:pr:`401`). This significantly speeds up the runtime of the function by disabling the automatic propagation of uncertainty to the model's response which could take from several seconds to several minutes in complex models (:issue:`391`).
+
+
+.. rubric:: ``dipolarkernel``
+- |feature| Implements multi-spin dipolar pathways up to three-spin interactions (:pr:`385`). The function takes now a list of distance vectors ``[r1,r2,...,rQ]`` for multi-spin kernels. 
+- |feature| Expands the function to be able to account for arbitrary experimental time coordinates (:pr:`385`). Now a list of time vectors ``[t1,t2,...,tD]`` can be specified to construct a D-dimensional dipolar kernel.
+- |enhancement| : Refactors most code in the function (:pr:`385`). THe code should now be more logically ordered using mathematical symbols for clearer equations. 
+- |api| Introduces a new and clearer syntax for defining dipolar pathways (:pr:`385`). Now, instead of specifying a list of pathways, where each pathway is a list of values (being the amplitude, refocusing time, and harmonic in that order), now pathways are specified as a list of dictionaries, e.g. ``pathways = [{'amp':0.5}, 'reftime':0, 'harmonic':1]``.
+- |feature| |efficiency| Adds a new optional argument ``tinterp`` to construct a dipolar kernel for a pathway and interpolate other pathways from that one (:pr:`393`). 
+
+.. rubric:: ``dipolarbackground``
+- |feature| Implements multi-spin dipolar pathways up to three-spin interactions (:pr:`385`).
+- |feature| Expands the function to be able to account for arbitrary experimental time coordinates (:pr:`385`). Now a list of time vectors ``[t1,t2,...,tD]`` can be specified to construct a D-dimensional dipolar background function.
+- |api| Introduces the same new syntax for defining dipolar pathways as in ``dipolarkernel`` (:pr:`385`).
+
+
+.. rubric:: ``correctphase``
+- Adds a new optional argument ``offset`` to enable a numerical optimization of the phase while accounting for a non-zero imaginary component offset (:issue:`392`, :pr:`395`).
+
+.. rubric:: ``snlls``
+- Adds an optional argument ``modeluq`` to enable /disable the model uncertainty propagation (:pr:`401`).
+
+Release ``v0.14.5`` - December 2022
+------------------------------------------
+
+- |fix| The distribution of DeerLab through Anaconda and its ``conda`` manager has been deprecated as of this release (:pr:`400`).
+- |fix| Fix errors in the background function plots used in the examples showing 4-pulse DEER analyses. 
+
+.. rubric:: ``fit``
+- |fix| Expose the ``cores`` option of ``bootstrap_analysis`` to parallelize bootstrap analysis from the ``fit`` function (:pr:`387`).
+- |fix| Correct behavior of masking during fitting (:pr:`394`). When using the ``mask`` option of the ``fit`` function, certain steps such as noise estimation and goodness-of-fit assessment were not taking into account the mask during the analysis.
+
+.. rubric:: ``bootstrap_analysis``
+- |fix| Fix error prompted when analyzing scalar variables (:pr:`402`).
+
+
+Release ``v0.14.4`` - August 2022
+------------------------------------------
+
+- |feature| The experiment model functions such as ``ex_4pdeer`` now take an additional optional keyword argument ``pulselength`` to specify the longest durations of a pulse during an experiment. The value is then used to more accurately set the boundaries of refocusing time parameters in dipolar models (:pr:`368`). 
+- |enhancement| The parameter table displayed when printing DeerLab models has been expanded to show the start values and the frozen values, if present (:pr:`369`).
+- |fix| Added missing documentation for certain attributes of the ``UQResult`` objects related to the bootstrap and profile-likelihood methods (:pr:`360`).
+- |fix| Behavior of the documention on minimized browser windows and mobile phones (:pr:`365`).
+- |fix| Multiple issues with the incorrect dark theming of the webpage (:pr:`359`) 
+
+.. rubric:: ``fit``
+- |fix| Added multiple missing optional keyword arguments to the documentation of the function (:pr:`367`).
+
+.. rubric:: ``dd_randcoil``
+- |fix| Fixed the erronously switched descriptions of the model parameters (:pr:`361`).
+
+
+Release ``v0.14.3`` - July 2022
+------------------------------------------
+
+- |api| Deprecated support for Python 3.6 and 3.7 (:pr:`353`). 
+- |feature| Added multiple quality of life improvements to the modelling system (:pr:`354`). 
+
+  * Add new method ``paramA.setas(paramB)`` for ``Parameter`` objects to copy the full metadata content from ``paramB`` into ``paramA``. 
+  * Expand the ``FitResult`` summary to report on the regularization parameter and penalty weights when used in the analysis. 
+  * Improve the report of incorrect attribute requests in ``FitResult`` objects and provide close matches as suggestions. 
+  * Improve the report of errors during the evaluation of ``Model`` objects.  
+  
+- |fix| Fix bug in the ``fit`` function unfreezing all frozen model parameters upon fitting if any model parameter included a normalization constraint (:issue:`348`, :pr:`352`).
+- |fix| Corrected two minor mathematical errors in the physical background models ``bg_homfractal`` and ``bg_homfractal_phase`` (:pr:`351`). 
+- |fix| Fixed display of the online documentation in browsers with an enabled dark theme that made certain menus and text sections unreadable (:issue:`349`, :pr:`350`). The documentation will now default to a light theme even for dark themed browser. 
+
+
+Release ``v0.14.2`` - June 2022
+------------------------------------------
+
+- |feature| |efficiency| (Windows-systems only) Removed the unorthodox default installation procedure of DeerLab based on the installation of Numpy and related packages linked against MKL via the Gohlke repository (:issue:`322`, :pr:`330`).
+
+  * As a result the default performance of DeerLab can be affected in some Windows systems. To link the Numpy and related packages against MKL as in previous versions, an automated script ``upgrade_mkl.py`` is provided with the package.
+  * Fixes the error appearing during installation if the ``git`` command was not installed or available in the system (:issue:`326`). 
+  * Allows the distribution of DeerLab as wheels. 
+
+- |feature| Implemented better options for automated and user-supplied noise estimates to improve bootstrapping approaches (:pr:`334`, :pr:`343`).
+- |fix| Avoid the installation of (potentially unstable) pre-release versions of Numpy in systems with fresh Python installations (:pr:`336`).
+- |fix| Improved the robustness of several function against non-numerical values due to division-by-zero errors (:pr:`335`).
+- |fix| Corrected the behavior of regularization parameter selection with L-curve methods (:pr:`340`). Fixes the ``lc`` method in ``selgregparam`` which was seeking the optimal regularization parameter by minimizing curvature rather than by maximizing it. Prevents failure of the L-curve methods due to the appearance of non-numeric values when evaluating too large regularization parameter values.
+- |fix| Fixes the error when specifying a limited excitation bandwidth in ``dipolarmodel`` via the ``excbandwidth`` argument (:pr:`342`). 
+- |fix| Fixes the navigation menu on the documentation that appeared empty on mobile phones or for partially minimized windows on computers, impeding navigation through the documentation (:pr:`346`).
+- |fix| Minor corrections to the documentation and examples.    
+
+Release ``v0.14.1`` - June 2022
+------------------------------------------
+
+- |fix| Use Scipy's ``eigh`` instead of Numpy's to avoid convergence error ``numpy.linalg.LinAlgError: Eigenvalues did not converge`` during model uncertainty propagation (:issue:`310`, :pr:`311`).
+- |fix| Refactored the code to avoid the use of ``lambda`` and nested functions. This enables pickling DeerLab's objects with Python's ``pickle`` module without errors (:pr:`312`).
+- |feature| Added two new utility functions ``store_pickle`` and ``read_pickle`` that implement pickling with the ``dill`` package to be more robust against potential ``lambda`` functions defined by the users in scripts (:pr:`312`).
+- |fix| Fixed minor bug when printing fit results with many model parameters being frozen. The print command would return an error message (:pr:`329`).
+- |fix| Fixed bug when propagating bootstrapped uncertainty in presence of round-off errors (:pr:`325`). 
+- |fix| |enhancement| Multiple minor improvements and corrections in the documentation.
+
+
+Release ``v0.14.0`` - April 2022
+------------------------------------------
 
 .. rubric:: Overall changes
 
@@ -133,8 +278,8 @@ Release v0.14.0 - April 2022
 - |api| Renamed the argument ``level`` to ``std`` for clarity (:pr:`276`).
 - |api| Make the argument ``std`` a required positional argument and no longer provide a default value (:pr:`276`).
 
-Release v0.13.2 - July 2021
----------------------------------
+Release ``v0.13.2`` - July 2021
+------------------------------------------
 
 .. rubric:: Overall changes
 
@@ -144,8 +289,8 @@ Release v0.13.2 - July 2021
 - |fix| Fixed a bug in ``snlls`` where one of the linear least-squares solvers can return results that violate the boundary conditions due to float-point round-off errors (:issue:`177`, :pr:`188`).
 
 
-Release v0.13.1 - May 2021
----------------------------------
+Release ``v0.13.1`` - May 2021
+------------------------------------------
 
 .. rubric:: Overall changes
 
@@ -169,10 +314,10 @@ Release v0.13.1 - May 2021
 
 - |fix| Removed ``Ctot`` from second order term in the ``chemicalequalibrium`` polynomial (:pr:`163`).
 
----------------------------------
+------------------------------------------
 
-Release v0.13.0 - April 2021
----------------------------------
+Release ``v0.13.0`` - April 2021
+------------------------------------------
 
 .. rubric:: Overall changes
 
@@ -265,10 +410,10 @@ Release v0.13.0 - April 2021
 - |api| Deprecated imaginary offset fitting (:pr:`131`). 
 - |api| Deprecated manual phase correction. Manual correction can be done by the user and is now described in the beginner's guide (:pr:`131`). 
 
--------------------------------
+----------------------------------------
 
-Release v0.12.2 - October 2020
----------------------------------
+Release ``v0.12.2`` - October 2020
+------------------------------------------
 
 .. rubric::  Overall changes
 
@@ -289,10 +434,10 @@ Release v0.12.2 - October 2020
 
 -  |enhancement| Adapted numerical boundaries and start values of some built-in models to reflect better the physical reality. Afected models: ``dd_skewgauss``, ``dd_triangle``, ``dd_gengauss``, ``ex_5pdeer``, ``ex_ovl4pdeer``. 
 
--------------------------------
+----------------------------------------
 
-Release v0.12.1 - October 2020
----------------------------------
+Release ``v0.12.1`` - October 2020
+------------------------------------------
 
 .. rubric::  Overall changes
 
@@ -312,11 +457,11 @@ Release v0.12.1 - October 2020
 
 - |fix| Relaxed the exception handling to catch errors occuring under certain conditions. The function seems to crash due to LAPACK or SVD non-convergence errors during the GSVD, now these are catched and the alpha-range is estimated using simple SVD as an approximation. This function might be deprecated in a future release (:issue:`42`).   
 
--------------------------------
+----------------------------------------
 
 
-Release v0.12.0 - October 2020
----------------------------------
+Release ``v0.12.0`` - October 2020
+------------------------------------------
 
 .. rubric::  Overall changes
 
@@ -357,11 +502,11 @@ Release v0.12.0 - October 2020
 
 - |fix| An error occuring at the BLAS/LAPLACK error ocurring under certain conditions in MacOS and Ubuntu is now handled to avoid a crash. 
 
--------------------------------
+----------------------------------------
 
 
-Release v0.11.0 - September 2020
----------------------------------
+Release ``v0.11.0`` - September 2020
+------------------------------------------
 
 .. rubric::  Overall changes
 
@@ -408,10 +553,10 @@ Release v0.11.0 - September 2020
 - |fix| The parameter fit ranges have been adjusted.
 
 
--------------------------------
+----------------------------------------
 
-Release v0.10.0 - August 2020
------------------------------
+Release ``v0.10.0`` - August 2020
+--------------------------------------
 
 As of this version, DeerLab is based on Python in contrast to older versions based on MATLAB found [here](https://github.com/JeschkeLab/DeerLab-Matlab).
 
