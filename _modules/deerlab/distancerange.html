@@ -91,7 +91,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -100,7 +100,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -116,13 +116,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -185,18 +186,24 @@
 <span></span><span class="c1"># distancerange.py - DeerAnalysis distance axis constructor</span>
 <span class="c1"># ------------------------------------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md). </span>
-<span class="c1"># Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.</span>
+<span class="c1"># Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">isempty</span>
 
 <div class="viewcode-block" id="distancerange"><a class="viewcode-back" href="../../_autosummary/deerlab.distancerange.html#deerlab.distancerange">[docs]</a><span class="k">def</span> <span class="nf">distancerange</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">nr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">    Empirical distance range given a DEER time axis</span>
+<span class="sd">    Empirical distance range given a dipolar EPR experiment time axis</span>
+
+<span class="sd">    This function calculates the empirical distance range for a DEER time axis. </span>
+<span class="sd">    The distance range is determined by the time step and the Nyquist criterion </span>
+<span class="sd">    for the minimum distance, and by the requirement that at least half an </span>
+<span class="sd">    oscillation should be observable over the measured time window for the </span>
+<span class="sd">    maximum distance. The function allows to specify the length of the output </span>
+<span class="sd">    distance axis. If not given, only the minimum and maximum distances are returned.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    t : array_like</span>
-<span class="sd">        Time axis, in microseconds.</span>
+<span class="sd">        Time axis, in microseconds. The time points at which the dipolar signal was measured.</span>
 <span class="sd">    nr : scalar, integer</span>
 <span class="sd">        Length of output distance axis. If not given, only min and max distance are returned.</span>
 
@@ -204,7 +211,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    r : ndarray or tuple</span>
 <span class="sd">        Distance axis, in nanometers, running between empirical lower and upper limits ``rmin`` and ``rmax``.</span>
-<span class="sd">        Either an ndarray (if ``nr`` is given) or a tuple (if ``nr`` is not given).</span>
+<span class="sd">        Either an ndarray ``r`` (if ``nr`` is given) or a tuple ``(rmin,rmax)`` (if ``nr`` is not given).</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>

@@ -92,7 +92,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
@@ -101,7 +101,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -117,13 +117,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="reference.html">Reference</a>
+            <a class="nav-link nav-link" href="reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
@@ -293,6 +294,7 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.8</s
 <li><p><a class="reference external" href="https://joblib.readthedocs.io/en/latest/">joblib</a> - Library lightweight pipelining and parallelization.</p></li>
 <li><p><a class="reference external" href="https://github.com/tqdm/tqdm">tqdm</a> - A lightweight package for smart progress meters.</p></li>
 <li><p><a class="reference external" href="https://github.com/uqfoundation/dill">dill</a> - An extension of Python’s pickle module for serializing and de-serializing python objects.</p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/quadprog/">quadprog</a> - A quadratic programming solver</p></li>
 </ul>
 </section>
 </section>
@@ -334,11 +336,11 @@ To download (clone) the repository, execute the following from the command line:
 </pre></div>
 </div>
 <p>Now in the DeerLab directory run the installation script as follows to install DeerLab:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">setup</span> <span class="n">install</span>
 </pre></div>
 </div>
 <p>In order to install DeerLab but be able to edit the code or update frequently without having to re-install the package, use the command:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">develop</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">setup</span> <span class="n">develop</span>
 </pre></div>
 </div>
 <p>Any changes made to the source code will then immediate effect.</p>

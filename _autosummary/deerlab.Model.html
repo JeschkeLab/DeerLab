@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="deerlab.Parameter" href="deerlab.Parameter.html" />
-    <link rel="prev" title="API Reference" href="../reference.html" />
+    <link rel="prev" title="Reference Index" href="../reference.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../license.html">License</a>
@@ -199,6 +200,9 @@
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nonlinfcn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constants</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/model.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents a model.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Model</span></code> class provides a way to create a new model object from a
+non-linear function. The <code class="docutils literal notranslate"><span class="pre">Model</span></code> class also provides access to the model
+parameters and allows them to be modified.</p>
 <dl class="field-list">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl>
@@ -350,12 +354,14 @@ parameters lower boundaries.</p>
 <dt class="sig sig-object py" id="deerlab.Model.rename_parameter">
 <span class="sig-name descname"><span class="pre">rename_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/model.html#Model.rename_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.Model.rename_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename a parameter in the model.</p>
+<p>This method renames a parameter in the model. If the
+old parameter name does not exist, a <code class="docutils literal notranslate"><span class="pre">KeyError</span></code> is raised.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>old</strong><span class="classifier">string</span></dt><dd><p>Old parameter’s name.</p>
+<dt><strong>old</strong><span class="classifier">string</span></dt><dd><p>Old parameter name.</p>
 </dd>
-<dt><strong>new</strong><span class="classifier">string</span></dt><dd><p>New parameter’s name.</p>
+<dt><strong>new</strong><span class="classifier">string</span></dt><dd><p>New parameter name.</p>
 </dd>
 </dl>
 </dd>
@@ -376,7 +382,7 @@ parameters lower boundaries.</p>
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">API Reference</p>
+            <p class="prev-next-title">Reference Index</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="deerlab.Parameter.html" title="next page">

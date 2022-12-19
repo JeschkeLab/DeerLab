@@ -91,7 +91,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -100,7 +100,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -116,13 +116,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -182,10 +183,10 @@
               <div>
                 
   <h1>Source code for deerlab.model</h1><div class="highlight"><pre>
-<span></span><span class="c1"># model.py - DeerLab&#39;s modelling interface</span>
+<span></span><span class="c1"># model.py - DeerLab&#39;s modeling interface</span>
 <span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md). </span>
-<span class="c1"># Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.</span>
+<span class="c1"># Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">block_diag</span>
@@ -198,10 +199,12 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span><span class="p">,</span><span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">difflib</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stdout</span>
 
 <span class="c1">#===================================================================================</span>
 <div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter">[docs]</a><span class="k">class</span> <span class="nc">Parameter</span><span class="p">():</span> 
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Represents a model parameter or a single parameter vector. </span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a model parameter or a single parameter vector. </span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -245,17 +248,60 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Parameter.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new parameter object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            Name of the parameter.</span>
+<span class="sd">        </span>
+<span class="sd">        parent : object, optional</span>
+<span class="sd">            Reference to the parent object that contains the parameter.</span>
+<span class="sd">        </span>
+<span class="sd">        idx : int or list of int, optional</span>
+<span class="sd">            Indices of the parameter in the parent object.</span>
+<span class="sd">        </span>
+<span class="sd">        description : str, optional</span>
+<span class="sd">            Description of the parameter.</span>
+<span class="sd">        </span>
+<span class="sd">        par0 : float or array_like, optional</span>
+<span class="sd">            Value at which to initialize the parameter at the start of a fit routine. </span>
+<span class="sd">            Must be specified in the model or latest upon fitting.</span>
+<span class="sd">        </span>
+<span class="sd">        frozen : bool, optional</span>
+<span class="sd">            Whether the parameter will be frozen at a specific value during a fit.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        </span>
+<span class="sd">        lb : float or array_like, optional</span>
+<span class="sd">            Lower bound of the parameter. If not specified, it is assumed to be unbounded.</span>
+<span class="sd">            Default is -inf.</span>
+<span class="sd">        </span>
+<span class="sd">        ub : float or array_like, optional</span>
+<span class="sd">            Upper bound of the parameter. If not specified, it is assumed to be unbounded.</span>
+<span class="sd">            Default is inf.</span>
+<span class="sd">        </span>
+<span class="sd">        value : float, optional</span>
+<span class="sd">            Value at which the parameter will be frozen during a fit.</span>
+<span class="sd">        </span>
+<span class="sd">        unit : str, optional</span>
+<span class="sd">            Physical unit of the parameter.</span>
+<span class="sd">        </span>
+<span class="sd">        linear : bool, optional</span>
+<span class="sd">            Whether the model behaves linearly with respect to the parameter.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Attributes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>      <span class="c1"># Name of parameter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span> <span class="c1"># Parent </span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span>        <span class="c1"># Index of parameter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span> <span class="c1"># Description</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span>    <span class="c1"># Unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span>      <span class="c1"># Unit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">par0</span> <span class="o">=</span> <span class="n">par0</span>      <span class="c1"># Start values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">lb</span>          <span class="c1"># Lower bounds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">ub</span>          <span class="c1"># Upper bounds</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="n">frozen</span>  <span class="c1"># Frozen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>    <span class="c1"># Value at which it is frozen</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">linear</span>  <span class="c1"># Linearity</span></div>
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
@@ -267,6 +313,10 @@
 <div class="viewcode-block" id="Parameter.set"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set one or multiple attributes for a parameter. See list of attributes for a reference list. </span>
+
+<span class="sd">        This method allows users to set the value of one or more attributes for a ``Parameter`` object. </span>
+<span class="sd">        The list of attributes that can be set are the same as the attributes of the ``Parameter`` class, </span>
+<span class="sd">        namely: ``name``, ``description``, ``unit``, ``par0``, ``lb``, ``ub``, ``linear``, ``frozen``, and ``value``.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -296,9 +346,13 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy all attributes from an input parameter to the current parameter. </span>
 
-<span class="sd">        Parameters</span>
+<span class="sd">        This method allows the user to copy all attributes from an input parameter object</span>
+<span class="sd">        to the current parameter object. This can be useful when initializing multiple</span>
+<span class="sd">        parameters with the same values.</span>
+
+<span class="sd">        Parameters  </span>
 <span class="sd">        ----------</span>
-<span class="sd">        param : ``Parameter`` object </span>
+<span class="sd">        parameter : ``Parameter`` object </span>
 <span class="sd">            Model parameters from which to extract the attributes. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">_importparameter</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span></div>
@@ -307,12 +361,18 @@
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Parameter.freeze"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Freeze a parameter during a fit/optimization to a given value. Does not affect model evaluation. </span>
+<span class="sd">        Freeze a parameter during a fit/optimization to a given value.</span>
+
+<span class="sd">        This method allows the user to freeze a parameter during optimization to a</span>
+<span class="sd">        specific value. The parameter will remain fixed at this value during the</span>
+<span class="sd">        optimization process, and will not be updated. This method does not affect</span>
+<span class="sd">        model evaluation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        value : float or array_like</span>
-<span class="sd">            Value at which to freeze the parameter during optimization.</span>
+<span class="sd">            Value at which to freeze the parameter during optimization. This value</span>
+<span class="sd">            must be within the lower and upper bounds of the parameter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">value</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">ub</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">value</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">lb</span><span class="p">):</span>
@@ -333,7 +393,12 @@
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Parameter.unfreeze"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.unfreeze">[docs]</a>    <span class="k">def</span> <span class="nf">unfreeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Release a frozen parameter&#39;s value during a fit/optimization. Does not affect model evaluation.</span>
+<span class="sd">        Release a frozen parameter&#39;s value during a fit/optimization.</span>
+
+<span class="sd">        This method allows the user to release a previously frozen parameter during</span>
+<span class="sd">        optimization. The parameter will no longer be fixed at a specific value and</span>
+<span class="sd">        will be updated according to the optimization algorithm. This method does not</span>
+<span class="sd">        affect model evaluation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">N</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
@@ -349,7 +414,12 @@
 
 <div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">():</span>
 <span class="c1">#===================================================================================</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Represents a model.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a model.</span>
+
+<span class="sd">    The ``Model`` class provides a way to create a new model object from a</span>
+<span class="sd">    non-linear function. The ``Model`` class also provides access to the model</span>
+<span class="sd">    parameters and allows them to be modified.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -376,17 +446,49 @@
     <span class="c1">#=======================================================================================</span>
     
     <span class="c1"># Use a wrapper function to facilitate internal arguments manipulation        </span>
-    <span class="c1">#-----------------------------------</span>
+    <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_model_with_constants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">constantsInfo</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate a non-linear model with constant arguments.</span>
+
+<span class="sd">        This internal method is used to evaluate a non-linear model with constant</span>
+<span class="sd">        arguments. The method takes the non-linear function, a list of constant</span>
+<span class="sd">        arguments, and the input arguments and returns the output of the non-linear</span>
+<span class="sd">        model with the constant arguments inserted at the appropriate positions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nonlinfcn : callable</span>
+<span class="sd">            Non-linear function to be evaluated.</span>
+<span class="sd">        constantsInfo : list</span>
+<span class="sd">            List of dictionaries containing information about the constant arguments</span>
+<span class="sd">            to be used with the non-linear function. Each dictionary must contain</span>
+<span class="sd">            two keys: &quot;argkey&quot; and &quot;argidx&quot;. &quot;argkey&quot; must be the name of the</span>
+<span class="sd">            argument, and &quot;argidx&quot; must be the index of the argument in the function</span>
+<span class="sd">            signature.</span>
+<span class="sd">        inputargs : variable length argument list</span>
+<span class="sd">            Input arguments to be passed to the non-linear function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : variable type</span>
+<span class="sd">            Output of the non-linear function with the constant arguments inserted</span>
+<span class="sd">            at the appropriate positions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the number of constants</span>
         <span class="n">Nconstants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">constantsInfo</span><span class="p">)</span>
+        <span class="c1"># Separate the constants from the other arguments</span>
         <span class="n">constants</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[:</span><span class="n">Nconstants</span><span class="p">]</span>
         <span class="n">θ</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[</span><span class="n">Nconstants</span><span class="p">:]</span>
+        <span class="c1"># Create a list of arguments for the nonlinear function</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+        <span class="c1"># If there are constants, insert them into the list of arguments at the appropriate positions</span>
         <span class="k">if</span> <span class="n">constantsInfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">info</span><span class="p">,</span><span class="n">constant</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">constantsInfo</span><span class="p">,</span><span class="n">constants</span><span class="p">):</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;argidx&#39;</span><span class="p">],</span><span class="n">constant</span><span class="p">)</span>
+        <span class="c1"># Call the nonlinear function with the arguments and return the result</span>
         <span class="k">return</span> <span class="n">nonlinfcn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-    <span class="c1">#----------------------------------- </span>
+    <span class="c1">#---------------------------------------------------------------------------------------</span>
     
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Model.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">constants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> 
@@ -418,6 +520,7 @@
 <span class="sd">            and returns the output of ``nonlinfcn``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check if nonlinfcn is callable and create a wrapper function if it&#39;s not</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">nonlinfcn</span><span class="p">):</span>
             <span class="n">Amatrix</span> <span class="o">=</span> <span class="n">nonlinfcn</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">nonlinfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="n">Amatrix</span> 
@@ -425,13 +528,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_constantsInfo</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Check if signature is specified, and if not use the function&#39;s signature</span>
         <span class="k">if</span> <span class="n">signature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Get list of parameter names from the function signature</span>
             <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">nonlinfcn</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
 
+        <span class="c1"># Create a copy of the signature for future reference</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nonlinsignature</span> <span class="o">=</span> <span class="n">signature</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">signature</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="c1"># Check if one of the arguments is an axis argument     </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="n">signature</span>
+
+        <span class="c1"># Check if constants are specified and remove them from the parameters list</span>
         <span class="k">if</span> <span class="n">constants</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">constants</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
                 <span class="n">constants</span> <span class="o">=</span> <span class="p">[</span><span class="n">constants</span><span class="p">]</span>
@@ -443,7 +550,8 @@
                 <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">par</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parameters</span><span class="p">):</span> 
                     <span class="k">if</span> <span class="n">par</span><span class="o">==</span><span class="n">argname</span><span class="p">:</span> 
                         <span class="n">parameters</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">argname</span><span class="p">)</span>
-  
+
+        <span class="c1"># Construct the callable non-linear part of the model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nonlinmodel</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_with_constants</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_constantsInfo</span><span class="p">)</span>
 
         <span class="c1"># Update the number of parameters in the model</span>
@@ -451,37 +559,76 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">Nnonlin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Nlin</span> <span class="o">=</span> <span class="mi">0</span>
 
+        <span class="c1"># Construct the parameters and add them to the model</span>
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parameters</span><span class="p">):</span> 
             <span class="n">newparam</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">param</span><span class="p">)</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">newparam</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="n">signature</span></div>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">newparam</span><span class="p">)</span></div>
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1"># Gets called when an attribute is accessed</span>
     <span class="c1">#--------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is called when an attribute of this class instance is accessed.</span>
+<span class="sd">        It first tries to access the attribute using the ``super()`` method, which</span>
+<span class="sd">        will go up the inheritance chain to look for the attribute. If the attribute</span>
+<span class="sd">        is not found, it checks for similar attributes that exist in the class </span>
+<span class="sd">        instance, and suggests those as potential matches in the error message. </span>
+<span class="sd">        If no matches are found, it raises an ``AttributeError`` with a custom message</span>
+<span class="sd">        indicating that the requested attribute does not exist.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attr : str</span>
+<span class="sd">            The name of the attribute being accessed.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AttributeError</span>
+<span class="sd">            If the requested attribute does not exist in the class instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First try to access the attribute as usual</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Model</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+        
+        <span class="c1"># If an AttributeError is raised, handle it by printing a custom error message</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c1"># Create the error message with the name of the attribute that was accessed</span>
             <span class="n">errstr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The model has no attribute &#39;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="c1"># Get a list of all the attributes in the model</span>
             <span class="n">attributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">]</span>
+            <span class="c1"># Use difflib to get a list of similar attributes to the one that was accessed</span>
             <span class="n">proposal</span> <span class="o">=</span> <span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
+            <span class="c1"># If there are any similar attributes, add a suggestion to the error message</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">proposal</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
                 <span class="n">errstr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1"> Did you mean: </span><span class="si">{</span><span class="n">proposal</span><span class="si">}</span><span class="s1"> ?&#39;</span>
+            <span class="c1"># Raise the AttributeError with the custom error message</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errstr</span><span class="p">)</span>
     <span class="c1">#--------------------------------------------------------------------------------</span>
 
-
-    <span class="c1">#=======================================================================================</span>
-    <span class="c1">#                                    Private methods</span>
-    <span class="c1">#=======================================================================================</span>
-
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_parameter_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;alphabetical&#39;</span><span class="p">):</span>
-        <span class="s2">&quot;Get the list of parameters defined in the model sorted alphabetically or by vector definition&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private method)</span>
+<span class="sd">        </span>
+<span class="sd">        Get the list of parameters defined in the model sorted alphabetically or by vector definition.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        order : str, optional</span>
+<span class="sd">            Specifies how the parameters should be sorted. Can be either ``&#39;alphabetical&#39;`` or ``&#39;vector&#39;``.</span>
+<span class="sd">            Default is ``&#39;alphabetical&#39;``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        keylist : list</span>
+<span class="sd">            List of the parameters in the model sorted according to the ``order`` parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keylist</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">Parameter</span><span class="p">)]</span>
+        <span class="c1"># Sort the list alphabetically if specified</span>
         <span class="k">if</span> <span class="n">order</span><span class="o">==</span><span class="s1">&#39;alphabetical&#39;</span><span class="p">:</span>
             <span class="k">pass</span>
+        <span class="c1"># Sort the list by vector definition if specified</span>
         <span class="k">elif</span> <span class="n">order</span><span class="o">==</span><span class="s1">&#39;vector&#39;</span><span class="p">:</span>
             <span class="c1"># If there are any parameters in vector form...</span>
             <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
@@ -491,6 +638,8 @@
                     <span class="n">keylist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">keylist</span><span class="p">,</span><span class="n">n</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">idx</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span><span class="n">key</span><span class="p">)</span>  
                 <span class="n">n</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">idx</span><span class="p">))</span>
             <span class="n">keylist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">keylist</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;The &#39;order&#39; argument muse be either &#39;alphabetical&#39; or &#39;vector&#39;.&quot;</span><span class="p">)</span>
         <span class="c1"># Remove any duplicates</span>
         <span class="n">keylist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">keylist</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">keylist</span>
@@ -498,9 +647,30 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_vecsort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramlist</span><span class="p">):</span>
-        <span class="s2">&quot;Sort vectorized parameters attributes from alphabetical ordering to vector indexing&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private method)</span>
+
+<span class="sd">        Sort vectorized parameters attributes from alphabetical ordering to vector indexing.</span>
+
+<span class="sd">        This internal method sorts the list of parameters defined in the model according to their index in the parameter vector.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        paramlist : list</span>
+<span class="sd">            rameter names to be sorted.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        orderedlist : ndarray</span>
+<span class="sd">            List of parameter names sorted according to their index in the parameter vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert the input list to a numpy array and squeeze any singleton dimensions</span>
         <span class="n">paramlist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">paramlist</span><span class="p">))</span>
+
+        <span class="c1"># Get a list of indices for all parameters in the model</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">Parameter</span><span class="p">)])</span>
+
+        <span class="c1"># Create a copy of the input list and sort it according to the indices</span>
         <span class="n">orderedlist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">paramlist</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
         <span class="n">orderedlist</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">paramlist</span>
 
@@ -509,21 +679,68 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_split_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable</span><span class="p">):</span>
-        <span class="s2">&quot;Split a vector in non-linear and linear parameter subset vectors&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private method)</span>
+
+<span class="sd">        Split a vector into non-linear and linear parameter subsets.</span>
+
+<span class="sd">        This method is used to split a vector of model parameters into two subsets:</span>
+<span class="sd">        the subset of non-linear parameters and the subset of linear parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variable : ndarray</span>
+<span class="sd">            Vector of model parameters to split into non-linear and linear subsets.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        variable_lin : ndarray</span>
+<span class="sd">            Subset of `variable` that contains only the linear parameters.</span>
+<span class="sd">        variable_nonlin : ndarray</span>
+<span class="sd">            Subset of `variable` that contains only the non-linear parameters.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert `variable` to a numpy array with at least one dimension</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
-        <span class="n">linear</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">linear</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">Parameter</span><span class="p">)])</span>
+
+        <span class="c1"># Get a list of all model parameters that are linear</span>
+        <span class="n">linear</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">linear</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">Parameter</span><span class="p">)])</span> 
+
+        <span class="c1"># Sort the list of linear parameters</span>
         <span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">linear</span><span class="p">)</span>
+
+        <span class="c1"># Split `variable` into a non-linear subset and a linear subset</span>
         <span class="n">variable_nonlin</span> <span class="o">=</span> <span class="n">variable</span><span class="p">[</span><span class="o">~</span><span class="n">linear</span><span class="p">]</span>
         <span class="n">variable_lin</span> <span class="o">=</span> <span class="n">variable</span><span class="p">[</span><span class="n">linear</span><span class="p">]</span>
+
         <span class="k">return</span> <span class="n">variable_lin</span><span class="p">,</span> <span class="n">variable_nonlin</span>
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_merge_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable_nonlin</span><span class="p">,</span><span class="n">variable_lin</span><span class="p">):</span>
-        <span class="s2">&quot;Merge a vector&#39;s non-linear and linear parameter subset vectors&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private method)</span>
+
+<span class="sd">        Merge a vector&#39;s non-linear and linear parameter subset vectors.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variable_nonlin : array-like</span>
+<span class="sd">            Non-linear part of the variable vector.</span>
+<span class="sd">        variable_lin : array-like</span>
+<span class="sd">            Linear part of the variable vector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        variable : ndarray</span>
+<span class="sd">            Merged variable vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">variable_nonlin</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">variable_lin</span><span class="p">))</span>
+        <span class="c1"># Get the list of linear parameters in the model</span>
         <span class="n">linear</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">linear</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">Parameter</span><span class="p">)])</span>
+        <span class="c1"># Sort the list of linear parameters in the model</span>
         <span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">linear</span><span class="p">)</span>
+        <span class="c1"># Merge the non-linear and linear parts of the variable vector</span>
         <span class="n">variable</span><span class="p">[</span><span class="o">~</span><span class="n">linear</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable_nonlin</span>
         <span class="n">variable</span><span class="p">[</span><span class="n">linear</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable_lin</span>
         <span class="k">return</span> <span class="n">variable</span>
@@ -531,21 +748,60 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_getvector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attribute</span><span class="p">):</span>
-        <span class="s2">&quot;Get the list of parameters attributes defined in the model sorted alphabetically&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">attribute</span><span class="p">))</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">Parameter</span><span class="p">)])</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private method)</span>
+
+<span class="sd">        Get a vector of the given attribute for all parameters defined in the model. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        attribute : string</span>
+<span class="sd">            Attribute to get for each parameter in the model.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        vector : ndarray</span>
+<span class="sd">            Vector of the specified attribute for all parameters in the model.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">attribute</span><span class="p">))</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">),</span><span class="n">Parameter</span><span class="p">)])</span>    
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1">#-----------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_getparamuq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">uq_full</span><span class="p">,</span><span class="n">paramidx</span><span class="p">):</span>
-        <span class="s2">&quot;Get the uncertainty quantification of an individual parameter&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private method)</span>
+
+<span class="sd">        Get the uncertainty quantification of an individual parameter.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        paramidx : int</span>
+<span class="sd">            Index of the parameter to get the uncertainty quantification for.</span>
+<span class="sd">        uq_full : UQResult</span>
+<span class="sd">            Result of a full uncertainty quantification on the model.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        param_uq : UQResult</span>
+<span class="sd">            Result of the uncertainty quantification for the selected parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create a subset model that only includes the selected parameter</span>
         <span class="n">subset_model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">paramidx</span><span class="p">]</span>
+
+        <span class="c1"># Get the bounds and freezing of the selected parameter</span>
         <span class="n">param_lb</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;lb&#39;</span><span class="p">))[</span><span class="n">paramidx</span><span class="p">]</span>
         <span class="n">param_ub</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;ub&#39;</span><span class="p">))[</span><span class="n">paramidx</span><span class="p">]</span>
         <span class="n">frozen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;frozen&#39;</span><span class="p">))[</span><span class="n">paramidx</span><span class="p">]</span>
+
+        <span class="c1"># If the parameter is frozen, return a void UQResult</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">frozen</span><span class="p">):</span> 
             <span class="n">param_uq</span> <span class="o">=</span> <span class="n">UQResult</span><span class="p">(</span><span class="s1">&#39;void&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">uq_full</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+            <span class="c1"># Propagate the full UQ through the subset model</span>
+            <span class="k">if</span> <span class="n">uq_full</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;moment&#39;</span><span class="p">:</span>
                 <span class="n">param_uq</span> <span class="o">=</span> <span class="n">uq_full</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">subset_model</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="n">param_lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">param_ub</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">uq_full</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
                 <span class="n">param_uq</span> <span class="o">=</span> <span class="n">UQResult</span><span class="p">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">uq_full</span><span class="o">.</span><span class="n">samples</span><span class="p">[:,</span><span class="n">paramidx</span><span class="p">],</span><span class="n">lb</span><span class="o">=</span><span class="n">param_lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">param_ub</span><span class="p">)</span>
@@ -556,6 +812,23 @@
 
     <span class="c1">#-----------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_error_if_already_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private method)</span>
+
+<span class="sd">        Check if the model has a parameter with a given name.</span>
+
+<span class="sd">        If a parameter with the given name exists in the model, raise a KeyError.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : str</span>
+<span class="sd">            Name of the parameter to check for.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        KeyError</span>
+<span class="sd">            If a parameter with the given name exists in the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The model already has a &quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; parameter.&#39;</span><span class="p">)</span>
     <span class="c1">#-----------------------------------------------------------------------------</span>
@@ -588,26 +861,47 @@
 <span class="sd">        unit : string, optional</span>
 <span class="sd">            Physical unit of the parameter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Check that the parameter does not exist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_if_already_exists</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="c1"># Update number of parameters</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Nparam</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Nparam</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Nnonlin</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Construct the new parameter object and added to the model</span>
         <span class="n">newparam</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">ub</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">newparam</span><span class="p">)</span>
         <span class="n">Nconstants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_constantsInfo</span><span class="p">)</span>
         <span class="n">Amodel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nonlinmodel</span>
         <span class="n">topop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Nnonlin</span><span class="o">-</span><span class="mi">1</span>
+
+        <span class="c1"># Define a new model function with added non-linear parameter</span>
         <span class="c1">#------------------------------------------------</span>
         <span class="k">def</span> <span class="nf">model_with_constants_and_added_nonlin</span><span class="p">(</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            A helper function that takes in a set of input arguments, </span>
+<span class="sd">            extracts constants and non-linear parameters from the input</span>
+<span class="sd">            arguments and returns the model response.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="c1"># Extract constants from the input arguments</span>
             <span class="n">constants</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[:</span><span class="n">Nconstants</span><span class="p">]</span>
+            <span class="c1"># Extract non-linear parameters from the input arguments</span>
             <span class="n">θ</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[</span><span class="n">Nconstants</span><span class="p">:]</span>
+            <span class="c1"># Create a list of all arguments</span>
             <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
             <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">topop</span><span class="p">)</span>
+            <span class="c1"># If there are any constant parameters</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constantsInfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Insert the constant parameters into the list of arguments at the specified indexes</span>
                 <span class="k">for</span> <span class="n">info</span><span class="p">,</span><span class="n">constant</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_constantsInfo</span><span class="p">,</span><span class="n">constants</span><span class="p">):</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;argidx&#39;</span><span class="p">],</span><span class="n">constant</span><span class="p">)</span>
+            <span class="c1"># Evaluate and return the model response</span>
             <span class="k">return</span> <span class="n">Amodel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="c1">#------------------------------------------------</span>
+
+        <span class="c1"># Update the model function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nonlinmodel</span> <span class="o">=</span> <span class="n">model_with_constants_and_added_nonlin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
     <span class="c1">#---------------------------------------------------------------------------------------</span>
@@ -617,17 +911,23 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rename a parameter in the model. </span>
 
+<span class="sd">        This method renames a parameter in the model. If the</span>
+<span class="sd">        old parameter name does not exist, a ``KeyError`` is raised.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        old : string</span>
-<span class="sd">            Old parameter&#39;s name.</span>
+<span class="sd">            Old parameter name.</span>
 <span class="sd">        new : string</span>
-<span class="sd">            New parameter&#39;s name. </span>
+<span class="sd">            New parameter name. </span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check if the old parameter exists in the model</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">old</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The model does not have a &quot;</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s1">&quot; parameter.&#39;</span><span class="p">)</span>
+        <span class="c1"># Rename the parameter</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">))</span>
+        <span class="c1"># Delete the old parameter</span>
         <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span></div>
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
@@ -699,8 +999,22 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the model for a given set of parameters. </span>
 
-<span class="sd">        Takes the constant variables and (non-linear and linear) parameter variables as positional</span>
-<span class="sd">        or keyword arguments and evaluates the model.</span>
+<span class="sd">        Takes the constant variables and (non-linear and linear) parameter </span>
+<span class="sd">        variables as positional or keyword arguments and evaluates the model. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args : </span>
+<span class="sd">            Positional arguments representing the constant and parameter variables in the model. </span>
+
+<span class="sd">        kargs :</span>
+<span class="sd">            Keyword arguments representing the constant and parameter variables in the model.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : ndarray </span>
+<span class="sd">            The output of the model for the given set of parameters.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check that the correct number of arguments have been specified</span>
         <span class="n">paramlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
@@ -781,6 +1095,7 @@
 <span class="sd">            correspond to the model attributes, e.g. ``metadata[&#39;lb&#39;]`` corresponds to the model&#39;s</span>
 <span class="sd">            parameters lower boundaries. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Return a dictionary of metadata vectors, with keys corresponding to the metadata attributes</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">),</span>
             <span class="s1">&#39;ub&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;ub&#39;</span><span class="p">)),</span>
@@ -796,6 +1111,19 @@
         
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_parameter_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private method)</span>
+
+<span class="sd">        Construct a parameter table for the model that describes each of the model&#39;s</span>
+<span class="sd">        parameters.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        table : str</span>
+<span class="sd">            Formatted string representation of the model&#39;s parameter table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the description and signature of the model</span>
         <span class="n">string</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">    Description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">    Signature: (</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span>
@@ -804,9 +1132,13 @@
 <span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
         <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="n">table</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Add the table header to the list</span>
         <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span><span class="s1">&#39;Lower&#39;</span><span class="p">,</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span><span class="s1">&#39;Upper&#39;</span><span class="p">,</span><span class="s1">&#39;Type&#39;</span><span class="p">,</span><span class="s1">&#39;Frozen&#39;</span><span class="p">,</span><span class="s1">&#39;Unit&#39;</span><span class="p">,</span><span class="s1">&#39;Description&#39;</span><span class="p">])</span>  
+        <span class="c1"># Alignment for the table columns</span>
         <span class="n">alignment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">paramname</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)):</span> 
+        <span class="c1"># Get a list of the model&#39;s parameters, in vector order</span>
+        <span class="k">for</span> <span class="n">paramname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">):</span> 
+            <span class="c1"># Build strings with the parameter&#39;s metadata </span>
             <span class="n">param_str</span> <span class="o">=</span> <span class="n">paramname</span>
             <span class="n">lb_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">paramname</span><span class="p">)</span><span class="o">.</span><span class="n">lb</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">5.3g</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="n">ub_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">paramname</span><span class="p">)</span><span class="o">.</span><span class="n">ub</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">5.3g</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -815,16 +1147,22 @@
             <span class="n">frozen_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">paramname</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">5.3g</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">paramname</span><span class="p">)</span><span class="o">.</span><span class="n">frozen</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;No&quot;</span>
             <span class="n">unit_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">paramname</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
             <span class="n">desc_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">paramname</span><span class="p">)</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+            <span class="c1"># Add the parameter&#39;s information to the table</span>
             <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">param_str</span><span class="p">,</span><span class="n">lb_str</span><span class="p">,</span><span class="n">par0_str</span><span class="p">,</span><span class="n">ub_str</span><span class="p">,</span><span class="n">linear_str</span><span class="p">,</span><span class="n">frozen_str</span><span class="p">,</span><span class="n">unit_str</span><span class="p">,</span><span class="n">desc_str</span><span class="p">])</span>
+
+        <span class="c1"># Convert the table list to a formatted string</span>
         <span class="n">string</span> <span class="o">+=</span> <span class="n">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">alignment</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">string</span>
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
+    <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_table</span><span class="p">()</span></div>
-    <span class="c1">#def __repr__(self):</span>
-    <span class="c1">#    return self._parameter_table()        </span>
-
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string representation of the model&#39;s parameters and their values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_table</span><span class="p">()</span>      </div>
+    <span class="c1">#---------------------------------------------------------------------------------------</span>
 <span class="c1">#===================================================================================</span>
 
 <span class="c1">#==============================================================================</span>
@@ -874,6 +1212,28 @@
 <span class="sd">        &quot;&quot;&quot;</span> 
         <span class="c1">#-------------------------------------------------------------------------------</span>
         <span class="k">def</span> <span class="nf">selectionfunctional</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">log10weight</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            (Private function)</span>
+
+<span class="sd">            Calculate the selection functional used to find the optimal penalty weight.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            fitfcn : callable</span>
+<span class="sd">                Function that performs the fit to the data. </span>
+<span class="sd">            y : array_like</span>
+<span class="sd">                Data to fit the model to.</span>
+<span class="sd">            sigma : array_like</span>
+<span class="sd">                Standard deviation of the data.</span>
+<span class="sd">            log10weight : float</span>
+<span class="sd">                Penalty weight in logarithmic scale.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            selection_functional : float</span>
+<span class="sd">                Value of the selection functional calculated using the data, the standard deviation, </span>
+<span class="sd">                the fit function and the penalty weight.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="c1"># Penalty weight: linear-scale -&gt; log-scale</span>
             <span class="n">weight</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">log10weight</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_weight_value</span> <span class="o">=</span> <span class="n">weight</span>
@@ -986,8 +1346,27 @@
 <span class="c1">#==============================================================================</span>
 
 <span class="c1">#--------------------------------------------------------------------------</span>
-<span class="k">def</span> <span class="nf">_outerOptimization</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">penalty_objects</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_outerOptimization</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">penalty_objects</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
 
+<span class="sd">    A method to optimize the fit of a model with penalties.</span>
+
+<span class="sd">    This method returns a function that can be used to evaluate the fit of a model with penalties. It takes in the following arguments:</span>
+
+<span class="sd">    fitfcn : callable</span>
+<span class="sd">    The function to be optimized, which takes in a set of parameters and returns a scalar value representing the fit of the model.</span>
+
+<span class="sd">    penalty_objects : list of Penalty objects</span>
+<span class="sd">    A list of penalty objects that define the penalty functions to be applied to the fit function. The list can have up to three penalty objects.</span>
+
+<span class="sd">    sigma : numpy.ndarray</span>
+<span class="sd">    The vector of observation uncertainties to be used in the penalty functions.</span>
+<span class="sd">    Returns</span>
+
+<span class="sd">    fitfcn_ : callable</span>
+<span class="sd">    A function that can be used to evaluate the fit of a model with penalties. This function takes in a set of parameters and returns a scalar value representing the fit of the model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># If there are no penalties</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">penalty_objects</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
         <span class="n">fitfcn_</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,[</span><span class="kc">None</span><span class="p">])</span>
@@ -1091,10 +1470,66 @@
     <span class="k">return</span> <span class="n">response</span>
 <span class="c1"># ----------------------------------------------------------------------------</span>
 
-
 <span class="c1">#--------------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_print_fitresults</span><span class="p">(</span><span class="n">fitresult</span><span class="p">,</span><span class="n">model</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Construct summary table of fit results to print&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
+
+<span class="sd">    Construct summary table of fit results to print</span>
+<span class="sd">    </span>
+<span class="sd">    This helper method takes the output of a model fit and constructs a</span>
+<span class="sd">    summary table of the goodness-of-fit statistics, along with the </span>
+<span class="sd">    hyperparameters of the model (if any). The method is intended to be used</span>
+<span class="sd">    to print the results of the model fit.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fitresult : ``FitResult`` object</span>
+<span class="sd">        Result of a model fit.</span>
+<span class="sd">        </span>
+<span class="sd">    model : ``Model`` object</span>
+<span class="sd">        Model object instance used for the fit.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    table_string : str</span>
+<span class="sd">        A string containing the summary table of the fit results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#-----------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">spaces</span><span class="p">,</span> <span class="n">is_tty</span><span class="o">=</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private function)</span>
+
+<span class="sd">        Helper method that applies ANSI codes to add colors to the text</span>
+<span class="sd">        in a terminal. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        str : str </span>
+<span class="sd">            The string to be colored.</span>
+<span class="sd">        color : str</span>
+<span class="sd">            The color to be applied to the text. It can be &#39;red&#39;, &#39;yellow&#39;, or &#39;white&#39;.</span>
+<span class="sd">        spaces : int</span>
+<span class="sd">            The number of spaces to add to the beginning and end of the string.</span>
+<span class="sd">        is_tty : bool</span>
+<span class="sd">            A boolean value indicating whether the output is a terminal or not.</span>
+<span class="sd">            If it is not a terminal, the method simply returns the string without</span>
+<span class="sd">            applying any coloring.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        colored_str : str</span>
+<span class="sd">            Colored string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">color</span><span class="o">==</span><span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[91m&#39;</span>
+        <span class="k">if</span> <span class="n">color</span><span class="o">==</span><span class="s1">&#39;yellow&#39;</span><span class="p">:</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[93m&#39;</span>
+        <span class="k">if</span> <span class="n">color</span><span class="o">==</span><span class="s1">&#39;white&#39;</span><span class="p">:</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">is_tty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">spaces</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">spaces</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[00m&quot;</span> 
+    <span class="c1">#-----------------------------------------------------</span>
 
     <span class="c1"># Start printout string</span>
     <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -1106,7 +1541,7 @@
 
     <span class="c1"># Construct table of goodness-of-fit statistics</span>
     <span class="n">table</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;Dataset&#39;</span><span class="p">,</span><span class="s1">&#39;Noise level&#39;</span><span class="p">,</span><span class="s1">&#39;Reduced 𝛘2&#39;</span><span class="p">,</span><span class="s1">&#39;RMSD&#39;</span><span class="p">,</span><span class="s1">&#39;AIC&#39;</span><span class="p">])</span> <span class="c1"># Header</span>
+    <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;Dataset&#39;</span><span class="p">,</span><span class="s1">&#39;Noise level&#39;</span><span class="p">,</span><span class="s1">&#39;Reduced 𝛘2&#39;</span><span class="p">,</span><span class="s1">&#39;Residual autocorr.&#39;</span><span class="p">,</span><span class="s1">&#39;RMSD&#39;</span><span class="p">])</span> <span class="c1"># Header</span>
     <span class="n">alignment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">]</span> <span class="c1"># Tab alignment</span>
     <span class="n">stats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">fitresult</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
     <span class="n">noiselevels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">fitresult</span><span class="o">.</span><span class="n">noiselvl</span><span class="p">)</span>
@@ -1114,34 +1549,54 @@
         <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">noiselevels</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
         <span class="n">chi2red</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;chi2red&#39;</span><span class="p">]</span>
         <span class="n">rmsd</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;rmsd&#39;</span><span class="p">]</span>
-        <span class="n">aic</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;aic&#39;</span><span class="p">]</span>
-        <span class="n">noiselvl</span><span class="p">,</span><span class="n">chi2red</span><span class="p">,</span><span class="n">rmsd</span><span class="p">,</span><span class="n">aic</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">var</span><span class="o">&lt;</span><span class="mf">1e4</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3g</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">chi2red</span><span class="p">,</span><span class="n">rmsd</span><span class="p">,</span><span class="n">aic</span><span class="p">]]</span> 
-        <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;#</span><span class="si">{</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">chi2red</span><span class="p">,</span><span class="n">rmsd</span><span class="p">,</span><span class="n">aic</span><span class="p">])</span>
+        <span class="n">autocorr</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;autocorr&#39;</span><span class="p">]</span>
+        <span class="c1"># Use colored text to warn of very poor fits</span>
+        <span class="n">autocorrcolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;white&#39;</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">autocorr</span><span class="o">&gt;</span><span class="mf">0.5</span> <span class="ow">and</span> <span class="n">autocorr</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Relatively acceptable autocorrelations (yellow)</span>
+            <span class="n">autocorrcolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">autocorr</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Worrisome autocorrelations (red)</span>
+            <span class="n">autocorrcolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+        <span class="n">chicolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;white&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># Standard deviation of reduced 𝛘2 statistic&#39;s uncertainty (Gaussian limit)</span>
+        <span class="n">chi2red_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">modelfits</span><span class="p">[</span><span class="n">n</span><span class="p">]))</span><span class="o">*</span><span class="mi">3</span> 
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">chi2red</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">3</span><span class="o">*</span><span class="n">chi2red_sigma</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">chi2red</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">6</span><span class="o">*</span><span class="n">chi2red_sigma</span><span class="p">:</span>
+            <span class="c1"># Poor case (yellow), 𝛘2 exceeds thrice the expected uncertainty </span>
+            <span class="n">chicolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">chi2red</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">6</span><span class="o">*</span><span class="n">chi2red_sigma</span><span class="p">:</span>
+            <span class="c1"># Horrible case (red), 𝛘2 exceeds six times the expected uncertainty </span>
+            <span class="n">chicolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># Convert numbers to well-formatted strings</span>
+        <span class="n">noiselvl</span><span class="p">,</span><span class="n">chi2red</span><span class="p">,</span><span class="n">autocorr</span><span class="p">,</span><span class="n">rmsd</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">var</span><span class="o">&lt;</span><span class="mf">1e3</span> <span class="ow">or</span> <span class="n">var</span><span class="o">&gt;</span><span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">chi2red</span><span class="p">,</span><span class="n">autocorr</span><span class="p">,</span><span class="n">rmsd</span><span class="p">]]</span> 
+        <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;#</span><span class="si">{</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">chicolor</span><span class="p">(</span><span class="n">chi2red</span><span class="p">),</span><span class="n">autocorrcolor</span><span class="p">(</span><span class="n">autocorr</span><span class="p">),</span><span class="n">rmsd</span><span class="p">])</span>
     <span class="c1"># Add auto-formatted table string</span>
     <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;Goodness-of-fit: </span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="n">string</span> <span class="o">+=</span> <span class="n">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">alignment</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
-    
+    <span class="c1"># Construct table of model hyperparameters</span>
     <span class="n">hasregularization</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">regparam</span><span class="o">!=</span><span class="mi">0</span>
     <span class="n">haspenalties</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">penweights</span>
     <span class="k">if</span> <span class="n">hasregularization</span> <span class="ow">or</span> <span class="n">haspenalties</span><span class="p">:</span>
         <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;Model hyperparameters: </span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">alignment</span> <span class="o">=</span> <span class="p">[]</span> 
+        <span class="n">tags</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">alignment</span> <span class="o">=</span> <span class="p">[],[],[]</span>
+        <span class="c1"># If regularization was used, add regularization parameter</span>
         <span class="k">if</span> <span class="n">hasregularization</span><span class="p">:</span>
             <span class="n">alignment</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">)</span>
             <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Regularization parameter&#39;</span><span class="p">)</span>      
             <span class="n">regparam</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">regparam</span>
             <span class="k">if</span> <span class="n">regparam</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">regparam</span> <span class="o">=</span> <span class="mi">0</span>  
             <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">regparam</span><span class="p">)</span> 
+        <span class="c1"># If additional penalties were used, add their weights</span>
         <span class="k">if</span> <span class="n">haspenalties</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">penweight</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fitresult</span><span class="o">.</span><span class="n">penweights</span><span class="p">):</span>
                 <span class="n">alignment</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">)</span>
                 <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Penalty weight #</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>        
                 <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">penweight</span><span class="p">)</span> 
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">var</span><span class="o">&lt;</span><span class="mf">1e4</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3g</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span> 
+        <span class="c1"># Format the values</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">var</span><span class="o">&lt;</span><span class="mf">1e3</span> <span class="ow">and</span> <span class="n">var</span><span class="o">&gt;</span><span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span> 
         <span class="n">table</span> <span class="o">=</span> <span class="p">[</span><span class="n">tags</span><span class="p">,</span><span class="n">values</span><span class="p">]</span> 
+        <span class="c1"># Add to the table</span>
         <span class="n">string</span> <span class="o">+=</span> <span class="n">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">alignment</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
     <span class="c1"># Construct table of model parameters fits</span>
@@ -1156,7 +1611,7 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span> <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">value</span><span class="o">&lt;</span><span class="mf">1e4</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.3g</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e3</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="n">ci</span> <span class="o">=</span> <span class="s1">&#39;(frozen)&#39;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># If parameter is scalar, report values and CIs</span>
@@ -1165,7 +1620,7 @@
                     <span class="n">ci</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ci_lower</span><span class="p">,</span><span class="n">ci_upper</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fitresult</span><span class="p">,</span><span class="n">param</span><span class="o">+</span><span class="s1">&#39;Uncert&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
-                    <span class="n">value</span><span class="p">,</span><span class="n">ci_lower</span><span class="p">,</span><span class="n">ci_upper</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">var</span><span class="o">&lt;</span><span class="mf">1e4</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3g</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="n">value</span><span class="p">,</span><span class="n">ci_lower</span><span class="p">,</span><span class="n">ci_upper</span><span class="p">]]</span>
+                    <span class="n">value</span><span class="p">,</span><span class="n">ci_lower</span><span class="p">,</span><span class="n">ci_upper</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e3</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="n">value</span><span class="p">,</span><span class="n">ci_lower</span><span class="p">,</span><span class="n">ci_upper</span><span class="p">]]</span>
                     <span class="n">ci</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">ci_lower</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">ci_upper</span><span class="si">}</span><span class="s1">)&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># If parameter is vectorial, print just dots</span>
@@ -1177,10 +1632,25 @@
     <span class="c1"># Add auto-formatted table string</span>
     <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;Model parameters: </span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="n">string</span> <span class="o">+=</span> <span class="n">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">alignment</span><span class="p">)</span>
+    <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="k">return</span> <span class="n">string</span>
 <span class="c1">#--------------------------------------------------------------------------</span>
 
-<span class="k">def</span> <span class="nf">insert_snlls_optionals_docstrings</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_insert_snlls_optionals_docstrings</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private decorator)</span>
+<span class="sd">    </span>
+<span class="sd">    A decorator that takes a function ``func` as input and replaces the </span>
+<span class="sd">    string ``&#39;snlls_keyargs_docstrings&#39;`` in the function&#39;s docstring with</span>
+<span class="sd">    the optional keyword arguments documentation for the ``snlls.py`` </span>
+<span class="sd">    function. This is done by splitting the ``snlls.py`` docstring into </span>
+<span class="sd">    paragraphs, filtering out paragraphs that are already included in the</span>
+<span class="sd">    outer function&#39;s docstring, and concatenating the remaining paragraphs.</span>
+<span class="sd">    The resulting string is then inserted into ``func``&#39;s docstring and </span>
+<span class="sd">    the modified function is returned. This allows for the optional keyword</span>
+<span class="sd">    arguments documentation to be easily updated in the docstring of any </span>
+<span class="sd">    function that uses the ``snlls.py`` function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get the documentation for the optional keyword arguments in snlls.py also used by fit()</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">snlls</span><span class="o">.</span><span class="vm">__doc__</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1200,7 +1670,7 @@
     <span class="k">return</span> <span class="n">decorator</span>
 
 <span class="c1">#==============================================================================================</span>
-<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../_autosummary/deerlab.fit.html#deerlab.fit">[docs]</a><span class="nd">@insert_snlls_optionals_docstrings</span><span class="p">()</span>
+<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../_autosummary/deerlab.fit.html#deerlab.fit">[docs]</a><span class="nd">@_insert_snlls_optionals_docstrings</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">model_</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">constants</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">penalties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootstrap</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span><span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">regparamrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootcores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1284,10 +1754,11 @@
 <span class="sd">    nnlsSolver : string, optional</span>
 <span class="sd">        Solver used to solve a non-negative least-squares problem (if applicable):</span>
 
-<span class="sd">        * ``&#39;cvx&#39;`` - Optimization of the NNLS problem using the cvxopt package.</span>
+<span class="sd">        * ``&#39;qp&#39;`` - Optimization of the NNLS problem using the ``quadprog`` package.</span>
+<span class="sd">        * ``&#39;cvx&#39;`` - Optimization of the NNLS problem using the ``cvxopt`` package.</span>
 <span class="sd">        * ``&#39;fnnls&#39;`` - Optimization using the fast NNLS algorithm.</span>
 <span class="sd">        </span>
-<span class="sd">        The default is ``&#39;cvx&#39;``.</span>
+<span class="sd">        The default is ``&#39;qp&#39;``.</span>
 
 <span class="sd">    verbose : scalar integer, optional</span>
 <span class="sd">        Level of verbosity during the analysis:</span>
@@ -1310,18 +1781,11 @@
 <span class="sd">    paramUncert : :ref:`UQResult`</span>
 <span class="sd">        Uncertainty quantification of the parameter vector ordered according to the model parameter indices.</span>
 <span class="sd">    model : ndarray</span>
-<span class="sd">        Fitted model response.</span>
-<span class="sd">    modelUncert : :ref:`UQResult`</span>
-<span class="sd">        Uncertainty quantification of the fitted model response.        </span>
+<span class="sd">        Fitted model response.     </span>
 <span class="sd">    regparam : scalar</span>
 <span class="sd">        Regularization parameter value used for the regularization of the linear parameters.</span>
 <span class="sd">    penweights : scalar or list thereof </span>
 <span class="sd">        Penalty weight value(s) used for the penalties specified through ``penalties``.</span>
-<span class="sd">    plot : callable</span>
-<span class="sd">        Function to display the results. It will display the fitted data.</span>
-<span class="sd">        The function returns the figure object (``matplotlib.figure.Figure``)</span>
-<span class="sd">        object as output, which can be modified. A vector for the x-axis and its label can</span>
-<span class="sd">        be specified by calling ``FitResult.plot(axis=axis,xlabel=&#39;xlabel&#39;)``.</span>
 <span class="sd">    stats : dict</span>
 <span class="sd">        Goodness of fit statistical estimators</span>
 
@@ -1334,7 +1798,11 @@
 <span class="sd">    cost : float</span>
 <span class="sd">        Value of the cost function at the solution.</span>
 <span class="sd">    noiselvl : ndarray</span>
-<span class="sd">        Estimated or user-given noise standard deviations of the individual datasets.    </span>
+<span class="sd">        Estimated or user-given noise standard deviations of the individual datasets.</span>
+<span class="sd">    plot(axis=None,xlabel=&#39;&#39;,gof=False) : callable</span>
+<span class="sd">        Function to display the results. It will display the fitted data.</span>
+<span class="sd">        A vector for the x-axis and its label can be specified by calling ``FitResult.plot(axis=x,xlabel=&#39;xlabel&#39;)``.</span>
+<span class="sd">        A set of goodness-of-fit plots can be displayed by enabling the ``gof`` option by calling ``FitResult.plot(gof=True)``.        </span>
 <span class="sd">    evaluate(model, constants) : callable</span>
 <span class="sd">        Function to evaluate a model at the fitted parameter values. Takes a model object or callable function ``model`` to be evaluated.</span>
 <span class="sd">        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.   </span>
@@ -1440,7 +1908,7 @@
                                                 <span class="n">extrapenalty</span><span class="o">=</span><span class="n">extrapenalties</span><span class="p">(</span><span class="n">penweights</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>        
 
     <span class="c1"># Prepare outer optimization of the penalty weights, if necessary</span>
-    <span class="n">fitfcn</span> <span class="o">=</span> <span class="n">_outerOptimization</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">penalties</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">sigmas</span><span class="p">)</span>
+    <span class="n">fitfcn</span> <span class="o">=</span> <span class="n">_outerOptimization</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">penalties</span><span class="p">,</span><span class="n">sigmas</span><span class="p">)</span>
 
     <span class="c1"># Run the fitting algorithm </span>
     <span class="n">fitresults</span> <span class="o">=</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -1461,10 +1929,8 @@
         <span class="n">fitresults</span><span class="o">.</span><span class="n">param</span> <span class="o">=</span> <span class="n">fitresults</span><span class="o">.</span><span class="n">paramUncert</span><span class="o">.</span><span class="n">median</span>
         <span class="c1"># Get the uncertainty estimates for the model response</span>
         <span class="n">fitresults</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="p">[</span><span class="n">param_uq</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">median</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">param_uq</span><span class="p">))]</span>
-        <span class="n">fitresults</span><span class="o">.</span><span class="n">modelUncert</span> <span class="o">=</span> <span class="p">[</span><span class="n">param_uq</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">param_uq</span><span class="p">))]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fitresults</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> 
             <span class="n">fitresults</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">fitresults</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">fitresults</span><span class="o">.</span><span class="n">modelUncert</span> <span class="o">=</span> <span class="n">fitresults</span><span class="o">.</span><span class="n">modelUncert</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># Get some basic information on the parameter vector</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
 
@@ -1473,7 +1939,7 @@
     <span class="c1"># Dictionary of parameter names and fit uncertainties</span>
     <span class="n">FitResult_paramuq</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">Uncert&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">_getparamuq</span><span class="p">(</span><span class="n">fitresults</span><span class="o">.</span><span class="n">paramUncert</span><span class="p">,</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span><span class="n">param_idx</span><span class="p">)}</span>
     <span class="c1"># Dictionary of other fit quantities of interest</span>
-    <span class="n">FitResult_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fitresults</span><span class="p">,</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;param&#39;</span><span class="p">,</span><span class="s1">&#39;paramUncert&#39;</span><span class="p">,</span><span class="s1">&#39;model&#39;</span><span class="p">,</span><span class="s1">&#39;modelUncert&#39;</span><span class="p">,</span><span class="s1">&#39;cost&#39;</span><span class="p">,</span><span class="s1">&#39;plot&#39;</span><span class="p">,</span><span class="s1">&#39;residuals&#39;</span><span class="p">,</span><span class="s1">&#39;stats&#39;</span><span class="p">,</span><span class="s1">&#39;regparam&#39;</span><span class="p">]}</span>
+    <span class="n">FitResult_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fitresults</span><span class="p">,</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;param&#39;</span><span class="p">,</span><span class="s1">&#39;paramUncert&#39;</span><span class="p">,</span><span class="s1">&#39;model&#39;</span><span class="p">,</span><span class="s1">&#39;cost&#39;</span><span class="p">,</span><span class="s1">&#39;plot&#39;</span><span class="p">,</span><span class="s1">&#39;residuals&#39;</span><span class="p">,</span><span class="s1">&#39;stats&#39;</span><span class="p">,</span><span class="s1">&#39;regparam&#39;</span><span class="p">]}</span>
     <span class="n">_paramlist</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
 
     <span class="c1"># Prepare the propagate() and evaluate() methods</span>
@@ -1489,12 +1955,14 @@
                 <span class="n">param</span><span class="o">.</span><span class="n">unfreeze</span><span class="p">()</span> 
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">linear</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">normalization</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">non_normalized</span> <span class="o">=</span> <span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="c1"># Non-normalized value</span>
+                    <span class="k">def</span> <span class="nf">_scale</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+                        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">param</span><span class="o">.</span><span class="n">normalization</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">FitResult_param_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_scale</span><span class="p">(</span><span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="c1"># Normalization factor</span>
                     <span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">normalization</span><span class="p">(</span><span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="c1"># Normalized value</span>
-                    <span class="n">FitResult_param_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">non_normalized</span><span class="o">/</span><span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="c1"># Normalization factor</span>
-                    <span class="n">FitResult_param_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">non_normalized</span><span class="o">/</span><span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="c1"># Normalization factor</span>
+
+                    <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scaleUncert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">Uncert&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">_scale</span><span class="p">)</span>
                     <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">Uncert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">Uncert&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">/</span><span class="n">FitResult_param_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scale&#39;</span><span class="p">],</span> <span class="n">lb</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">ub</span><span class="p">)</span> <span class="c1"># Normalization of the uncertainty</span>
-                    <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scaleUncert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UQResult</span><span class="p">(</span><span class="s1">&#39;void&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">noiselvl</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> 
         <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">noiselvl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -1505,23 +1973,73 @@
     <span class="k">return</span> <span class="n">fitresult</span></div>
 <span class="c1">#==============================================================================================</span>
 
+<span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_importparameter</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;lb&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">lb</span><span class="p">,</span>
-        <span class="s1">&#39;ub&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">ub</span><span class="p">,</span>
-        <span class="s1">&#39;par0&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">par0</span><span class="p">,</span>
-        <span class="s1">&#39;description&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
-        <span class="s1">&#39;unit&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
-        <span class="s1">&#39;frozen&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">frozen</span><span class="p">,</span>
-        <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
+
+<span class="sd">    Import relevant information from a parameter object.</span>
+
+<span class="sd">    This method extracts the lower and upper bounds (``lb``, ``ub``), initial value</span>
+<span class="sd">    (``par0``), description, unit, frozen state, and current value of the input</span>
+<span class="sd">    parameter object, and returns them as a dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    parameter : ``Parameter`` object</span>
+<span class="sd">        The parameter object whose information is to be extracted.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    parameter_info : dict</span>
+<span class="sd">        A dictionary containing the extracted information of the input</span>
+<span class="sd">        parameter object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract the relevant information from the parameter object</span>
+    <span class="n">parameter_info</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;lb&#39;</span><span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">lb</span><span class="p">,</span>
+        <span class="s1">&#39;ub&#39;</span><span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">ub</span><span class="p">,</span>
+        <span class="s1">&#39;par0&#39;</span><span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">par0</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+        <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
+        <span class="s1">&#39;frozen&#39;</span><span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">frozen</span><span class="p">,</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
     <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">parameter_info</span>
+<span class="c1"># ---------------------------------------------------------------------</span>
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_aresame</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
+
+<span class="sd">    Compare two objects and return True if they have the same attribute values,</span>
+<span class="sd">    excluding the parent attribute and the index attribute.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    obj1 : object</span>
+<span class="sd">        First object to compare.</span>
+
+<span class="sd">    obj2 : object</span>
+<span class="sd">        Second object to compare.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    bool</span>
+<span class="sd">        True if the objects have the same attribute values, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the attribute dictionaries for both objects, excluding the parent and index attributes</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">obj1</span><span class="o">.</span><span class="vm">__dict__</span>
     <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;_parent&#39;</span><span class="p">,</span><span class="s1">&#39;idx&#39;</span><span class="p">]}</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">obj2</span><span class="o">.</span><span class="vm">__dict__</span>
     <span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">b</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;_parent&#39;</span><span class="p">,</span><span class="s1">&#39;idx&#39;</span><span class="p">]}</span>
+
+    <span class="c1"># Compare the dictionaries and return True if they are equal, False otherwise</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -1531,17 +2049,50 @@
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_linked_model_with_constants</span><span class="p">(</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">mapping</span><span class="p">,</span><span class="n">constantsInfo</span><span class="p">,</span><span class="n">linear_reduce_idx</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-    <span class="c1"># Redistribute the input parameter vector according to the mapping vector</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
+
+<span class="sd">    Wrapper function that redistributes the input parameter vector and returns the mapped model response.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nonlinfcn : callable</span>
+<span class="sd">        Function that takes a set of non-linear parameters and returns the model response.</span>
+<span class="sd">    </span>
+<span class="sd">    mapping : ndarray</span>
+<span class="sd">        Mapping vector specifying how the input parameter vector should be redistributed.</span>
+<span class="sd">    </span>
+<span class="sd">    constantsInfo : list</span>
+<span class="sd">        List of dictionaries with information on the constants in the function.</span>
+<span class="sd">    </span>
+<span class="sd">    linear_reduce_idx : list</span>
+<span class="sd">        List of arrays with the indices of the model response to be summed together.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A : ndarray</span>
+<span class="sd">        Model response with the input parameter vector redistributed according to the mapping vector.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the number of constant parameters</span>
     <span class="n">Nconstants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">constantsInfo</span><span class="p">)</span>
+    <span class="c1"># separate the constants and model in the input arguments</span>
     <span class="n">constants</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[:</span><span class="n">Nconstants</span><span class="p">]</span>
     <span class="n">θ</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[</span><span class="n">Nconstants</span><span class="p">:]</span>
+    <span class="c1"># Rearrange the model parameters according to the mapping vector</span>
     <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">θ</span><span class="p">)[</span><span class="n">mapping</span><span class="p">]</span>
+    <span class="c1"># Create a list of input arguments to the model&#39;s non-linear function</span>
     <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+    <span class="c1"># Insert the constant parameters into their specified positions in the argument list</span>
     <span class="k">if</span> <span class="n">constantsInfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">info</span><span class="p">,</span><span class="n">constant</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">constantsInfo</span><span class="p">,</span><span class="n">constants</span><span class="p">):</span>
             <span class="n">args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;argidx&#39;</span><span class="p">],</span><span class="n">constant</span><span class="p">)</span>                
+    <span class="c1"># Evaluate the model&#39;s non-linear function with the updated argument list</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">nonlinfcn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="c1"># Return the output of the non-linear function if it is a tuple (for internal use, undocumented)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span> <span class="k">return</span> <span class="n">A</span>
+    <span class="c1"># Make a matrix if model function returns a vector</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span> <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Sum the output matrix along the columns specified in the linear_reduce_idx array</span>
     <span class="n">Amapped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">A</span><span class="p">[:,</span><span class="n">idx</span><span class="p">]),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">linear_reduce_idx</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">Amapped</span>
 <span class="c1"># ---------------------------------------------------------------------</span>
@@ -1549,12 +2100,19 @@
 <span class="c1"># ==============================================================================</span>
 <div class="viewcode-block" id="link"><a class="viewcode-back" href="../../_autosummary/deerlab.link.html#deerlab.link">[docs]</a><span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="o">**</span><span class="n">links</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create equality relationships between parameters </span>
+<span class="sd">    Link parameters together in a model to create equality relationships </span>
+<span class="sd">    between parameters. </span>
+
+<span class="sd">    Link different sets of parameters to single parameters in a model, such that</span>
+<span class="sd">    the values of the linked parameters are all equal to the value of those </span>
+<span class="sd">    single parameters. The linked parameters are removed from the model and </span>
+<span class="sd">    only the single parameters remain.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : :ref:`Model`</span>
 <span class="sd">        Model object. </span>
+
 <span class="sd">    links : keyword-argument pairs </span>
 <span class="sd">        Keyword-argument pairs, where the arguments must be lists of model parameter names. </span>
 <span class="sd">        The corresponding model parameter will be assigned to new parameter whose name is given </span>
@@ -1572,6 +2130,31 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_linkparameter</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">newname</span><span class="p">):</span>
     <span class="c1"># ---------------------------------------------------------------------  </span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Private function)</span>
+
+<span class="sd">        Link parameters together in a model.</span>
+<span class="sd">        </span>
+<span class="sd">        Link a series of parameters to a single parameter in a model, such that</span>
+<span class="sd">        the values of the linked parameters are all equal to the value of the </span>
+<span class="sd">        single parameter. The linked parameters are removed from the model and </span>
+<span class="sd">        only the single parameter remains.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : object</span>
+<span class="sd">            Model object instance.</span>
+<span class="sd">        parameters : list</span>
+<span class="sd">            List of parameters to be linked together. </span>
+<span class="sd">        newname : string</span>
+<span class="sd">            Name of the linked parameter.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        model : object</span>
+<span class="sd">            Updated model object instance with the linked parameters removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
         <span class="c1"># Get a list of parameter names in the model</span>
         <span class="n">model_parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
 
@@ -1695,69 +2278,203 @@
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_unique_ordered</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
+
+<span class="sd">    Returns a list of the unique elements in vec, ordered as they appear in vec.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vec : list</span>
+<span class="sd">        List of elements to be processed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    uniques : list</span>
+<span class="sd">        List of the unique elements in vec, ordered as they appear in vec.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create a list to store the unique elements</span>
     <span class="n">uniques</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Loop through the elements of vec</span>
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vec</span><span class="p">:</span> 
+        <span class="c1"># If the element is not already in uniques, add it</span>
         <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">uniques</span><span class="p">:</span>
             <span class="n">uniques</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="c1"># Return the list of unique elements</span>
     <span class="k">return</span> <span class="n">uniques</span>
 <span class="c1"># ---------------------------------------------------------------------</span>
 
 
 <span class="c1">#---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_combined_nonlinmodel</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">nonlinfcns</span><span class="p">,</span><span class="n">Nlins</span><span class="p">,</span><span class="n">Nconst</span><span class="p">,</span><span class="n">arelinear</span><span class="p">,</span><span class="n">const_subsets</span><span class="p">,</span><span class="n">subsets_nonlin</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Evaluates the nonlinear functions of the submodels and </span>
-<span class="sd">    concatenates them into a single design matrix&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
 
+<span class="sd">    Combine the output of multiple non-linear models.</span>
+
+<span class="sd">    This function is used to combine the output of multiple non-linear models</span>
+<span class="sd">    into a single design matrix or model response. The combination mode</span>
+<span class="sd">    can be either &#39;merge&#39; (merge the output of each model into a single block-</span>
+<span class="sd">    diagonal matrix) or &#39;lincombine&#39; (concatenate the output of each model</span>
+<span class="sd">    horizontally).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        Either &#39;merge&#39; or &#39;lincombine&#39;, depending on the desired</span>
+<span class="sd">        combination mode.</span>
+<span class="sd">    nonlinfcns : list of callables</span>
+<span class="sd">        List of non-linear functions to combine.</span>
+<span class="sd">    Nlins : list of ints</span>
+<span class="sd">        List of the number of linear parameters in each non-linear function.</span>
+<span class="sd">    Nconst : int</span>
+<span class="sd">        Number of constants for each non-linear function.</span>
+<span class="sd">    arelinear : list of bools</span>
+<span class="sd">        List of bools indicating whether each non-linear function has</span>
+<span class="sd">        only linear parameters.</span>
+<span class="sd">    const_subsets : list of lists</span>
+<span class="sd">        List of constant subsets for each non-linear function.</span>
+<span class="sd">    subsets_nonlin : list of lists</span>
+<span class="sd">        List of non-linear parameter subsets for each non-linear function.</span>
+<span class="sd">    *inputargs : list of arrays</span>
+<span class="sd">        List of input arguments to the non-linear functions, consisting</span>
+<span class="sd">        of constants followed by parameters.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Anonlin_full : ndarray</span>
+<span class="sd">        Array with the combined output of the non-linear functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Unpack the input arguments into constants and parameters</span>
     <span class="n">constants</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[:</span><span class="n">Nconst</span><span class="p">]</span>
     <span class="n">param</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[</span><span class="n">Nconst</span><span class="p">:]</span>
 
+    <span class="c1"># Make sure that constants and parameters are arrays</span>
     <span class="n">param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
     <span class="n">constants</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
+
     <span class="c1"># Loop over the submodels in the model</span>
     <span class="n">Amatrices</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">nonlinfcn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nonlinfcns</span><span class="p">):</span>
         <span class="c1"># Evaluate the submodel</span>
         <span class="n">Amatrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">nonlinfcn</span><span class="p">(</span><span class="o">*</span><span class="n">constants</span><span class="p">[</span><span class="n">const_subsets</span><span class="p">[</span><span class="n">n</span><span class="p">],:],</span><span class="o">*</span><span class="n">param</span><span class="p">[</span><span class="n">subsets_nonlin</span><span class="p">[</span><span class="n">n</span><span class="p">]]))</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Amatrix</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="n">Nlins</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span> <span class="n">Amatrix</span> <span class="o">=</span> <span class="n">Amatrix</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="c1"># Transpose the output matrix if necessary</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Amatrix</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="n">Nlins</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+            <span class="n">Amatrix</span> <span class="o">=</span> <span class="n">Amatrix</span><span class="o">.</span><span class="n">T</span>
         <span class="n">Amatrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Amatrix</span><span class="p">)</span>
+
+    <span class="c1"># Merge or concatenate the output of the submodels</span>
     <span class="k">if</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;merge&#39;</span><span class="p">:</span>
         <span class="n">Anonlin_full</span> <span class="o">=</span> <span class="n">block_diag</span><span class="p">(</span><span class="n">Amatrices</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+        <span class="c1"># If all submodels are non-linear, sum the output matrices</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">arelinear</span><span class="p">):</span>
             <span class="n">Anonlin_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Anonlin_full</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;lincombine&#39;</span><span class="p">:</span>
         <span class="n">Anonlin_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">Amatrices</span><span class="p">)</span>
 
+    <span class="c1"># Return the combined output</span>
     <span class="k">return</span> <span class="n">Anonlin_full</span>
 <span class="c1">#---------------------------------------------------------------------</span>
 
 <span class="c1">#---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_split_output</span><span class="p">(</span><span class="n">nonlinfcns</span><span class="p">,</span><span class="n">Nlins</span><span class="p">,</span><span class="n">Nconst</span><span class="p">,</span><span class="n">const_subsets</span><span class="p">,</span><span class="n">subsets_nonlin</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
+
+<span class="sd">    Split the output of a model into the outputs of its submodels.</span>
+
+<span class="sd">    This method is used to evaluate the outputs of each of the submodels that</span>
+<span class="sd">    make up a composite model. It is called internally by the ``Model`` class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nonlinfcns : list of callables</span>
+<span class="sd">        List of functions representing the submodels that make up the composite model.</span>
+
+<span class="sd">    Nlins : list of int</span>
+<span class="sd">        List of the number of linear parameters in each of the submodels.</span>
+
+<span class="sd">    Nconst : int</span>
+<span class="sd">        Total number of constant arguments for all submodels.</span>
+
+<span class="sd">    const_subsets : list of array_like</span>
+<span class="sd">        List of indices specifying which constant arguments each submodel uses.</span>
+
+<span class="sd">    subsets_nonlin : list of array_like</span>
+<span class="sd">        List of indices specifying which non-linear parameters each submodel uses.</span>
+
+<span class="sd">    y : array_like</span>
+<span class="sd">        Output of the full model.</span>
+
+<span class="sd">    *inputargs</span>
+<span class="sd">        List of constant arguments followed by the non-linear parameters of the full model.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    output : list of array_like</span>
+<span class="sd">        List of the outputs of each submodel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Split the input arguments into constants and parameters</span>
     <span class="n">constants</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[:</span><span class="n">Nconst</span><span class="p">]</span>
     <span class="n">param</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[</span><span class="n">Nconst</span><span class="p">:]</span>
+    <span class="c1"># Ensure that variables are arrays</span>
     <span class="n">param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
     <span class="n">constants</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
+    
     <span class="c1"># Loop over the submodels in the model</span>
     <span class="n">ysizes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">nonlinfcn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nonlinfcns</span><span class="p">):</span>
         <span class="c1"># Evaluate the submodel</span>
         <span class="n">Amatrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">nonlinfcn</span><span class="p">(</span><span class="o">*</span><span class="n">constants</span><span class="p">[</span><span class="n">const_subsets</span><span class="p">[</span><span class="n">n</span><span class="p">],:],</span><span class="o">*</span><span class="n">param</span><span class="p">[</span><span class="n">subsets_nonlin</span><span class="p">[</span><span class="n">n</span><span class="p">]]))</span>
+        <span class="c1"># Transpose the matrix if necessary</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Amatrix</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="n">Nlins</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span> <span class="n">Amatrix</span> <span class="o">=</span> <span class="n">Amatrix</span><span class="o">.</span><span class="n">T</span>
+        <span class="c1"># Store the size of the output from this submodel</span>
         <span class="n">ysizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Amatrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    
+    <span class="c1"># Create subsets of y for each submodel output</span>
     <span class="n">nprev</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">ysubsets</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ysizes</span><span class="p">:</span>
         <span class="n">ysubsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nprev</span><span class="p">,</span><span class="n">nprev</span><span class="o">+</span><span class="n">x</span><span class="p">))</span>
         <span class="n">nprev</span> <span class="o">=</span> <span class="n">nprev</span><span class="o">+</span><span class="n">x</span>
+    <span class="c1"># Return the subsets of y</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="n">ysubsets</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ysizes</span><span class="p">))]</span>
 <span class="c1">#---------------------------------------------------------------------</span>
 
 
-<span class="c1">#==============================================================================================</span>
+<span class="c1">#---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_combinemodels</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
 
+<span class="sd">    Combine multiple ``Model`` objects into a single model. This helper function</span>
+<span class="sd">    is used by the ``merge`` and ``lincombine`` functions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        The mode of combination, which can be ``&#39;parallel&#39;`` or ``&#39;sequential&#39;``. In</span>
+<span class="sd">        parallel mode, each model is assumed to be independent of each other</span>
+<span class="sd">        and the combined model returns the sum of the output of the</span>
+<span class="sd">        individual models. In sequential mode, the output of each model is</span>
+<span class="sd">        passed on to the next model as input.</span>
+
+<span class="sd">    inputmodels : ``Model`` objects</span>
+<span class="sd">        Any number of models to be combined.</span>
+
+<span class="sd">    addweights : bool, optional</span>
+<span class="sd">        If ``True``, add weighting factors to the combined model. These weighting</span>
+<span class="sd">        factors can be used to adjust the contribution of each individual</span>
+<span class="sd">        model to the combined model. The default is ``False``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    combmodel : Model object</span>
+<span class="sd">        The combined model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Initialize empty containers</span>
     <span class="n">subsets_nonlin</span><span class="p">,</span><span class="n">arguments</span><span class="p">,</span><span class="n">arelinear</span><span class="p">,</span><span class="n">lin_normalizations</span> <span class="o">=</span> <span class="p">[],[],[],[]</span>
     <span class="n">nprev</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1881,7 +2598,7 @@
 
     <span class="c1"># Return the new combined model object</span>
     <span class="k">return</span> <span class="n">combinedModel</span>    
-<span class="c1">#==============================================================================================</span>
+<span class="c1">#---------------------------------------------------------------------</span>
 
 <span class="c1">#==============================================================================================</span>
 <div class="viewcode-block" id="merge"><a class="viewcode-back" href="../../_autosummary/deerlab.merge.html#deerlab.merge">[docs]</a><span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1944,15 +2661,62 @@
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_dependency_model_with_constants</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">constantsInfo</span><span class="p">,</span><span class="n">arguments_idx</span><span class="p">,</span><span class="n">dependent_idx</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Private function)</span>
+
+<span class="sd">    A helper function that maps the input arguments of a model and</span>
+<span class="sd">    calls the nonlinear function with the mapped arguments.</span>
+
+<span class="sd">    This function is used to evaluate models that have dependencies</span>
+<span class="sd">    between their parameters, where one parameter is defined in terms</span>
+<span class="sd">    of another.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : callable</span>
+<span class="sd">        The function defining the dependency between parameters.</span>
+
+<span class="sd">    nonlinfcn : callable</span>
+<span class="sd">        The nonlinear model function to be called with the mapped</span>
+<span class="sd">        input arguments.</span>
+
+<span class="sd">    constantsInfo : list</span>
+<span class="sd">        A list of dictionaries containing information about the</span>
+<span class="sd">        constants in the model.</span>
+
+<span class="sd">    arguments_idx : ndarray</span>
+<span class="sd">        An array of indices specifying which arguments of the</span>
+<span class="sd">        nonlinear model function are arguments of the dependency</span>
+<span class="sd">        function.</span>
+
+<span class="sd">    dependent_idx : int</span>
+<span class="sd">        The index of the dependent parameter in the input argument</span>
+<span class="sd">        vector.</span>
+
+<span class="sd">    *inputargs</span>
+<span class="sd">        The input arguments of the model.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A : array</span>
+<span class="sd">        The model (design) matrix output of the nonlinear function with the mapped input</span>
+<span class="sd">        arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Redistribute the input parameter vector according to the mapping vector</span>
     <span class="n">Nconstants</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">constantsInfo</span><span class="p">)</span>
     <span class="n">constants</span> <span class="o">=</span> <span class="n">inputargs</span><span class="p">[:</span><span class="n">Nconstants</span><span class="p">]</span>
     <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">inputargs</span><span class="p">[</span><span class="n">Nconstants</span><span class="p">:])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># Insert the output of the dependency function at the correct index</span>
     <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">θ</span><span class="p">,</span><span class="n">dependent_idx</span><span class="p">,</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">θ</span><span class="p">[</span><span class="n">arguments_idx</span><span class="p">]))</span>  
+
+    <span class="c1"># Build the list of arguments to be passed to the nonlinear function</span>
     <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">constantsInfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">info</span><span class="p">,</span><span class="n">constant</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">constantsInfo</span><span class="p">,</span><span class="n">constants</span><span class="p">):</span>
             <span class="n">args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;argidx&#39;</span><span class="p">],</span><span class="n">constant</span><span class="p">)</span>                
+
+    <span class="c1"># Call the nonlinear function with the mapped arguments</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">nonlinfcn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">A</span>
 <span class="c1"># ---------------------------------------------------------------------</span>

@@ -91,7 +91,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -100,7 +100,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -116,13 +116,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -186,14 +187,19 @@
 <span class="c1"># fftspec.py - Fast-Fourier transform spectrum</span>
 <span class="c1"># ---------------------------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md). </span>
-<span class="c1"># Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.</span>
+<span class="c1"># Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy.fft</span> <span class="kn">import</span> <span class="n">fft</span><span class="p">,</span> <span class="n">fftshift</span><span class="p">,</span> <span class="n">fftfreq</span>
 
 <div class="viewcode-block" id="fftspec"><a class="viewcode-back" href="../../_autosummary/deerlab.fftspec.html#deerlab.fftspec">[docs]</a><span class="k">def</span> <span class="nf">fftspec</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;abs&#39;</span><span class="p">,</span> <span class="n">zerofilling</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Fast-Fourier transform spectrum</span>
+<span class="sd">    Computes the Fast-Fourier Transform (FFT) spectrum of the input signal V.</span>
+
+<span class="sd">    This function computes the FFT spectrum of the input signal ``V`` using the</span>
+<span class="sd">    ``fft`` function from the ``numpy.fft`` module. The function allows to specify</span>
+<span class="sd">    the type of spectrum to be returned, the zero-filling factor, and whether</span>
+<span class="sd">    to apply a Hamming apodization window.</span>
 <span class="sd"> </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

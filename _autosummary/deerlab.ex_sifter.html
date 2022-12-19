@@ -44,7 +44,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="deerlab.ex_ridme" href="deerlab.ex_ridme.html" />
+    <link rel="next" title="deerlab.ex_dqc" href="deerlab.ex_dqc.html" />
     <link rel="prev" title="deerlab.ex_fwd5pdeer" href="deerlab.ex_fwd5pdeer.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../license.html">License</a>
@@ -196,48 +197,27 @@
 <span id="ex-sifter"></span><h1>deerlab.ex_sifter<a class="headerlink" href="#deerlab-ex-sifter" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="deerlab.ex_sifter">
-<span class="sig-name descname"><span class="pre">ex_sifter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathways</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulselength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.016</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarmodel.html#ex_sifter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.ex_sifter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a SIFTER dipolar experiment model.</p>
-<a class="reference internal image-reference" href="../_images/sequence_sifter.svg"><img alt="../_images/sequence_sifter.svg" src="../_images/sequence_sifter.svg" width="450px" /></a>
-<p>This experiment model has the following modulated dipolar pathways. The 
-theoretical refocusing times of the individual pathways are calculated 
-from the input pulse sequence delays:</p>
-<table class="table">
-<colgroup>
-<col style="width: 24%" />
-<col style="width: 47%" />
-<col style="width: 29%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Pathway</p></th>
-<th class="head"><p>Refocusing time</p></th>
-<th class="head"><p>Harmonic</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>1</p></td>
-<td><p>𝜏2-𝜏1</p></td>
-<td><p>1</p></td>
-</tr>
-<tr class="row-odd"><td><p>2</p></td>
-<td><p>2𝜏2</p></td>
-<td><p>1/2</p></td>
-</tr>
-<tr class="row-even"><td><p>3</p></td>
-<td><p>-2𝜏1</p></td>
-<td><p>1/2</p></td>
-</tr>
-</tbody>
-</table>
+<span class="sig-name descname"><span class="pre">ex_sifter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathways</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulselength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.016</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarmodel.html#ex_sifter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.ex_sifter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a 4-pulse SIFTER dipolar experiment model.</p>
+<p>The figure below shows the dipolar pathways in 4-pulse SIFTER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+The middle table summarizes all detectable modulated dipolar pathways <img class="math" src="../_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/> along their dipolar phase accumulation factors <img class="math" src="../_images/math/dd08ffa6e3f58b7aaedd207b0da50ebc1cc2c557.svg" alt="\mathbf{s}_p"/>,
+harmonics <img class="math" src="../_images/math/281f2ba662db828f004921a53bb8806c2eab4a55.svg" alt="\delta_p"/> and refocusing times <img class="math" src="../_images/math/23a9fd87389b79aea3f1248a2b7c1b0086e9edb2.svg" alt="t_{\mathrm{ref},p}"/>. The most commonly encountered pathways are highlighted in color. 
+The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/ex_sifter_pathways.png"><img alt="../_images/ex_sifter_pathways.png" src="../_images/ex_sifter_pathways.png" style="width: 350px;" /></a>
+<figcaption>
+<p><span class="caption-text">Source: L. Fábregas-Ibáñez, Advanced data analysis and modeling in dipolar EPR spectroscopy, Doctoral dissertation, 2022</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>tau1</strong><span class="classifier">float scalar</span></dt><dd><p>1st static interpulse delay.</p>
+<dt><strong>tau1</strong><span class="classifier">float scalar</span></dt><dd><p>1st static interpulse delay <img class="math" src="../_images/math/a1a503d6d647127702a687fbf69c4f1fe95530c6.svg" alt="\tau_1"/>.</p>
 </dd>
-<dt><strong>tau2</strong><span class="classifier">float scalar</span></dt><dd><p>2nd static interpulse delay.</p>
+<dt><strong>tau2</strong><span class="classifier">float scalar</span></dt><dd><p>2nd static interpulse delay <img class="math" src="../_images/math/1bf2289fb4b8481efba4fb276c5f67404b7c1f7f.svg" alt="\tau_2"/>.</p>
 </dd>
-<dt><strong>pathways</strong><span class="classifier">array_like, optional</span></dt><dd><p>Pathways to include in the model. The pathways are specified based to the pathways numbers. 
-By default, all 3 pathways are included and ordered as given in the table above.</p>
+<dt><strong>pathways</strong><span class="classifier">array_like, optional</span></dt><dd><p>Pathways to include in the model. The pathways are specified as a list of pathways labels <img class="math" src="../_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/>. 
+By default, all 3 pathways are included as shown in the table above.</p>
 </dd>
 <dt><strong>pulselength</strong><span class="classifier">float scalar, optional</span></dt><dd><p>Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
 boundaries of the pathay refocusing times.</p>
@@ -246,8 +226,7 @@ boundaries of the pathay refocusing times.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>experiment</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">ExperimentInfo</span></code> object</span></dt><dd><p>Experiment object. Can be passed to <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> to introduce better
-constraints into the model.</p>
+<dt><strong>experiment</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">ExperimentInfo</span></code> object</span></dt><dd><p>Experiment object. Can be passed to <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> to introduce better constraints into the model.</p>
 </dd>
 </dl>
 </dd>
@@ -269,10 +248,10 @@ constraints into the model.</p>
             <p class="prev-next-title">deerlab.ex_fwd5pdeer</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="deerlab.ex_ridme.html" title="next page">
+    <a class='right-next' id="next-link" href="deerlab.ex_dqc.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">deerlab.ex_ridme</p>
+        <p class="prev-next-title">deerlab.ex_dqc</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

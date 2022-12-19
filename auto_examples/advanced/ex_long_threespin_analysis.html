@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Analyzing 4-pulse DEER data acquired on three-spin systems &#8212; DeerLab</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Fitting Gaussians to a non-parametric distance distribution fit" href="ex_extracting_gauss_constraints.html" />
+    <link rel="prev" title="Simulating orientation selection effects in dipolar signals" href="ex_simulating_orisel.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+  
+    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-long-threespin-analysis-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="analyzing-4-pulse-deer-data-acquired-on-three-spin-systems">
+<span id="sphx-glr-auto-examples-advanced-ex-long-threespin-analysis-py"></span><h1>Analyzing 4-pulse DEER data acquired on three-spin systems<a class="headerlink" href="#analyzing-4-pulse-deer-data-acquired-on-three-spin-systems" title="Permalink to this headline">¶</a></h1>
+<p>As in the publication referenced below, this example will take two 4-pulse DEER signals acquired
+on the same protein sample conatining three nitroxide spins with different attenuation levels of the pump
+pulse power.</p>
+<p>For the original model and more information on these systems please refer to:
+L. Fábregas Ibáñez, M. H. Tessmer, G. Jeschke, and S. Stoll.
+Dipolar pathways in multi-spin and multi-dimensional dipolar EPR spectroscopy
+Phys. Chem. Chem. Phys., 24 2022, 22645-22660</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span>  <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+
+<span class="c1"># Load experimental data</span>
+<span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;../data/triradical_protein_deer_</span><span class="si">{</span><span class="n">dB</span><span class="si">}</span><span class="s1">dB.DTA&#39;</span> <span class="k">for</span> <span class="n">dB</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">9</span><span class="p">]]</span>
+
+<span class="c1"># Experiment information</span>
+<span class="n">t0</span>  <span class="o">=</span> <span class="mf">0.280</span> <span class="c1"># Acquisition deadtime, μs</span>
+<span class="n">tau1</span> <span class="o">=</span> <span class="mf">0.40</span> <span class="c1"># First interpulse delay, μs</span>
+<span class="n">tau2</span> <span class="o">=</span> <span class="mf">9.00</span> <span class="c1"># Second interpulse delay, μs</span>
+
+<span class="c1"># Construct 4-pulse DEER experiment model</span>
+<span class="n">my4pdeer</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">ex_4pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span><span class="n">tau2</span><span class="p">,</span><span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Loop over the different datasets</span>
+<span class="n">Vmodels</span><span class="p">,</span><span class="n">Vexps</span><span class="p">,</span><span class="n">ts</span><span class="p">,</span><span class="n">Vexps_sub</span><span class="p">,</span><span class="n">ts_sub</span> <span class="o">=</span> <span class="p">[],[],[],[],[]</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+    <span class="c1"># Load the dataset</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span> <span class="n">descriptor</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">deerload</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:</span><span class="o">-</span><span class="mi">80</span><span class="p">]</span>
+    <span class="n">Vexp</span> <span class="o">=</span> <span class="n">Vexp</span><span class="p">[:</span><span class="o">-</span><span class="mi">80</span><span class="p">]</span>
+    <span class="c1"># Adjust the start time</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">t0</span>
+
+    <span class="c1"># Pre-processing</span>
+    <span class="n">Vexp</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">correctphase</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
+    <span class="n">Vexp</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
+
+    <span class="c1"># Store the pre-processed datasets in a list</span>
+    <span class="n">Vexps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vexp</span><span class="p">)</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="c1"># Subsampling</span>
+    <span class="c1"># (required for efficient analysis in densely sampled datasets)</span>
+    <span class="n">sampling</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># Take every 4th point</span>
+    <span class="n">t_sub</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">sampling</span><span class="p">]</span>
+    <span class="n">Vexp_sub</span> <span class="o">=</span> <span class="n">Vexp</span><span class="p">[</span><span class="n">sampling</span><span class="p">]</span>
+
+    <span class="c1"># Store the subsampled datasets in a list</span>
+    <span class="n">Vexps_sub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vexp_sub</span><span class="p">)</span>
+    <span class="n">ts_sub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t_sub</span><span class="p">)</span>
+
+    <span class="c1"># Construct the three-spin dipolar model</span>
+    <span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t_sub</span><span class="p">,</span><span class="n">spins</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">experiment</span><span class="o">=</span><span class="n">my4pdeer</span><span class="p">,</span> <span class="n">minamp</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+    <span class="c1"># Add dipolar model to list of models</span>
+    <span class="n">Vmodels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">)</span>
+
+<span class="c1"># Construct a global dipolar model describing all datasets</span>
+<span class="n">Vglobal</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="o">*</span><span class="n">Vmodels</span><span class="p">)</span>
+<span class="n">Vglobal</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">Vglobal</span><span class="p">,</span>
+        <span class="n">rmean1</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;rmean1_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">rmean2</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;rmean2_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">rmean3</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;rmean3_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">chol11</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;chol11_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">chol22</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;chol22_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">chol33</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;chol33_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">chol21</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;chol21_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">chol31</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;chol31_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">chol32</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;chol32_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">conc</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;conc_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+        <span class="n">reftime1</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;reftime1_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Vmodels</span><span class="p">))],</span>
+<span class="p">)</span>
+<span class="c1"># Freeze the Cholesky-factors accounting for the correlation coefficients</span>
+<span class="c1"># to zero (not always applicable)</span>
+<span class="n">Vglobal</span><span class="o">.</span><span class="n">chol21</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Vglobal</span><span class="o">.</span><span class="n">chol31</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Vglobal</span><span class="o">.</span><span class="n">chol32</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Fit the model to the data</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Vglobal</span><span class="p">,</span> <span class="n">Vexps_sub</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot the fitted datasets</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">ts_sub</span><span class="p">,</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;time (μs)&#39;</span><span class="p">)</span>
+
+<span class="c1"># Print the fit summary</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-long-threespin-analysis-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/ae1b1c1d37a35bf11fb5434f42f3c22f/ex_long_threespin_analysis.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_long_threespin_analysis.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/69be5a8d50a17e9105f8af7bee3ce9ba/ex_long_threespin_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_long_threespin_analysis.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="ex_simulating_orisel.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Simulating orientation selection effects in dipolar signals</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="ex_extracting_gauss_constraints.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Fitting Gaussians to a non-parametric distance distribution fit</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

@@ -91,7 +91,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -100,7 +100,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -116,13 +116,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -202,7 +203,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    fullbasename : string</span>
-<span class="sd">        Full name of data file.</span>
+<span class="sd">        Full name of data file, including the extension (&#39;.DSC&#39; or &#39;.DTA&#39;).</span>
 <span class="sd">    </span>
 <span class="sd">    full_output : boolean, optional</span>
 <span class="sd">        Return the parameter file entries as a third output. Disabled by default.</span>
@@ -213,7 +214,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    t : ndarray</span>
-<span class="sd">        Time axis in microseconds.Its structure depends on the dimensionality of the experimental datasets:</span>
+<span class="sd">        Time axis in microseconds. Its structure depends on the dimensionality of the experimental datasets:</span>
 
 <span class="sd">        * 1D-datasets: the time axis of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``</span>
 <span class="sd">        * 2D-datasets: the ``M`` time-axes of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th axis can be accessed via ``t[:,i]``.</span>

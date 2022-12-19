@@ -91,7 +91,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -100,7 +100,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -116,13 +116,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -185,7 +186,7 @@
 <span></span><span class="c1"># diststats.py - Distance distribution descriptors</span>
 <span class="c1"># -----------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md).</span>
-<span class="c1"># Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.</span>
+<span class="c1"># Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -194,16 +195,24 @@
 <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">cumtrapz</span>
 
 <div class="viewcode-block" id="diststats"><a class="viewcode-back" href="../../_autosummary/deerlab.diststats.html#deerlab.diststats">[docs]</a><span class="k">def</span> <span class="nf">diststats</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Puq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes statistical quantities for the location, spread, and shape </span>
-<span class="sd">    of a distance distribution, with or without their corresponding uncertainties.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Computes statistical quantities for the location, spread, and shape of</span>
+<span class="sd">    a distance distribution, with or without their corresponding uncertainties.</span>
 
+<span class="sd">    This function calculates various statistical quantities of a distance distribution,</span>
+<span class="sd">    such as its mean, median, mode, etc. It can also calculate the uncertainty</span>
+<span class="sd">    of these quantities using moment-based or bootstrapped uncertainty quantification, if provided. </span>
+<span class="sd">    The function allows to specify whether to print a summary of the results and the </span>
+<span class="sd">    peak detection threshold for the calculation of the mode of the distribution.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    r : array_like</span>
-<span class="sd">        Distance axis, in nm. </span>
+<span class="sd">        Distance axis, in nm. The distances in the distribution.</span>
 <span class="sd">    </span>
 <span class="sd">    P : array_like</span>
-<span class="sd">        Distance distribution, does not have to be normalized.</span>
+<span class="sd">        Distance distribution, does not have to be normalized. The probability or</span>
+<span class="sd">        relative frequency of the distances in `r`.</span>
 <span class="sd">    </span>
 <span class="sd">    Puq : :ref:`UQResult`, optional</span>
 <span class="sd">        Uncertainty quantification of the distance distribution. If Puq is not given, a</span>
@@ -251,12 +260,12 @@
 <span class="sd">        * ``&#39;moment4&#39;`` - 4th moment (kurtosis) (see `more &lt;https://en.wikipedia.org/wiki/Kurtosis&gt;`__)</span>
 
 <span class="sd">    uq : dict of :ref:`UQResult`</span>
-<span class="sd">        Dictionary of the parameters covariance-based uncertainty quantification. </span>
+<span class="sd">        Dictionary of the parameters moment-based uncertainty quantification. </span>
 <span class="sd">        See above for the dictionary keys. Only calculated if ``Puq`` is provided.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    For the ``&#39;mode&#39;``, ``&#39;modes&#39;`` and ``&#39;modality&#39;`` parameters, covariance-based uncertainties are not </span>
+<span class="sd">    For the ``&#39;mode&#39;``, ``&#39;modes&#39;`` and ``&#39;modality&#39;`` parameters, moment-based uncertainties are not </span>
 <span class="sd">    available. Uncertainties can, however, be calculated via bootsrapping of these quantities, e.g. ::</span>
 
 <span class="sd">        def analyze_rmode(V):</span>

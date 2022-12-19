@@ -9812,9 +9812,9 @@ margin-left: 2.5em;
 margin-top: -2.1em;
 }
 .sphx-glr-script-out .highlight pre {
-background-color: #fafae2;
+background-color: #fff;
 border: 0;
-max-height: 30em;
+max-height: fit-content;
 overflow: auto;
 padding-left: 1ex;
 margin: 0px;
@@ -9898,7 +9898,7 @@ max-width: 100%;
 }
 
 .sphx-glr-multi-img {
-max-width: 42%;
+max-width: 100%;
 height: auto;
 }
 
@@ -10147,4 +10147,83 @@ src: local('Berlin Sans FB Bold'), url('BRLNSB.woff') format('woff');
     padding-top: 75px;
     padding-left: 22px;
     width:95%
+}
+
+
+img.math {
+    vertical-align: middle;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+div.gallery {
+      margin: 5px;
+      border: 1px solid #ccc;
+      float: left;
+      width: 180px;
+    }
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: left;
+}
+
+.publications-float-container {
+    border: 3px solid #fff;
+    height: 300px;
+    display: flex;
+    padding-left: 30px;
+}
+
+.publications-float-child-left {
+    width: 30%;
+    float: left;
+    padding: 20px;
+    height: inherit
+}  
+
+.publications-float-child-right {
+    width: 70%;
+    float: left;
+    padding: 20px;
+    height: inherit;
+}  
+
+.download-publication {
+    background-color: #4550e6;
+    width: fit-content;
+    padding: 5px 16px;
+    color: #d2d5f9;
+    border-radius: 37px;
+    border-color: aqua;
+    border: solid #d0d3f9;
+  }
+
+.publication-title {
+    font-weight: bold;
+    padding-bottom: 10px;
+    padding-top: 15px;
+    font-size: 105%;
+    line-height: normal;
+  }
+
+.publication-metadata {
+    padding-bottom: 30px;
+}
+
+.publication-image{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    height: 100%;
+    width: auto;
 }

@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../license.html">License</a>
@@ -207,7 +208,7 @@ in a multi-dimensional setup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>fullbasename</strong><span class="classifier">string</span></dt><dd><p>Full name of data file.</p>
+<dt><strong>fullbasename</strong><span class="classifier">string</span></dt><dd><p>Full name of data file, including the extension (‘.DSC’ or ‘.DTA’).</p>
 </dd>
 <dt><strong>full_output</strong><span class="classifier">boolean, optional</span></dt><dd><p>Return the parameter file entries as a third output. Disabled by default.</p>
 </dd>
@@ -217,7 +218,7 @@ in a multi-dimensional setup.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>t</strong><span class="classifier">ndarray</span></dt><dd><p>Time axis in microseconds.Its structure depends on the dimensionality of the experimental datasets:</p>
+<dt><strong>t</strong><span class="classifier">ndarray</span></dt><dd><p>Time axis in microseconds. Its structure depends on the dimensionality of the experimental datasets:</p>
 <ul class="simple">
 <li><p>1D-datasets: the time axis of <code class="docutils literal notranslate"><span class="pre">N</span></code> points is returned as a one-dimensional ndarray of shape <code class="docutils literal notranslate"><span class="pre">(N,)</span></code></p></li>
 <li><p>2D-datasets: the <code class="docutils literal notranslate"><span class="pre">M</span></code> time-axes of <code class="docutils literal notranslate"><span class="pre">N</span></code> points are returned as a two-dimensional ndarray of shape <code class="docutils literal notranslate"><span class="pre">(N,M)</span></code>. The i-th axis can be accessed via <code class="docutils literal notranslate"><span class="pre">t[:,i]</span></code>.</p></li>

@@ -44,8 +44,8 @@
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Bootstrapped confidence intervals in routine analysis" href="ex_bootstrapping.html" />
-    <link rel="prev" title="Identifiability analysis of a 4-pulse DEER signal via the profile analysis method" href="ex_identifiability_analysis.html" />
+    <link rel="next" title="Analysis of a 4-pulse DEER signal with a compactness penalty" href="ex_fitting_4pdeer_compactness.html" />
+    <link rel="prev" title="Simulating a three-pathway 4-pulse DEER signal" href="../basic_simulations/ex_simulate_4pdeer.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -238,11 +239,11 @@ distribution and a homogeneous background, using Tikhonov regularization.</p>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Goodness-of-fit:
-========= ============= ============ ======= ===========
- Dataset   Noise level   Reduced 𝛘2   RMSD       AIC
-========= ============= ============ ======= ===========
-   #1         0.005        0.811      0.004   -1443.637
-========= ============= ============ ======= ===========
+========= ============= ============= ===================== =======
+ Dataset   Noise level   Reduced 𝛘2    Residual autocorr.    RMSD
+========= ============= ============= ===================== =======
+   #1         0.005         0.811   [00m          0.127       [00m   0.004
+========= ============= ============= ===================== =======
 Model hyperparameters:
 ==========================
  Regularization parameter
@@ -250,20 +251,19 @@ Model hyperparameters:
           0.224
 ==========================
 Model parameters:
-=========== ==================== ========================= ====== ======================================
- Parameter   Value                95%-Confidence interval   Unit   Description
-=========== ==================== ========================= ====== ======================================
- mod         0.302                (0.299,0.305)                    Modulation depth
- reftime     0.299                (0.298,0.301)              μs    Refocusing time
- conc        148.470              (143.517,153.423)          μM    Spin concentration
- P           ...                  (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     0.9987695742262306                             None   Normalization factor of P
-=========== ==================== ========================= ====== ======================================
+=========== ========= ========================= ====== ======================================
+ Parameter   Value     95%-Confidence interval   Unit   Description
+=========== ========= ========================= ====== ======================================
+ mod         0.302     (0.299,0.305)                    Modulation depth
+ reftime     0.299     (0.298,0.301)              μs    Refocusing time
+ conc        148.470   (143.517,153.423)          μM    Spin concentration
+ P           ...       (...,...)                 nm⁻¹   Non-parametric distance distribution
+ P_scale     0.999     (0.998,1.000)             None   Normalization factor of P
+=========== ========= ========================= ====== ======================================
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract fitted dipolar signal</span>
 <span class="n">Vfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">model</span>
-<span class="n">Vci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">modelUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
 <span class="c1"># Extract fitted distance distribution</span>
 <span class="n">Pfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">P</span>
@@ -281,7 +281,6 @@ Model parameters:
 <span class="c1"># Plot experimental and fitted data</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vci</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Vci</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Bfit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unmodulated contribution&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Bci</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Bci</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
@@ -301,7 +300,7 @@ Model parameters:
 </pre></div>
 </div>
 <img alt="ex fitting 4pdeer" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_fitting_4pdeer_001.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  8.592 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.135 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-fitting-4pdeer-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/b7ee4eb7856693bbca5231a777300242/ex_fitting_4pdeer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_fitting_4pdeer.py</span></code></a></p>
@@ -319,17 +318,17 @@ Model parameters:
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="ex_identifiability_analysis.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="../basic_simulations/ex_simulate_4pdeer.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</p>
+            <p class="prev-next-title">Simulating a three-pathway 4-pulse DEER signal</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="ex_bootstrapping.html" title="next page">
+    <a class='right-next' id="next-link" href="ex_fitting_4pdeer_compactness.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Bootstrapped confidence intervals in routine analysis</p>
+        <p class="prev-next-title">Analysis of a 4-pulse DEER signal with a compactness penalty</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

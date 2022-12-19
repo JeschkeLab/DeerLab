@@ -91,7 +91,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -100,7 +100,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -116,13 +116,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -183,7 +184,7 @@
                 
   <h1>Source code for deerlab.classes</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md).</span>
-<span class="c1"># Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.</span>
+<span class="c1"># Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">Jacobian</span><span class="p">,</span> <span class="n">nearest_psd</span>
@@ -266,12 +267,16 @@
 <span class="c1"># =========================================================================</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Represents the uncertainty quantification of fit results.</span>
 
+<span class="sd">    This class provides methods for performing uncertainty analysis on fit results. </span>
+<span class="sd">    The uncertainty analysis can be performed using moment-based, bootstrapped,</span>
+<span class="sd">    or likelihood profile methods. The type of uncertainty analysis is specified when initializing the object.</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    type : string</span>
-<span class="sd">        Uncertainty quantification approach:</span>
+<span class="sd">        Type of uncertainty analysis performed. Possible values are:</span>
 
-<span class="sd">            * ``&#39;covariance&#39;`` - Covariance-based uncertainty analysis</span>
+<span class="sd">            * ``&#39;moment&#39;`` - Moment-based uncertainty analysis</span>
 <span class="sd">            * ``&#39;bootstrap&#39;`` - Bootstrapped uncertainty analysis</span>
 <span class="sd">            * ``&#39;profile&#39;`` - Likelihood profile uncertainty analysis</span>
 <span class="sd">            * ``&#39;void&#39;`` - Empty uncertainty analysis</span>
@@ -306,10 +311,46 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="UQResult.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">uqtype</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">covmat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">profiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the UQResult object.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        uqtype : str</span>
+<span class="sd">            Type of uncertainty analysis to perform. Possible values are: ``&#39;moment&#39;``, ``&#39;bootstrap&#39;``, ``&#39;profile&#39;``, ``&#39;void&#39;``.</span>
+<span class="sd">        </span>
+<span class="sd">        data : ndarray</span>
+<span class="sd">            Data to be used for the uncertainty analysis. The format of this parameter depends on the value of ``uqtype``:</span>
+
+<span class="sd">            * If ``uqtype=&#39;moment&#39;``, data should be an array of parameter estimates.</span>
+<span class="sd">            * If ``uqtype=&#39;bootstrap&#39;``, data should be a 2-dimensional array of bootstrap samples, where each row</span>
+<span class="sd">              corresponds to a sample and each column corresponds to a parameter.</span>
+<span class="sd">            * If ``uqtype=&#39;profile&#39;``, data should be an array of parameter estimates.</span>
+<span class="sd">            * If ``uqtype=&#39;void&#39;``, data should not be provided.</span>
+
+<span class="sd">        covmat : ndarray</span>
+<span class="sd">            Covariance matrix of the parameter estimates. Only applicable if ``uqtype=&#39;moment&#39;``.</span>
+<span class="sd">        </span>
+<span class="sd">        lb : ndarray</span>
+<span class="sd">            Lower bounds of the parameter estimates. Only applicable if ``uqtype=&#39;moment&#39;``.</span>
+<span class="sd">        </span>
+<span class="sd">        ub : ndarray</span>
+<span class="sd">            Upper bounds of the parameter estimates. Only applicable if ``uqtype=&#39;moment&#39;``.</span>
+<span class="sd">        </span>
+<span class="sd">        threshold : float</span>
+<span class="sd">            Threshold value used for the likelihood profile method. Only applicable if ``uqtype=&#39;profile&#39;``.</span>
+<span class="sd">        </span>
+<span class="sd">        profiles : list</span>
+<span class="sd">            List of likelihood profiles for each parameter. Each element of the list should be a tuple of arrays</span>
+<span class="sd">            ``(x, y)``, where ``x`` represents the values of the parameter and ``y`` represents the corresponding likelihoods.</span>
+<span class="sd">            Only applicable if ``uqtype=&#39;profile&#39;``.</span>
+<span class="sd">        </span>
+<span class="sd">        noiselvl : float</span>
+<span class="sd">            Noise level used for the likelihood profile method. Only applicable if ``uqtype=&#39;profile&#39;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#Parse inputs schemes</span>
-        <span class="k">if</span> <span class="n">uqtype</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
-            <span class="c1"># Scheme 1: UQResult(&#39;covariance&#39;,parfit,covmat,lb,ub)</span>
+        <span class="k">if</span> <span class="n">uqtype</span><span class="o">==</span><span class="s1">&#39;moment&#39;</span><span class="p">:</span>
+            <span class="c1"># Scheme 1: UQResult(&#39;moment&#39;,parfit,covmat,lb,ub)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">uqtype</span>
             <span class="n">parfit</span> <span class="o">=</span> <span class="n">data</span>
             <span class="n">nParam</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parfit</span><span class="p">)</span>
@@ -338,7 +379,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparam</span> <span class="o">=</span> <span class="p">([]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
             <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;uqtype not found. Must be: &#39;&#39;covariance&#39;&#39;, &#39;&#39;bootstrap&#39;&#39; or &#39;&#39;void&#39;&#39;.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;uqtype not found. Must be: &#39;&#39;moment&#39;&#39;, &#39;&#39;bootstrap&#39;&#39; or &#39;&#39;void&#39;&#39;.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">nParam</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
@@ -352,7 +393,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nparam</span> <span class="o">=</span> <span class="n">nParam</span>
 
         <span class="c1"># Create confidence intervals structure</span>
-        <span class="k">if</span> <span class="n">uqtype</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">uqtype</span><span class="o">==</span><span class="s1">&#39;moment&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">parfit</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">median</span> <span class="o">=</span> <span class="n">parfit</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">covmat</span><span class="p">))</span>
@@ -402,6 +443,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Combine multiple uncertainty quantification instances.</span>
 
+<span class="sd">        This method concatenates the parameter vectors of the object calling the method with the parameter vectors of</span>
+<span class="sd">        any number of other uncertainty quantification objects.</span>
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        uq : any number of :ref:`UQResult`</span>
@@ -413,9 +457,17 @@
 <span class="sd">        uq_joined : :ref:`UQResult`</span>
 <span class="sd">            Joined uncertainty quantification object with a total of ``M + N1 + N2 + ... + Nn`` parameters. </span>
 <span class="sd">            The parameter vectors are concatenated on the order they are passed. </span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If any of the input objects is not a :ref:`UQResult` instance or if the types </span>
+<span class="sd">            of the input objects do not match.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If an attempt is made to join an instance of :ref:`UQResult` with type ``&#39;void&#39;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">newargs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;moment&#39;</span><span class="p">:</span>
             <span class="c1"># Original metadata</span>
             <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
             <span class="n">newargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">)</span>
@@ -432,7 +484,7 @@
             <span class="k">if</span> <span class="n">uq</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;void&#39;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Void UQResults cannot be joined.&#39;</span><span class="p">)</span>
             <span class="c1"># Concatenate metadata of external UQResult objects</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;moment&#39;</span><span class="p">:</span>
                 <span class="n">newargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">newargs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">uq</span><span class="o">.</span><span class="n">mean</span><span class="p">])</span>
                 <span class="n">newargs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">block_diag</span><span class="p">(</span><span class="n">newargs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">uq</span><span class="o">.</span><span class="n">covmat</span><span class="p">)</span>
                 <span class="n">newargs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">newargs</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">uq</span><span class="o">.</span><span class="n">__lb</span><span class="p">])</span>
@@ -451,6 +503,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate the uncertainty distribution of the n-th parameter</span>
 
+<span class="sd">        This method generates the probability density function of the uncertainty </span>
+<span class="sd">        of the n-th parameter of the model. The distribution is evaluated at a </span>
+<span class="sd">        range of values where the parameter is most likely to be. The range is </span>
+<span class="sd">        determined based on the type of uncertainty quantification method used. </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        n : int scalar</span>
@@ -467,7 +524,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The input must be a valid integer number.&#39;</span><span class="p">)</span>
         <span class="n">isdelta</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;moment&#39;</span><span class="p">:</span>
             <span class="c1"># Generate Gaussian distribution based on covariance matrix</span>
             <span class="n">sig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">])</span>
             <span class="n">xmean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
@@ -553,12 +610,17 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        p : float scalar</span>
-<span class="sd">            Percentile (between 0-100)</span>
+<span class="sd">            Percentile (a value between 0-100)</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        prctiles : ndarray</span>
 <span class="sd">            Percentile values of all parameters</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If `p` is not a number between 0 and 100.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">p</span><span class="o">&gt;</span><span class="mi">100</span> <span class="ow">or</span> <span class="n">p</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The input must be a number between 0 and 100&#39;</span><span class="p">)</span>
@@ -579,24 +641,55 @@
     <span class="c1">#--------------------------------------------------------------------------------</span>
 
 
-    <span class="c1"># Covariance-based confidence intervals</span>
     <span class="c1">#--------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="UQResult.ci"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.ci">[docs]</a>    <span class="k">def</span> <span class="nf">ci</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">coverage</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the confidence intervals for the parameters.</span>
 
+<span class="sd">        This method computes confidence intervals for the parameters of the fitted</span>
+<span class="sd">        distribution, based on the method used to compute the parameter estimates</span>
+<span class="sd">        (moment estimation, bootstrapping, or likelihood profile).</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        coverage : float scalar</span>
-<span class="sd">            Coverage (confidence level) of the confidence intervals (between 0-100)</span>
+<span class="sd">            Coverage (confidence level) of the confidence intervals (a value between 0-100)</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ci : 2D-ndarray</span>
-<span class="sd">            Confidence intervals for the parameters:</span>
-
+<span class="sd">        ci : ndarray</span>
+<span class="sd">            A 2D array containing the lower and upper confidence intervals for the</span>
+<span class="sd">            parameters. The first column of the array holds the lower confidence</span>
+<span class="sd">            intervals, and the second column holds the upper confidence intervals.</span>
+<span class="sd">            </span>
 <span class="sd">                * ``ci[:,0]`` - Lower confidence intervals</span>
 <span class="sd">                * ``ci[:,1]`` - Upper confidence intervals</span>
+<span class="sd">            </span>
+<span class="sd">            The array has shape ``(nparam, 2)``, where ``nparam`` is the number of fitted</span>
+<span class="sd">            parameters.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the ``coverage`` argument is outside the range 0-100.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Compute 95% confidence intervals for the fitted parameters: ::</span>
+
+<span class="sd">            ci = param.ci(95)</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The method used to compute the confidence intervals depends on the method</span>
+<span class="sd">        used to compute the parameter estimates. If the parameter estimates were</span>
+<span class="sd">        computed using moment estimation, the confidence intervals are computed</span>
+<span class="sd">        based on the estimated standard errors of the parameters. If the parameter</span>
+<span class="sd">        estimates were computed using bootstrapping, the confidence intervals are</span>
+<span class="sd">        computed based on the empirical distribution of the bootstrapped samples.</span>
+<span class="sd">        If the parameter estimates were computed using likelihood profile, the</span>
+<span class="sd">        confidence intervals are computed by finding the parameter values at the</span>
+<span class="sd">        edges of the likelihood profile that correspond to the specified coverage.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">coverage</span><span class="o">&gt;</span><span class="mi">100</span> <span class="ow">or</span> <span class="n">coverage</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The input must be a number between 0 and 100&#39;</span><span class="p">)</span>
@@ -609,8 +702,8 @@
         <span class="n">confint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nparam</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">iscomplex</span><span class="p">:</span> <span class="n">confint</span> <span class="o">=</span> <span class="n">confint</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">complex</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
-            <span class="c1"># Compute covariance-based confidence intervals</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;moment&#39;</span><span class="p">:</span>
+            <span class="c1"># Compute moment-based confidence intervals</span>
             <span class="c1"># Clip at specified box boundaries</span>
             <span class="n">standardError</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covmat</span><span class="p">))</span>
             <span class="n">confint</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__lb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">real</span> <span class="o">-</span> <span class="n">standardError</span><span class="p">)</span>
@@ -659,22 +752,30 @@
 
 
 
-    <span class="c1"># Error Propagation (covariance-based only)</span>
     <span class="c1">#--------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="UQResult.propagate"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.propagate">[docs]</a>    <span class="k">def</span> <span class="nf">propagate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">samples</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Uncertainty propagation. This function takes the uncertainty analysis of the </span>
-<span class="sd">        parameters and propagates it to another function depending on those parameters.</span>
-
+<span class="sd">        Uncertainty propagation.</span>
+<span class="sd">        </span>
+<span class="sd">        The method performs uncertainty propagation on the model by applying the</span>
+<span class="sd">        uncertainty analysis of the input parameters to the model. The output is </span>
+<span class="sd">        a new uncertainty quantification analysis for the model outputs. The method </span>
+<span class="sd">        returns a new ``UQResult`` object containing the uncertainty information</span>
+<span class="sd">        of the model outputs. If the input type is ``&#39;moment&#39;``, the returned object</span>
+<span class="sd">        will be of type ``&#39;moment&#39;``. Otherwise, if the type is ``&#39;bootstrap&#39;``, the</span>
+<span class="sd">        returned object will be of type ``&#39;bootstrap&#39;``.</span>
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        model : callable</span>
-<span class="sd">            Callable model function taking an array of ``nparam`` parameters.</span>
+<span class="sd">            A callable function that takes an array of parameters as input and returns a model output.</span>
 <span class="sd">        lbm : ndarray</span>
 <span class="sd">            Lower bounds of the values returned by ``model``, by default assumed unconstrained.</span>
 <span class="sd">        ubm : ndarray</span>
 <span class="sd">            Upper bounds of the values returned by ``model``, by default assumed unconstrained.</span>
-
+<span class="sd">        samples : int, optional</span>
+<span class="sd">            Number of samples to use when propagating uncertainty. If not provided, default value is 1000.</span>
+<span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        modeluq : :ref:`UQResult`</span>
@@ -702,7 +803,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">Nsamples</span> <span class="o">=</span> <span class="n">samples</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;covariance&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;moment&#39;</span><span class="p">:</span>
 
             <span class="k">if</span> <span class="n">iscomplex</span><span class="p">:</span>
                 <span class="n">model_</span> <span class="o">=</span> <span class="n">model</span> 
@@ -725,7 +826,7 @@
                 <span class="n">modelcovmat</span> <span class="o">=</span> <span class="n">modelcovmat</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">Nreal</span><span class="p">,</span><span class="n">Nreal</span><span class="p">)]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span> <span class="n">modelcovmat</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">Nimag</span><span class="p">,</span><span class="n">Nimag</span><span class="p">)]</span>
 
             <span class="c1"># Construct new uncertainty object</span>
-            <span class="k">return</span>  <span class="n">UQResult</span><span class="p">(</span><span class="s1">&#39;covariance&#39;</span><span class="p">,</span><span class="n">modelfit</span><span class="p">,</span><span class="n">modelcovmat</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">)</span>
+            <span class="k">return</span>  <span class="n">UQResult</span><span class="p">(</span><span class="s1">&#39;moment&#39;</span><span class="p">,</span><span class="n">modelfit</span><span class="p">,</span><span class="n">modelcovmat</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">==</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
 

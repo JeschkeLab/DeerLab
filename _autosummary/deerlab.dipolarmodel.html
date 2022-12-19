@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="deerlab.dipolarpenalty" href="deerlab.dipolarpenalty.html" />
-    <link rel="prev" title="deerlab.cvxnnls" href="deerlab.cvxnnls.html" />
+    <link rel="prev" title="deerlab.goodness_of_fit" href="deerlab.goodness_of_fit.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../license.html">License</a>
@@ -196,40 +197,85 @@
 <span id="dipolarmodel"></span><h1>deerlab.dipolarmodel<a class="headerlink" href="#deerlab-dipolarmodel" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="deerlab.dipolarmodel">
-<span class="sig-name descname"><span class="pre">dipolarmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">t,</span> <span class="pre">r,</span> <span class="pre">Pmodel=None,</span> <span class="pre">Bmodel=&lt;deerlab.model.Model</span> <span class="pre">object&gt;,</span> <span class="pre">npathways=1,</span> <span class="pre">harmonics=None,</span> <span class="pre">experiment=None,</span> <span class="pre">excbandwidth=inf,</span> <span class="pre">orisel=None,</span> <span class="pre">g=[2.00231930436256,</span> <span class="pre">2.00231930436256]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarmodel.html#dipolarmodel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.dipolarmodel" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dipolarmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">t,</span> <span class="pre">r=None,</span> <span class="pre">Pmodel=None,</span> <span class="pre">Bmodel=&lt;deerlab.model.Model</span> <span class="pre">object&gt;,</span> <span class="pre">experiment=None,</span> <span class="pre">parametrization='reftimes',</span> <span class="pre">npathways=1,</span> <span class="pre">spins=2,</span> <span class="pre">harmonics=None,</span> <span class="pre">excbandwidth=inf,</span> <span class="pre">orisel=None,</span> <span class="pre">g=[2.00231930436256,</span> <span class="pre">2.00231930436256],</span> <span class="pre">gridsize=1000,</span> <span class="pre">minamp=0.001,</span> <span class="pre">samespins=True,</span> <span class="pre">triangles=None,</span> <span class="pre">interp=True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarmodel.html#dipolarmodel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.dipolarmodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a dipolar EPR signal model.</p>
+<p>This function generates a model for the dipolar EPR signal arising from the dipolar interactions
+between the electron spins of the system. The model is defined in terms of the evolution time vector 
+<code class="docutils literal notranslate"><span class="pre">t</span></code>, the spin-spin distances <code class="docutils literal notranslate"><span class="pre">r</span></code>, the distance distribution model <code class="docutils literal notranslate"><span class="pre">Pmodel</span></code>, the intermolecular contribution
+<code class="docutils literal notranslate"><span class="pre">Bmodel</span></code>, and an <code class="docutils literal notranslate"><span class="pre">experiment</span></code> object containing information about the specific experiment. 
+The number of spins in the system <code class="docutils literal notranslate"><span class="pre">spins</span></code> can be specified, as well as the parametrization strategy 
+<code class="docutils literal notranslate"><span class="pre">parametrization</span></code> for the dipolar pathway refocusing times.</p>
+<p>For multi-spin systems (<code class="docutils literal notranslate"><span class="pre">spins</span> <span class="pre">&gt;</span> <span class="pre">2</span></code>), the function allows for the inclusion of three-spin interactions by
+specifying the <code class="docutils literal notranslate"><span class="pre">triangles</span></code> list of interspin triangles and enabling the <code class="docutils literal notranslate"><span class="pre">samespins</span></code> assumption of spectral
+permutability. The <code class="docutils literal notranslate"><span class="pre">minamp</span></code> parameter can be used to threshold the amplitude of the three-spin interactions.</p>
+<p>Additional effects such as orientation selection or limited excitation bandwidth can be included via the <code class="docutils literal notranslate"><span class="pre">orisel</span></code> 
+and <code class="docutils literal notranslate"><span class="pre">excbandwidth</span></code> arguments, respectively.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
 <dt><strong>t</strong><span class="classifier">array_like</span></dt><dd><p>Vector of dipolar evolution times, in microseconds.</p>
 </dd>
-<dt><strong>r</strong><span class="classifier">array_like</span></dt><dd><p>Vector of spin-spin distances, in nanometers.</p>
+<dt><strong>r</strong><span class="classifier">array_like, optional</span></dt><dd><p>Vector of spin-spin distances, in nanometers. If not specified, it defaults to the range 
+1.5nm-8nm with a resolution of 0.05nm. Has no effect on models with <code class="docutils literal notranslate"><span class="pre">spins&gt;2</span></code>.</p>
 </dd>
 <dt><strong>Pmodel</strong><span class="classifier"><a class="reference internal" href="deerlab.Model.html#model"><span class="std std-ref">deerlab.Model</span></a>, optional</span></dt><dd><p>Model for the distance distribution. If not specified, a non-parametric
-distance distribution defined over <code class="docutils literal notranslate"><span class="pre">r</span></code> is used.</p>
+distance distribution defined over <code class="docutils literal notranslate"><span class="pre">r</span></code> is used. For models with <code class="docutils literal notranslate"><span class="pre">spins&gt;2</span></code> a multivariate 
+Gaussian distance distribution is assumed.</p>
 </dd>
 <dt><strong>Bmodel</strong><span class="classifier"><a class="reference internal" href="deerlab.Model.html#model"><span class="std std-ref">deerlab.Model</span></a>, optional</span></dt><dd><p>Model for the intermolecular (background) contribution. If not specified,
 a background arising from a homogenous 3D distribution of spins is used.</p>
-</dd>
-<dt><strong>npathways</strong><span class="classifier">integer scalar, optional</span></dt><dd><p>Number of dipolar pathways. If not specified, a single dipolar pathway is used.</p>
 </dd>
 <dt><strong>experiment</strong><span class="classifier"><span class="xref std std-ref">ExperimentInfo</span>, optional</span></dt><dd><p>Experimental information obtained from experiment models (<code class="docutils literal notranslate"><span class="pre">ex_</span></code>). If specified, the 
 boundaries and start values of the dipolar pathways’ refocusing times and amplitudes 
 are refined based on the specific experiment’s delays.</p>
 </dd>
-<dt><strong>harmonics</strong><span class="classifier">list of integers, optional</span></dt><dd><p>Harmonics of the dipolar pathways. Must be a list with <code class="docutils literal notranslate"><span class="pre">npathways</span></code> harmonics, one
+<dt><strong>parametrization</strong><span class="classifier">string, optional</span></dt><dd><p>Parametrization strategy of the dipolar pathway refocusing times. Must be one of the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'reftimes'</span></code> - Each refocusing time is represented individually as a parameter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'delays'</span></code> - The pulse delays are introduced as parameters from which the refocusing times are computed. Requires <code class="docutils literal notranslate"><span class="pre">experiment</span></code> to be specified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'shift'</span></code> - A time shift is introduced as a parameter to represent the variability of the refocusing times from their theoretical values. Requires <code class="docutils literal notranslate"><span class="pre">experiment</span></code> to be specified.</p></li>
+</ul>
+</div></blockquote>
+<p>The default is <code class="docutils literal notranslate"><span class="pre">'reftimes'</span></code>.</p>
+</dd>
+<dt><strong>npathways</strong><span class="classifier">integer scalar, optional</span></dt><dd><p>Number of dipolar pathways. If not specified, a single dipolar pathway is used.</p>
+</dd>
+<dt><strong>harmonics</strong><span class="classifier">list of integers, optional</span></dt><dd><p>Harmonic prefactors of the dipolar pathways. Must be a list with <code class="docutils literal notranslate"><span class="pre">npathways</span></code> harmonics, one
 for each pathway.</p>
+</dd>
+<dt><strong>spins</strong><span class="classifier">integer scalar, optional</span></dt><dd><p>Number of spins in system. If not specified it defaults to two-spin systems. For multi-spins
+systems indicated by <code class="docutils literal notranslate"><span class="pre">spins&gt;2</span></code> three-spin interactions are accounted for by the model automatically.</p>
+</dd>
+<dt><strong>triangles</strong><span class="classifier">list of lists, optional</span></dt><dd><p>Only required when <code class="docutils literal notranslate"><span class="pre">spins&gt;3</span></code>. List of <code class="docutils literal notranslate"><span class="pre">(Nspins)!/(3!*(Nspins-3)!)</span></code> triangles formed by the different interspin distances. 
+Each triangle is specified by a list of indices of the interspin 
+distances forming the triangle, e.g. for a three-spin system <code class="docutils literal notranslate"><span class="pre">triangles=[[1,2,3]]</span></code> where the first, 
+second, and third interspin distances connect to form a triangle.</p>
+</dd>
+<dt><strong>samespins</strong><span class="classifier">boolean, optional</span></dt><dd><p>Only when <code class="docutils literal notranslate"><span class="pre">spins&gt;3</span></code>. Enables the assumption of spectral permutability, i.e. the assumption that all spins in the system
+have the same spectral distribution. If enabled, all pairwise pathways of the different dipolar interactions are assumed to 
+have the same amplitude. If disabled, all the individual pathway amplitudes are parametrized separately. Enabled by default.</p>
+</dd>
+<dt><strong>minamp</strong><span class="classifier">float scalar, optional</span></dt><dd><p>Only when <code class="docutils literal notranslate"><span class="pre">spins&gt;3</span></code>. Threshold amplitude for neglecting three-spin interaction pathways. To enhance performance, all dipolar 
+pathways arising from three-spin interactions with an amplitude <code class="docutils literal notranslate"><span class="pre">lam&lt;minamp</span></code> are approximated as having zero amplitude. 
+The default threshold is <code class="docutils literal notranslate"><span class="pre">1e-3</span></code>.</p>
 </dd>
 <dt><strong>orisel</strong><span class="classifier">callable  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, optional</span></dt><dd><p>Probability distribution of possible orientations of the interspin vector to account
 for orientation selection. Must be a function taking a value of the angle θ ∈ [0,π/2]
 between the interspin vector and the external magnetic field and returning the corresponding
 probability density. If specified as <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), a uniform distribution is used.</p>
 </dd>
+<dt><strong>gridsize</strong><span class="classifier">scalar, optional</span></dt><dd><p>Number of points on the grid of powder orientations to be used in the <code class="docutils literal notranslate"><span class="pre">'grid'</span></code> kernel 
+calculation method when evaluating models with orientation selection or multi-spin effects.
+By default set to 1000 points.</p>
+</dd>
 <dt><strong>excbandwidth</strong><span class="classifier">scalar, optional</span></dt><dd><p>Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth.
 If not specified, an infinite excitation bandwidth is used.</p>
 </dd>
 <dt><strong>g</strong><span class="classifier">scalar, 2-element array, optional</span></dt><dd><p>Electron g-values of the two spins, <code class="docutils literal notranslate"><span class="pre">[g1,</span> <span class="pre">g2]</span></code>. If a single g is specified, <code class="docutils literal notranslate"><span class="pre">[g,</span> <span class="pre">g]</span></code> is used.
 If not specified, g = 2.002319… is used for both spins.</p>
+</dd>
+<dt><strong>interp</strong><span class="classifier">boolean, optional</span></dt><dd><p>Enable dipolar kernel interpolation for computation time reduction. By default enabled.</p>
 </dd>
 </dl>
 </dd>
@@ -250,11 +296,11 @@ If not specified, g = 2.002319… is used for both spins.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="deerlab.cvxnnls.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="deerlab.goodness_of_fit.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">deerlab.cvxnnls</p>
+            <p class="prev-next-title">deerlab.goodness_of_fit</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="deerlab.dipolarpenalty.html" title="next page">

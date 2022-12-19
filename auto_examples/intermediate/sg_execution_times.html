@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Computation times &#8212; DeerLab</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+  
+    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="computation-times">
+<span id="sphx-glr-auto-examples-intermediate-sg-execution-times"></span><h1>Computation times<a class="headerlink" href="#computation-times" title="Permalink to this headline">¶</a></h1>
+<p><strong>09:51.950</strong> total execution time for <strong>auto_examples_intermediate</strong> files:</p>
+<table class="table">
+<colgroup>
+<col style="width: 85%" />
+<col style="width: 8%" />
+<col style="width: 6%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="ex_crossing_echoes_masking.html#sphx-glr-auto-examples-intermediate-ex-crossing-echoes-masking-py"><span class="std std-ref">Analyzing data with crossing echoes robustly</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_crossing_echoes_masking.py</span></code>)</p></td>
+<td><p>06:37.095</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ex_fitting_sparse_4pdeer.html#sphx-glr-auto-examples-intermediate-ex-fitting-sparse-4pdeer-py"><span class="std std-ref">Basic analysis of a sparsely sampled 4-pulse DEER signal</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_fitting_sparse_4pdeer.py</span></code>)</p></td>
+<td><p>01:11.919</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ex_global_fitting_4pdeer.html#sphx-glr-auto-examples-intermediate-ex-global-fitting-4pdeer-py"><span class="std std-ref">Global fitting of multiple 4-pulse DEER signals, non-parametric distribution</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_global_fitting_4pdeer.py</span></code>)</p></td>
+<td><p>00:44.376</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ex_compactness_with_without.html#sphx-glr-auto-examples-intermediate-ex-compactness-with-without-py"><span class="std std-ref">Comparing the analysis with and without compactness criterion</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_compactness_with_without.py</span></code>)</p></td>
+<td><p>00:32.400</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ex_multipathway_validation.html#sphx-glr-auto-examples-intermediate-ex-multipathway-validation-py"><span class="std std-ref">Validating multi-pathway models based on the data</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_multipathway_validation.py</span></code>)</p></td>
+<td><p>00:23.557</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ex_global_different_deer.html#sphx-glr-auto-examples-intermediate-ex-global-different-deer-py"><span class="std std-ref">Global fitting of multiple different DEER signals</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_global_different_deer.py</span></code>)</p></td>
+<td><p>00:08.530</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ex_fitting_5pdeer_pathways.html#sphx-glr-auto-examples-intermediate-ex-fitting-5pdeer-pathways-py"><span class="std std-ref">Analysis of a 5-pulse DEER signal with multiple dipolar pathays</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_fitting_5pdeer_pathways.py</span></code>)</p></td>
+<td><p>00:06.271</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ex_fitting_dqc_pathways.html#sphx-glr-auto-examples-intermediate-ex-fitting-dqc-pathways-py"><span class="std std-ref">Analysis of a 6-pulse DQC signal with multiple dipolar pathays</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_fitting_dqc_pathways.py</span></code>)</p></td>
+<td><p>00:04.186</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ex_fitting_4pdeer_pathways.html#sphx-glr-auto-examples-intermediate-ex-fitting-4pdeer-pathways-py"><span class="std std-ref">Analysis of a 4-pulse DEER signal with multiple dipolar pathays</span></a> (<code class="docutils literal notranslate"><span class="pre">ex_fitting_4pdeer_pathways.py</span></code>)</p></td>
+<td><p>00:03.615</p></td>
+<td><p>0.0 MB</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

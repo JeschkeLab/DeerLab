@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="#">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="reference.html">Reference</a>
+            <a class="nav-link nav-link" href="reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
@@ -172,11 +173,6 @@
  <li class="toctree-l1">
   <a class="reference internal" href="getting_started.html">
    Getting Started
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dipolar_guide_modelling.html">
-   Modelling
   </a>
  </li>
  <li class="toctree-l1">
@@ -275,8 +271,6 @@
 <p>The theory underlying DeerLab is not fully general and makes a series of assumptions about the sample and the experiment. The important ones are:</p>
 <p class="rubric">Spins-1/2</p>
 <p>All spin labels are spin-1/2 or can be treated as such. High-spin systems are not handled by DeerLab.</p>
-<p class="rubric">No multi-spin effects</p>
-<p>There are no more than two spin labels on a protein (or other cluster). Multi-spin effects are not handled by DeerLab.</p>
 <p class="rubric">No delocalization</p>
 <p>The unpaired electron spin density on the spin labels can be treated as localized in a single point. Delocalized spin systems are not handled by DeerLab.</p>
 <p class="rubric">Isotropic g-values</p>

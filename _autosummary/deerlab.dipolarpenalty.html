@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../license.html">License</a>
@@ -198,20 +199,30 @@
 <dt class="sig sig-object py" id="deerlab.dipolarpenalty">
 <span class="sig-name descname"><span class="pre">dipolarpenalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Pmodel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarmodel.html#dipolarpenalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.dipolarpenalty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct penalties based on the distance distribution.</p>
+<p>This function constructs penalties for a given distance distribution that can be used to impose
+certain desired properties on the distribution. The type of penalty and the function to optimize 
+it are determined by the <code class="docutils literal notranslate"><span class="pre">type</span></code> parameter. The <code class="docutils literal notranslate"><span class="pre">selection</span></code> parameter allows the user to choose 
+a method for optimizing the penalty weight.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>Pmodel</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">Model</span></code> object</span></dt><dd><p>The Pmodel of the distance distribution, where <code class="docutils literal notranslate"><span class="pre">None</span></code> represents a non-parametric distance distribution.</p>
+<dt><strong>Pmodel</strong><span class="classifier"><img class="math" src="../_images/math/897cd53076f7c9eaae2965bca8e44d8826d3c7ec.svg" alt="Model"/> object</span></dt><dd><p>The model of the distance distribution. If <code class="docutils literal notranslate"><span class="pre">Pmodel</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, a non-parametric distance distribution is assumed.</p>
 </dd>
-<dt><strong>r</strong><span class="classifier">array_like</span></dt><dd><p>Distance axis vector, in nanometers.</p>
+<dt><strong>r</strong><span class="classifier">array_like</span></dt><dd><p>Distance axis vector, in nanometers. This vector specifies the distances at which the distance distribution is defined.</p>
 </dd>
-<dt><strong>type</strong><span class="classifier">string</span></dt><dd><p>Type of property to be imposed by the penalty.</p>
+<dt><strong>type</strong><span class="classifier">string</span></dt><dd><p>Type of property to be imposed by the penalty. This parameter determines the type of penalty 
+that will be constructed, as well as the function that will be optimized to determine the 
+penalty weight. The following values are supported for this parameter:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'smoothness'</span></code> : Smoothness of the distance distribution</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'compactness'</span></code> : Compactness of the distance distribution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'smoothness'</span></code> : Imposes a smoothness constraint on the distance distribution. This penalty 
+is optimized by minimizing the L2 norm of the second derivative of the distribution.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'compactness'</span></code> : Imposes a compactness constraint on the distance distribution. This penalty 
+is optimized by minimizing the square root of the product of the distance distribution and 
+the square of the difference between the distances and their mean.</p></li>
 </ul>
 </dd>
-<dt><strong>selection</strong><span class="classifier">string, optional</span></dt><dd><p>Selection functional for the outer optimization of the penalty weight.</p>
+<dt><strong>selection</strong><span class="classifier">string, optional</span></dt><dd><blockquote>
+<div><p>Selection functional for the outer optimization of the penalty weight. Possible values:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'aic'</span></code> - Akaike information criterion</p></li>
@@ -220,6 +231,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">'icc'</span></code> - Informational complexity criterion</p></li>
 </ul>
 </div></blockquote>
+</div></blockquote>
+<p>If no value is provided, <code class="docutils literal notranslate"><span class="pre">'icc'</span></code> is used for <code class="docutils literal notranslate"><span class="pre">'compactness'</span></code> and <code class="docutils literal notranslate"><span class="pre">'aic'</span></code> for <code class="docutils literal notranslate"><span class="pre">'smoothness'</span></code>.</p>
 </dd>
 </dl>
 </dd>

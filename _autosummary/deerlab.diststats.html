@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../license.html">License</a>
@@ -197,14 +198,20 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="deerlab.diststats">
 <span class="sig-name descname"><span class="pre">diststats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Puq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/diststats.html#diststats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.diststats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes statistical quantities for the location, spread, and shape 
-of a distance distribution, with or without their corresponding uncertainties.</p>
+<dd><p>Computes statistical quantities for the location, spread, and shape of
+a distance distribution, with or without their corresponding uncertainties.</p>
+<p>This function calculates various statistical quantities of a distance distribution,
+such as its mean, median, mode, etc. It can also calculate the uncertainty
+of these quantities using moment-based or bootstrapped uncertainty quantification, if provided. 
+The function allows to specify whether to print a summary of the results and the 
+peak detection threshold for the calculation of the mode of the distribution.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>r</strong><span class="classifier">array_like</span></dt><dd><p>Distance axis, in nm.</p>
+<dt><strong>r</strong><span class="classifier">array_like</span></dt><dd><p>Distance axis, in nm. The distances in the distribution.</p>
 </dd>
-<dt><strong>P</strong><span class="classifier">array_like</span></dt><dd><p>Distance distribution, does not have to be normalized.</p>
+<dt><strong>P</strong><span class="classifier">array_like</span></dt><dd><p>Distance distribution, does not have to be normalized. The probability or
+relative frequency of the distances in <img class="math" src="../_images/math/3afd1c4d4251eaf6a0da2e7945cbe59cfd8143a5.svg" alt="r"/>.</p>
 </dd>
 <dt><strong>Puq</strong><span class="classifier"><a class="reference internal" href="deerlab.UQResult.html#uqresult"><span class="std std-ref">deerlab.UQResult</span></a>, optional</span></dt><dd><p>Uncertainty quantification of the distance distribution. If Puq is not given, a
 single output is returned without any uncertainty estimation. If given, two outputs
@@ -249,14 +256,14 @@ are returned containing the uncertainty estimation.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">'moment4'</span></code> - 4th moment (kurtosis) (see <a class="reference external" href="https://en.wikipedia.org/wiki/Kurtosis">more</a>)</p></li>
 </ul>
 </dd>
-<dt><strong>uq</strong><span class="classifier">dict of <a class="reference internal" href="deerlab.UQResult.html#uqresult"><span class="std std-ref">deerlab.UQResult</span></a></span></dt><dd><p>Dictionary of the parameters covariance-based uncertainty quantification. 
+<dt><strong>uq</strong><span class="classifier">dict of <a class="reference internal" href="deerlab.UQResult.html#uqresult"><span class="std std-ref">deerlab.UQResult</span></a></span></dt><dd><p>Dictionary of the parameters moment-based uncertainty quantification. 
 See above for the dictionary keys. Only calculated if <code class="docutils literal notranslate"><span class="pre">Puq</span></code> is provided.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>For the <code class="docutils literal notranslate"><span class="pre">'mode'</span></code>, <code class="docutils literal notranslate"><span class="pre">'modes'</span></code> and <code class="docutils literal notranslate"><span class="pre">'modality'</span></code> parameters, covariance-based uncertainties are not 
+<p>For the <code class="docutils literal notranslate"><span class="pre">'mode'</span></code>, <code class="docutils literal notranslate"><span class="pre">'modes'</span></code> and <code class="docutils literal notranslate"><span class="pre">'modality'</span></code> parameters, moment-based uncertainties are not 
 available. Uncertainties can, however, be calculated via bootsrapping of these quantities, e.g.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">analyze_rmode</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
     <span class="n">fit</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fitmodel</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>

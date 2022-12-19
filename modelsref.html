@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="reference.html">Reference</a>
+            <a class="nav-link nav-link" href="reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
@@ -219,8 +220,8 @@
   <section id="models">
 <span id="modelsref"></span><h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
 <p>DeerLab provides a wide selection of built-in models. These are instances of the <a class="reference internal" href="_autosummary/deerlab.Model.html#model"><span class="std std-ref">deerlab.Model</span></a> object class
-and can be manipulated and expanded as described in the <a class="reference internal" href="modelling_guide.html#modelling-guide"><span class="std std-ref">Modelling guide</span></a>.</p>
-<p id="modelsref-dd">These are models particularly oriented towards the modelling of dipolar EPR spectroscopy data.</p>
+and can be manipulated and expanded as described in the <a class="reference internal" href="modeling_guide.html#modeling-guide"><span class="std std-ref">Modeling guide</span></a>.</p>
+<p id="modelsref-dd">These are models particularly oriented towards the modeling of dipolar EPR spectroscopy data.</p>
 <section id="experiment-models">
 <span id="modelsref-ex"></span><h2>Experiment models<a class="headerlink" href="#experiment-models" title="Permalink to this headline">¶</a></h2>
 <p>These generator functions model different dipolar EPR experiments, and provide the means
@@ -244,10 +245,13 @@ to refine the dipolar signal models by introducing experimental information.</p>
 <td><p>Generate a forward 5-pulse DEER dipolar experiment model.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_sifter.html#deerlab.ex_sifter" title="deerlab.ex_sifter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_sifter</span></code></a></p></td>
-<td><p>Generate a SIFTER dipolar experiment model.</p></td>
+<td><p>Generate a 4-pulse SIFTER dipolar experiment model.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme" title="deerlab.ex_ridme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_ridme</span></code></a></p></td>
-<td><p>Generate a RIDME dipolar experiment model.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_dqc.html#deerlab.ex_dqc" title="deerlab.ex_dqc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_dqc</span></code></a></p></td>
+<td><p>Generate a 6-pulse DQC dipolar experiment model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme" title="deerlab.ex_ridme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ex_ridme</span></code></a></p></td>
+<td><p>Generate a 5-pulse RIDME dipolar experiment model.</p></td>
 </tr>
 </tbody>
 </table>

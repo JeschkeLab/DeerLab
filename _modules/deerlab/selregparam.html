@@ -91,7 +91,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -100,7 +100,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -116,13 +116,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -185,7 +186,7 @@
 <span></span><span class="c1"># selregparam.py - Regularization parameter selection</span>
 <span class="c1"># -----------------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md).</span>
-<span class="c1"># Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.</span>
+<span class="c1"># Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
 <span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">opt</span>
@@ -197,13 +198,24 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selection of optimal regularization parameter based on a selection criterion.</span>
 
+<span class="sd">    This function is used to compute the optimal regularization parameter in a linear</span>
+<span class="sd">    least squares problem. The regularization parameter can be determined using different</span>
+<span class="sd">    methods, which are specified in the ``method`` parameter. The function accepts multiple</span>
+<span class="sd">    datasets and corresponding model matrices, which can be globally evaluated. The optimization</span>
+<span class="sd">    of the regularization parameter can be performed using the ``brent`` algorithm, which is</span>
+<span class="sd">    the default, or the slower ``grid`` search algorithm. The function returns the optimal </span>
+<span class="sd">    regularization parameter, and if ``full_output`` is ``True``, it also returns the </span>
+<span class="sd">    regularization parameter candidates, as well as the values of the selection functional,</span>
+<span class="sd">    the residual, and penalty norms all evaluated at the different regularization parameter candidates.</span>
+
 <span class="sd">    Parameters </span>
 <span class="sd">    ----------</span>
 <span class="sd">    y : array_like or list of array_like</span>
-<span class="sd">        Dipolar signal, multiple datasets can be globally evaluated by passing a list of signals.</span>
+<span class="sd">        Dataset, multiple datasets can be globally evaluated by passing a list of datasets.</span>
 
 <span class="sd">    A : 2D-array_like or list of 2D-array_like</span>
-<span class="sd">        Dipolar kernel, if a list of signals is specified, a corresponding list of kernels must be passed as well.</span>
+<span class="sd">        Model (design) matrix, if a list of datasets is specified, a corresponding list of</span>
+<span class="sd">        matrices must be passed as well.</span>
 
 <span class="sd">    solver : callable</span>
 <span class="sd">        Linear least-squares solver. Must be a callable function with signature ``solver(AtA,Aty)``.</span>
@@ -227,7 +239,7 @@
 <span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
 <span class="sd">    </span>
 <span class="sd">    weights : array_like, optional</span>
-<span class="sd">        Array of weighting coefficients for the individual signals in global fitting.</span>
+<span class="sd">        Array of weighting coefficients for the individual datasets in global fitting.</span>
 <span class="sd">        If not specified all datasets are weighted inversely proportional to their noise levels.</span>
 
 <span class="sd">    algorithm : string, optional</span>
@@ -244,12 +256,10 @@
 
 <span class="sd">    candidates : list, optional</span>
 <span class="sd">        List or array of candidate regularization parameter values to be evaluated with the ``&#39;grid&#39;`` algorithm. </span>
-<span class="sd">        If not specified, these are automatically computed from the GSVD of the </span>
-<span class="sd">        dipolar kernel and regularization operator. </span>
+<span class="sd">        If not specified, these are automatically computed from a grid within ``searchrange``.</span>
 
 <span class="sd">    regop : 2D array_like, optional</span>
 <span class="sd">        Regularization operator matrix, the default is the second-order differential operator.</span>
-
 <span class="sd">        </span>
 <span class="sd">    full_output : boolean, optional</span>
 <span class="sd">        If enabled the function will return additional output arguments in a tuple, the default is False.</span>
@@ -280,7 +290,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 <span class="c1">#=========================================================           </span>
 
-    <span class="c1"># If multiple datasets are passed, concatenate the signals and kernels</span>
+    <span class="c1"># If multiple datasets are passed, concatenate the datasets and kernels</span>
     <span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">__</span><span class="p">,</span> <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_multidatasets</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">noiselvl</span><span class="p">)</span>
 
     <span class="c1"># The L-curve criteria require a grid-evaluation</span>

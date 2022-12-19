@@ -44,8 +44,8 @@
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Analysis of a 4-pulse DEER signal with multiple dipolar pathays" href="ex_fitting_4pdeer_pathways.html" />
-    <link rel="prev" title="Distance restraints from 4-pulse DEER data, non-parametric distribution" href="ex_restraints_4pdeer.html" />
+    <link rel="next" title="Distance restraints from 4-pulse DEER data, non-parametric distribution" href="ex_restraints_4pdeer.html" />
+    <link rel="prev" title="Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model" href="ex_fitting_4pdeer_gauss.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -234,7 +235,7 @@ pathway amplitudes pretty much unconstrained.</p>
 <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.025</span><span class="p">)</span> <span class="c1"># nm</span>
 
 <span class="c1"># Construct dipolar model with two dipolar pathways</span>
-<span class="n">experimentInfo</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">ex_rev5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">experimentInfo</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">ex_rev5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
 <span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span> <span class="n">experiment</span><span class="o">=</span><span class="n">experimentInfo</span><span class="p">)</span>
 
 <span class="c1"># Fit the model to the data</span>
@@ -246,11 +247,11 @@ pathway amplitudes pretty much unconstrained.</p>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Goodness-of-fit:
-========= ============= ============ ======= ===========
- Dataset   Noise level   Reduced 𝛘2   RMSD       AIC
-========= ============= ============ ======= ===========
-   #1         0.004        0.979      0.004   -3767.220
-========= ============= ============ ======= ===========
+========= ============= ============= ===================== =======
+ Dataset   Noise level   Reduced 𝛘2    Residual autocorr.    RMSD
+========= ============= ============= ===================== =======
+   #1         0.004         0.979   [00m          0.082       [00m   0.004
+========= ============= ============= ===================== =======
 Model hyperparameters:
 ==========================
  Regularization parameter
@@ -258,22 +259,22 @@ Model hyperparameters:
           0.104
 ==========================
 Model parameters:
-=========== ==================== ========================= ====== ======================================
- Parameter   Value                95%-Confidence interval   Unit   Description
-=========== ==================== ========================= ====== ======================================
- lam1        0.349                (0.348,0.351)                    Amplitude of pathway #1
- reftime1    0.500                (0.499,0.502)              μs    Refocusing time of pathway #1
- lam2        0.061                (0.059,0.062)                    Amplitude of pathway #2
- reftime2    3.701                (3.691,3.710)              μs    Refocusing time of pathway #2
- conc        160.372              (159.220,161.525)          μM    Spin concentration
- P           ...                  (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     1.0947677211916707                             None   Normalization factor of P
-=========== ==================== ========================= ====== ======================================
+=========== ========= ========================= ====== ======================================
+ Parameter   Value     95%-Confidence interval   Unit   Description
+=========== ========= ========================= ====== ======================================
+ lam1        0.349     (0.348,0.351)                    Amplitude of pathway #1
+ reftime1    0.500     (0.499,0.502)              μs    Refocusing time of pathway #1
+ lam5        0.061     (0.059,0.062)                    Amplitude of pathway #5
+ reftime5    3.701     (3.691,3.710)              μs    Refocusing time of pathway #5
+ conc        160.372   (159.220,161.525)          μM    Spin concentration
+ P           ...       (...,...)                 nm⁻¹   Non-parametric distance distribution
+ P_scale     1.095     (1.094,1.095)             None   Normalization factor of P
+=========== ========= ========================= ====== ======================================
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract fitted dipolar signal</span>
 <span class="n">Vfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">model</span>
-<span class="n">Vci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">modelUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+<span class="n">Vci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">)</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
 <span class="c1"># Extract fitted distance distribution</span>
 <span class="n">Pfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">P</span>
@@ -282,8 +283,8 @@ Model parameters:
 <span class="n">Pfit</span> <span class="o">=</span>  <span class="n">Pfit</span>
 
 <span class="c1"># Extract the unmodulated contribution</span>
-<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">lam1</span><span class="p">,</span><span class="n">lam2</span><span class="p">,</span><span class="n">reftime1</span><span class="p">,</span><span class="n">reftime2</span><span class="p">,</span><span class="n">conc</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">P_scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lam1</span><span class="o">-</span><span class="n">lam2</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">reftime1</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam1</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">reftime2</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam2</span><span class="p">)</span>
-<span class="n">Bfit</span> <span class="o">=</span> <span class="n">Bfcn</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">lam1</span><span class="p">,</span><span class="n">results</span><span class="o">.</span><span class="n">lam2</span><span class="p">,</span><span class="n">results</span><span class="o">.</span><span class="n">reftime1</span><span class="p">,</span><span class="n">results</span><span class="o">.</span><span class="n">reftime2</span><span class="p">,</span><span class="n">results</span><span class="o">.</span><span class="n">conc</span><span class="p">)</span>
+<span class="n">Bfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">lam1</span><span class="p">,</span><span class="n">lam5</span><span class="p">,</span><span class="n">reftime1</span><span class="p">,</span><span class="n">reftime5</span><span class="p">,</span><span class="n">conc</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">P_scale</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lam1</span><span class="o">-</span><span class="n">lam5</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">reftime1</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam1</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">reftime5</span><span class="p">,</span><span class="n">conc</span><span class="p">,</span><span class="n">lam5</span><span class="p">)</span>
+<span class="n">Bfit</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span>
 <span class="n">Bci</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">Bfcn</span><span class="p">)</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
@@ -293,9 +294,7 @@ Model parameters:
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
 <span class="c1"># Plot the fitted signal</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vci</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Vci</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Bfit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unmodulated contribution&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Bci</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Bci</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time $t$ (μs)&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$V(t)$ (arb.u.)&#39;</span><span class="p">)</span>
@@ -313,7 +312,7 @@ Model parameters:
 </pre></div>
 </div>
 <img alt="ex fitting 5pdeer" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_fitting_5pdeer_001.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  6.705 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  2.798 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-fitting-5pdeer-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/b5a06263d78a16e342c3033087b12a05/ex_fitting_5pdeer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_fitting_5pdeer.py</span></code></a></p>
@@ -331,17 +330,17 @@ Model parameters:
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="ex_restraints_4pdeer.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="ex_fitting_4pdeer_gauss.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Distance restraints from 4-pulse DEER data, non-parametric distribution</p>
+            <p class="prev-next-title">Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="ex_fitting_4pdeer_pathways.html" title="next page">
+    <a class='right-next' id="next-link" href="ex_restraints_4pdeer.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Analysis of a 4-pulse DEER signal with multiple dipolar pathays</p>
+        <p class="prev-next-title">Distance restraints from 4-pulse DEER data, non-parametric distribution</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

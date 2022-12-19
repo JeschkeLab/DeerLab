@@ -50,7 +50,6 @@ print(results)
 
 # Extract fitted dipolar signal
 Vfit = results.model
-Vci = results.modelUncert.ci(95)
 
 # Extract fitted distance distribution
 Pfit = results.P
@@ -68,7 +67,6 @@ plt.subplot(211)
 # Plot experimental and fitted data
 plt.plot(t,Vexp,'.',color='grey',label='Data')
 plt.plot(t,Vfit,linewidth=3,color=violet,label='Fit')
-plt.fill_between(t,Vci[:,0],Vci[:,1],color=violet,alpha=0.3)
 plt.plot(t,Bfit,'--',linewidth=3,color=violet,label='Unmodulated contribution')
 plt.fill_between(t,Bci[:,0],Bci[:,1],color=violet,alpha=0.3)
 plt.legend(frameon=False,loc='best')

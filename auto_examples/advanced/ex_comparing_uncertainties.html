@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Simulating orientation selection effects in dipolar signals" href="ex_simulating_orisel.html" />
-    <link rel="prev" title="Profile analysis in routine analysis" href="../basic/ex_profileanalysis.html" />
+    <link rel="prev" title="Identifiability analysis of a 4-pulse DEER signal via the profile analysis method" href="ex_identifiability_analysis.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
@@ -201,7 +202,7 @@ to download the full example code</p>
 <span id="sphx-glr-auto-examples-advanced-ex-comparing-uncertainties-py"></span><h1>Comparing confidence intervals for regularization results<a class="headerlink" href="#comparing-confidence-intervals-for-regularization-results" title="Permalink to this headline">¶</a></h1>
 <p>A simple example of uncertainty estimation of results obtained from dipolar signals.
 This example runs the analysis of a 4-pulse DEER signal and compares the uncertainty of the
-distance distribution between the covariance (curvature matrix) and bootstrap methods.</p>
+distance distribution between the moment-based (curvature matrix) and bootstrap methods.</p>
 <p>By plotting the results, one can see that the bootstrapped confidence intervals
 are narrower in comparison to the ones obtained via the curvature
 matrices. This is because bootstrapping takes the nonnegativity constraint of P(r) into
@@ -276,7 +277,7 @@ account, whereas the curvature matrix CIs do not.</p>
 </pre></div>
 </div>
 <img alt="Curvature Matrix CI, Bootstrapped CI" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_comparing_uncertainties_001.png" />
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  32.693 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  28.206 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-comparing-uncertainties-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/e04b33a8d6d1d863ed3cdac484a15429/ex_comparing_uncertainties.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_comparing_uncertainties.py</span></code></a></p>
@@ -294,11 +295,11 @@ account, whereas the curvature matrix CIs do not.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../basic/ex_profileanalysis.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="ex_identifiability_analysis.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Profile analysis in routine analysis</p>
+            <p class="prev-next-title">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="ex_simulating_orisel.html" title="next page">

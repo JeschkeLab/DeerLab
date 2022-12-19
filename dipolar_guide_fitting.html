@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Theory" href="theory.html" />
-    <link rel="prev" title="Modelling" href="dipolar_guide_modelling.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="#">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="reference.html">Reference</a>
+            <a class="nav-link nav-link" href="reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
@@ -172,11 +173,6 @@
  <li class="toctree-l1">
   <a class="reference internal" href="getting_started.html">
    Getting Started
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dipolar_guide_modelling.html">
-   Modelling
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -234,6 +230,11 @@
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#displaying-the-results">
    Displaying the results
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#assessing-the-goodness-of-fit">
+   Assessing the goodness-of-fit
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -306,14 +307,22 @@
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/beginners_guide1.png"><img alt="_images/beginners_guide1.png" src="_images/beginners_guide1.png" style="width: 450px;" /></a>
-<p>For a quick summary of the fit results, including goodness-of-fit statistics and the fitted model parameter values (including 95% confidence intervals), can be accessed by just printing the <code class="docutils literal notranslate"><span class="pre">results</span></code> object</p>
+<p>For a quick summary of the fit results, including goodness-of-fit statistics, used model hyperparameters, and the fitted model parameter values (including 95% confidence intervals), can be accessed by just printing the <code class="docutils literal notranslate"><span class="pre">results</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;print(results)</span>
 <span class="go">Goodness-of-fit:</span>
-<span class="go">========= ============= ============ ========== ==========</span>
-<span class="go">Dataset   Noise level   Reduced 𝛘2     RMSD       AIC</span>
-<span class="go">========= ============= ============ ========== ==========</span>
-<span class="go">   #1       1426.905       1.036      1443.706   3631.484</span>
-<span class="go">========= ============= ============ ========== ==========</span>
+<span class="go">========= ============= ============ ==================== ==========</span>
+<span class="go"> Dataset   Noise level   Reduced 𝛘2   Residual autocorr.     RMSD</span>
+<span class="go">========= ============= ============ ==================== ==========</span>
+<span class="go">   #1       1426.905       1.036            0.127          1443.706</span>
+<span class="go">========= ============= ============ ==================== ==========</span>
+
+<span class="go">Model hyperparameters:</span>
+<span class="go">========================== ===================</span>
+<span class="go"> Regularization parameter   Penalty weight #1</span>
+<span class="go">========================== ===================</span>
+<span class="go">        0.002                   0.060</span>
+<span class="go">========================== ===================</span>
+
 <span class="go">Model parameters:</span>
 <span class="go">=========== ========= ========================= ======= ======================================</span>
 <span class="go"> Parameter   Value     95%-Confidence interval   Units   Description</span>
@@ -326,7 +335,11 @@
 <span class="go">=========== ========= ========================= ======= ======================================</span>
 </pre></div>
 </div>
-<p>The values of vectorized parameters such as <code class="docutils literal notranslate"><span class="pre">P</span></code> are not shown in this summary and shown instead as <code class="docutils literal notranslate"><span class="pre">...</span></code>. The additional value <code class="docutils literal notranslate"><span class="pre">P_scale</span></code> corresponds to the overall scaling factor of the distance distribution (and hence of the dipolar signal) since the fitted distance distribution is normalized such that <code class="docutils literal notranslate"><span class="pre">trapz(P,r)==1</span></code>.</p>
+<p>The first table contains all the goodness-of-fit statistics (see below). The second table summarizes all the hyperparameters used
+in the final evaluation of the model. If regularization is enabled (as is the case when using non-parametric distance distributions)
+its final value will be shown. If additional penalties have been added to the fit, their regularization parameters (i.e. penalty weights) will be shown as well.</p>
+<p>The third table summarizes all the model parameter estimates along with their uncertainties and model descriptions.
+The values of vectorized parameters such as <code class="docutils literal notranslate"><span class="pre">P</span></code> are not shown in this summary and shown instead as <code class="docutils literal notranslate"><span class="pre">...</span></code>. The additional value <code class="docutils literal notranslate"><span class="pre">P_scale</span></code> corresponds to the overall scaling factor of the distance distribution (and hence of the dipolar signal) since the fitted distance distribution is normalized such that <code class="docutils literal notranslate"><span class="pre">trapz(P,r)==1</span></code>.</p>
 <p>Any specific quantities can be extracted from the <code class="docutils literal notranslate"><span class="pre">results</span></code> object. For each parameter in the model, the <code class="docutils literal notranslate"><span class="pre">results</span></code> output contains an attribute <code class="docutils literal notranslate"><span class="pre">results.&lt;parameter&gt;</span></code> named after the parameter containing the fitted value of that parameter, as well as another attribute <code class="docutils literal notranslate"><span class="pre">results.&lt;parameter&gt;Uncert</span></code> containing the uncertainty estimates of that parameter, from which confidence intervals can be constructed (the <a class="reference internal" href="uncertainty_guide.html#uncertainty"><span class="std std-ref">uncertainty guide</span></a> for details). For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Distance distribution</span>
 <span class="n">results</span><span class="o">.</span><span class="n">P</span> <span class="c1"># Fitted distance distribution</span>
@@ -337,6 +350,19 @@
 <span class="n">results</span><span class="o">.</span><span class="n">modUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span> <span class="c1"># Modulation depth 95% confidence intervals</span>
 </pre></div>
 </div>
+</section>
+<section id="assessing-the-goodness-of-fit">
+<h2>Assessing the goodness-of-fit<a class="headerlink" href="#assessing-the-goodness-of-fit" title="Permalink to this headline">¶</a></h2>
+<p>The results summary shown above contains several key quantities to quickly assess whether the model estimate obtained by the <code class="docutils literal notranslate"><span class="pre">fit</span></code>
+function is a proper descriptor of the data. For each dataset analyzed, several quantities are returned. The <code class="docutils literal notranslate"><span class="pre">Noise</span> <span class="pre">level</span></code> value shows
+either the estimated noise level of that dataset or the one specified by the user. The <code class="docutils literal notranslate"><span class="pre">Reduced</span> <span class="pre">𝛘2</span></code> value indicates how good the model fit describes the data. Values close to 1 indicate a good fit of the data. The <code class="docutils literal notranslate"><span class="pre">Residual</span> <span class="pre">autocorr.</span></code> value (computed as <img class="math" src="_images/math/4d6d8a8fe6969d7e297583a5068a16c088398107.svg" alt="\vert 2 - d_\mathrm{DW} \vert"/>, where <img class="math" src="_images/math/c70cc9d6a79993a2b4c3377a432ed76837161d1d.svg" alt="d_\mathrm{DW}"/> is the Durbin–Watson statistic) indicates the degree of (first-order) autocorrelation in the fit residual. Values larger than 0.5 indicate a significant amount of autocorrelation, meaning that either the noise if not independent or that the model might not have fully captured all features in the data. Such autocorrelation con commonly originate from a simplified distance distribution model failing to capture all dipolar modulations or a insufficient set of dipolar pathways that fail to capture all contributions to the data. The <code class="docutils literal notranslate"><span class="pre">RMSD</span></code> value does not provide any insight by itself, however, it can be used to compare the goodness-of-fit between different models.</p>
+<p>To facilitate the inspection of the goodness-of-fit, DeerLab will highlight those values that indicate a potential failure of the analysis. If either or both the <code class="docutils literal notranslate"><span class="pre">Reduced</span> <span class="pre">𝛘2</span></code> or <code class="docutils literal notranslate"><span class="pre">Residual</span> <span class="pre">autocorr.</span></code> values are highlighted in yellow, it will indicate that there is a significant possibility that the model does not properly describe the data. In such cases, one must inspect, e.g. visually using <code class="docutils literal notranslate"><span class="pre">results.plot(gof=True)</span></code> (see <a class="reference internal" href="fitting_guide.html#fitting-goodnessoffit"><span class="std std-ref">here</span></a> for details), whether the model estimate actually is a good descriptor of the data. If the values are shown in red, it will indicate that the model does certainly not properly describe the data.</p>
+<p>If yellow or red goodness-of-fit quantities are obtained after an analysis, the following steps can be taken to amend that:</p>
+<ul class="simple">
+<li><p>Check for outliers or features in the data not accounted for by the model.</p></li>
+<li><p>Expand the model to account for them or approximate their presence.</p></li>
+<li><p>If the model cannot be expanded to account for them, make use of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function’s <code class="docutils literal notranslate"><span class="pre">masks</span></code> optional argument to specify data masks so that those features are not accounted for during the analysis.</p></li>
+</ul>
 </section>
 <section id="exporting-the-figure-and-the-data">
 <h2>Exporting the figure and the data<a class="headerlink" href="#exporting-the-figure-and-the-data" title="Permalink to this headline">¶</a></h2>
@@ -364,11 +390,11 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="dipolar_guide_modelling.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="getting_started.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Modelling</p>
+            <p class="prev-next-title">Getting Started</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="theory.html" title="next page">

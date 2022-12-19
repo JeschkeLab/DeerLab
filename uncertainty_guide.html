@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="#">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="reference.html">Reference</a>
+            <a class="nav-link nav-link" href="reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
@@ -165,7 +166,7 @@
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="modelling_guide.html">
+  <a class="reference internal" href="modeling_guide.html">
    Modeling Guide
   </a>
  </li>
@@ -210,8 +211,8 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#covariance-based-or-asymptotic-method">
-     Covariance-based or asymptotic method
+    <a class="reference internal nav-link" href="#moment-based-or-asymptotic-method">
+     Moment-based or asymptotic method
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -232,8 +233,8 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#covariance-based-method">
-     Covariance-based method
+    <a class="reference internal nav-link" href="#moment-based-method">
+     Moment-based method
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -293,25 +294,23 @@ Many statistical descriptors of the uncertainty distribution, such as the mean, 
 </section>
 <section id="uncertainty-quantification-methods">
 <h2>Uncertainty quantification methods<a class="headerlink" href="#uncertainty-quantification-methods" title="Permalink to this headline">¶</a></h2>
-<dl class="simple">
-<dt>DeerLab provides three different methods for the estimation of uncertainty:</dt><dd><ul class="simple">
-<li><p>Covariance-based or asymptotic method (least accurate, fastest)</p></li>
+<p>DeerLab provides three different methods for the estimation of uncertainty:</p>
+<ul class="simple">
+<li><p>Moment-based or asymptotic method (least accurate, fastest)</p></li>
 <li><p>Profile-likelihood method   (accurate, slow)</p></li>
 <li><p>Bootstrapping method (most accurate, slowest)</p></li>
 </ul>
-</dd>
-</dl>
 <p>The following section will provide the basic concepts related to these methods:</p>
-<section id="covariance-based-or-asymptotic-method">
-<h3>Covariance-based or asymptotic method<a class="headerlink" href="#covariance-based-or-asymptotic-method" title="Permalink to this headline">¶</a></h3>
-<p>Covariance-based uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function in DeerLab will employ it by default unless another method is requested.</p>
-<p>This method estimates the uncertainty based on the curvature of the optimization surface. It assumes the uncertainty distributions of all parameters to be normally distributed, centered at the fitted values (i.e., the maximum-likelihood estimates), and their variance to be given by the curvature of the objective function. This curvature is determined via the Jacobian of the objective optimization function and the corresponding covariance matrix.</p>
+<section id="moment-based-or-asymptotic-method">
+<h3>Moment-based or asymptotic method<a class="headerlink" href="#moment-based-or-asymptotic-method" title="Permalink to this headline">¶</a></h3>
+<p>Moment-based uncertainty is the fastest method for uncertainty quantification available in DeerLab. Due to its readiness, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function in DeerLab will employ it by default unless another method is requested.</p>
+<p>This method estimates the uncertainty based on the curvature of the optimization surface. It assumes the uncertainty distributions of all parameters to be normally distributed, centered at the fitted values (i.e., the maximum-likelihood estimates), and their variance to be given by the curvature of the objective function. This curvature is determined via the Jacobian of the objective optimization function and the corresponding covariance matrix. This assumes that the function being analyzed can be well approximated as a first-order Taylor expansion. Therefore, for highly non-linear functions, this method can results in unstable estimates of the uncertainty.</p>
 <p>In addition, the method does not consider the boundaries of the parameters, i.e., they are assumed to be unconstrained. However, in DeerLab, confidence intervals and uncertainty distributions are clipped at the boundaries, as is standard practice.</p>
-<p>All these assumptions and approximations can lead to a less accurate estimate of the uncertainty. It is common for covariance-based confidence intervals to be overestimated and broader than those returned by the other methods offered by DeerLab. Due to the assumption of a normal uncertainty distribution, covariance-based confidence intervals will always be symmetrical about the fitted values, which might not always be accurate. However, their cheap computation cost makes them ideal for immediate and preliminary estimations of uncertainty.</p>
+<p>All these assumptions and approximations can lead to a less accurate estimate of the uncertainty. It is common for moment-based confidence intervals to be overestimated and broader than those returned by the other methods offered by DeerLab. Due to the assumption of a normal uncertainty distribution, moment-based confidence intervals will always be symmetrical about the fitted values, which might not always be accurate. However, their cheap computation cost makes them ideal for immediate and preliminary estimations of uncertainty.</p>
 </section>
 <section id="profile-likelihood-method">
 <h3>Profile-likelihood method<a class="headerlink" href="#profile-likelihood-method" title="Permalink to this headline">¶</a></h3>
-<p>Likelihood-based uncertainty estimated from the profile-likelihood method represents a significant improvement in accuracy with respect to the covariance-based estimates. This method is, however, limited to non-linear model parameters.</p>
+<p>Likelihood-based uncertainty estimated from the profile-likelihood method represents a significant improvement in accuracy with respect to the moment-based estimates. This method is, however, limited to non-linear model parameters.</p>
 <p>This method estimates the uncertainty based on the profile-likelihood of a non-linear model parameter. The profile of a model parameter is computed by fitting the model to the data repeatedly while keeping that parameter fixed at different values. This results in an isometric profile of the likelihood or objective function. A likelihood uncertainty distribution or confidence intervals can be derived from this profile using a statistical criterion.</p>
 <p>The number of values at which the model is repeatedly fitted determines the accuracy of the profile estimation and, therefore, of the uncertainty estimation. For setting up scripts and quick tests, 20 repeats provide rough estimates, but at least 50 repeats are recommended for final results.</p>
 <p>This method does take model parameter boundaries into account, and most importantly, does not assume any shape of the underlying uncertainty distribution. Therefore, it provides better estimates of the uncertainty and allows for asymmetric confidence intervals. However, the repeated optimization nature of the method results in moderately more significant computation times for the uncertainty estimation. It is the restriction to non-linear parameters that makes it also less generally applicable.</p>
@@ -327,10 +326,10 @@ When all bootstrap samples have been analyzed, a distribution of values is obtai
 <section id="selecting-the-uncertainty-method">
 <h2>Selecting the uncertainty method<a class="headerlink" href="#selecting-the-uncertainty-method" title="Permalink to this headline">¶</a></h2>
 <p>The choice of uncertainty quantification method can be easily controlled via optional keyword arguments in the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function. The program will then internally employ the appropriate methods to report the requested uncertainty estimates.</p>
-<section id="covariance-based-method">
-<h3>Covariance-based method<a class="headerlink" href="#covariance-based-method" title="Permalink to this headline">¶</a></h3>
-<p>The covariance-based method is the default method. Therefore, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function can be passed without any additional inputs:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data and quantify the uncertainty based on covariance</span>
+<section id="moment-based-method">
+<h3>Moment-based method<a class="headerlink" href="#moment-based-method" title="Permalink to this headline">¶</a></h3>
+<p>The moment-based method is the default method. Therefore, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function can be passed without any additional inputs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data and quantify the uncertainty</span>
 <span class="n">fitresult</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -366,7 +365,8 @@ These objects contain all the quantities of interest related to the uncertainty 
 </div>
 <p>For vector quantities, confidence intervals are always returned as a <code class="docutils literal notranslate"><span class="pre">Nx2</span></code>-array, where each of the <code class="docutils literal notranslate"><span class="pre">N</span></code> elements of the vector has two values, the lower and upper boundaries of the confidence interval.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the confidence intervals on the model response vector</span>
-<span class="n">response_ci</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">modelUncert</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
+<span class="n">model_uq</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">response_ci</span> <span class="o">=</span> <span class="n">model_uq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
 
 <span class="n">response_ci</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># lower bound of the 95%-CI of the distance distribution</span>
 <span class="n">response_ci</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># upper bound of the 95%-CI of the distance distribution</span>
@@ -375,7 +375,7 @@ These objects contain all the quantities of interest related to the uncertainty 
 </dd>
 <dt>Uncertainty distributions</dt><dd><p>A complete description of the uncertainty is the uncertainty distributions for the fit parameter. These can be requested from the <code class="docutils literal notranslate"><span class="pre">pardist</span></code> method. Using <code class="docutils literal notranslate"><span class="pre">pardist(n)</span></code> will return the uncertainty probability density function and its abscissa values for the corresponding quantity’s <code class="docutils literal notranslate"><span class="pre">n</span></code>-th element. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pardist</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.&lt;</span><span class="n">parameter</span><span class="o">&gt;</span><span class="n">Uncert</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Get the parameter uncertainty distribution</span>
-<span class="n">modeldist5</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">modelUncert</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># Get the uncertainty distribution of the model&#39;s response 5th element</span>
+<span class="n">modeldist5</span> <span class="o">=</span> <span class="n">model_uq</span><span class="o">.</span><span class="n">pardist</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># Get the uncertainty distribution of the model&#39;s response 5th element</span>
 </pre></div>
 </div>
 </dd>

@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Simulating polarization effects on low-temperature DEER &#8212; DeerLab</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Identifiability analysis of a 4-pulse DEER signal via the profile analysis method" href="ex_identifiability_analysis.html" />
+    <link rel="prev" title="Analyzing data with crossing echoes robustly" href="../intermediate/ex_crossing_echoes_masking.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+  
+    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <div class="col-12 col-md-1 col-xl-2 bd-sidebar no-sidebar"></div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-11 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-advanced-ex-simulating-oop-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="simulating-polarization-effects-on-low-temperature-deer">
+<span id="sphx-glr-auto-examples-advanced-ex-simulating-oop-py"></span><h1>Simulating polarization effects on low-temperature DEER<a class="headerlink" href="#simulating-polarization-effects-on-low-temperature-deer" title="Permalink to this headline">¶</a></h1>
+<p>An example on how to simulate the effects of low-temperatures on DEER signals due to the
+breaking of the high-temperature limit and the introduction of out-of-phase contributions
+(to emulate the simulations by [Sweger et al.](<a class="reference external" href="https://doi.org/10.5194/mr-3-101-2022">https://doi.org/10.5194/mr-3-101-2022</a>)).</p>
+<p>This example simulates such signals at two different temperatures assuming a two-pathway
+4-pulse DEER model, with the same refocusing times, opposite-sign harmonics, and a difference
+in amplitude given by the spin polarization.</p>
+<img alt="50K   (1.68% polarization), 8K   (10.45% polarization)" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_simulating_oop_001.png" />
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
+<span class="n">violet</span> <span class="o">=</span> <span class="s1">&#39;#4550e6&#39;</span>
+
+<span class="c1"># Boltzmann constant</span>
+<span class="n">kB</span> <span class="o">=</span> <span class="mf">1.38064852e-23</span> <span class="c1"># J/K (CODATA 2018)</span>
+<span class="n">μB</span> <span class="o">=</span> <span class="mf">9.2740100783e-24</span>  <span class="c1"># Bohr magneton, J/T (CODATA 2018)</span>
+<span class="n">ge</span> <span class="o">=</span> <span class="mf">2.00231930436256</span>   <span class="c1"># Free-electron g factor (CODATA 2018)</span>
+
+<span class="c1"># Define effective dipolar evolution time vector</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">500</span><span class="p">)</span>
+<span class="c1"># Define distance range vector</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+<span class="c1"># Simulate distance distribution</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_skewgauss</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">center</span><span class="o">=</span><span class="mf">4.3</span><span class="p">,</span><span class="n">std</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">skew</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># Simulation parameters</span>
+<span class="n">moddepth</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">conc</span> <span class="o">=</span> <span class="mi">190</span> <span class="c1"># μM</span>
+<span class="n">tref</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># μs</span>
+<span class="n">Bfield</span> <span class="o">=</span> <span class="mi">1248</span> <span class="c1"># mT</span>
+<span class="n">Bfield</span> <span class="o">=</span> <span class="n">Bfield</span><span class="o">/</span><span class="mi">1000</span>  <span class="c1"># mT-&gt;T</span>
+<span class="n">temperatures</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span> <span class="c1"># K</span>
+
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">T</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">temperatures</span><span class="p">):</span>
+
+    <span class="c1"># Calculate the spin polarization</span>
+    <span class="n">polarization</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">ge</span><span class="o">*</span><span class="n">μB</span><span class="o">*</span><span class="n">Bfield</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">kB</span><span class="o">*</span><span class="n">T</span><span class="p">))</span>
+
+    <span class="n">λ1</span> <span class="o">=</span> <span class="n">moddepth</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">polarization</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">λ2</span> <span class="o">=</span> <span class="n">moddepth</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="n">polarization</span><span class="o">/</span><span class="mi">2</span>
+
+    <span class="c1"># Define the harmonics of both pathways</span>
+    <span class="n">δ1</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">δ2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="c1"># Simulate the intermolecular contributions</span>
+    <span class="n">Vinter1</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">δ1</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tref</span><span class="p">),</span><span class="n">conc</span><span class="p">,</span><span class="n">λ1</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d_phase</span><span class="p">(</span><span class="n">δ1</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tref</span><span class="p">),</span><span class="n">conc</span><span class="p">,</span><span class="n">λ1</span><span class="p">)</span>
+    <span class="n">Vinter2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d</span><span class="p">(</span><span class="n">δ2</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tref</span><span class="p">),</span><span class="n">conc</span><span class="p">,</span><span class="n">λ2</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">bg_hom3d_phase</span><span class="p">(</span><span class="n">δ2</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tref</span><span class="p">),</span><span class="n">conc</span><span class="p">,</span><span class="n">λ2</span><span class="p">)</span>
+    <span class="n">Vintra1</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarkernel</span><span class="p">(</span><span class="n">δ1</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tref</span><span class="p">),</span><span class="n">r</span><span class="p">,</span><span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="nd">@P</span>
+    <span class="n">Vintra2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarkernel</span><span class="p">(</span><span class="n">δ2</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">tref</span><span class="p">),</span><span class="n">r</span><span class="p">,</span><span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="nd">@P</span>
+
+    <span class="c1"># Unmodulated contribution</span>
+    <span class="n">Λ0</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">λ1</span> <span class="o">-</span> <span class="n">λ2</span>
+
+    <span class="c1"># Compute the full dipolar signal</span>
+    <span class="n">Vsim</span> <span class="o">=</span> <span class="p">(</span><span class="n">Λ0</span> <span class="o">+</span> <span class="n">λ1</span><span class="o">*</span><span class="n">Vintra1</span> <span class="o">+</span> <span class="n">λ2</span><span class="o">*</span><span class="n">Vintra2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Vinter1</span><span class="o">*</span><span class="n">Vinter2</span><span class="p">)</span>
+
+    <span class="c1"># Add noise</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="mf">0.005</span>
+    <span class="n">Vsim</span> <span class="o">=</span> <span class="n">Vsim</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">std</span><span class="p">)</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="n">whitegaussnoise</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">std</span><span class="p">)</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vsim</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">violet</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">T</span><span class="si">:</span><span class="s1">n</span><span class="si">}</span><span class="s1">K </span><span class="se">\n</span><span class="s1"> (</span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">polarization</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">% polarization)&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;t [μs]&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;In-phase V(t)&#39;</span><span class="p">)</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Vsim</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">])</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;t [μs]&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Out-of-phase V(t)&#39;</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.603 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-simulating-oop-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/4c4cd53885e33c9cc9cfd85aa4bb8faf/ex_simulating_oop.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_simulating_oop.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/31327617f1889ffc8b47c193cd5633ef/ex_simulating_oop.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_simulating_oop.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="../intermediate/ex_crossing_echoes_masking.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Analyzing data with crossing echoes robustly</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="ex_identifiability_analysis.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

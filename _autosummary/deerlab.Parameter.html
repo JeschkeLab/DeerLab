@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../license.html">License</a>
@@ -239,7 +240,41 @@ Must be specified in the model or latest upon fitting.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deerlab.Parameter.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">par0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frozen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/model.html#Parameter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.Parameter.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Construct a new parameter object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str, optional</span></dt><dd><p>Name of the parameter.</p>
+</dd>
+<dt><strong>parent</strong><span class="classifier">object, optional</span></dt><dd><p>Reference to the parent object that contains the parameter.</p>
+</dd>
+<dt><strong>idx</strong><span class="classifier">int or list of int, optional</span></dt><dd><p>Indices of the parameter in the parent object.</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str, optional</span></dt><dd><p>Description of the parameter.</p>
+</dd>
+<dt><strong>par0</strong><span class="classifier">float or array_like, optional</span></dt><dd><p>Value at which to initialize the parameter at the start of a fit routine. 
+Must be specified in the model or latest upon fitting.</p>
+</dd>
+<dt><strong>frozen</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether the parameter will be frozen at a specific value during a fit.
+Default is False.</p>
+</dd>
+<dt><strong>lb</strong><span class="classifier">float or array_like, optional</span></dt><dd><p>Lower bound of the parameter. If not specified, it is assumed to be unbounded.
+Default is -inf.</p>
+</dd>
+<dt><strong>ub</strong><span class="classifier">float or array_like, optional</span></dt><dd><p>Upper bound of the parameter. If not specified, it is assumed to be unbounded.
+Default is inf.</p>
+</dd>
+<dt><strong>value</strong><span class="classifier">float, optional</span></dt><dd><p>Value at which the parameter will be frozen during a fit.</p>
+</dd>
+<dt><strong>unit</strong><span class="classifier">str, optional</span></dt><dd><p>Physical unit of the parameter.</p>
+</dd>
+<dt><strong>linear</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether the model behaves linearly with respect to the parameter.
+Default is False.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <p class="rubric">Methods</p>
 <table class="longtable table autosummary">
@@ -249,7 +284,7 @@ Must be specified in the model or latest upon fitting.</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#deerlab.Parameter.__init__" title="deerlab.Parameter.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([name, parent, idx, description, ...])</p></td>
-<td><p></p></td>
+<td><p>Construct a new parameter object.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#deerlab.Parameter.freeze" title="deerlab.Parameter.freeze"><code class="xref py py-obj docutils literal notranslate"><span class="pre">freeze</span></code></a>(value)</p></td>
 <td><p>Freeze a parameter during a fit/optimization to a given value.</p></td>
@@ -268,11 +303,16 @@ Must be specified in the model or latest upon fitting.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deerlab.Parameter.freeze">
 <span class="sig-name descname"><span class="pre">freeze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/model.html#Parameter.freeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.Parameter.freeze" title="Permalink to this definition">¶</a></dt>
-<dd><p>Freeze a parameter during a fit/optimization to a given value. Does not affect model evaluation.</p>
+<dd><p>Freeze a parameter during a fit/optimization to a given value.</p>
+<p>This method allows the user to freeze a parameter during optimization to a
+specific value. The parameter will remain fixed at this value during the
+optimization process, and will not be updated. This method does not affect
+model evaluation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>value</strong><span class="classifier">float or array_like</span></dt><dd><p>Value at which to freeze the parameter during optimization.</p>
+<dt><strong>value</strong><span class="classifier">float or array_like</span></dt><dd><p>Value at which to freeze the parameter during optimization. This value
+must be within the lower and upper bounds of the parameter.</p>
 </dd>
 </dl>
 </dd>
@@ -283,6 +323,9 @@ Must be specified in the model or latest upon fitting.</p>
 <dt class="sig sig-object py" id="deerlab.Parameter.set">
 <span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/model.html#Parameter.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.Parameter.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set one or multiple attributes for a parameter. See list of attributes for a reference list.</p>
+<p>This method allows users to set the value of one or more attributes for a <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> object. 
+The list of attributes that can be set are the same as the attributes of the <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> class, 
+namely: <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">description</span></code>, <code class="docutils literal notranslate"><span class="pre">unit</span></code>, <code class="docutils literal notranslate"><span class="pre">par0</span></code>, <code class="docutils literal notranslate"><span class="pre">lb</span></code>, <code class="docutils literal notranslate"><span class="pre">ub</span></code>, <code class="docutils literal notranslate"><span class="pre">linear</span></code>, <code class="docutils literal notranslate"><span class="pre">frozen</span></code>, and <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -306,10 +349,13 @@ Must be specified in the model or latest upon fitting.</p>
 <dt class="sig sig-object py" id="deerlab.Parameter.setas">
 <span class="sig-name descname"><span class="pre">setas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/model.html#Parameter.setas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.Parameter.setas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy all attributes from an input parameter to the current parameter.</p>
+<p>This method allows the user to copy all attributes from an input parameter object
+to the current parameter object. This can be useful when initializing multiple
+parameters with the same values.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>param</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">Parameter</span></code> object</span></dt><dd><p>Model parameters from which to extract the attributes.</p>
+<dt><strong>parameter</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">Parameter</span></code> object</span></dt><dd><p>Model parameters from which to extract the attributes.</p>
 </dd>
 </dl>
 </dd>
@@ -319,7 +365,11 @@ Must be specified in the model or latest upon fitting.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deerlab.Parameter.unfreeze">
 <span class="sig-name descname"><span class="pre">unfreeze</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/model.html#Parameter.unfreeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.Parameter.unfreeze" title="Permalink to this definition">¶</a></dt>
-<dd><p>Release a frozen parameter’s value during a fit/optimization. Does not affect model evaluation.</p>
+<dd><p>Release a frozen parameter’s value during a fit/optimization.</p>
+<p>This method allows the user to release a previously frozen parameter during
+optimization. The parameter will no longer be fixed at a specific value and
+will be updated according to the optimization algorithm. This method does not
+affect model evaluation.</p>
 </dd></dl>
 
 </dd></dl>

@@ -94,7 +94,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modelling.html">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="../dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="../theory.html">Theory</a>
           </div>
@@ -103,7 +103,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="../uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +119,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="../reference.html">Reference</a>
+            <a class="nav-link nav-link" href="../reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="../contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="../support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="../license.html">License</a>
@@ -264,10 +265,11 @@ when using a selection method, the default is <code class="docutils literal notr
 </dd>
 <dt><strong>nnlsSolver</strong><span class="classifier">string, optional</span></dt><dd><p>Solver used to solve a non-negative least-squares problem (if applicable):</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'cvx'</span></code> - Optimization of the NNLS problem using the cvxopt package.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'qp'</span></code> - Optimization of the NNLS problem using the <code class="docutils literal notranslate"><span class="pre">quadprog</span></code> package.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'cvx'</span></code> - Optimization of the NNLS problem using the <code class="docutils literal notranslate"><span class="pre">cvxopt</span></code> package.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'fnnls'</span></code> - Optimization using the fast NNLS algorithm.</p></li>
 </ul>
-<p>The default is <code class="docutils literal notranslate"><span class="pre">'cvx'</span></code>.</p>
+<p>The default is <code class="docutils literal notranslate"><span class="pre">'qp'</span></code>.</p>
 </dd>
 <dt><strong>verbose</strong><span class="classifier">scalar integer, optional</span></dt><dd><p>Level of verbosity during the analysis:</p>
 <blockquote>
@@ -304,7 +306,9 @@ If set to <code class="docutils literal notranslate"><span class="pre">None</spa
 </dd>
 <dt><strong>lin_tol</strong><span class="classifier">float scalar, optional</span></dt><dd><p>Linear solver tolerance to decide when a value is defined as a zero, the default is <code class="docutils literal notranslate"><span class="pre">1e-15</span></code>.</p>
 </dd>
-<dt><strong>uq</strong><span class="classifier">boolean, optional</span></dt><dd><p>Enable/disable the uncertainty quantification analysis, by default it is enabled.</p>
+<dt><strong>uq</strong><span class="classifier">boolean, optional</span></dt><dd><p>Enable/disable the uncertainty quantification analysis. Enabled by default.</p>
+</dd>
+<dt><strong>modeluq</strong><span class="classifier">boolean, optional</span></dt><dd><p>Enable/disable the propagation of the parameter uncertainties to the model’s response (can be computationally costly). Disabled by default</p>
 </dd>
 <dt><strong>verbose</strong><span class="classifier">scalar integer, optional</span></dt><dd><p>Level of verbosity during the analysis:</p>
 </dd>
@@ -323,16 +327,9 @@ If set to <code class="docutils literal notranslate"><span class="pre">None</spa
 </dd>
 <dt><strong>model</strong><span class="classifier">ndarray</span></dt><dd><p>Fitted model response.</p>
 </dd>
-<dt><strong>modelUncert</strong><span class="classifier"><a class="reference internal" href="deerlab.UQResult.html#uqresult"><span class="std std-ref">deerlab.UQResult</span></a></span></dt><dd><p>Uncertainty quantification of the fitted model response.</p>
-</dd>
 <dt><strong>regparam</strong><span class="classifier">scalar</span></dt><dd><p>Regularization parameter value used for the regularization of the linear parameters.</p>
 </dd>
 <dt><strong>penweights</strong><span class="classifier">scalar or list thereof</span></dt><dd><p>Penalty weight value(s) used for the penalties specified through <code class="docutils literal notranslate"><span class="pre">penalties</span></code>.</p>
-</dd>
-<dt><strong>plot</strong><span class="classifier">callable</span></dt><dd><p>Function to display the results. It will display the fitted data.
-The function returns the figure object (<code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code>)
-object as output, which can be modified. A vector for the x-axis and its label can
-be specified by calling <code class="docutils literal notranslate"><span class="pre">FitResult.plot(axis=axis,xlabel='xlabel')</span></code>.</p>
 </dd>
 <dt><strong>stats</strong><span class="classifier">dict</span></dt><dd><p>Goodness of fit statistical estimators</p>
 <ul class="simple">
@@ -347,6 +344,10 @@ be specified by calling <code class="docutils literal notranslate"><span class="
 <dt><strong>cost</strong><span class="classifier">float</span></dt><dd><p>Value of the cost function at the solution.</p>
 </dd>
 <dt><strong>noiselvl</strong><span class="classifier">ndarray</span></dt><dd><p>Estimated or user-given noise standard deviations of the individual datasets.</p>
+</dd>
+<dt><strong>plot(axis=None,xlabel=’’,gof=False)</strong><span class="classifier">callable</span></dt><dd><p>Function to display the results. It will display the fitted data.
+A vector for the x-axis and its label can be specified by calling <code class="docutils literal notranslate"><span class="pre">FitResult.plot(axis=x,xlabel='xlabel')</span></code>.
+A set of goodness-of-fit plots can be displayed by enabling the <code class="docutils literal notranslate"><span class="pre">gof</span></code> option by calling <code class="docutils literal notranslate"><span class="pre">FitResult.plot(gof=True)</span></code>.</p>
 </dd>
 <dt><strong>evaluate(model, constants)</strong><span class="classifier">callable</span></dt><dd><p>Function to evaluate a model at the fitted parameter values. Takes a model object or callable function <code class="docutils literal notranslate"><span class="pre">model</span></code> to be evaluated.
 All the parameters in the model or in the callable definition must match their corresponding parameter names in the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object.   

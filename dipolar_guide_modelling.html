@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Modelling &#8212; DeerLab</title>
+    <title>Modeling &#8212; DeerLab</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -44,8 +44,6 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Fitting" href="dipolar_guide_fitting.html" />
-    <link rel="prev" title="Getting Started" href="getting_started.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -94,7 +92,7 @@
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
               <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="#">Modelling</a>
+              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modeling.html">Modeling</a>
               <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_fitting.html">Fitting</a>
               <a class="nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
           </div>
@@ -103,7 +101,7 @@
         <li class="dropdown">
             <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
             <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="modelling_guide.html">Modelling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="modeling_guide.html">Modeling Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
                 <a class="nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
             </div>
@@ -119,13 +117,14 @@
 
         
         <li class="nav-item">
-            <a class="nav-link nav-link" href="reference.html">Reference</a>
+            <a class="nav-link nav-link" href="reference.html">Reference Index</a>
           </li>
 
         <li class="dropdown">
           <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
           <div class="dropdown-content" aria-labelledby="navbarDropdown">
               <a class="nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="publications.html">Publications</a>
               <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
               <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
               <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
@@ -163,34 +162,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="basics.html">
-   Basics
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="getting_started.html">
-   Getting Started
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Modelling
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dipolar_guide_fitting.html">
-   Fitting
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="theory.html">
-   Theory
-  </a>
- </li>
-</ul>
-
+    
   </div>
 </nav>
             </div>
@@ -277,8 +249,8 @@
               
               <div>
                 
-  <section id="modelling">
-<span id="dipolar-modelling"></span><h1>Modelling<a class="headerlink" href="#modelling" title="Permalink to this headline">¶</a></h1>
+  <section id="modeling">
+<span id="dipolar-modeling"></span><h1>Modeling<a class="headerlink" href="#modeling" title="Permalink to this headline">¶</a></h1>
 <p>DeerLab provides a very flexible framework to model dipolar signals originating from any dipolar EPR spectroscopy experiments. Choosing a model that properly describes your sample and experiment is of paramount importance. The DeerLab function <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code> already defines the core model structure based on dipolar pathways, with the following components to be chosen:</p>
 <ul class="simple">
 <li><p><strong>Distance range</strong>: Also called the interspin distance axis, is the range of distances where the distribution is defined.</p></li>
@@ -360,7 +332,7 @@
 <span class="go">========= ======= ======= ======= ======== ======== ====== ======================================</span>
 </pre></div>
 </div>
-<p>From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the <a class="reference internal" href="modelling_guide.html#modelling-guide"><span class="std std-ref">modelling guide</span></a> for more details and instructions on model manipulation.</p>
+<p>From this point on, the model can be modified, manipulated and expanded freely as any other DeerLab model. Check out the <a class="reference internal" href="modeling_guide.html#modeling-guide"><span class="std std-ref">modeling guide</span></a> for more details and instructions on model manipulation.</p>
 </section>
 </section>
 
@@ -369,21 +341,7 @@
               
               
               <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="getting_started.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Getting Started</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="dipolar_guide_fitting.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Fitting</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
+<div class='prev-next-area'>
 </div>
               
           </main>

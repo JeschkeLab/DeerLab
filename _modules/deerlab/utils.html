@@ -1,0 +1,1169 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>deerlab.utils &#8212; DeerLab</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <div class="container-fluid  px-0">
+  
+    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../installation.html">Installation</a>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
+            <div class="dropdown-content" aria-labelledby="navbarDropdown">
+                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
+                <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
+            </div>
+          </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../examples.html">Examples</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link" href="../../modelsref.html">Models</a>
+        </li>
+
+        
+        <li class="nav-item">
+            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
+          </li>
+
+        <li class="dropdown">
+          <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-content" aria-labelledby="navbarDropdown">
+              <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
+              <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
+              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for deerlab.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">Error</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">scp</span>
+<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">opt</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="k">def</span> <span class="nf">parse_multidatasets</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">noiselvl</span><span class="p">,</span> <span class="n">precondition</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subsets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="c1">#===============================================================================</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse one or multiple dataset(s) for local/global least-squares inference</span>
+
+<span class="sd">    This function takes an arbitrary number of datasets, along with the model matrices and noise</span>
+<span class="sd">    level for each dataset, and parses them into a common format for use in a global fit. It also</span>
+<span class="sd">    performs some preprocessing steps such as scaling the signals and estimating the noise level</span>
+<span class="sd">    if it is not provided.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_ : array_like or list of array_like</span>
+<span class="sd">        The input dataset(s). Must be a numpy array or a list of numpy arrays.</span>
+<span class="sd">    </span>
+<span class="sd">    A : array_like, list of array_like, or callable</span>
+<span class="sd">        The model matrix(ces) for the dataset(s). Must be a numpy array or a list of numpy arrays, or a callable that returns such an object.</span>
+<span class="sd">    </span>
+<span class="sd">    weights : array_like or None, optional</span>
+<span class="sd">        The weights for the global fit. If not provided, default weights will be used based on the noise level of each dataset.</span>
+<span class="sd">    </span>
+<span class="sd">    noiselvl : float or array_like, optional</span>
+<span class="sd">        The noise level(s) of the dataset(s). If not provided, the noise level will be estimated using the `der_snr` function.</span>
+<span class="sd">    </span>
+<span class="sd">    precondition : bool, optional</span>
+<span class="sd">        Whether to scale the signals to have maximum value of 1. Default is False.</span>
+<span class="sd">    </span>
+<span class="sd">    masks : array_like or list of array_like, optional</span>
+<span class="sd">        Masks to be applied to the dataset(s). If not provided, all data will be used.</span>
+<span class="sd">    </span>
+<span class="sd">    subsets : list of array_like, optional</span>
+<span class="sd">        The indices of the datasets in the concatenated global dataset. If not provided, the indices will be automatically determined.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    y : array_like</span>
+<span class="sd">        The concatenated dataset(s), with each dataset preprocessed as specified.</span>
+<span class="sd">    </span>
+<span class="sd">    Kmulti : array_like or callable</span>
+<span class="sd">        The concatenated model matrix(ces), or a callable that returns the concatenated model matrix(ces) when given a set of parameters.</span>
+<span class="sd">    </span>
+<span class="sd">    subset : list of array_like</span>
+<span class="sd">        The indices of the datasets in the concatenated global dataset.</span>
+<span class="sd">    </span>
+<span class="sd">    mask : array_like</span>
+<span class="sd">        The concatenated mask(s), applied to the dataset(s).</span>
+<span class="sd">    </span>
+<span class="sd">    sigmas : array_like</span>
+<span class="sd">        The noise level(s) of the dataset(s).</span>
+<span class="sd">    </span>
+<span class="sd">    weights : array_like</span>
+<span class="sd">        The weights for the global fit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Make copies to avoid modifying the originals</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y_</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">ylist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># If multiple datasets are specified as a list...</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">for</span> <span class="n">ys</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]):</span>
+        <span class="n">nDatasets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">nDatasets</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input dataset(s) must be numpy array or a list of numpy arrays.&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Pre-scale the signals, important when using global fits with arbitrary scales</span>
+    <span class="n">prescales</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nDatasets</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nDatasets</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">precondition</span><span class="p">:</span>
+            <span class="n">prescales</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">ylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">prescales</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="c1"># Get the indices to extract the subsets again</span>
+    <span class="n">Ns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ylist</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">subsets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">nDatasets</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>  <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ylist</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">prev</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prev</span> <span class="o">=</span> <span class="n">subset</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">subset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span><span class="n">prev</span><span class="o">+</span><span class="n">Ns</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="n">subset</span> <span class="o">=</span> <span class="n">subsets</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>        
+
+    <span class="c1"># Parse the masks</span>
+    <span class="k">if</span> <span class="n">masks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">masks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ylist</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="p">[</span><span class="n">masks</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span><span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ylist</span><span class="p">):</span> 
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;The number of masks does not match the number of signals.&#39;</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+
+    <span class="c1"># Noise level estimation/parsing</span>
+    <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">noiselvl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)):</span>
+            <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">der_snr</span><span class="p">(</span><span class="n">ylist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">masks</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">noiselvl</span><span class="p">)</span>
+        <span class="n">sigmas</span> <span class="o">=</span> <span class="n">noiselvl</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+
+    <span class="c1"># Concatenate the datasets along the list axis</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">ylist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># -----------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">prepare_model_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">nDatasets</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare model matrix for global fit</span>
+
+<span class="sd">        This function takes an arbitrary number of model matrices, and parses</span>
+<span class="sd">        them into a common format for use in a global fit. It concatenates </span>
+<span class="sd">        them along the list axis if they are specified as a list.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : array_like, list of array_like, or callable</span>
+<span class="sd">            The input model matrix(ces). Must be a numpy array or a list of numpy arrays, or a callable that returns such an object.</span>
+<span class="sd">        nDatasets : int</span>
+<span class="sd">            The number of datasets in the global fit.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A : array_like or callable</span>
+<span class="sd">            The concatenated model matrix(ces), or a callable that returns the concatenated model matrix(ces) when given a set of parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If multiple kernels are specified as a list...</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">As</span> <span class="k">for</span> <span class="n">As</span> <span class="ow">in</span> <span class="n">A</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">As</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">for</span> <span class="n">As</span> <span class="ow">in</span> <span class="n">A</span><span class="p">]):</span>
+            <span class="n">nKernels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># ...concatenate them along the list </span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="n">nKernels</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input model matrix must be numpy array or a list of numpy arrays.&#39;</span><span class="p">)</span>
+        <span class="c1"># Check that the same number of signals and kernel have been passed</span>
+        <span class="k">if</span> <span class="n">nDatasets</span><span class="o">!=</span><span class="n">nKernels</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;The same number of model matrices and datasets must be specified as lists.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A</span>
+    <span class="c1"># -----------------------------------------------------------------</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="ow">is</span> <span class="n">FunctionType</span><span class="p">:</span>
+        <span class="n">Kmulti</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">prepare_model_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">nDatasets</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">Kmulti</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Kmulti</span> <span class="o">=</span> <span class="n">prepare_model_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">nDatasets</span><span class="p">)</span>
+
+    <span class="c1"># If global weights are not specified, set default based on noise levels</span>
+    <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">weights</span><span class="o">=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)):</span>
+                <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+    <span class="c1"># If multiple weights are specified as a list...</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">):</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">ylist</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">!=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ylist</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;If multiple signals are passed, the same number of weights are required.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">!=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ylist</span><span class="p">]):</span>
+            <span class="n">weights_</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)):</span>
+                <span class="n">weights_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">weights_</span><span class="p">,</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ylist</span><span class="p">[</span><span class="n">i</span><span class="p">]))))</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">weights_</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input weights(s) must be numpy array or a list of numpy arrays.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">precondition</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">Kmulti</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">prescales</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">Kmulti</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">sigmas</span>
+<span class="c1">#===============================================================================</span>
+
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="formatted_table"><a class="viewcode-back" href="../../_autosummary/deerlab.formatted_table.html#deerlab.formatted_table">[docs]</a><span class="k">def</span> <span class="nf">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">align</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate formatted table in string form</span>
+
+<span class="sd">    This function takes a table as a list of rows, and returns a string representation </span>
+<span class="sd">    of the table with automatic formatting. The table is formatted using a row-separator</span>
+<span class="sd">    line, a header row, and the data rows.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    table : list of list of objects</span>
+<span class="sd">        The input table, as a list of rows, where each row is a list of objects representing</span>
+<span class="sd">        the columns.</span>
+<span class="sd">    align : list of str, optional</span>
+<span class="sd">        The alignment of the columns in the table. Must be a list of strings, where each string is </span>
+<span class="sd">        either &#39;&lt;&#39; for left alignment, &#39;&gt;&#39; for right alignment, or &#39;^&#39; for center alignment. If </span>
+<span class="sd">        not provided, all columns will be left-aligned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    table2print : str</span>
+<span class="sd">        The formatted table, as a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pyparsing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span><span class="n">Combine</span><span class="p">,</span><span class="n">Suppress</span><span class="p">,</span><span class="n">Optional</span><span class="p">,</span><span class="n">delimitedList</span><span class="p">,</span><span class="n">Word</span><span class="p">,</span><span class="n">nums</span><span class="p">,</span><span class="n">alphas</span><span class="p">,</span><span class="n">oneOf</span>
+    <span class="n">ESC</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">escapeSeq</span> <span class="o">=</span> <span class="n">Combine</span><span class="p">(</span><span class="n">ESC</span> <span class="o">+</span> <span class="s1">&#39;[&#39;</span> <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">delimitedList</span><span class="p">(</span><span class="n">Word</span><span class="p">(</span><span class="n">nums</span><span class="p">),</span><span class="s1">&#39;;&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">oneOf</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">alphas</span><span class="p">)))</span>
+    <span class="n">rm_ansi</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">Suppress</span><span class="p">(</span><span class="n">escapeSeq</span><span class="p">)</span><span class="o">.</span><span class="n">transformString</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+    <span class="c1"># Determine the maximal number of characters in each column</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>    
+        <span class="n">row_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">rm_ansi</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">])))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="p">]</span>
+        <span class="n">N</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">row_lengths</span><span class="p">))</span>
+
+    <span class="c1"># If not specified, use left-alignment</span>
+    <span class="k">if</span> <span class="n">align</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">align</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="c1"># Construct string for row-separator</span>
+    <span class="n">table_lines</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">align</span><span class="p">):</span>
+        <span class="n">table_lines</span> <span class="o">+=</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> 
+        <span class="n">table_lines</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span>
+
+    <span class="c1"># Construct row formatter string</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">align</span><span class="p">):</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">formatter</span> <span class="o">+</span> <span class="s1">&#39; {:&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;}  &#39;</span> 
+
+    <span class="c1"># Construct the table</span>
+    <span class="n">table2print</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> 
+    <span class="n">table2print</span> <span class="o">+=</span> <span class="n">table_lines</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>  <span class="c1"># Add a line</span>
+    <span class="n">table2print</span> <span class="o">+=</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">table</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># Add a header </span>
+    <span class="n">table2print</span> <span class="o">+=</span> <span class="n">table_lines</span>  <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># Add a line</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">table2print</span> <span class="o">+=</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># Add data rows</span>
+    <span class="n">table2print</span> <span class="o">+=</span> <span class="n">table_lines</span> <span class="c1"># Add a line</span>
+    <span class="k">return</span> <span class="n">table2print</span></div>
+<span class="c1">#===============================================================================</span>
+
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="goodness_of_fit"><a class="viewcode-back" href="../../_autosummary/deerlab.goodness_of_fit.html#deerlab.goodness_of_fit">[docs]</a><span class="k">def</span> <span class="nf">goodness_of_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">xfit</span><span class="p">,</span><span class="n">Ndof</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Goodness of Fit statistics</span>
+
+<span class="sd">    Computes multiple statistical indicators of goodness of fit.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array_like</span>
+<span class="sd">        Original data.</span>
+<span class="sd">    xfit : array_like</span>
+<span class="sd">        Fit.</span>
+<span class="sd">    Ndof : int</span>
+<span class="sd">        Number of degrees of freedom.</span>
+<span class="sd">    noiselvl : float</span>
+<span class="sd">        Standard deviation of the noise in x.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    stats : dict</span>
+<span class="sd">        Statistical indicators:</span>
+<span class="sd">            stats[&#39;chi2red&#39;] - Reduced chi-squared</span>
+<span class="sd">            stats[&#39;rmsd&#39;] - Root mean-squared deviation</span>
+<span class="sd">            stats[&#39;R2&#39;] - R-squared test</span>
+<span class="sd">            stats[&#39;aic&#39;] - Akaike information criterion</span>
+<span class="sd">            stats[&#39;aicc&#39;] - Corrected Akaike information criterion</span>
+<span class="sd">            stats[&#39;bic&#39;] - Bayesian information criterion</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">noiselvl</span>
+    <span class="n">Ndof</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">Ndof</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">residuals</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">xfit</span>
+    
+    <span class="c1"># Special case: no noise, and perfect fit</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residuals</span><span class="p">),</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;chi2red&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;R2&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;rmsd&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;aic&#39;</span><span class="p">:</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="s1">&#39;aicc&#39;</span><span class="p">:</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="s1">&#39;bic&#39;</span><span class="p">:</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="s1">&#39;autocorr&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+
+    <span class="c1"># Get number of xariables</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># Extrapolate number of parameters</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Ndof</span> <span class="o">-</span> <span class="n">N</span>
+
+    <span class="c1"># Reduced Chi-squared test</span>
+    <span class="n">chi2red</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">Ndof</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="c1"># Autocorrelation based on Durbin–Watson statistic</span>
+    <span class="n">autocorr_DW</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">residuals</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">residuals</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residuals</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="c1"># R-squared test</span>
+    <span class="n">R2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">residuals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">xfit</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xfit</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Root-mean square dexiation</span>
+    <span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">residuals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="c1"># Log-likelihood</span>
+    <span class="n">loglike</span> <span class="o">=</span> <span class="n">N</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">residuals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># Akaike information criterion</span>
+    <span class="n">aic</span> <span class="o">=</span>  <span class="n">loglike</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">Q</span>
+
+    <span class="c1"># Corrected Akaike information criterion</span>
+    <span class="n">aicc</span> <span class="o">=</span> <span class="n">loglike</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">Q</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">Q</span><span class="o">*</span><span class="p">(</span><span class="n">Q</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="n">Q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Bayesian information criterion</span>
+    <span class="n">bic</span> <span class="o">=</span>  <span class="n">loglike</span> <span class="o">+</span> <span class="n">Q</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;chi2red&#39;</span><span class="p">:</span><span class="n">chi2red</span><span class="p">,</span><span class="s1">&#39;R2&#39;</span><span class="p">:</span><span class="n">R2</span><span class="p">,</span><span class="s1">&#39;rmsd&#39;</span><span class="p">:</span><span class="n">rmsd</span><span class="p">,</span><span class="s1">&#39;aic&#39;</span><span class="p">:</span><span class="n">aic</span><span class="p">,</span><span class="s1">&#39;aicc&#39;</span><span class="p">:</span><span class="n">aicc</span><span class="p">,</span><span class="s1">&#39;bic&#39;</span><span class="p">:</span><span class="n">bic</span><span class="p">,</span><span class="s1">&#39;autocorr&#39;</span><span class="p">:</span><span class="n">autocorr_DW</span><span class="p">}</span></div>
+<span class="c1">#===============================================================================</span>
+
+
+
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="der_snr"><a class="viewcode-back" href="../../_autosummary/deerlab.der_snr.html#deerlab.der_snr">[docs]</a><span class="k">def</span> <span class="nf">der_snr</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DER-SNR noise estimation </span>
+
+<span class="sd">    Estimate the noise level using the DER_SNR method [1]_.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array_like </span>
+<span class="sd">        Noisy dataset.</span>
+
+<span class="sd">    Returns </span>
+<span class="sd">    -------</span>
+<span class="sd">    sigma : float scalar </span>
+<span class="sd">        Noise standard deviation. </span>
+
+<span class="sd">    References</span>
+<span class="sd">    ---------- </span>
+<span class="sd">    .. [1] F. Stoehr, R. White, M. Smith, I. Kamp, R. Thompson, D. Durand, W. Freudling,</span>
+<span class="sd">       D. Fraquelli, J. Haase, R. Hook, T. Kimball, M. Kummel, K. Levay, M. Lombardi, A. Micol, T. Rogers </span>
+<span class="sd">       DERSNR: A Simple &amp; General Spectroscopic Signal-to-Noise Measurement Algorithm</span>
+<span class="sd">       Astronomical Data Analysis Software and Systems XVII, ASP Conference Series, Vol. 30, 2008, p5.4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">sigma</span>  <span class="o">=</span> <span class="mf">1.482602</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="n">n</span><span class="p">]))</span>
+    
+    <span class="k">return</span> <span class="n">sigma</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="hccm"><a class="viewcode-back" href="../../_autosummary/deerlab.hccm.html#deerlab.hccm">[docs]</a><span class="k">def</span> <span class="nf">hccm</span><span class="p">(</span><span class="n">J</span><span class="p">,</span><span class="n">residual</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;HC1&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Heteroscedasticity Consistent Covariance Matrix (HCCM)</span>
+
+<span class="sd">    Computes the heteroscedasticity consistent covariance matrix (HCCM) of</span>
+<span class="sd">    a given LSQ problem given by the Jacobian matrix and the residual vector</span>
+<span class="sd">    of a least-squares problem. The HCCM are valid for both heteroscedasticit and</span>
+<span class="sd">    homoscedasticit residual vectors. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    J : NxM-element ndarray</span>
+<span class="sd">        Jacobian matrix of the residual vector</span>
+<span class="sd">    residual : N-element ndarray</span>
+<span class="sd">        Vector of residuals</span>
+<span class="sd">    mode : string, optional</span>
+<span class="sd">        HCCM estimation method:</span>
+
+<span class="sd">        * ``&#39;HC0&#39;`` - White, 1980 [1]_</span>
+<span class="sd">        * ``&#39;HC1&#39;`` - MacKinnon and White, 1985 [2]_</span>
+<span class="sd">        * ``&#39;HC2&#39;`` - MacKinnon and White, 1985 [2]_</span>
+<span class="sd">        * ``&#39;HC3&#39;`` - Davidson and MacKinnon, 1993 [3]_</span>
+<span class="sd">        * ``&#39;HC4&#39;`` - Cribari-Neto, 2004 [4]_</span>
+<span class="sd">        * ``&#39;HC5&#39;`` - Cribari-Neto, 2007 [5]_</span>
+
+<span class="sd">        If not specified, it defaults to ``&#39;HC1&#39;``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    C : MxM-element ndarray</span>
+<span class="sd">       Heteroscedasticity consistent covariance matrix </span>
+
+<span class="sd">    References</span>
+<span class="sd">    ---------- </span>
+<span class="sd">    .. [1] White, H. (1980). A heteroskedasticity-consistent covariance matrix</span>
+<span class="sd">       estimator and a direct test for heteroskedasticity. Econometrica, 48(4), 817-838</span>
+<span class="sd">       DOI: 10.2307/1912934</span>
+
+<span class="sd">    .. [2] MacKinnon and White, (1985). Some heteroskedasticity-consistent covariance</span>
+<span class="sd">       matrix estimators with improved finite sample properties. Journal of Econometrics, 29 (1985), </span>
+<span class="sd">       pp. 305-325. DOI: 10.1016/0304-4076(85)90158-7</span>
+
+<span class="sd">    .. [3] Davidson and MacKinnon, (1993). Estimation and Inference in Econometrics</span>
+<span class="sd">       Oxford University Press, New York. </span>
+
+<span class="sd">    .. [4] Cribari-Neto, F. (2004). Asymptotic inference under heteroskedasticity of</span>
+<span class="sd">       unknown form. Computational Statistics &amp; Data Analysis, 45(1), 215-233</span>
+<span class="sd">       DOI: 10.1016/s0167-9473(02)00366-3</span>
+
+<span class="sd">    .. [5] Cribari-Neto, F., Souza, T. C., &amp; Vasconcellos, K. L. P. (2007). Inference</span>
+<span class="sd">       under heteroskedasticity and leveraged data. Communications in Statistics –</span>
+<span class="sd">       Theory and Methods, 36(10), 1877-1888. DOI: 10.1080/03610920601126589</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Hat matrix</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">J</span><span class="nd">@np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">J</span><span class="o">.</span><span class="n">T</span><span class="nd">@J</span><span class="p">)</span><span class="nd">@J</span><span class="o">.</span><span class="n">T</span>
+    <span class="c1"># Get leverage</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+    <span class="c1"># Number of parameters (k) &amp; Number of variables (n)</span>
+    <span class="n">n</span><span class="p">,</span><span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+
+    <span class="c1"># IF the number of parameters and variables are equal default to the HC0 mode to avoid zero-division</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="n">k</span><span class="p">:</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;HC0&#39;</span>
+
+    <span class="c1"># Select estimation method using established nomenclature</span>
+    <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;HC0&#39;</span><span class="p">:</span> <span class="c1"># White,(1980),[1]</span>
+        <span class="c1"># Estimate the data covariance matrix</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">residual</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;HC1&#39;</span><span class="p">:</span> <span class="c1"># MacKinnon and White,(1985),[2]</span>
+        <span class="c1"># Estimate the data covariance matrix</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">n</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">residual</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;HC2&#39;</span><span class="p">:</span> <span class="c1"># MacKinnon and White,(1985),[2]</span>
+        <span class="c1"># Estimate the data covariance matrix</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">residual</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">h</span><span class="p">))</span>
+        
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;HC3&#39;</span><span class="p">:</span> <span class="c1"># Davidson and MacKinnon,(1993),[3]</span>
+        <span class="c1"># Estimate the data covariance matrix</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">residual</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">h</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+        
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;HC4&#39;</span><span class="p">:</span> <span class="c1"># Cribari-Neto,(2004),[4]</span>
+        <span class="c1"># Compute discount factor</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="n">n</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="n">k</span><span class="p">)</span>
+        <span class="c1"># Estimate the data covariance matrix</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">residual</span><span class="o">**</span><span class="mf">2.</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">h</span><span class="p">)</span><span class="o">**</span><span class="n">delta</span><span class="p">))</span>
+        
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;HC5&#39;</span><span class="p">:</span> <span class="c1"># Cribari-Neto,(2007),[5]</span>
+        <span class="c1"># Compute inflation factor</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mf">0.7</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="n">k</span><span class="o">*</span><span class="nb">max</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">)),</span><span class="n">h</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="c1"># Estimate the data covariance matrix</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">residual</span><span class="o">**</span><span class="mf">2.</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">h</span><span class="p">)</span><span class="o">**</span><span class="n">alpha</span><span class="p">)))</span>
+            
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;HCCM estimation mode not found.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Heteroscedasticity Consistent Covariance Matrix (HCCM) estimator</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">J</span><span class="o">.</span><span class="n">T</span><span class="nd">@J</span><span class="p">)</span><span class="nd">@J</span><span class="o">.</span><span class="n">T</span><span class="nd">@V@J@np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">J</span><span class="o">.</span><span class="n">T</span><span class="nd">@J</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the covariance matrix is positive semi-definite</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">nearest_psd</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">C</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="Jacobian"><a class="viewcode-back" href="../../_autosummary/deerlab.Jacobian.html#deerlab.Jacobian">[docs]</a><span class="k">def</span> <span class="nf">Jacobian</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Finite difference Jacobian estimation </span>
+<span class="sd">     </span>
+<span class="sd">    Estimates the Jacobian matrix of a vector-valued function `f(x)` at the </span>
+<span class="sd">    point `x_0` taking into consideration box-constraints of the vector-valued </span>
+<span class="sd">    variable ``x`` defined by its lower and upper bounds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fcn : callable </span>
+<span class="sd">        Function `f(x)` to be differentiated.     </span>
+<span class="sd">    x0 : ndarray</span>
+<span class="sd">        Point `x_0` at which to differentiate. </span>
+<span class="sd">    lb : ndarray </span>
+<span class="sd">        Lower bounds of `x`.  </span>
+<span class="sd">    ub : ndarray </span>
+<span class="sd">        Upper bounds of `x`. </span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    This is a wrapper around the ``scipy.optimize._numdiff.approx_derivative``</span>
+<span class="sd">    function of the Scipy package.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">_numdiff</span><span class="o">.</span><span class="n">approx_derivative</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span><span class="n">x0</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;2-point&#39;</span><span class="p">,</span><span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">))</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">J</span><span class="p">)</span> 
+    <span class="k">return</span> <span class="n">J</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="movmean"><a class="viewcode-back" href="../../_autosummary/deerlab.movmean.html#deerlab.movmean">[docs]</a><span class="k">def</span> <span class="nf">movmean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Moving mean filter</span>
+
+<span class="sd">    Returns an array of local `N`-point mean values, where each mean is calculated</span>
+<span class="sd">    over a sliding window of length `k` across neighboring elements of `x`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ndarray</span>
+<span class="sd">        Array to be filtered</span>
+<span class="sd">    N : integer scalar</span>
+<span class="sd">        Window size</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xfilt : ndarray</span>
+<span class="sd">        Filtered array</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xfilt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xfilt</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="ovl"><a class="viewcode-back" href="../../_autosummary/deerlab.ovl.html#deerlab.ovl">[docs]</a><span class="k">def</span> <span class="nf">ovl</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overlap index</span>
+
+<span class="sd">    Returns the overlap index between two vectors A and B with respect to zero.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    A : N-element ndarray</span>
+<span class="sd">        First vector</span>
+<span class="sd">    B : N-element ndarray</span>
+<span class="sd">        Second vector</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    metric : array</span>
+<span class="sd">        Overlap metric</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">metric</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">metric</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<div class="viewcode-block" id="nearest_psd"><a class="viewcode-back" href="../../_autosummary/deerlab.nearest_psd.html#deerlab.nearest_psd">[docs]</a><span class="k">def</span> <span class="nf">nearest_psd</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the nearest positive semi-definite matrix</span>
+
+<span class="sd">    This function takes a square matrix `A` and returns the nearest positive semi-definite matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    A : ndarray</span>
+<span class="sd">        The input matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Cpsd : ndarray</span>
+<span class="sd">        The nearest positive semi-definite matrix.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Modified from the algorithm in [1]_.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    [1] tjiagoM (2020, July 28th), </span>
+<span class="sd">        How can I calculate the nearest positive semi-definite matrix? </span>
+<span class="sd">        StackOverflow, https://stackoverflow.com/a/63131250/16396391</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># If matrix is empty, return it empty (scipy.linalg.eigh cannot deal with empty matrix)</span>
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">size</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="n">A</span>
+    <span class="c1"># Symmetrize the matrix</span>
+    <span class="n">Asym</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">+</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="c1"># Construct positive semi-definite matrix via eigenvalue decomposition</span>
+    <span class="n">eigval</span><span class="p">,</span> <span class="n">eigvec</span> <span class="o">=</span> <span class="n">scp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">Asym</span><span class="p">)</span>
+    <span class="n">eigval</span><span class="p">[</span><span class="n">eigval</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">Cpsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">eigvec</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">eigval</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">eigvec</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+    <span class="c1"># Avoid round-off errors</span>
+    <span class="n">Cpsd</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">Cpsd</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">Cpsd</span></div>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<span class="k">def</span> <span class="nf">isnumeric</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check whether an object is numeric</span>
+
+<span class="sd">    This function checks whether an object supports the basic operations of a numeric type,</span>
+<span class="sd">    such as addition, subtraction, multiplication, and division.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : object</span>
+<span class="sd">        The object to be checked.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : bool</span>
+<span class="sd">        `True` if `obj` is numeric, `False` otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__add__&#39;</span><span class="p">,</span> <span class="s1">&#39;__sub__&#39;</span><span class="p">,</span> <span class="s1">&#39;__mul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__truediv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__pow__&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">)</span>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1">#===============================================================================</span>
+<span class="k">def</span> <span class="nf">multistarts</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">x0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate multiple starting points</span>
+
+<span class="sd">    This function generates multiple starting points for optimization, based on a given initial point,</span>
+<span class="sd">    lower bounds, and upper bounds. If `n` is positive, `n-1` new points are generated within the bounds,</span>
+<span class="sd">    excluding the bounds themselves.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int</span>
+<span class="sd">        The number of starting points to generate.</span>
+<span class="sd">    x0 : array_like</span>
+<span class="sd">        The initial point.</span>
+<span class="sd">    lb : array_like</span>
+<span class="sd">        The lower bounds for the starting points.</span>
+<span class="sd">    ub : array_like</span>
+<span class="sd">        The upper bounds for the starting points.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x0 : ndarray</span>
+<span class="sd">        The starting points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Ensure a 1D-vector</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">lb</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">ub</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of requested starting points must be n&gt;0.&#39;</span><span class="p">)</span> 
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ub</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The lower/upper bound size(s) are not compatible with the initial guess vector x0.&#39;</span><span class="p">)</span> 
+
+    <span class="n">_x0</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># Generate n-1 new starting points within the bounds (excluding the bounds)</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="n">x0</span><span class="p">]</span>
+
+    <span class="c1"># If there is some NaN or inf value (just put the original start value)</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x0</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_x0</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_x0</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    
+    <span class="k">return</span> <span class="n">x0</span>
+<span class="c1">#===============================================================================</span>
+
+<span class="c1"># This is only required for the developers version which installs pytest automatically</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pytest</span>     
+    <span class="c1">#===============================================================================</span>
+    <span class="k">def</span> <span class="nf">skip_on</span><span class="p">(</span><span class="n">errclass</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Default reason&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Decorator for skipping failed tests during pytest&#39;s execution</span>
+
+<span class="sd">        Skip a unit test in Pytest if a particular exception occurs during the execution of the test.</span>
+<span class="sd">        When an error of the type `errclass` occurs, the test will be skipped and the given `reason` will be reported.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        @skip_on(TypeError, reason=&quot;Data is not a string&quot;)</span>
+<span class="sd">        def test_parse_string():</span>
+<span class="sd">            assert parse_string(1234) == &quot;1234&quot;</span>
+
+<span class="sd">        Source: modified from https://stackoverflow.com/a/63522579/16396391</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        <span class="c1"># Func below is the real decorator and will receive the test function as param</span>
+        <span class="k">def</span> <span class="nf">decorator_func</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># Try to run the test</span>
+                    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">errclass</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)):</span>
+                        <span class="c1"># If exception of given type happens</span>
+                        <span class="c1"># just swallow it and raise pytest.Skip with given reason</span>
+                        <span class="n">pytest</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wrapper</span>
+
+        <span class="k">return</span> <span class="n">decorator_func</span>
+    <span class="c1">#===============================================================================</span>
+
+
+    <span class="kn">import</span> <span class="nn">inspect</span>
+    <span class="c1">#===============================================================================</span>
+    <span class="k">def</span> <span class="nf">assert_docstring</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the docstring of a given function contains documentation for all of its input arguments.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        function : callable</span>
+<span class="sd">            The function to check.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AssertionError</span>
+<span class="sd">            If the docstring does not contain documentation for all of the function&#39;s input arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">input_args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">function</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="o">+</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">function</span><span class="p">)</span><span class="o">.</span><span class="n">kwonlyargs</span>
+        <span class="n">docstring</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="vm">__doc__</span>
+
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">input_args</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">docstring</span>
+            <span class="k">except</span><span class="p">:</span> 
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The argument &quot;</span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s1">&quot; is not documented.&#39;</span><span class="p">)</span>
+    <span class="c1">#===============================================================================</span>
+<span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+
+<span class="kn">import</span> <span class="nn">dill</span> <span class="k">as</span> <span class="nn">pickle</span>
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="store_pickle"><a class="viewcode-back" href="../../_autosummary/deerlab.store_pickle.html#deerlab.store_pickle">[docs]</a><span class="k">def</span> <span class="nf">store_pickle</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save/export an object to a ``.pkl`` file serialized as bytes.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : object </span>
+<span class="sd">        Python object to be saved/exported. </span>
+
+<span class="sd">    filename : string </span>
+<span class="sd">        Name (and path) of the file to save the pickled object to. The object is saved as a ``.pkl`` file. If `filename` does not end in &quot;.pkl&quot;, the extension is added automatically.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    store_pickle(my_object, &#39;my_file.pkl&#39;)</span>
+<span class="sd">    store_pickle(my_object, &#39;./data/my_file&#39;) # equivalent to &#39;./data/my_file.pkl&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">if</span> <span class="s1">&#39;.pkl&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outp</span><span class="p">:</span>  <span class="c1"># Overwrites any existing file.</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">outp</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="read_pickle"><a class="viewcode-back" href="../../_autosummary/deerlab.read_pickle.html#deerlab.read_pickle">[docs]</a><span class="k">def</span> <span class="nf">read_pickle</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load a pickled object file ``.pkl`` and deserialize the bytes into a Python object.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : string </span>
+<span class="sd">        Path to the ``.pkl`` file to load.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    object</span>
+<span class="sd">        The deserialized Python object.</span>
+
+<span class="sd">    .. warning:: It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with. See `here &lt;https://docs.python.org/3/library/pickle.html&gt;`_ for more information.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">if</span> <span class="s1">&#39;.pkl&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+                <span class="k">break</span></div>
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="sophegrid"><a class="viewcode-back" href="../../_autosummary/deerlab.sophegrid.html#deerlab.sophegrid">[docs]</a><span class="k">def</span> <span class="nf">sophegrid</span><span class="p">(</span><span class="n">octants</span><span class="p">,</span><span class="n">maxphi</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct spherical grid over spherical angles based on input parameters. </span>
+<span class="sd">    The grid implemented in this function is often called the SOPHE grid [1]_. </span>
+<span class="sd">    Adapted from Easyspin [2]_ ``sphgrid_`` source code. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    octants : integer </span>
+<span class="sd">        Number of &quot;octants&quot; of the sphere; for each increment in theta, octants additional points are added along phi; special cases: octants=0 and octants=-1.</span>
+<span class="sd">    maxphi : float </span>
+<span class="sd">        Largest value of angle phi (radians).</span>
+<span class="sd">    size : integer  </span>
+<span class="sd">        Number of orientations between theta=0 and theta=pi/2. </span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    phi : ndarray</span>
+<span class="sd">        Array of the phi angles of the grid points in radians.</span>
+<span class="sd">    theta : ndarray</span>
+<span class="sd">        Array of the theta angles of the grid points in radians.</span>
+<span class="sd">    weights : ndarray</span>
+<span class="sd">        Array of the weights corresponding to each grid point.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    .. [1] D. Wang, G. R. Hanson</span>
+<span class="sd">       J.Magn.Reson. A, 117, 1-8 (1995)</span>
+<span class="sd">       https://doi.org/10.1006/jmra.1995.9978</span>
+
+<span class="sd">    .. [2] Stefan Stoll, Arthur Schweiger</span>
+<span class="sd">       J. Magn. Reson. 178(1), 42-55 (2006)</span>
+<span class="sd">       https://doi.org/10.1016/j.jmr.2005.08.013</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="n">dtheta</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1"># angular increment along theta</span>
+    <span class="k">if</span> <span class="n">octants</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># if not Dinfh or O3 symmetry</span>
+        
+        <span class="c1"># Initializations</span>
+        <span class="k">if</span> <span class="n">octants</span><span class="o">==</span><span class="mi">8</span><span class="p">:</span>
+            <span class="n">nOct</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nOct</span> <span class="o">=</span> <span class="n">octants</span>
+        <span class="n">nOrientations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span> <span class="o">+</span> <span class="n">nOct</span><span class="o">*</span><span class="n">size</span><span class="o">*</span><span class="p">(</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
+        
+        <span class="n">sindth2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dtheta</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">w1</span> <span class="o">=</span> <span class="mf">0.5</span>
+        
+        <span class="c1"># North pole (z orientation)</span>
+        <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dtheta</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        
+        <span class="c1"># All but equatorial slice</span>
+        <span class="n">Start</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">for</span> <span class="n">iSlice</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">nPhi</span> <span class="o">=</span> <span class="n">nOct</span><span class="o">*</span><span class="p">(</span><span class="n">iSlice</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">dPhi</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">/</span><span class="p">(</span><span class="n">nPhi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">Start</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nPhi</span><span class="p">)</span>
+            <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="n">iSlice</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">dtheta</span><span class="p">)</span><span class="o">*</span><span class="n">sindth2</span><span class="o">*</span><span class="n">dPhi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">w1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nPhi</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]])</span>
+            <span class="n">phi</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">maxphi</span><span class="p">,</span><span class="n">nPhi</span><span class="p">)</span>
+            <span class="n">theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">iSlice</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">dtheta</span>
+            <span class="n">Start</span> <span class="o">=</span> <span class="n">Start</span> <span class="o">+</span> <span class="n">nPhi</span>
+        
+        <span class="c1"># Equatorial slice</span>
+        <span class="n">nPhi</span> <span class="o">=</span> <span class="n">nOct</span><span class="o">*</span><span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">dPhi</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">/</span><span class="p">(</span><span class="n">nPhi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">Start</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nPhi</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">phi</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">maxphi</span><span class="p">,</span><span class="n">nPhi</span><span class="p">)</span>
+        <span class="n">theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">sindth2</span><span class="o">*</span><span class="n">dPhi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">w1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nPhi</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]])</span>
+        
+        <span class="c1"># Border removal</span>
+        <span class="n">rmv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">nOct</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span> 
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
+
+        <span class="c1"># For C1, add lower hemisphere</span>
+        <span class="k">if</span> <span class="n">octants</span><span class="o">==</span><span class="mi">8</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">-</span><span class="n">nPhi</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">phi</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="n">idx</span><span class="p">]])</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">theta</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">-</span><span class="n">theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]])</span>
+            <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="c1"># half of real value</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">weights</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]])</span>
+        
+        <span class="n">weights</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">maxphi</span><span class="p">)</span><span class="o">*</span><span class="n">weights</span><span class="p">;</span> <span class="c1"># sum = 4*pi</span>
+
+    <span class="k">elif</span> <span class="n">octants</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="c1"># Dinfh symmetry (quarter of meridian in xz plane)</span>
+
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dtheta</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">dtheta</span><span class="p">),</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">]])));</span> <span class="c1"># sum = 4*pi</span>
+
+    <span class="k">elif</span> <span class="n">octants</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># O3 symmetry (z orientation only)</span>
+        
+        <span class="n">phi</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="k">else</span><span class="p">:</span>    
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unsupported value #d for octants.&#39;</span><span class="p">,</span><span class="n">octants</span><span class="p">)</span>
+
+    <span class="c1"># Remove orientations with zero weight</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="n">weights</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="n">weights</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">weights</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="c1"># Normalize to unity </span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">phi</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="n">weights</span></div>
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+
+<span class="c1"># ----------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="choleskycovmat"><a class="viewcode-back" href="../../_autosummary/deerlab.choleskycovmat.html#deerlab.choleskycovmat">[docs]</a><span class="k">def</span> <span class="nf">choleskycovmat</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">cholfactors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the covariance matrix using Cholesky decomposition.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Q : int</span>
+<span class="sd">        Dimension of the covariance matrix.</span>
+<span class="sd">    cholfactors : array_like</span>
+<span class="sd">        List of Cholesky decomposition factors. The first `Q` values correspond to the </span>
+<span class="sd">        diagonal values of the Cholesky decomposition matrix. The remaining values are used to</span>
+<span class="sd">        fill the lower triangular matrix row by row. </span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Σ : ndarray </span>
+<span class="sd">        Covariance matrix.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; choleskycovmat(3, [3.0, 2.0, 1.0, 0.5, 0.5, 0.5])</span>
+<span class="sd">    array([[3.  , 1.5 , 0.75],</span>
+<span class="sd">           [1.5 , 2.25, 1.25],</span>
+<span class="sd">           [0.75, 1.25, 1.5 ]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#Check that the correct number of Cholesky factors has been specified</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">Q</span><span class="o">*</span><span class="p">(</span><span class="n">Q</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cholfactors</span><span class="p">)</span><span class="o">!=</span><span class="n">N</span><span class="p">:</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The Cholesky decomposition factors vector must have </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s1"> elements&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Initialize Cholesky decomposition matrix</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Q</span><span class="p">,</span><span class="n">Q</span><span class="p">))</span>
+
+    <span class="c1"># Fill the Cholesky factors as a lower triangular matrix</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="p">):</span>
+        <span class="n">tril_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="n">q</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">L</span><span class="p">[</span><span class="n">tril_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">cholfactors</span><span class="p">[:(</span><span class="n">Q</span><span class="o">-</span><span class="n">q</span><span class="p">)]</span>
+        <span class="n">cholfactors</span> <span class="o">=</span> <span class="n">cholfactors</span><span class="p">[(</span><span class="n">Q</span><span class="o">-</span><span class="n">q</span><span class="p">):]</span>
+        
+    <span class="c1"># Cholesky decomposition of the covariance matrix</span>
+    <span class="n">Σ</span> <span class="o">=</span> <span class="n">L</span><span class="nd">@L</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">return</span> <span class="n">Σ</span> </div>
+<span class="c1"># ----------------------------------------------------------------------------------</span>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
