@@ -1,11 +1,10 @@
 # solvers.py - Collection of least-squares solvers
 # --------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
 
 # External dependencies
 import numpy as np
-import cvxopt as cvx
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares, lsq_linear
 # DeerLab dependencies
@@ -1172,7 +1171,8 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None,x0=None):
         Global analysis of complex PELDOR time traces
 
     """
-        
+    import cvxopt as cvx
+
     N = np.shape(AtA)[1]
     if tol is None:
         eps = np.finfo(float).eps

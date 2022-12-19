@@ -19,7 +19,7 @@ setup(
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type="text/markdown",
     install_requires = [
-                        'numpy<=1.22.4',
+                        'numpy>=1.22.4',
                         'cvxopt>=1.0.0',
                         'scipy>=1.6.3',
                         'joblib>-1.0.0',
@@ -29,7 +29,7 @@ setup(
                         'memoization>=0.3.1',
                         'pytest>=6.2.2',
                         'setuptools>=53.0.0',
-                        'numexpr >=2.7.3',
+                        'numexpr>=2.7.3',
                         'quadprog>=0.1.11',
                         ],
     classifiers=[

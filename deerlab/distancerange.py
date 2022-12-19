@@ -1,7 +1,7 @@
 # distancerange.py - DeerAnalysis distance axis constructor
 # ------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
 import numpy as np
 
 def distancerange(t, nr=None):
