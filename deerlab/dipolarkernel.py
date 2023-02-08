@@ -165,7 +165,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         The vector ``tinterp`` must cover all possible time shifts of the original ``t`` by the different refocusing times of the dipolar pathways.     
 
     Returns
-    --------
+    -------
     K : ndarray
         Dipolar kernel matrix.
 
