@@ -11,7 +11,7 @@ setup(
         'Documentation': 'https://jeschkelab.github.io/DeerLab/',
         'Source': 'https://github.com/JeschkeLab/DeerLab',
     },
-    python_requires='>=3.8',
+    python_requires='>=3.8,<3.11',
     license='LICENSE.txt',
     include_package_data = True,
     keywords='data analysis modeling least-squares EPR spectroscopy DEER PELDOR'.split(),
