@@ -650,7 +650,6 @@ class UQResult:
                 # Get the parameter uncertainty distribution
                 values,pdf = self.pardist(n)
                 # Random sampling form the uncertainty distribution
-                np.random.seed(0)
                 sampled_parameters[n] =  [np.random.choice(values, p=pdf/sum(pdf)) for _ in range(Nsamples)]
             # Convert to matrix
             sampled_parameters = np.atleast_2d(sampled_parameters)
