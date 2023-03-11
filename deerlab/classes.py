@@ -1,5 +1,5 @@
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from deerlab.utils import Jacobian, nearest_psd
@@ -82,10 +82,14 @@ class UQResult:
 # =========================================================================
     r""" Represents the uncertainty quantification of fit results.
 
+    This class provides methods for performing uncertainty analysis on fit results. 
+    The uncertainty analysis can be performed using moment-based, bootstrapped,
+    or likelihood profile methods. The type of uncertainty analysis is specified when initializing the object.
+
     Attributes
     ----------
     type : string
-        Uncertainty quantification approach:
+        Type of uncertainty analysis performed. Possible values are:
 
             * ``'moment'`` - Moment-based uncertainty analysis
             * ``'bootstrap'`` - Bootstrapped uncertainty analysis
@@ -122,7 +126,43 @@ class UQResult:
     """
 
     def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None,threshold=None,profiles=None,noiselvl=None):
+        r"""
+        Initializes the UQResult object.
 
+        Parameters
+        ----------
+        uqtype : str
+            Type of uncertainty analysis to perform. Possible values are: ``'moment'``, ``'bootstrap'``, ``'profile'``, ``'void'``.
+        
+        data : ndarray
+            Data to be used for the uncertainty analysis. The format of this parameter depends on the value of ``uqtype``:
+
+            * If ``uqtype='moment'``, data should be an array of parameter estimates.
+            * If ``uqtype='bootstrap'``, data should be a 2-dimensional array of bootstrap samples, where each row
+              corresponds to a sample and each column corresponds to a parameter.
+            * If ``uqtype='profile'``, data should be an array of parameter estimates.
+            * If ``uqtype='void'``, data should not be provided.
+
+        covmat : ndarray
+            Covariance matrix of the parameter estimates. Only applicable if ``uqtype='moment'``.
+        
+        lb : ndarray
+            Lower bounds of the parameter estimates. Only applicable if ``uqtype='moment'``.
+        
+        ub : ndarray
+            Upper bounds of the parameter estimates. Only applicable if ``uqtype='moment'``.
+        
+        threshold : float
+            Threshold value used for the likelihood profile method. Only applicable if ``uqtype='profile'``.
+        
+        profiles : list
+            List of likelihood profiles for each parameter. Each element of the list should be a tuple of arrays
+            ``(x, y)``, where ``x`` represents the values of the parameter and ``y`` represents the corresponding likelihoods.
+            Only applicable if ``uqtype='profile'``.
+        
+        noiselvl : float
+            Noise level used for the likelihood profile method. Only applicable if ``uqtype='profile'``.
+        """
         #Parse inputs schemes
         if uqtype=='moment':
             # Scheme 1: UQResult('moment',parfit,covmat,lb,ub)
@@ -218,6 +258,9 @@ class UQResult:
         """
         Combine multiple uncertainty quantification instances.
 
+        This method concatenates the parameter vectors of the object calling the method with the parameter vectors of
+        any number of other uncertainty quantification objects.
+        
         Parameters
         ----------
         uq : any number of :ref:`UQResult`
@@ -229,6 +272,14 @@ class UQResult:
         uq_joined : :ref:`UQResult`
             Joined uncertainty quantification object with a total of ``M + N1 + N2 + ... + Nn`` parameters. 
             The parameter vectors are concatenated on the order they are passed. 
+
+        Raises
+        ------
+        TypeError
+            If any of the input objects is not a :ref:`UQResult` instance or if the types 
+            of the input objects do not match.
+        TypeError
+            If an attempt is made to join an instance of :ref:`UQResult` with type ``'void'``.
         """
         newargs = []
         if self.type=='moment':
@@ -266,6 +317,11 @@ class UQResult:
     def pardist(self,n=0):
         """
         Generate the uncertainty distribution of the n-th parameter
+
+        This method generates the probability density function of the uncertainty 
+        of the n-th parameter of the model. The distribution is evaluated at a 
+        range of values where the parameter is most likely to be. The range is 
+        determined based on the type of uncertainty quantification method used. 
 
         Parameters
         ----------
@@ -369,12 +425,17 @@ class UQResult:
         Parameters
         ----------
         p : float scalar
-            Percentile (between 0-100)
+            Percentile (a value between 0-100)
         
         Returns
         -------
         prctiles : ndarray
             Percentile values of all parameters
+
+        Raises
+        ------
+        ValueError
+            If `p` is not a number between 0 and 100.
         """
         if p>100 or p<0:
             raise ValueError('The input must be a number between 0 and 100')
@@ -400,18 +461,50 @@ class UQResult:
         """
         Compute the confidence intervals for the parameters.
 
+        This method computes confidence intervals for the parameters of the fitted
+        distribution, based on the method used to compute the parameter estimates
+        (moment estimation, bootstrapping, or likelihood profile).
+
         Parameters
         ----------
         coverage : float scalar
-            Coverage (confidence level) of the confidence intervals (between 0-100)
+            Coverage (confidence level) of the confidence intervals (a value between 0-100)
         
         Returns
         -------
-        ci : 2D-ndarray
-            Confidence intervals for the parameters:
-
+        ci : ndarray
+            A 2D array containing the lower and upper confidence intervals for the
+            parameters. The first column of the array holds the lower confidence
+            intervals, and the second column holds the upper confidence intervals.
+            
                 * ``ci[:,0]`` - Lower confidence intervals
                 * ``ci[:,1]`` - Upper confidence intervals
+            
+            The array has shape ``(nparam, 2)``, where ``nparam`` is the number of fitted
+            parameters.
+
+        Raises
+        ------
+        ValueError
+            If the ``coverage`` argument is outside the range 0-100.
+
+        Examples
+        --------
+        Compute 95% confidence intervals for the fitted parameters: ::
+
+            ci = param.ci(95)
+
+        Notes
+        -----
+        The method used to compute the confidence intervals depends on the method
+        used to compute the parameter estimates. If the parameter estimates were
+        computed using moment estimation, the confidence intervals are computed
+        based on the estimated standard errors of the parameters. If the parameter
+        estimates were computed using bootstrapping, the confidence intervals are
+        computed based on the empirical distribution of the bootstrapped samples.
+        If the parameter estimates were computed using likelihood profile, the
+        confidence intervals are computed by finding the parameter values at the
+        edges of the likelihood profile that correspond to the specified coverage.
         """
         if coverage>100 or coverage<0:
             raise ValueError('The input must be a number between 0 and 100')
@@ -477,18 +570,27 @@ class UQResult:
     #--------------------------------------------------------------------------------
     def propagate(self,model,lb=None,ub=None,samples=None):
         """
-        Uncertainty propagation. This function takes the uncertainty analysis of the 
-        parameters and propagates it to another function depending on those parameters.
-
+        Uncertainty propagation.
+        
+        The method performs uncertainty propagation on the model by applying the
+        uncertainty analysis of the input parameters to the model. The output is 
+        a new uncertainty quantification analysis for the model outputs. The method 
+        returns a new ``UQResult`` object containing the uncertainty information
+        of the model outputs. If the input type is ``'moment'``, the returned object
+        will be of type ``'moment'``. Otherwise, if the type is ``'bootstrap'``, the
+        returned object will be of type ``'bootstrap'``.
+        
         Parameters
         ----------
         model : callable
-            Callable model function taking an array of ``nparam`` parameters.
+            A callable function that takes an array of parameters as input and returns a model output.
         lbm : ndarray
             Lower bounds of the values returned by ``model``, by default assumed unconstrained.
         ubm : ndarray
             Upper bounds of the values returned by ``model``, by default assumed unconstrained.
-
+        samples : int, optional
+            Number of samples to use when propagating uncertainty. If not provided, default value is 1000.
+        
         Returns
         -------
         modeluq : :ref:`UQResult`
@@ -548,7 +650,6 @@ class UQResult:
                 # Get the parameter uncertainty distribution
                 values,pdf = self.pardist(n)
                 # Random sampling form the uncertainty distribution
-                np.random.seed(0)
                 sampled_parameters[n] =  [np.random.choice(values, p=pdf/sum(pdf)) for _ in range(Nsamples)]
             # Convert to matrix
             sampled_parameters = np.atleast_2d(sampled_parameters)

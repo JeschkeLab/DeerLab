@@ -5,13 +5,13 @@ Models
 ======================
 
 DeerLab provides a wide selection of built-in models. These are instances of the :ref:`Model` object class 
-and can be manipulated and expanded as described in the :ref:`Modelling guide <modelling_guide>`.
+and can be manipulated and expanded as described in the :ref:`Modeling guide <modeling_guide>`.
 
 .. currentmodule:: deerlab
 
 .. _modelsref_dd:
 
-These are models particularly oriented towards the modelling of dipolar EPR spectroscopy data. 
+These are models particularly oriented towards the modeling of dipolar EPR spectroscopy data. 
 
 
 .. _modelsref_ex:

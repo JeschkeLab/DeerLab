@@ -1,12 +1,13 @@
 from deerlab.dipolarkernel import dipolarkernel
-from deerlab.utils.utils import ovl
+from deerlab.utils import ovl
 from deerlab.whitegaussnoise import whitegaussnoise
 import numpy as np
 import matplotlib.pyplot as plt
 from deerlab.model import Model,fit
-from deerlab.dipolarmodel import ExperimentInfo,dipolarpenalty, dipolarmodel, ex_4pdeer, ex_3pdeer,ex_fwd5pdeer, ex_rev5pdeer, ex_sifter, ex_ridme
+from deerlab.dipolarmodel import ExperimentInfo,dipolarpenalty, dipolarmodel, ex_4pdeer, ex_3pdeer,ex_fwd5pdeer, ex_rev5pdeer, ex_sifter, ex_ridme, ex_dqc
 from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp
 import deerlab as dl 
+from deerlab.utils import assert_docstring
 
 # ======================================================================
 def test_type(): 
@@ -566,4 +567,86 @@ def test_fourspin_simulation():
     
     # Check that there are modulations
     assert not np.mean(np.diff(Vsim))>0.025
+# ======================================================================
+
+# ======================================================================
+def test_parametrization_reftimes_model(): 
+    "Check that the parametrization leads to the correct model"
+
+    experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment, parametrization='reftimes')
+
+    assert hasattr(Vmodel,'reftime1') and hasattr(Vmodel,'reftime2')
+# ======================================================================
+
+# ======================================================================
+def test_parametrization_reftimes_fit(): 
+    "Check that the parametrization leads to the correct analysis results"
+
+    experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment, parametrization='reftimes')
+    result = fit(Vmodel,V4pdeer,ftol=1e-4)
+
+    assert np.allclose(V4pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_parametrization_delays_model(): 
+    "Check that the parametrization leads to the correct model"
+
+    experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment, parametrization='delays')
+
+    assert hasattr(Vmodel,'tau1') and hasattr(Vmodel,'tau2')
+# ======================================================================
+
+# ======================================================================
+def test_parametrization_delays_fit(): 
+    "Check that the parametrization leads to the correct analysis results"
+
+    experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment, parametrization='delays')
+    result = fit(Vmodel,V4pdeer,ftol=1e-4)
+
+    assert np.allclose(V4pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+# ======================================================================
+def test_parametrization_shift_model(): 
+    "Check that the parametrization leads to the correct model"
+
+    experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment, parametrization='shift')
+
+    assert hasattr(Vmodel,'tshift')
+# ======================================================================
+
+# ======================================================================
+def test_parametrization_shift_fit(): 
+    "Check that the parametrization leads to the correct analysis results"
+
+    experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])
+    Vmodel = dipolarmodel(tdeer,r,Bmodel=bg_hom3d,experiment=experiment, parametrization='shift')
+    result = fit(Vmodel,V4pdeer,ftol=1e-4)
+
+    assert np.allclose(V4pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
+# ======================================================================
+
+def test_docstring_dipolarmodel():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(dipolarmodel)
+# ======================================================================
+
+def test_docstring_dipolarpenalty():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    assert_docstring(dipolarpenalty)
+# ======================================================================
+
+def test_docstring_ex_models():
+# ======================================================================
+    "Check that the docstring includes all variables and keywords."
+    for model in [ex_3pdeer,ex_4pdeer,ex_fwd5pdeer,ex_rev5pdeer,ex_sifter,ex_ridme,ex_dqc]:
+        assert_docstring(model)
 # ======================================================================

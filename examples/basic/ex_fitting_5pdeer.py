@@ -44,7 +44,7 @@ t = t + deadtime       # Account for deadtime
 r = np.arange(3,5,0.025) # nm
 
 # Construct dipolar model with two dipolar pathways
-experimentInfo = dl.ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2])
+experimentInfo = dl.ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,5])
 Vmodel = dl.dipolarmodel(t,r, experiment=experimentInfo)
 
 # Fit the model to the data
@@ -66,8 +66,8 @@ Pci50 = results.PUncert.ci(50)
 Pfit =  Pfit
 
 # Extract the unmodulated contribution
-Bfcn = lambda lam1,lam2,reftime1,reftime2,conc: results.P_scale*(1-lam1-lam2)*dl.bg_hom3d(t-reftime1,conc,lam1)*dl.bg_hom3d(t-reftime2,conc,lam2)
-Bfit = Bfcn(results.lam1,results.lam2,results.reftime1,results.reftime2,results.conc)
+Bfcn = lambda lam1,lam5,reftime1,reftime5,conc: results.P_scale*(1-lam1-lam5)*dl.bg_hom3d(t-reftime1,conc,lam1)*dl.bg_hom3d(t-reftime5,conc,lam5)
+Bfit = results.evaluate(Bfcn)
 Bci = results.propagate(Bfcn).ci(95)
 
 plt.figure(figsize=[6,7])
@@ -77,9 +77,7 @@ plt.subplot(211)
 plt.plot(t,Vexp,'.',color='grey',label='Data')
 # Plot the fitted signal 
 plt.plot(t,Vfit,linewidth=3,color=violet,label='Fit')
-plt.fill_between(t,Vci[:,0],Vci[:,1],color=violet,alpha=0.3)
 plt.plot(t,Bfit,'--',linewidth=3,color=violet,alpha=0.5,label='Unmodulated contribution')
-plt.fill_between(t,Bci[:,0],Bci[:,1],color=violet,alpha=0.1)
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time $t$ (μs)')
 plt.ylabel('$V(t)$ (arb.u.)')

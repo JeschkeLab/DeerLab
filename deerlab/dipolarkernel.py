@@ -1,7 +1,7 @@
 # dipolarkernel.py - Dipolar kernel operator
 # -----------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
 
 # Numpy + SciPy
 import numpy as np
@@ -165,7 +165,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         The vector ``tinterp`` must cover all possible time shifts of the original ``t`` by the different refocusing times of the dipolar pathways.     
 
     Returns
-    --------
+    -------
     K : ndarray
         Dipolar kernel matrix.
 
@@ -181,7 +181,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     Examples
     --------
-    To specify single-pathway model with an unmodulated offset and a single dipolar pathway that refocuses at time `t=0`, use::
+    To specify a model with an unmodulated offset and a single dipolar pathway that refocuses at time `t=0`, use::
 
         lam = 0.4  # modulation depth
         pathways = [

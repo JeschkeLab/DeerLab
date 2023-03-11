@@ -2,14 +2,19 @@
 # fftspec.py - Fast-Fourier transform spectrum
 # ---------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from numpy.fft import fft, fftshift, fftfreq
 
 def fftspec(V, t, mode='abs', zerofilling='auto', apodization=True):
     r"""
-    Fast-Fourier transform spectrum
+    Computes the Fast-Fourier Transform (FFT) spectrum of the input signal V.
+
+    This function computes the FFT spectrum of the input signal ``V`` using the
+    ``fft`` function from the ``numpy.fft`` module. The function allows to specify
+    the type of spectrum to be returned, the zero-filling factor, and whether
+    to apply a Hamming apodization window.
  
     Parameters
     ----------

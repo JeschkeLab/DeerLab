@@ -1,6 +1,6 @@
 .. _api_reference:
 
-API Reference
+Reference Index
 ============================================================
 
 
@@ -45,6 +45,7 @@ API Reference
     snlls 
     fnnls
     cvxnnls
+    goodness_of_fit
     
 .. rubric:: Dipolar EPR functions
 
@@ -63,10 +64,7 @@ API Reference
 
 .. rubric:: Utility functions 
 
-All functions in ``deerlab.utils`` are private functions used internally by other functions.
-Stable functionality is not guaranteed.
-
-.. currentmodule:: deerlab.utils
+.. currentmodule:: deerlab
 
 .. autosummary::
     :toctree: _autosummary
@@ -75,10 +73,12 @@ Stable functionality is not guaranteed.
 
     store_pickle
     read_pickle
+    sophegrid
+    choleskycovmat
     hccm
     Jacobian
     nearest_psd
     movmean
     ovl
     der_snr
-    
+    formatted_table

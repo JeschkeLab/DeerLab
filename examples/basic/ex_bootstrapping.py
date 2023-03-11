@@ -66,8 +66,8 @@ Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,conc: results.P_scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
-Bfit = Bfcn(results.mod,results.conc)
+Bfcn = lambda mod,conc,reftime: results.P_scale*(1-mod)*dl.bg_hom3d(t-reftime,conc,mod)
+Bfit = results.evaluate(Bfcn)
 Bci = results.propagate(Bfcn).ci(95)
 
 plt.figure(figsize=[6,7])
@@ -77,9 +77,7 @@ plt.subplot(211)
 plt.plot(t,Vexp,'.',color='grey',label='Data')
 # Plot the fitted signal 
 plt.plot(t,Vfit,linewidth=3,label='Bootstrap median',color=violet)
-plt.fill_between(t,Vci[:,0],Vci[:,1],alpha=0.3,color=violet)
 plt.plot(t,Bfit,'--',linewidth=3,color=violet,label='Unmodulated contribution')
-plt.fill_between(t,Bci[:,0],Bci[:,1],alpha=0.3,color=violet)
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time $t$ (μs)')
 plt.ylabel('$V(t)$ (arb.u.)')

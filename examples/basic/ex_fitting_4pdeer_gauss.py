@@ -48,7 +48,6 @@ print(results)
 
 # Extract fitted dipolar signal
 Vfit = results.model
-Vci = results.propagate(Vmodel).ci(95)
 
 # Extract fitted distance distribution
 Pfit = results.evaluate(Pmodel,r)
@@ -59,8 +58,8 @@ Pci95 = Puncert.ci(95)/scale
 Pci50 = Puncert.ci(50)/scale
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,conc: scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
-Bfit = Bfcn(results.mod,results.conc)
+Bfcn = lambda mod,conc,reftime: scale*(1-mod)*dl.bg_hom3d(t-reftime,conc,mod)
+Bfit = results.evaluate(Bfcn)
 Bci = results.propagate(Bfcn).ci(95)
 
 plt.figure(figsize=[6,7])
@@ -69,7 +68,6 @@ plt.subplot(211)
 # Plot experimental and fitted data
 plt.plot(t,Vexp,'.',color='grey',label='Data')
 plt.plot(t,Vfit,linewidth=3,color=violet,label='Fit')
-plt.fill_between(t,Vci[:,0],Vci[:,1],color=violet,alpha=0.3)
 plt.plot(t,Bfit,'--',linewidth=3,color=violet,label='Unmodulated contribution')
 plt.fill_between(t,Bci[:,0],Bci[:,1],color=violet,alpha=0.3)
 plt.legend(frameon=False,loc='best')

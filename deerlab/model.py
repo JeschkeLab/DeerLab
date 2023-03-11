@@ -1,7 +1,7 @@
-# model.py - DeerLab's modelling interface
+# model.py - DeerLab's modeling interface
 # ---------------------------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md). 
-# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from scipy.sparse import block_diag
@@ -18,7 +18,8 @@ from sys import stdout
 
 #===================================================================================
 class Parameter(): 
-    r""" Represents a model parameter or a single parameter vector. 
+    r"""
+    Represents a model parameter or a single parameter vector. 
 
     Attributes
     ----------
@@ -62,17 +63,60 @@ class Parameter():
 
     #---------------------------------------------------------------------------------------
     def __init__(self, name=None, parent=None, idx=None, description=None, par0=None, frozen=False, lb=-np.inf, ub=np.inf,value=None, unit=None, linear=False): 
+        """
+        Construct a new parameter object.
+
+        Parameters
+        ----------
+        name : str, optional
+            Name of the parameter.
+        
+        parent : object, optional
+            Reference to the parent object that contains the parameter.
+        
+        idx : int or list of int, optional
+            Indices of the parameter in the parent object.
+        
+        description : str, optional
+            Description of the parameter.
+        
+        par0 : float or array_like, optional
+            Value at which to initialize the parameter at the start of a fit routine. 
+            Must be specified in the model or latest upon fitting.
+        
+        frozen : bool, optional
+            Whether the parameter will be frozen at a specific value during a fit.
+            Default is False.
+        
+        lb : float or array_like, optional
+            Lower bound of the parameter. If not specified, it is assumed to be unbounded.
+            Default is -inf.
+        
+        ub : float or array_like, optional
+            Upper bound of the parameter. If not specified, it is assumed to be unbounded.
+            Default is inf.
+        
+        value : float, optional
+            Value at which the parameter will be frozen during a fit.
+        
+        unit : str, optional
+            Physical unit of the parameter.
+        
+        linear : bool, optional
+            Whether the model behaves linearly with respect to the parameter.
+            Default is False.
+        """
         # Attributes
-        self.name = name
+        self.name = name      # Name of parameter
         self._parent = parent # Parent 
-        self.idx = idx
+        self.idx = idx        # Index of parameter
         self.description = description # Description
-        self.unit = unit    # Unit
+        self.unit = unit      # Unit
         self.par0 = par0      # Start values
         self.lb = lb          # Lower bounds
         self.ub = ub          # Upper bounds
-        self.value = value
         self.frozen = frozen  # Frozen
+        self.value = value    # Value at which it is frozen
         self.linear = linear  # Linearity
     #---------------------------------------------------------------------------------------
 
@@ -84,6 +128,10 @@ class Parameter():
     def set(self,**attributes):
         """
         Set one or multiple attributes for a parameter. See list of attributes for a reference list. 
+
+        This method allows users to set the value of one or more attributes for a ``Parameter`` object. 
+        The list of attributes that can be set are the same as the attributes of the ``Parameter`` class, 
+        namely: ``name``, ``description``, ``unit``, ``par0``, ``lb``, ``ub``, ``linear``, ``frozen``, and ``value``.
 
         Parameters
         ----------
@@ -113,9 +161,13 @@ class Parameter():
         """
         Copy all attributes from an input parameter to the current parameter. 
 
-        Parameters
+        This method allows the user to copy all attributes from an input parameter object
+        to the current parameter object. This can be useful when initializing multiple
+        parameters with the same values.
+
+        Parameters  
         ----------
-        param : ``Parameter`` object 
+        parameter : ``Parameter`` object 
             Model parameters from which to extract the attributes. 
         """
         self.set(**_importparameter(parameter))
@@ -124,12 +176,18 @@ class Parameter():
     #---------------------------------------------------------------------------------------
     def freeze(self,value):
         """
-        Freeze a parameter during a fit/optimization to a given value. Does not affect model evaluation. 
+        Freeze a parameter during a fit/optimization to a given value.
+
+        This method allows the user to freeze a parameter during optimization to a
+        specific value. The parameter will remain fixed at this value during the
+        optimization process, and will not be updated. This method does not affect
+        model evaluation.
 
         Parameters
         ----------
         value : float or array_like
-            Value at which to freeze the parameter during optimization.
+            Value at which to freeze the parameter during optimization. This value
+            must be within the lower and upper bounds of the parameter.
         """
 
         if np.any(value>self.ub) or np.any(value<self.lb):
@@ -150,7 +208,12 @@ class Parameter():
     #---------------------------------------------------------------------------------------
     def unfreeze(self):
         """
-        Release a frozen parameter's value during a fit/optimization. Does not affect model evaluation.
+        Release a frozen parameter's value during a fit/optimization.
+
+        This method allows the user to release a previously frozen parameter during
+        optimization. The parameter will no longer be fixed at a specific value and
+        will be updated according to the optimization algorithm. This method does not
+        affect model evaluation.
         """
         N = len(np.atleast_1d(self.frozen))
         if N>1:
@@ -166,7 +229,12 @@ class Parameter():
 
 class Model():
 #===================================================================================
-    r"""Represents a model.
+    r"""
+    Represents a model.
+
+    The ``Model`` class provides a way to create a new model object from a
+    non-linear function. The ``Model`` class also provides access to the model
+    parameters and allows them to be modified.
 
     Attributes
     ----------
@@ -193,17 +261,49 @@ class Model():
     #=======================================================================================
     
     # Use a wrapper function to facilitate internal arguments manipulation        
-    #-----------------------------------
+    #---------------------------------------------------------------------------------------
     def _model_with_constants(self,nonlinfcn,constantsInfo,*inputargs):
+        """
+        Evaluate a non-linear model with constant arguments.
+
+        This internal method is used to evaluate a non-linear model with constant
+        arguments. The method takes the non-linear function, a list of constant
+        arguments, and the input arguments and returns the output of the non-linear
+        model with the constant arguments inserted at the appropriate positions.
+
+        Parameters
+        ----------
+        nonlinfcn : callable
+            Non-linear function to be evaluated.
+        constantsInfo : list
+            List of dictionaries containing information about the constant arguments
+            to be used with the non-linear function. Each dictionary must contain
+            two keys: "argkey" and "argidx". "argkey" must be the name of the
+            argument, and "argidx" must be the index of the argument in the function
+            signature.
+        inputargs : variable length argument list
+            Input arguments to be passed to the non-linear function.
+
+        Returns
+        -------
+        output : variable type
+            Output of the non-linear function with the constant arguments inserted
+            at the appropriate positions.
+        """
+        # Get the number of constants
         Nconstants = len(constantsInfo)
+        # Separate the constants from the other arguments
         constants = inputargs[:Nconstants]
         θ = inputargs[Nconstants:]
+        # Create a list of arguments for the nonlinear function
         args = list(θ)
+        # If there are constants, insert them into the list of arguments at the appropriate positions
         if constantsInfo is not None:
             for info,constant in zip(constantsInfo,constants):
                 args.insert(info['argidx'],constant)
+        # Call the nonlinear function with the arguments and return the result
         return nonlinfcn(*args)
-    #----------------------------------- 
+    #---------------------------------------------------------------------------------------
     
     #---------------------------------------------------------------------------------------
     def __init__(self,nonlinfcn,constants=None,signature=None): 
@@ -235,6 +335,7 @@ class Model():
             and returns the output of ``nonlinfcn``.
 
         """
+        # Check if nonlinfcn is callable and create a wrapper function if it's not
         if not callable(nonlinfcn):
             Amatrix = nonlinfcn.copy()
             nonlinfcn = lambda *_: Amatrix 
@@ -242,13 +343,17 @@ class Model():
         self.description = None
         self._constantsInfo = []
         self.parents = None
+
+        # Check if signature is specified, and if not use the function's signature
         if signature is None:
-            # Get list of parameter names from the function signature
             signature = inspect.getfullargspec(nonlinfcn).args
 
+        # Create a copy of the signature for future reference
         self._nonlinsignature = signature.copy()
         parameters = signature.copy()
-        # Check if one of the arguments is an axis argument     
+        self.signature = signature
+
+        # Check if constants are specified and remove them from the parameters list
         if constants is not None:
             if not isinstance(constants,list):
                 constants = [constants]
@@ -260,7 +365,8 @@ class Model():
                 for n,par in enumerate(parameters): 
                     if par==argname: 
                         parameters.remove(argname)
-  
+
+        # Construct the callable non-linear part of the model
         self.nonlinmodel = partial(self._model_with_constants,nonlinfcn,self._constantsInfo)
 
         # Update the number of parameters in the model
@@ -268,37 +374,76 @@ class Model():
         self.Nnonlin = len(parameters)
         self.Nlin = 0
 
+        # Construct the parameters and add them to the model
         for n,param in enumerate(parameters): 
             newparam = Parameter(parent=self, idx=n, name=param)
             setattr(self,param,newparam)
-        self.signature = signature
     #---------------------------------------------------------------------------------------
 
     # Gets called when an attribute is accessed
     #--------------------------------------------------------------------------------
     def __getattribute__(self, attr):
+        """
+        This method is called when an attribute of this class instance is accessed.
+        It first tries to access the attribute using the ``super()`` method, which
+        will go up the inheritance chain to look for the attribute. If the attribute
+        is not found, it checks for similar attributes that exist in the class 
+        instance, and suggests those as potential matches in the error message. 
+        If no matches are found, it raises an ``AttributeError`` with a custom message
+        indicating that the requested attribute does not exist.
+        
+        Parameters
+        ----------
+        attr : str
+            The name of the attribute being accessed.
+        
+        Raises
+        ------
+        AttributeError
+            If the requested attribute does not exist in the class instance.
+        """
+        # First try to access the attribute as usual
         try:
             return super(Model, self).__getattribute__(attr)
+        
+        # If an AttributeError is raised, handle it by printing a custom error message
         except AttributeError:
+            # Create the error message with the name of the attribute that was accessed
             errstr = f"The model has no attribute '{attr}'."
+            # Get a list of all the attributes in the model
             attributes = [key for key in self.__dict__]
+            # Use difflib to get a list of similar attributes to the one that was accessed
             proposal = difflib.get_close_matches(attr, attributes)
+            # If there are any similar attributes, add a suggestion to the error message
             if len(proposal)>0:
                 errstr += f' \n Did you mean: {proposal} ?'
+            # Raise the AttributeError with the custom error message
             raise AttributeError(errstr)
     #--------------------------------------------------------------------------------
 
-
-    #=======================================================================================
-    #                                    Private methods
-    #=======================================================================================
-
     #---------------------------------------------------------------------------------------
     def _parameter_list(self, order='alphabetical'):
-        "Get the list of parameters defined in the model sorted alphabetically or by vector definition"
+        """
+        (Private method)
+        
+        Get the list of parameters defined in the model sorted alphabetically or by vector definition.
+
+        Parameters
+        ----------
+        order : str, optional
+            Specifies how the parameters should be sorted. Can be either ``'alphabetical'`` or ``'vector'``.
+            Default is ``'alphabetical'``.
+
+        Returns
+        -------
+        keylist : list
+            List of the parameters in the model sorted according to the ``order`` parameter.
+        """
         keylist = [param for param in dir(self) if isinstance(getattr(self,param),Parameter)]
+        # Sort the list alphabetically if specified
         if order=='alphabetical':
             pass
+        # Sort the list by vector definition if specified
         elif order=='vector':
             # If there are any parameters in vector form...
             n = 0
@@ -308,6 +453,8 @@ class Model():
                     keylist = np.insert(keylist,n*np.ones(len(np.atleast_1d(getattr(self,key).idx))-1,dtype=int),key)  
                 n += len(np.atleast_1d(getattr(self,key).idx))
             keylist = self._vecsort(keylist)
+        else: 
+            raise KeyError("The 'order' argument muse be either 'alphabetical' or 'vector'.")
         # Remove any duplicates
         keylist = list(dict.fromkeys(keylist))
         return keylist
@@ -315,9 +462,30 @@ class Model():
 
     #---------------------------------------------------------------------------------------
     def _vecsort(self, paramlist):
-        "Sort vectorized parameters attributes from alphabetical ordering to vector indexing"
+        """
+        (Private method)
+
+        Sort vectorized parameters attributes from alphabetical ordering to vector indexing.
+
+        This internal method sorts the list of parameters defined in the model according to their index in the parameter vector.
+
+        Parameters
+        ----------
+        paramlist : list
+            rameter names to be sorted.
+        
+        Returns
+        -------
+        orderedlist : ndarray
+            List of parameter names sorted according to their index in the parameter vector.
+        """
+        # Convert the input list to a numpy array and squeeze any singleton dimensions
         paramlist = np.squeeze(np.atleast_1d(paramlist))
+
+        # Get a list of indices for all parameters in the model
         indices = np.concatenate([np.atleast_1d(getattr(self,param).idx) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
+
+        # Create a copy of the input list and sort it according to the indices
         orderedlist = np.atleast_1d(paramlist.copy())
         orderedlist[indices] = paramlist
 
@@ -326,21 +494,68 @@ class Model():
 
     #---------------------------------------------------------------------------------------
     def _split_linear(self,variable):
-        "Split a vector in non-linear and linear parameter subset vectors"
+        """
+        (Private method)
+
+        Split a vector into non-linear and linear parameter subsets.
+
+        This method is used to split a vector of model parameters into two subsets:
+        the subset of non-linear parameters and the subset of linear parameters.
+
+        Parameters
+        ----------
+        variable : ndarray
+            Vector of model parameters to split into non-linear and linear subsets.
+
+        Returns
+        -------
+        variable_lin : ndarray
+            Subset of `variable` that contains only the linear parameters.
+        variable_nonlin : ndarray
+            Subset of `variable` that contains only the non-linear parameters.
+
+        """
+        # Convert `variable` to a numpy array with at least one dimension
         variable = np.atleast_1d(variable)
-        linear = np.concatenate([np.atleast_1d(getattr(self,param).linear) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
+
+        # Get a list of all model parameters that are linear
+        linear = np.concatenate([np.atleast_1d(getattr(self,param).linear) for param in dir(self) if isinstance(getattr(self,param),Parameter)]) 
+
+        # Sort the list of linear parameters
         linear = self._vecsort(linear)
+
+        # Split `variable` into a non-linear subset and a linear subset
         variable_nonlin = variable[~linear]
         variable_lin = variable[linear]
+
         return variable_lin, variable_nonlin
     #---------------------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------------------
     def _merge_linear(self,variable_nonlin,variable_lin):
-        "Merge a vector's non-linear and linear parameter subset vectors"
+        """
+        (Private method)
+
+        Merge a vector's non-linear and linear parameter subset vectors.
+
+        Parameters
+        ----------
+        variable_nonlin : array-like
+            Non-linear part of the variable vector.
+        variable_lin : array-like
+            Linear part of the variable vector.
+
+        Returns
+        -------
+        variable : ndarray
+            Merged variable vector.
+        """
         variable = np.zeros(len(variable_nonlin)+len(variable_lin))
+        # Get the list of linear parameters in the model
         linear = np.concatenate([np.atleast_1d(getattr(self,param).linear) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
+        # Sort the list of linear parameters in the model
         linear = self._vecsort(linear)
+        # Merge the non-linear and linear parts of the variable vector
         variable[~linear] = variable_nonlin
         variable[linear] = variable_lin
         return variable
@@ -348,20 +563,59 @@ class Model():
 
     #---------------------------------------------------------------------------------------
     def _getvector(self,attribute):
-        "Get the list of parameters attributes defined in the model sorted alphabetically"
-        return np.concatenate([np.atleast_1d(getattr(getattr(self,param),attribute)) for param in dir(self) if isinstance(getattr(self,param),Parameter)])
+        """
+        (Private method)
+
+        Get a vector of the given attribute for all parameters defined in the model. 
+
+        Parameters
+        ----------
+
+        attribute : string
+            Attribute to get for each parameter in the model.
+
+        Returns
+        -------
+
+        vector : ndarray
+            Vector of the specified attribute for all parameters in the model.
+
+        """
+        return np.concatenate([np.atleast_1d(getattr(getattr(self,param),attribute)) for param in dir(self) if isinstance(getattr(self,param),Parameter)])    
     #---------------------------------------------------------------------------------------
 
     #-----------------------------------------------------------------------------
     def _getparamuq(self,uq_full,paramidx):
-        "Get the uncertainty quantification of an individual parameter"
+        """
+        (Private method)
+
+        Get the uncertainty quantification of an individual parameter.
+
+        Parameters
+        ----------
+        paramidx : int
+            Index of the parameter to get the uncertainty quantification for.
+        uq_full : UQResult
+            Result of a full uncertainty quantification on the model.
+
+        Returns
+        -------
+        param_uq : UQResult
+            Result of the uncertainty quantification for the selected parameter.
+        """
+        # Create a subset model that only includes the selected parameter
         subset_model = lambda x: x[paramidx]
+
+        # Get the bounds and freezing of the selected parameter
         param_lb =  self._vecsort(self._getvector('lb'))[paramidx]
         param_ub =  self._vecsort(self._getvector('ub'))[paramidx]
         frozen = self._vecsort(self._getvector('frozen'))[paramidx]
+
+        # If the parameter is frozen, return a void UQResult
         if np.all(frozen): 
             param_uq = UQResult('void')
         else:
+            # Propagate the full UQ through the subset model
             if uq_full.type=='moment':
                 param_uq = uq_full.propagate(subset_model,lb=param_lb, ub=param_ub)
             elif uq_full.type=='bootstrap':
@@ -373,6 +627,23 @@ class Model():
 
     #-----------------------------------------------------------------------------
     def _error_if_already_exists(self, key):
+        """
+        (Private method)
+
+        Check if the model has a parameter with a given name.
+
+        If a parameter with the given name exists in the model, raise a KeyError.
+
+        Parameters
+        ----------
+        key : str
+            Name of the parameter to check for.
+
+        Raises
+        ------
+        KeyError
+            If a parameter with the given name exists in the model.
+        """
         if hasattr(self, key):
             raise KeyError(f'The model already has a "{key}" parameter.')
     #-----------------------------------------------------------------------------
@@ -405,26 +676,47 @@ class Model():
         unit : string, optional
             Physical unit of the parameter.
         """
+
+        # Check that the parameter does not exist
         self._error_if_already_exists(key)
+
+        # Update number of parameters
         idx = self.Nparam
         self.Nparam += 1
         self.Nnonlin += 1
+
+        # Construct the new parameter object and added to the model
         newparam = Parameter(name=key, linear=False, parent=self, idx=idx, par0=par0, lb=lb, ub=ub, unit=unit, description=description)
         setattr(self,key,newparam)
         Nconstants = len(self._constantsInfo)
         Amodel = self.nonlinmodel
         topop = self.Nnonlin-1
+
+        # Define a new model function with added non-linear parameter
         #------------------------------------------------
         def model_with_constants_and_added_nonlin(*inputargs):
+            """
+            A helper function that takes in a set of input arguments, 
+            extracts constants and non-linear parameters from the input
+            arguments and returns the model response.
+            """
+            # Extract constants from the input arguments
             constants = inputargs[:Nconstants]
+            # Extract non-linear parameters from the input arguments
             θ = inputargs[Nconstants:]
+            # Create a list of all arguments
             args = list(θ)
             args.pop(topop)
+            # If there are any constant parameters
             if self._constantsInfo is not None:
+                # Insert the constant parameters into the list of arguments at the specified indexes
                 for info,constant in zip(self._constantsInfo,constants):
                     args.insert(info['argidx'],constant)
+            # Evaluate and return the model response
             return Amodel(*args)
         #------------------------------------------------
+
+        # Update the model function
         self.nonlinmodel = model_with_constants_and_added_nonlin
         self.signature.append(key)
     #---------------------------------------------------------------------------------------
@@ -434,17 +726,23 @@ class Model():
         """
         Rename a parameter in the model. 
 
+        This method renames a parameter in the model. If the
+        old parameter name does not exist, a ``KeyError`` is raised.
+
         Parameters
         ----------
         old : string
-            Old parameter's name.
+            Old parameter name.
         new : string
-            New parameter's name. 
+            New parameter name. 
 
         """
+        # Check if the old parameter exists in the model
         if not hasattr(self,old):
             raise KeyError(f'The model does not have a "{old}" parameter.')
+        # Rename the parameter
         setattr(self, new, getattr(self, old))
+        # Delete the old parameter
         delattr(self, old)
     #---------------------------------------------------------------------------------------
 
@@ -516,8 +814,22 @@ class Model():
         """
         Evaluate the model for a given set of parameters. 
 
-        Takes the constant variables and (non-linear and linear) parameter variables as positional
-        or keyword arguments and evaluates the model.
+        Takes the constant variables and (non-linear and linear) parameter 
+        variables as positional or keyword arguments and evaluates the model. 
+
+        Parameters
+        ----------
+        args : 
+            Positional arguments representing the constant and parameter variables in the model. 
+
+        kargs :
+            Keyword arguments representing the constant and parameter variables in the model.
+
+        Returns
+        -------
+        y : ndarray 
+            The output of the model for the given set of parameters.
+
         """
         # Check that the correct number of arguments have been specified
         paramlist = self._parameter_list(order='vector')
@@ -598,6 +910,7 @@ class Model():
             correspond to the model attributes, e.g. ``metadata['lb']`` corresponds to the model's
             parameters lower boundaries. 
         """
+        # Return a dictionary of metadata vectors, with keys corresponding to the metadata attributes
         return {
             'names': self._parameter_list(order='vector'),
             'ub' : self._vecsort(self._getvector('ub')),
@@ -613,6 +926,19 @@ class Model():
         
     #---------------------------------------------------------------------------------------
     def _parameter_table(self):
+        """
+        (Private method)
+
+        Construct a parameter table for the model that describes each of the model's
+        parameters.
+
+        Returns
+        -------
+        table : str
+            Formatted string representation of the model's parameter table.
+        """
+
+        # Get the description and signature of the model
         string = inspect.cleandoc(f"""
     Description: {self.description}
     Signature: ({', '.join(self.signature)})
@@ -621,9 +947,13 @@ class Model():
     """)
         string += '\n'
         table = []
+        # Add the table header to the list
         table.append(['Name','Lower','Start','Upper','Type','Frozen','Unit','Description'])  
+        # Alignment for the table columns
         alignment = ['<','^','^','^','^','^','^','<']
-        for n,paramname in enumerate(self._parameter_list(order='vector')): 
+        # Get a list of the model's parameters, in vector order
+        for paramname in self._parameter_list(order='vector'): 
+            # Build strings with the parameter's metadata 
             param_str = paramname
             lb_str = f'{np.atleast_1d(getattr(self,paramname).lb)[0]:5.3g}'
             ub_str = f'{np.atleast_1d(getattr(self,paramname).ub)[0]:5.3g}'
@@ -632,16 +962,22 @@ class Model():
             frozen_str = f'{np.atleast_1d(getattr(self,paramname).value)[0]:5.3g}' if np.all(getattr(self,paramname).frozen) else "No"
             unit_str = str(getattr(self,paramname).unit)
             desc_str = str(getattr(self,paramname).description)
+
+            # Add the parameter's information to the table
             table.append([param_str,lb_str,par0_str,ub_str,linear_str,frozen_str,unit_str,desc_str])
+
+        # Convert the table list to a formatted string
         string += formatted_table(table,alignment)
         return string
     #---------------------------------------------------------------------------------------
 
+    #---------------------------------------------------------------------------------------
     def __str__(self):
-        return self._parameter_table()
-    #def __repr__(self):
-    #    return self._parameter_table()        
-
+        """
+        Return a string representation of the model's parameters and their values.
+        """
+        return self._parameter_table()      
+    #---------------------------------------------------------------------------------------
 #===================================================================================
 
 #==============================================================================
@@ -691,6 +1027,28 @@ class Penalty():
         """ 
         #-------------------------------------------------------------------------------
         def selectionfunctional(fitfcn,y,sigma,log10weight):
+            """
+            (Private function)
+
+            Calculate the selection functional used to find the optimal penalty weight.
+
+            Parameters
+            ----------
+            fitfcn : callable
+                Function that performs the fit to the data. 
+            y : array_like
+                Data to fit the model to.
+            sigma : array_like
+                Standard deviation of the data.
+            log10weight : float
+                Penalty weight in logarithmic scale.
+
+            Returns
+            -------
+            selection_functional : float
+                Value of the selection functional calculated using the data, the standard deviation, 
+                the fit function and the penalty weight.
+            """
             # Penalty weight: linear-scale -> log-scale
             weight = 10**log10weight
             self._weight_value = weight
@@ -803,8 +1161,27 @@ class Penalty():
 #==============================================================================
 
 #--------------------------------------------------------------------------
-def _outerOptimization(fitfcn,penalty_objects,y,sigma):
+def _outerOptimization(fitfcn,penalty_objects,sigma):
+    """
+    (Private function)
 
+    A method to optimize the fit of a model with penalties.
+
+    This method returns a function that can be used to evaluate the fit of a model with penalties. It takes in the following arguments:
+
+    fitfcn : callable
+    The function to be optimized, which takes in a set of parameters and returns a scalar value representing the fit of the model.
+
+    penalty_objects : list of Penalty objects
+    A list of penalty objects that define the penalty functions to be applied to the fit function. The list can have up to three penalty objects.
+
+    sigma : numpy.ndarray
+    The vector of observation uncertainties to be used in the penalty functions.
+    Returns
+
+    fitfcn_ : callable
+    A function that can be used to evaluate the fit of a model with penalties. This function takes in a set of parameters and returns a scalar value representing the fit of the model.
+    """
     # If there are no penalties
     if len(penalty_objects)==0:
         fitfcn_ = lambda y: fitfcn(y,[None])
@@ -910,11 +1287,56 @@ def _evaluate(params,model,*constants):
 
 #--------------------------------------------------------------------------
 def _print_fitresults(fitresult,model):
-    """Construct summary table of fit results to print"""
+    """
+    (Private function)
+
+    Construct summary table of fit results to print
+    
+    This helper method takes the output of a model fit and constructs a
+    summary table of the goodness-of-fit statistics, along with the 
+    hyperparameters of the model (if any). The method is intended to be used
+    to print the results of the model fit.
+    
+    Parameters
+    ----------
+    fitresult : ``FitResult`` object
+        Result of a model fit.
+        
+    model : ``Model`` object
+        Model object instance used for the fit.
+        
+    Returns
+    -------
+    table_string : str
+        A string containing the summary table of the fit results.
+    """
 
     #-----------------------------------------------------
     def colortxt(str, color, spaces, is_tty=stdout.isatty()):
-        """ANSI codes for colored terminal text"""
+        """
+        (Private function)
+
+        Helper method that applies ANSI codes to add colors to the text
+        in a terminal. 
+
+        Parameters
+        ----------
+        str : str 
+            The string to be colored.
+        color : str
+            The color to be applied to the text. It can be 'red', 'yellow', or 'white'.
+        spaces : int
+            The number of spaces to add to the beginning and end of the string.
+        is_tty : bool
+            A boolean value indicating whether the output is a terminal or not.
+            If it is not a terminal, the method simply returns the string without
+            applying any coloring.
+
+        Returns
+        -------
+        colored_str : str
+            Colored string.
+        """
         if color=='red': color = '\033[91m'
         if color=='yellow': color = '\033[93m'
         if color=='white': color = ''
@@ -972,22 +1394,24 @@ def _print_fitresults(fitresult,model):
     haspenalties = fitresult.penweights
     if hasregularization or haspenalties:
         string += 'Model hyperparameters: \n'
-        tags = []
-        values = []
-        alignment = [] 
+        tags,values,alignment = [],[],[]
+        # If regularization was used, add regularization parameter
         if hasregularization:
             alignment.append('^')
             tags.append('Regularization parameter')      
             regparam = fitresult.regparam
             if regparam is None: regparam = 0  
             values.append(regparam) 
+        # If additional penalties were used, add their weights
         if haspenalties:
             for n,penweight in enumerate(fitresult.penweights):
                 alignment.append('^')
                 tags.append(f'Penalty weight #{n+1}')        
                 values.append(penweight) 
+        # Format the values
         values = [f'{var:.3f}' if var<1e3 and var>1e-3 else f'{var:.2e}' for var in values] 
         table = [tags,values] 
+        # Add to the table
         string += formatted_table(table,alignment) + '\n'
 
     # Construct table of model parameters fits
@@ -1027,7 +1451,21 @@ def _print_fitresults(fitresult,model):
     return string
 #--------------------------------------------------------------------------
 
-def insert_snlls_optionals_docstrings():
+def _insert_snlls_optionals_docstrings():
+    """
+    (Private decorator)
+    
+    A decorator that takes a function ``func` as input and replaces the 
+    string ``'snlls_keyargs_docstrings'`` in the function's docstring with
+    the optional keyword arguments documentation for the ``snlls.py`` 
+    function. This is done by splitting the ``snlls.py`` docstring into 
+    paragraphs, filtering out paragraphs that are already included in the
+    outer function's docstring, and concatenating the remaining paragraphs.
+    The resulting string is then inserted into ``func``'s docstring and 
+    the modified function is returned. This allows for the optional keyword
+    arguments documentation to be easily updated in the docstring of any 
+    function that uses the ``snlls.py`` function.
+    """
     # Get the documentation for the optional keyword arguments in snlls.py also used by fit()
     text = snlls.__doc__
     text = text.split('\n\n')
@@ -1047,7 +1485,7 @@ def insert_snlls_optionals_docstrings():
     return decorator
 
 #==============================================================================================
-@insert_snlls_optionals_docstrings()
+@_insert_snlls_optionals_docstrings()
 def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=None, mask=None, weights=None,
                 regparam='aic',reg='auto',regparamrange=None, bootcores=1,**kwargs):
     r"""
@@ -1285,7 +1723,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                                                 extrapenalty=extrapenalties(penweights), **kwargs)        
 
     # Prepare outer optimization of the penalty weights, if necessary
-    fitfcn = _outerOptimization(fitfcn,penalties,y,sigmas)
+    fitfcn = _outerOptimization(fitfcn,penalties,sigmas)
 
     # Run the fitting algorithm 
     fitresults = fitfcn(y)
@@ -1350,23 +1788,73 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     return fitresult
 #==============================================================================================
 
+# ---------------------------------------------------------------------
 def _importparameter(parameter):
-    return {
-        'lb' : parameter.lb,
-        'ub' : parameter.ub,
-        'par0' : parameter.par0,
-        'description' : parameter.description,
-        'unit' : parameter.unit,
-        'frozen' : parameter.frozen,
-        'value' : parameter.value,
+    """
+    (Private function)
+
+    Import relevant information from a parameter object.
+
+    This method extracts the lower and upper bounds (``lb``, ``ub``), initial value
+    (``par0``), description, unit, frozen state, and current value of the input
+    parameter object, and returns them as a dictionary.
+
+    Parameters
+    ----------
+    parameter : ``Parameter`` object
+        The parameter object whose information is to be extracted.
+
+    Returns
+    -------
+    parameter_info : dict
+        A dictionary containing the extracted information of the input
+        parameter object.
+
+    """
+    # Extract the relevant information from the parameter object
+    parameter_info = {
+        'lb': parameter.lb,
+        'ub': parameter.ub,
+        'par0': parameter.par0,
+        'description': parameter.description,
+        'unit': parameter.unit,
+        'frozen': parameter.frozen,
+        'value': parameter.value,
     }
+
+    return parameter_info
+# ---------------------------------------------------------------------
 
 # ---------------------------------------------------------------------
 def _aresame(obj1,obj2):
+    """
+    (Private function)
+
+    Compare two objects and return True if they have the same attribute values,
+    excluding the parent attribute and the index attribute.
+
+    Parameters
+    ----------
+
+    obj1 : object
+        First object to compare.
+
+    obj2 : object
+        Second object to compare.
+
+    Returns
+    -------
+
+    bool
+        True if the objects have the same attribute values, False otherwise.
+    """
+    # Get the attribute dictionaries for both objects, excluding the parent and index attributes
     a = obj1.__dict__
     a = {key:val for key, val in a.items() if key not in ['_parent','idx']}
     b = obj2.__dict__
     b = {key:val for key, val in b.items() if key not in ['_parent','idx']}
+
+    # Compare the dictionaries and return True if they are equal, False otherwise
     try:
         np.testing.assert_equal(a,b)
         return True
@@ -1376,18 +1864,50 @@ def _aresame(obj1,obj2):
 
 # ---------------------------------------------------------------------
 def _linked_model_with_constants(nonlinfcn,mapping,constantsInfo,linear_reduce_idx,*inputargs):
-    # Redistribute the input parameter vector according to the mapping vector
+    """
+    (Private function)
+
+    Wrapper function that redistributes the input parameter vector and returns the mapped model response.
+
+    Parameters
+    ----------
+    nonlinfcn : callable
+        Function that takes a set of non-linear parameters and returns the model response.
+    
+    mapping : ndarray
+        Mapping vector specifying how the input parameter vector should be redistributed.
+    
+    constantsInfo : list
+        List of dictionaries with information on the constants in the function.
+    
+    linear_reduce_idx : list
+        List of arrays with the indices of the model response to be summed together.
+
+    Returns
+    -------
+    A : ndarray
+        Model response with the input parameter vector redistributed according to the mapping vector.
+    """
+    # Get the number of constant parameters
     Nconstants = len(constantsInfo)
+    # separate the constants and model in the input arguments
     constants = inputargs[:Nconstants]
     θ = inputargs[Nconstants:]
+    # Rearrange the model parameters according to the mapping vector
     θ = np.atleast_1d(θ)[mapping]
+    # Create a list of input arguments to the model's non-linear function
     args = list(θ)
+    # Insert the constant parameters into their specified positions in the argument list
     if constantsInfo is not None:
         for info,constant in zip(constantsInfo,constants):
             args.insert(info['argidx'],constant)                
+    # Evaluate the model's non-linear function with the updated argument list
     A = nonlinfcn(*args)
-    if isinstance(A,tuple): return A # For internal use, undocumented 
+    # Return the output of the non-linear function if it is a tuple (for internal use, undocumented)
+    if isinstance(A,tuple): return A
+    # Make a matrix if model function returns a vector
     if len(A.shape)<2: A = np.expand_dims(A,1)
+    # Sum the output matrix along the columns specified in the linear_reduce_idx array
     Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
     return Amapped
 # ---------------------------------------------------------------------
@@ -1395,12 +1915,19 @@ def _linked_model_with_constants(nonlinfcn,mapping,constantsInfo,linear_reduce_i
 # ==============================================================================
 def link(model,**links):
     """
-    Create equality relationships between parameters 
+    Link parameters together in a model to create equality relationships 
+    between parameters. 
+
+    Link different sets of parameters to single parameters in a model, such that
+    the values of the linked parameters are all equal to the value of those 
+    single parameters. The linked parameters are removed from the model and 
+    only the single parameters remain.
 
     Parameters
     ----------
     model : :ref:`Model`
         Model object. 
+
     links : keyword-argument pairs 
         Keyword-argument pairs, where the arguments must be lists of model parameter names. 
         The corresponding model parameter will be assigned to new parameter whose name is given 
@@ -1418,6 +1945,31 @@ def link(model,**links):
     """
     def _linkparameter(model,parameters,newname):
     # ---------------------------------------------------------------------  
+        """
+        (Private function)
+
+        Link parameters together in a model.
+        
+        Link a series of parameters to a single parameter in a model, such that
+        the values of the linked parameters are all equal to the value of the 
+        single parameter. The linked parameters are removed from the model and 
+        only the single parameter remains.
+        
+        Parameters
+        ----------
+        model : object
+            Model object instance.
+        parameters : list
+            List of parameters to be linked together. 
+        newname : string
+            Name of the linked parameter.
+
+        Returns
+        -------
+        model : object
+            Updated model object instance with the linked parameters removed.
+        """
+        
         # Get a list of parameter names in the model
         model_parameters = model._parameter_list(order='vector')
 
@@ -1541,69 +2093,203 @@ def link(model,**links):
 
 # ---------------------------------------------------------------------
 def _unique_ordered(vec):
+    """
+    (Private function)
+
+    Returns a list of the unique elements in vec, ordered as they appear in vec.
+
+    Parameters
+    ----------
+    vec : list
+        List of elements to be processed.
+
+    Returns
+    -------
+    uniques : list
+        List of the unique elements in vec, ordered as they appear in vec.
+
+    """
+    # Create a list to store the unique elements
     uniques = []
+    # Loop through the elements of vec
     for v in vec: 
+        # If the element is not already in uniques, add it
         if v not in uniques:
             uniques.append(v)
+    # Return the list of unique elements
     return uniques
 # ---------------------------------------------------------------------
 
 
 #---------------------------------------------------------------------
 def _combined_nonlinmodel(mode,nonlinfcns,Nlins,Nconst,arelinear,const_subsets,subsets_nonlin,*inputargs):
-    """Evaluates the nonlinear functions of the submodels and 
-    concatenates them into a single design matrix"""
+    """
+    (Private function)
 
+    Combine the output of multiple non-linear models.
+
+    This function is used to combine the output of multiple non-linear models
+    into a single design matrix or model response. The combination mode
+    can be either 'merge' (merge the output of each model into a single block-
+    diagonal matrix) or 'lincombine' (concatenate the output of each model
+    horizontally).
+
+    Parameters
+    ----------
+    mode : str
+        Either 'merge' or 'lincombine', depending on the desired
+        combination mode.
+    nonlinfcns : list of callables
+        List of non-linear functions to combine.
+    Nlins : list of ints
+        List of the number of linear parameters in each non-linear function.
+    Nconst : int
+        Number of constants for each non-linear function.
+    arelinear : list of bools
+        List of bools indicating whether each non-linear function has
+        only linear parameters.
+    const_subsets : list of lists
+        List of constant subsets for each non-linear function.
+    subsets_nonlin : list of lists
+        List of non-linear parameter subsets for each non-linear function.
+    *inputargs : list of arrays
+        List of input arguments to the non-linear functions, consisting
+        of constants followed by parameters.
+
+    Returns
+    -------
+    Anonlin_full : ndarray
+        Array with the combined output of the non-linear functions.
+    """
+    # Unpack the input arguments into constants and parameters
     constants = inputargs[:Nconst]
     param = inputargs[Nconst:]
 
+    # Make sure that constants and parameters are arrays
     param = np.atleast_1d(param)
     constants = np.atleast_2d(constants)
+
     # Loop over the submodels in the model
     Amatrices = []
     for n,nonlinfcn in enumerate(nonlinfcns):
         # Evaluate the submodel
         Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
-        if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
+
+        # Transpose the output matrix if necessary
+        if np.shape(Amatrix)[1]!=Nlins[n]:
+            Amatrix = Amatrix.T
         Amatrices.append(Amatrix)
+
+    # Merge or concatenate the output of the submodels
     if mode=='merge':
         Anonlin_full = block_diag(Amatrices).toarray()
+
+        # If all submodels are non-linear, sum the output matrices
         if not any(arelinear):
             Anonlin_full = np.sum(Anonlin_full,1)
 
     elif mode=='lincombine':
         Anonlin_full = np.hstack(Amatrices)
 
+    # Return the combined output
     return Anonlin_full
 #---------------------------------------------------------------------
 
 #---------------------------------------------------------------------
 def _split_output(nonlinfcns,Nlins,Nconst,const_subsets,subsets_nonlin,y,*inputargs):
-    
+    """
+    (Private function)
+
+    Split the output of a model into the outputs of its submodels.
+
+    This method is used to evaluate the outputs of each of the submodels that
+    make up a composite model. It is called internally by the ``Model`` class.
+
+    Parameters
+    ----------
+    nonlinfcns : list of callables
+        List of functions representing the submodels that make up the composite model.
+
+    Nlins : list of int
+        List of the number of linear parameters in each of the submodels.
+
+    Nconst : int
+        Total number of constant arguments for all submodels.
+
+    const_subsets : list of array_like
+        List of indices specifying which constant arguments each submodel uses.
+
+    subsets_nonlin : list of array_like
+        List of indices specifying which non-linear parameters each submodel uses.
+
+    y : array_like
+        Output of the full model.
+
+    *inputargs
+        List of constant arguments followed by the non-linear parameters of the full model.
+        
+    Returns
+    -------
+    output : list of array_like
+        List of the outputs of each submodel.
+    """
+    # Split the input arguments into constants and parameters
     constants = inputargs[:Nconst]
     param = inputargs[Nconst:]
+    # Ensure that variables are arrays
     param = np.atleast_1d(param)
     constants = np.atleast_2d(constants)
+    
     # Loop over the submodels in the model
     ysizes = []
     for n,nonlinfcn in enumerate(nonlinfcns):
         # Evaluate the submodel
         Amatrix = np.atleast_2d(nonlinfcn(*constants[const_subsets[n],:],*param[subsets_nonlin[n]]))
+        # Transpose the matrix if necessary
         if np.shape(Amatrix)[1]!=Nlins[n]: Amatrix = Amatrix.T
+        # Store the size of the output from this submodel
         ysizes.append(Amatrix.shape[0])
-    
+    # Create subsets of y for each submodel output
     nprev = 0
     ysubsets = []
     for x in ysizes:
         ysubsets.append(np.arange(nprev,nprev+x))
         nprev = nprev+x
+    # Return the subsets of y
     return [y[ysubsets[n]] for n in range(len(ysizes))]
 #---------------------------------------------------------------------
 
 
-#==============================================================================================
+#---------------------------------------------------------------------
 def _combinemodels(mode,*inputmodels,addweights=False): 
+    """
+    (Private function)
 
+    Combine multiple ``Model`` objects into a single model. This helper function
+    is used by the ``merge`` and ``lincombine`` functions.
+
+    Parameters
+    ----------
+    mode : str
+        The mode of combination, which can be ``'parallel'`` or ``'sequential'``. In
+        parallel mode, each model is assumed to be independent of each other
+        and the combined model returns the sum of the output of the
+        individual models. In sequential mode, the output of each model is
+        passed on to the next model as input.
+
+    inputmodels : ``Model`` objects
+        Any number of models to be combined.
+
+    addweights : bool, optional
+        If ``True``, add weighting factors to the combined model. These weighting
+        factors can be used to adjust the contribution of each individual
+        model to the combined model. The default is ``False``.
+
+    Returns
+    -------
+    combmodel : Model object
+        The combined model.
+    """
     # Initialize empty containers
     subsets_nonlin,arguments,arelinear,lin_normalizations = [],[],[],[]
     nprev = 0
@@ -1727,7 +2413,7 @@ def _combinemodels(mode,*inputmodels,addweights=False):
 
     # Return the new combined model object
     return combinedModel    
-#==============================================================================================
+#---------------------------------------------------------------------
 
 #==============================================================================================
 def merge(*inputmodels,addweights=False):
@@ -1790,15 +2476,62 @@ def lincombine(*inputmodels,addweights=False):
 
 # ---------------------------------------------------------------------
 def _dependency_model_with_constants(function,nonlinfcn,constantsInfo,arguments_idx,dependent_idx,*inputargs):
+    """
+    (Private function)
+
+    A helper function that maps the input arguments of a model and
+    calls the nonlinear function with the mapped arguments.
+
+    This function is used to evaluate models that have dependencies
+    between their parameters, where one parameter is defined in terms
+    of another.
+
+    Parameters
+    ----------
+    function : callable
+        The function defining the dependency between parameters.
+
+    nonlinfcn : callable
+        The nonlinear model function to be called with the mapped
+        input arguments.
+
+    constantsInfo : list
+        A list of dictionaries containing information about the
+        constants in the model.
+
+    arguments_idx : ndarray
+        An array of indices specifying which arguments of the
+        nonlinear model function are arguments of the dependency
+        function.
+
+    dependent_idx : int
+        The index of the dependent parameter in the input argument
+        vector.
+
+    *inputargs
+        The input arguments of the model.
+
+    Returns
+    -------
+    A : array
+        The model (design) matrix output of the nonlinear function with the mapped input
+        arguments.
+    """
     # Redistribute the input parameter vector according to the mapping vector
     Nconstants = len(constantsInfo)
     constants = inputargs[:Nconstants]
     θ = np.atleast_1d(inputargs[Nconstants:]).astype(float)
+
+    # Insert the output of the dependency function at the correct index
     θ = np.insert(θ,dependent_idx,function(*θ[arguments_idx]))  
+
+    # Build the list of arguments to be passed to the nonlinear function
     args = list(θ)
     if constantsInfo is not None:
         for info,constant in zip(constantsInfo,constants):
             args.insert(info['argidx'],constant)                
+
+    # Call the nonlinear function with the mapped arguments
     A = nonlinfcn(*args)
     return A
 # ---------------------------------------------------------------------

@@ -22,6 +22,7 @@ https://doi.org/10.1038/s41589-021-00752-3
 import deerlab as dl 
 import numpy as np
 import matplotlib.pyplot as plt 
+violet = '#4550e6'
 
 
 # Load experimental data
@@ -94,14 +95,15 @@ globalModel.reftime2_2.set(lb=2.0,   ub=2.5,  par0=2.2)
 # Fit the model to the data
 fit = dl.fit(globalModel,Vs)
 
+print(fit)
+
 # Plot the results
 plt.figure(figsize=[9,9])
 violet = '#4550e6'
-orange = 'tab:orange'
 
 plt.subplot(3,2,1)
 plt.plot(ts[0],Vs[0],'.',color='grey',label='Data')
-plt.plot(ts[0],fit.model[0],label='Fit')
+plt.plot(ts[0],fit.model[0],color='k',label='Fit',linewidth=1.5)
 plt.ylim([0.2,1])
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time t (μs)')
@@ -113,7 +115,7 @@ Vdis_fit = Vdismodel1(decay=fit.kdis,mean=fit.rmean_dis,std=fit.std_dis,reftime1
 Vld_fit = Vldmodel1(decay=fit.kld,stretch=fit.Dld,mean=fit.rmean_ld,std=fit.std_ld,reftime1=fit.reftime1,reftime2=fit.reftime2_1,lam1=fit.lam1,lam2=fit.lam2,scale=1)
 
 ax2.plot(ts[0],Vdis_fit,color=violet,label=f'Dispersed fraction {fit.eta*100:.1f}%')
-ax2.plot(ts[0],Vld_fit,color=orange,label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%')
+ax2.plot(ts[0],Vld_fit,color='tab:red',label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%')
 ax2.set_yticklabels([])
 ax2.legend(frameon=False,loc='best')
 ax2.set_ylim([0.2,1])
@@ -122,7 +124,7 @@ ax2.set_xlabel('Time t (μs)')
 
 plt.subplot(3,2,3)
 plt.plot(ts[1],Vs[1],'.',color='grey',label='Data')
-plt.plot(ts[1],fit.model[1],label='Fit')
+plt.plot(ts[1],fit.model[1],color='k',label='Fit',linewidth=1.5)
 plt.ylim([0.2,1])
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time t (μs)')
@@ -134,7 +136,7 @@ Vdis_fit = Vdismodel2(decay=fit.kdis,mean=fit.rmean_dis,std=fit.std_dis,reftime1
 Vld_fit = Vldmodel2(decay=fit.kld,stretch=fit.Dld,mean=fit.rmean_ld,std=fit.std_ld,reftime1=fit.reftime1,reftime2=fit.reftime2_2,lam1=fit.lam1,lam2=fit.lam2,scale=1)
 
 ax4.plot(ts[1],Vdis_fit,color=violet,label=f'Dispersed fraction {fit.eta*100:.1f}%')
-ax4.plot(ts[1],Vld_fit,color=orange,label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%')
+ax4.plot(ts[1],Vld_fit,color='tab:red',label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%')
 ax4.set_yticklabels([])
 ax4.legend(frameon=False,loc='best')
 ax4.set_xlabel('Time t (μs)')
@@ -150,8 +152,8 @@ Pld_uq = fit.propagate(Pld_fcn,lb=np.zeros_like(r))
 
 plt.plot(r,Pdis_fcn(fit.rmean_dis,fit.std_dis),label=f'Dispersed fraction {fit.eta*100:.1f}%',color=violet)
 plt.fill_between(r,Pdis_uq.ci(95)[:,0],Pdis_uq.ci(95)[:,1],alpha=0.3,linewidth=0,color=violet)
-plt.plot(r,Pld_fcn(fit.rmean_ld,fit.std_ld),label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%',color=orange)
-plt.fill_between(r,Pld_uq.ci(95)[:,0],Pld_uq.ci(95)[:,1],alpha=0.3,linewidth=0,color=orange)
+plt.plot(r,Pld_fcn(fit.rmean_ld,fit.std_ld),label=f'Liquid-droplet fraction {(1-fit.eta)*100:.1f}%',color='tab:red')
+plt.fill_between(r,Pld_uq.ci(95)[:,0],Pld_uq.ci(95)[:,1],alpha=0.3,linewidth=0,color='tab:red')
 
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Distance r (nm)')

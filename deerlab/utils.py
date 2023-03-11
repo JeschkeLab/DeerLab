@@ -7,37 +7,87 @@ from types import FunctionType
 from functools import wraps
 import pickle
 
-def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None, subsets=None):
+def parse_multidatasets(y_, A, weights, noiselvl, precondition=False, masks=None, subsets=None):
 #===============================================================================
+    """
+    Parse one or multiple dataset(s) for local/global least-squares inference
+
+    This function takes an arbitrary number of datasets, along with the model matrices and noise
+    level for each dataset, and parses them into a common format for use in a global fit. It also
+    performs some preprocessing steps such as scaling the signals and estimating the noise level
+    if it is not provided.
+
+    Parameters
+    ----------
+    y_ : array_like or list of array_like
+        The input dataset(s). Must be a numpy array or a list of numpy arrays.
     
+    A : array_like, list of array_like, or callable
+        The model matrix(ces) for the dataset(s). Must be a numpy array or a list of numpy arrays, or a callable that returns such an object.
+    
+    weights : array_like or None, optional
+        The weights for the global fit. If not provided, default weights will be used based on the noise level of each dataset.
+    
+    noiselvl : float or array_like, optional
+        The noise level(s) of the dataset(s). If not provided, the noise level will be estimated using the `der_snr` function.
+    
+    precondition : bool, optional
+        Whether to scale the signals to have maximum value of 1. Default is False.
+    
+    masks : array_like or list of array_like, optional
+        Masks to be applied to the dataset(s). If not provided, all data will be used.
+    
+    subsets : list of array_like, optional
+        The indices of the datasets in the concatenated global dataset. If not provided, the indices will be automatically determined.
+
+    Returns
+    -------
+    y : array_like
+        The concatenated dataset(s), with each dataset preprocessed as specified.
+    
+    Kmulti : array_like or callable
+        The concatenated model matrix(ces), or a callable that returns the concatenated model matrix(ces) when given a set of parameters.
+    
+    subset : list of array_like
+        The indices of the datasets in the concatenated global dataset.
+    
+    mask : array_like
+        The concatenated mask(s), applied to the dataset(s).
+    
+    sigmas : array_like
+        The noise level(s) of the dataset(s).
+    
+    weights : array_like
+        The weights for the global fit.
+    """
     # Make copies to avoid modifying the originals
-    V = V_.copy()
+    y = y_.copy()
 
-    Vlist = []
-    # If multiple signals are specified as a list...
-    if type(V) is list and all([type(Vs) is np.ndarray for Vs in V]):
-        nSignals = len(V)
+    ylist = []
+    # If multiple datasets are specified as a list...
+    if type(y) is list and all([type(ys) is np.ndarray for ys in y]):
+        nDatasets = len(y)
 
-    elif type(V) is np.ndarray:
-        nSignals = 1
-        V = [V]
+    elif type(y) is np.ndarray:
+        nDatasets = 1
+        y = [y]
     else:
-        raise TypeError('The input signal(s) must be numpy array or a list of numpy arrays.')
+        raise TypeError('The input dataset(s) must be numpy array or a list of numpy arrays.')
     
     # Pre-scale the signals, important when using global fits with arbitrary scales
-    prescales = np.ones(nSignals)
-    for i in range(nSignals):
+    prescales = np.ones(nDatasets)
+    for i in range(nDatasets):
         if precondition:
             prescales[i] = max(V[i])
-            Vlist.append(V[i]/prescales[i])
+            ylist.append(y[i]/prescales[i])
         else:
-            Vlist.append(V[i])
+            ylist.append(y[i])
 
     # Get the indices to extract the subsets again
-    Ns = [len(V) for V in Vlist]
+    Ns = [len(y) for y in ylist]
     if subsets is None:
-        subset = [None]*nSignals
-        for i in  range(len(Vlist)):
+        subset = [None]*nDatasets
+        for i in  range(len(ylist)):
             if i==0:
                 prev = 0
             else:
@@ -48,10 +98,10 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None
 
     # Parse the masks
     if masks is None: 
-        masks = [np.full_like(V,True).astype(bool) for V in Vlist]
+        masks = [np.full_like(y,True).astype(bool) for y in ylist]
     elif not isinstance(masks,list):
         masks = [masks]
-    if len(masks)!= len(Vlist): 
+    if len(masks)!= len(ylist): 
         raise SyntaxError('The number of masks does not match the number of signals.')
     mask = np.concatenate(masks, axis=0) 
 
@@ -59,38 +109,57 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None
     sigmas = np.zeros(len(subset))
     if noiselvl is None:
         for i in range(len(subset)):
-            sigmas[i] = der_snr(Vlist[i][masks[i]])
+            sigmas[i] = der_snr(ylist[i][masks[i]])
     else: 
         noiselvl = np.atleast_1d(noiselvl)
         sigmas = noiselvl.copy()
 
 
     # Concatenate the datasets along the list axis
-    V = np.concatenate(Vlist, axis=0)
+    y = np.concatenate(ylist, axis=0)
 
     # -----------------------------------------------------------------
-    def prepareKernel(K,nSignals):
+    def prepare_model_matrix(A,nDatasets):
+        """
+        Prepare model matrix for global fit
+
+        This function takes an arbitrary number of model matrices, and parses
+        them into a common format for use in a global fit. It concatenates 
+        them along the list axis if they are specified as a list.
+
+        Parameters
+        ----------
+        A : array_like, list of array_like, or callable
+            The input model matrix(ces). Must be a numpy array or a list of numpy arrays, or a callable that returns such an object.
+        nDatasets : int
+            The number of datasets in the global fit.
+
+        Returns
+        -------
+        A : array_like or callable
+            The concatenated model matrix(ces), or a callable that returns the concatenated model matrix(ces) when given a set of parameters.
+        """
         # If multiple kernels are specified as a list...
-        if type(K) is tuple:
-            K = [Ks for Ks in K]
-        if type(K) is list and all([type(Ks) is np.ndarray for Ks in K]):
-            nKernels = len(K)
-            K = np.concatenate(K, axis=0) # ...concatenate them along the list 
-        elif type(K) is np.ndarray:
+        if type(A) is tuple:
+            A = [As for As in A]
+        if type(A) is list and all([type(As) is np.ndarray for As in A]):
+            nKernels = len(A)
+            A = np.concatenate(A, axis=0) # ...concatenate them along the list 
+        elif type(A) is np.ndarray:
             nKernels = 1
         else:
-            raise TypeError('The input kernel(s) must be numpy array or a list of numpy arrays.')
+            raise TypeError('The input model matrix must be numpy array or a list of numpy arrays.')
         # Check that the same number of signals and kernel have been passed
-        if nSignals!=nKernels:
-            raise KeyError('The same number of kernels and signals must be specified as lists.')
-        return K
+        if nDatasets!=nKernels:
+            raise KeyError('The same number of model matrices and datasets must be specified as lists.')
+        return A
     # -----------------------------------------------------------------
-    if type(K) is FunctionType:
-        Kmulti = lambda p: prepareKernel(K(p),nSignals)
-    elif K is None: 
+    if type(A) is FunctionType:
+        Kmulti = lambda p: prepare_model_matrix(A(p),nDatasets)
+    elif A is None: 
         Kmulti = None
     else:
-        Kmulti = prepareKernel(K,nSignals)
+        Kmulti = prepare_model_matrix(A,nDatasets)
 
     # If global weights are not specified, set default based on noise levels
     if weights is None:
@@ -106,32 +175,51 @@ def parse_multidatasets(V_, K, weights, noiselvl, precondition=False, masks=None
         weights = np.atleast_1d(weights)
         if len(weights)==1:
                 weights = np.repeat(weights,len(subset))
-        if len(weights)!=len(Vlist) and len(weights)!=np.sum([len(V) for V in Vlist]):
+        if len(weights)!=len(ylist) and len(weights)!=np.sum([len(y) for y in ylist]):
             raise KeyError('If multiple signals are passed, the same number of weights are required.')
-        if len(weights)!=np.sum([len(V) for V in Vlist]):
+        if len(weights)!=np.sum([len(y) for y in ylist]):
             weights_ = []
             for i in range(len(weights)):
-                weights_ = np.concatenate((weights_,weights[i]*np.ones(len(Vlist[i]))))
+                weights_ = np.concatenate((weights_,weights[i]*np.ones(len(ylist[i]))))
             weights = weights_
     else:
         raise TypeError('The input weights(s) must be numpy array or a list of numpy arrays.')
 
-
     if precondition:
-        return V, Kmulti, weights, mask, subset, sigmas, prescales
+        return y, Kmulti, weights, mask, subset, sigmas, prescales
     else:
-        return V, Kmulti, weights, mask, subset, sigmas
+        return y, Kmulti, weights, mask, subset, sigmas
 #===============================================================================
-
-from pyparsing import *
-ESC = Literal('\x1b')
-escapeSeq = Combine(ESC + '[' + Optional(delimitedList(Word(nums),';')) + oneOf(list(alphas)))
-rm_ansi = lambda s : Suppress(escapeSeq).transformString(s)
 
 
 #===============================================================================
 def formatted_table(table,align=None):
-    """Generate auto-formatted table in string form from a list of rows."""
+    """
+    Generate formatted table in string form
+
+    This function takes a table as a list of rows, and returns a string representation 
+    of the table with automatic formatting. The table is formatted using a row-separator
+    line, a header row, and the data rows.
+
+    Parameters
+    ----------
+    table : list of list of objects
+        The input table, as a list of rows, where each row is a list of objects representing
+        the columns.
+    align : list of str, optional
+        The alignment of the columns in the table. Must be a list of strings, where each string is 
+        either '<' for left alignment, '>' for right alignment, or '^' for center alignment. If 
+        not provided, all columns will be left-aligned.
+
+    Returns
+    -------
+    table2print : str
+        The formatted table, as a string.
+    """
+    from pyparsing import Literal,Combine,Suppress,Optional,delimitedList,Word,nums,alphas,oneOf
+    ESC = Literal('\x1b')
+    escapeSeq = Combine(ESC + '[' + Optional(delimitedList(Word(nums),';')) + oneOf(list(alphas)))
+    rm_ansi = lambda s : Suppress(escapeSeq).transformString(s)
 
     # Determine the maximal number of characters in each column
     N = []
@@ -168,38 +256,32 @@ def formatted_table(table,align=None):
 
 #===============================================================================
 def goodness_of_fit(x,xfit,Ndof,noiselvl):
-    r""" 
+    """
     Goodness of Fit statistics
-    ==========================
 
     Computes multiple statistical indicators of goodness of fit.
 
-    Usage:
-    ------
-        stats = goodness_of_fit(x,xfit,Ndof)
-
-    Arguments: 
+    Parameters
     ----------
-    x (N-element array)
-        Original data
-    xfit (N-element array)
-        Fit
-    Ndog (scalar, int)
-        Number of degrees of freedom
-    noiselvl (scalar)
-        Standard dexiation of the noise in x.
+    x : array_like
+        Original data.
+    xfit : array_like
+        Fit.
+    Ndof : int
+        Number of degrees of freedom.
+    noiselvl : float
+        Standard deviation of the noise in x.
 
-    Returns:
-    --------
-    stats (dict)
+    Returns
+    -------
+    stats : dict
         Statistical indicators:
             stats['chi2red'] - Reduced chi-squared
-            stats['rmsd'] - Root mean-squared dexiation
+            stats['rmsd'] - Root mean-squared deviation
             stats['R2'] - R-squared test
             stats['aic'] - Akaike information criterion
             stats['aicc'] - Corrected Akaike information criterion
             stats['bic'] - Bayesian information criterion
-
     """
     sigma = noiselvl
     Ndof = np.maximum(Ndof,1)
@@ -382,167 +464,14 @@ def hccm(J,residual,mode='HC1'):
     return C
 #===============================================================================
 
-
-# =================================================================
-def metadata(**kwargs):
-    """
-    Decorator: Set model metadata as function attributes 
-    """
-    attributes = list(kwargs.keys())
-    metadata = list(kwargs.values())
-
-    def _setmetadata(func):
-        for attribute,data in zip(attributes,metadata):
-            setattr(func,attribute,data)
-        return func
-    return _setmetadata
-# =================================================================
-
-def gsvd(A,B):
-#===============================================================================
-    m,p = A.shape
-    n = B.shape[0]
-
-    # Economy-sized.
-    useQA = m > p
-    useQB = n > p
-    if useQA:
-        QA,A = scp.linalg.qr(A)
-        A = A[0:p,0:p]
-        QA = QA[:,0:p]
-        m = p
-
-    if useQB:
-        QB,B = scp.linalg.qr(B)
-        B = B[0:p,0:p]
-        QB = QB[:,0:p]
-        n = p
-
-    Q,_ = np.linalg.qr(np.vstack((A,B)), mode='reduced')
-    Q1 = Q[0:m,0:p]
-    Q2 = Q[m:m+n,0:p]
-    C,S = csd(Q1,Q2)
-
-    # Vector of generalized singular values.
-    q = min(m+n,p)
-    # Supress divide by 0 warning        
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        U = np.vstack((np.zeros((q-m,1),'double'), np.diag(C,max(0,q-m)).reshape(len(np.diag(C,max(0,q-m))),1)))/np.vstack((np.diag(S,0).reshape(len(np.diag(S,0)),1), np.zeros((q-n,1),'double') ))
-
-
-    return U
-#===============================================================================
-
-
-def csd(Q1,Q2):
-#===============================================================================
-    """
-    Cosine-Sine Decomposition
-    -------------------------
-    
-    Given Q1 and Q2 such that Q1'* Q1 + Q2'* Q2 = I, the
-    C-S Decomposition is a joint factorization of the form
-          Q1 = U1*C*V' and Q2=U2*S*V'
-    where U1,U2,V are orthogonal matrices and C and S are diagonal
-    matrices (not necessarily square) satisfying
-             C'* C + S'* S = I
-    The diagonal entries of C and S are nonnegative and the
-    diagonal elements of C are in nondecreasing order.
-    The matrix Q1 cannot have more columns than rows.
-
-    Based on the Octave code by Artiste (submitted by S.J.Leon): 
-    http://www.ar-tiste.com/m-fun/m-fun-index.html
-
-    """
-    m,n = Q1.shape
-    p,_ = Q2.shape
-    if m < p:
-        s,c = csd(Q2,Q1)
-        j = np.flip(np.arange(n)) 
-        c = c[:,j] 
-        s = s[:,j] 
-        m = np.minimum(m,p) 
-        i =  np.flip(np.arange(m)) 
-        c[np.arange(m),:] = c[i,:] 
-        n = np.minimum(n,p) 
-        i =  np.flip(np.arange(n)) 
-        s[np.arange(n),:] = s[i,:] 
-        return c,s
-
-    _,sdiag,v = np.linalg.svd(Q1)
-    c = np.zeros((m, n))
-    np.fill_diagonal(c, sdiag)
-    v = v.T.conj()
-    z = np.eye(n,n)
-    z = scp.linalg.hankel(z[:,n-1])
-    c[0:n,:] = z@c[0:n,:]@z
-    v = v@z
-    Q2 = Q2@v
-    k=0
-    for j in range(1,n):
-        if c[j,j] <= 1/np.sqrt(2): k=j
-    b = Q2[:,0:k]
-    u2,r = np.linalg.qr(b,mode='complete')
-    s = u2.T@Q2
-    t = np.minimum(p,n)
-    tt = np.minimum(m,p)
-    if k<t:
-        r2 = s[np.ix_(range(k,p),range(k,t))]
-        _,sdiag,vt = np.linalg.svd(r2)
-        ss= np.zeros(r2.shape)
-        np.fill_diagonal(ss, sdiag)
-        vt = vt.T.conj()
-        s[k:p,k:t] = ss
-        c[:,k:t] = c[:,k:t]@vt
-        w = c[k:tt,k:t]
-        z,r = np.linalg.qr(w,mode='complete')
-        c[k:tt,k:t] = r
-    for j in range(n):
-        if c[j,j]<0:
-            c[j,j]  = -c[j,j]
-    for j in range(t):
-        if s[j,j]<0:
-            s[j,j]  = -s[j,j]
-
-    return c,s
-#===============================================================================
-
-#===============================================================================
-def diagf(X):
-    """
-    Diagonal force
-
-    X = diagf(X) zeros all the elements off the main diagonal of X.
-    """
-    X = np.triu(np.tril(X))
-    return X
-#===============================================================================
-
-#===============================================================================
-def diagp(Y,X,k):
-    """
-    Diagonal positive matrix.
-    Y,X = diagp(Y,X,k) scales the columns of Y and the rows of X by
-    unimodular factors to make the k-th diagonal of X real and positive.
-    """
-    D = np.diag(X,k)
-    j = np.where((D.real < 0) | (D.imag != 0))
-    D = np.diag(np.conj(D[j])/abs(D[j]))
-    Y[:,j] = Y[:,j]@D.T
-    X[j,:] = D@X[j,:]
-    X = X+0 # use "+0" to set possible -0 elements to 0
-    return Y,X
-#===============================================================================
-
 #===============================================================================
 def Jacobian(fcn, x0, lb, ub):
     """ 
     Finite difference Jacobian estimation 
      
     Estimates the Jacobian matrix of a vector-valued function `f(x)` at the 
-    point `x_0` taking into consideration box-constraints of the vector-valued variable ``x`` defined by its lower
-    and upper bounds.
+    point `x_0` taking into consideration box-constraints of the vector-valued 
+    variable ``x`` defined by its lower and upper bounds.
 
     Parameters
     ----------
@@ -620,18 +549,20 @@ def ovl(A,B):
 
 #===============================================================================
 def nearest_psd(A):
-    """ 
+    """
     Find the nearest positive semi-definite matrix
+
+    This function takes a square matrix `A` and returns the nearest positive semi-definite matrix.
 
     Parameters
     ----------
-    A : ndarray 
-        Matrix
+    A : ndarray
+        The input matrix.
 
     Returns
     -------
-    Cpsd : ndarray 
-        Nearest positive semi-definite matrix 
+    Cpsd : ndarray
+        The nearest positive semi-definite matrix.
 
     Notes
     -----
@@ -641,10 +572,10 @@ def nearest_psd(A):
     References
     ----------
 
-    .. [1] tjiagoM (2020, July 28th), 
-       How can I calculate the nearest positive semi-definite matrix? 
-       StackOverflow, https://stackoverflow.com/a/63131250/16396391
-    """ 
+    [1] tjiagoM (2020, July 28th), 
+        How can I calculate the nearest positive semi-definite matrix? 
+        StackOverflow, https://stackoverflow.com/a/63131250/16396391
+    """
     # If matrix is empty, return it empty (scipy.linalg.eigh cannot deal with empty matrix)
     if A.size==0: 
         return A
@@ -659,21 +590,53 @@ def nearest_psd(A):
     return Cpsd
 #===============================================================================
 
-def isempty(A):
-#===============================================================================Q
-    A = np.atleast_1d(A)
-    boolean = np.size(A)==0
-    return boolean
 #===============================================================================
-
 def isnumeric(obj):
-#===============================================================================
+    """
+    Check whether an object is numeric
+
+    This function checks whether an object supports the basic operations of a numeric type,
+    such as addition, subtraction, multiplication, and division.
+
+    Parameters
+    ----------
+    obj : object
+        The object to be checked.
+
+    Returns
+    -------
+    result : bool
+        `True` if `obj` is numeric, `False` otherwise.
+    """
     attrs = ['__add__', '__sub__', '__mul__', '__truediv__', '__pow__']
     return all(hasattr(obj, attr) for attr in attrs)
 #===============================================================================
 
-def multistarts(n,x0,lb,ub):
 #===============================================================================
+def multistarts(n,x0,lb,ub):
+    """
+    Generate multiple starting points
+
+    This function generates multiple starting points for optimization, based on a given initial point,
+    lower bounds, and upper bounds. If `n` is positive, `n-1` new points are generated within the bounds,
+    excluding the bounds themselves.
+
+    Parameters
+    ----------
+    n : int
+        The number of starting points to generate.
+    x0 : array_like
+        The initial point.
+    lb : array_like
+        The lower bounds for the starting points.
+    ub : array_like
+        The upper bounds for the starting points.
+
+    Returns
+    -------
+    x0 : ndarray
+        The starting points.
+    """
     # Ensure a 1D-vector
     x0 = np.atleast_1d(np.squeeze(x0)).astype(float)
     lb = np.atleast_1d(np.squeeze(lb)).astype(float)
@@ -706,7 +669,17 @@ try:
     #===============================================================================
     def skip_on(errclass, reason="Default reason"):
         """ 
+        Decorator for skipping failed tests during pytest's execution
+
         Skip a unit test in Pytest if a particular exception occurs during the execution of the test.
+        When an error of the type `errclass` occurs, the test will be skipped and the given `reason` will be reported.
+
+        Examples
+        --------
+        @skip_on(TypeError, reason="Data is not a string")
+        def test_parse_string():
+            assert parse_string(1234) == "1234"
+
         Source: modified from https://stackoverflow.com/a/63522579/16396391
         """ 
         # Func below is the real decorator and will receive the test function as param
@@ -731,6 +704,19 @@ try:
     import inspect
     #===============================================================================
     def assert_docstring(function):
+        """
+        Check if the docstring of a given function contains documentation for all of its input arguments.
+        
+        Parameters
+        ----------
+        function : callable
+            The function to check.
+        
+        Raises
+        ------
+        AssertionError
+            If the docstring does not contain documentation for all of the function's input arguments.
+        """
         input_args = inspect.getfullargspec(function).args + inspect.getfullargspec(function).kwonlyargs
         docstring = function.__doc__
 
@@ -740,9 +726,6 @@ try:
             except: 
                 raise AssertionError(f'The argument "{arg}" is not documented.')
     #===============================================================================
-
-
-
 except: pass
 
 import dill as pickle
@@ -758,8 +741,13 @@ def store_pickle(obj, filename):
         Python object to be saved/exported. 
 
     filename : string 
-        Name (and path) of the file to save the pickled object to. The object is saved as a ``.pkl`` file. 
-    """   
+        Name (and path) of the file to save the pickled object to. The object is saved as a ``.pkl`` file. If `filename` does not end in ".pkl", the extension is added automatically.
+
+    Examples
+    --------
+    store_pickle(my_object, 'my_file.pkl')
+    store_pickle(my_object, './data/my_file') # equivalent to './data/my_file.pkl'
+    """ 
     if '.pkl' not in filename:
         filename = filename + '.pkl'
     with open(filename, 'wb') as outp:  # Overwrites any existing file.
@@ -776,7 +764,12 @@ def read_pickle(filename):
     filename : string 
         Path to the ``.pkl`` file to load.
 
-        .. warning:: It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with. See `here <https://docs.python.org/3/library/pickle.html>`_ for more information.
+    Returns
+    -------
+    object
+        The deserialized Python object.
+
+    .. warning:: It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with. See `here <https://docs.python.org/3/library/pickle.html>`_ for more information.
 
     """ 
     if '.pkl' not in filename:
@@ -793,20 +786,27 @@ def read_pickle(filename):
 # --------------------------------------------------------------------------------------
 def sophegrid(octants,maxphi,size):
     """
-    Construct spherical grid over spherical angles based on input parameters. The grid implemented in this function is often called the SOPHE grid [1]_. 
+    Construct spherical grid over spherical angles based on input parameters. 
+    The grid implemented in this function is often called the SOPHE grid [1]_. 
     Adapted from Easyspin [2]_ ``sphgrid_`` source code. 
 
-    
     Parameters
     ----------
     octants : integer 
         Number of "octants" of the sphere; for each increment in theta, octants additional points are added along phi; special cases: octants=0 and octants=-1.
-
     maxphi : float 
         Largest value of angle phi (radians).
-
     size : integer  
         Number of orientations between theta=0 and theta=pi/2. 
+
+    Returns
+    -------
+    phi : ndarray
+        Array of the phi angles of the grid points in radians.
+    theta : ndarray
+        Array of the theta angles of the grid points in radians.
+    weights : ndarray
+        Array of the weights corresponding to each grid point.
 
     References
     ----------
@@ -904,24 +904,30 @@ def sophegrid(octants,maxphi,size):
 # ----------------------------------------------------------------------------------
 def choleskycovmat(Q,cholfactors):
     """
-    Covariance matrix by Cholesky decomposition 
-    -------------------------------------------
+    Compute the covariance matrix using Cholesky decomposition.
 
     Parameters
     ----------
-    Q : integer
+    Q : int
         Dimension of the covariance matrix.
     cholfactors : array_like
-        List of Cholesky decomposition factors. The first ``Q`` values correspond to the 
-        ``Q``-diagonal values of the Cholesky decomposition matrix. The remaning values are used to
+        List of Cholesky decomposition factors. The first `Q` values correspond to the 
+        diagonal values of the Cholesky decomposition matrix. The remaining values are used to
         fill the lower triangular matrix row by row. 
-    
+
     Returns
     -------
     Σ : ndarray 
         Covariance matrix.
-    """
 
+    Example
+    -------
+    >>> choleskycovmat(3, [3.0, 2.0, 1.0, 0.5, 0.5, 0.5])
+    array([[3.  , 1.5 , 0.75],
+           [1.5 , 2.25, 1.25],
+           [0.75, 1.25, 1.5 ]])
+    """
+    
     #Check that the correct number of Cholesky factors has been specified
     N = Q*(Q+1)/2
     if len(cholfactors)!=N: 

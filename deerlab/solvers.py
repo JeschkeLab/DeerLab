@@ -1,17 +1,16 @@
 # solvers.py - Collection of least-squares solvers
 # --------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
 
 # External dependencies
 import numpy as np
-import cvxopt as cvx
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares, lsq_linear
 # DeerLab dependencies
 import deerlab as dl
 from deerlab.classes import UQResult, FitResult
-from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian, isempty
+from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
 import time 
 from functools import partial
 from copy import deepcopy
@@ -154,9 +153,9 @@ def _check_bounds(lb,ub,par0=None,N=None):
     if par0 is not None:
         N = len(par0)
 
-    if lb is None or isempty(lb):
+    if lb is None:
         lb = np.full(N, -np.inf)
-    if ub is None or isempty(ub):
+    if ub is None:
         ub = np.full(N, np.inf)
     lb, ub = np.atleast_1d(lb, ub)
 
@@ -1172,7 +1171,8 @@ def cvxnnls(AtA, Atb, tol=None, maxiter=None,x0=None):
         Global analysis of complex PELDOR time traces
 
     """
-        
+    import cvxopt as cvx
+
     N = np.shape(AtA)[1]
     if tol is None:
         eps = np.finfo(float).eps

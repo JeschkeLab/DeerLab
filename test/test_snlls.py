@@ -34,15 +34,15 @@ def assert_multigauss_SNLLS_problem(nonlinearconstr=True, linearconstr=True):
         lb = [1, 0.1, 1, 0.1]
         ub = [20, 5, 20, 5]
     else:
-        lb = []
-        ub = []
+        lb = None
+        ub = None
     # Linear parameters
     if linearconstr:
         lbl = [0, 0]
         ubl = [1, 1]
     else:
-        lbl = []
-        ubl = []    
+        lbl = None
+        ubl = None    
 
     # Separable LSQ fit
     fit = snlls(V,lambda p: Kmodel(p,t,r),nlpar0,lb,ub,lbl,ubl, reg=False, uq=False)
@@ -254,7 +254,7 @@ def test_regularized_global():
     ub = [1, 1, 1]
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
-    ubl = []
+    ubl = None
 
     # Separable LSQ fit
     fit = snlls([V1,V2],globalKmodel,par0,lb,ub,lbl,ubl, uq=False, weights=[1,1])
@@ -280,18 +280,18 @@ def assert_solver(solver):
     ub = 1
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
-    ubl = []
+    ubl = None
     # Separable LSQ fit
     fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl,nnlsSolver=solver, uq=False)
     Pfit = fit.lin
 
     assert  ovl(P,Pfit) > 0.95
 
-def test_nnls_cvx():
+def test_nnls_qp():
 #=======================================================================
     "Check that the 'cvx' algorithm used for the NNLS subproblem work"
 
-    assert_solver(solver='cvx')
+    assert_solver(solver='qp')
 #=======================================================================
 
 def test_nnls_fnnls():
@@ -322,7 +322,7 @@ def test_goodness_of_fit():
     ub = 1
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
-    ubl = []
+    ubl = None
     # Separable LSQ fit
     fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl, noiselvl=sigma, uq=False)
     stats = fit.stats
@@ -354,7 +354,7 @@ def test_goodness_of_fit_scaled():
     ub = 1
     # Linear parameters: non-negativity
     lbl = np.zeros(len(r))
-    ubl = []
+    ubl = None
 
     # Separable LSQ fit
     fit = snlls(V,lambda lam: dipolarkernel(t,r,mod=lam),nlpar0,lb,ub,lbl,ubl, noiselvl=sigma, uq=False)

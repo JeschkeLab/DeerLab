@@ -55,8 +55,8 @@ Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,conc: results.P_scale*(1-mod)*dl.bg_hom3d(t,conc,mod)
-Bfit = Bfcn(results.mod,results.conc)
+Bfcn = lambda mod,conc,reftime: results.P_scale*(1-mod)*dl.bg_hom3d(t-reftime,conc,mod)
+Bfit = results.evaluate(Bfcn)
 Bci = results.propagate(Bfcn).ci(95)
 
 plt.figure(figsize=[9,7])

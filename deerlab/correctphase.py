@@ -8,10 +8,10 @@ def correctphase(V, full_output=False, offset=False):
     Rotates the phase of complex-valued data ``V`` to minimize the imaginary component.
     Among the two phases that minimize the imaginary part, the one that gives a real
     part with a positive average is used.
-    
     For two-dimensional datasets ``V2D``, e.g. from measurements with multiple scans,
     each slice ``V2D[:,i]`` is phase-rotated independently.
-    
+    If the ``offset`` parameter is ``True``, the function will correct for a potential
+    non-zero mean imaginary offset. 
 
     Parameters
     ----------

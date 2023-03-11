@@ -1,7 +1,7 @@
 # profile_analysis.py - Likelihood/Objective function
 # --------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
 from scipy.stats import chi2 
@@ -13,6 +13,12 @@ from tqdm import tqdm
 def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, noiselvl=None, verbose=False,**kargs):
     r""" 
     Profile likelihood analysis for uncertainty quantification
+
+    This function performs a profile likelihood analysis to estimate the uncertainty 
+    of non-linear model parameters. The profile likelihood is defined as the maximum
+    likelihood of a model given a fixed value of the parameter of interest. This 
+    function allows to specify the model parameters to profile, the number of samples
+    to use to estimate the profile function, and the noise level of the datasets.
 
     Parameters
     ----------

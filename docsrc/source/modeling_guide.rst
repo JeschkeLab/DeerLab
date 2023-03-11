@@ -1,4 +1,4 @@
-.. _modelling_guide:
+.. _modeling_guide:
 
 Modeling Guide
 =========================================
@@ -6,7 +6,7 @@ Modeling Guide
 The core functionality of DeerLab focuses on the construction, manipulation, and fitting of models. In this way, the workflow of DeerLab for any application can be structured as follows:
 
 1) Loading of the experimental dataset(s) and pre-processing (if strictly necessary).
-2) Modelling of the datasets. 
+2) Modeling of the datasets. 
 3) Fitting of the models to the datasets. 
 
 In this guide, we will focus on the second step, i.e., the modeling. We will introduce all model-related concepts.
@@ -38,7 +38,7 @@ The ``Parameter`` object contains all the information related to a particular pa
 
 Boundaries (``<parameter>.lb`` and ``<parameter>.ub``)
     The upper/lower bounds of the parameter that constrain the parameter values during fitting and optimization. Built-in models models will have pre-defined boundaries, while newly constructed models will have fully unbounded parameters. A parameter is considered unbounded when any of its bounds is set to plus/minus infinity (using the Numpy infinity ``np.inf``). 
-    Note that boundaries do not prevent the model from being :ref:`evaluated <modelling_evaluation>` outside the them. 
+    Note that boundaries do not prevent the model from being :ref:`evaluated <modeling_evaluation>` outside the them. 
 
 Start values (``<parameter>.par0``)
     The start values at which the parameters search start during fitting and optimization. Must be initialized within the boundaries. Built-in models will have pre-defined start values, but newly constructed models will not. Start values are required for fitting. If not specified in the model, the start values will be requested when trying to fit the model. 
@@ -48,7 +48,7 @@ Linearity (``<parameter>.linear``)
 
 Freezing (``<parameter>.frozen``)
     Whether a parameter is frozen to a specific value. Freezing refers to setting a parameter to a static value and to be omitted during the fitting routines. A parameter can be frozen to a certain value by using the method ``<parameter>.freeze(value)``, and set back by using the ``<parameter>.unfreeze()``. If a parameter is frozen, it will have an additional attribute ``<parameter>.value`` containing the value at which the parameter has been frozen. 
-    Note that freezing does not prevent the model to be :ref:`evaluated <modelling_evaluation>` at values different than the one at which a parameter has been frozen.
+    Note that freezing does not prevent the model to be :ref:`evaluated <modeling_evaluation>` at values different than the one at which a parameter has been frozen.
 
 Documentation (``<parameter>.description`` and ``<parameter>.unit``)
     These attributes serve documentation and information purposes and do not affect neither the evaluation nor fitting of the model. Both can be edited as strings; ``<parameter>.description`` contains a brief description of the parameter and ``<parameter>.unit`` contains the SI units of the parameter if any. For newly constructed models, both attributes are set to ``None`` and need ot be manually filled. 
@@ -67,7 +67,7 @@ A summary of the model and all its parameters and related attributes can be quic
     std     0.05     0.2     2.5   nonlin     No      nm    Standard deviation  
     ====== ======= ======= ======= ======== ======== ====== ====================
 
-.. _modelling_modifying_parameters:
+.. _modeling_modifying_parameters:
 
 Modifying parameter attributes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -100,7 +100,7 @@ where `A(\theta_\mathrm{nonlin})` is a non-linear function which takes the model
 Before constructing any ``Model`` object, the underlying model function must be brought to this form to identify the terms listed above. 
 
 
-.. _modelling_construction:
+.. _modeling_construction:
 
 Model construction 
 ------------------
@@ -130,7 +130,7 @@ Now the model can be called to return the output of ``nonlinear_fcn`` ::
 
     y = mymodel(nonlinparam1,nonlinparam2,*nonlinparamN)
 
-.. _modelling_example1:
+.. _modeling_example1:
 
 Example: Gaussian model
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -196,7 +196,7 @@ In this case, the linear parameters are defined by a single value (scalar). To a
     mymodel.addlinear('linparam2',lb=0, ub=1)
 
 
-.. _modelling_example2:
+.. _modeling_example2:
 
 Example: Bimodal Gaussian model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -275,7 +275,7 @@ In some cases (for example, in semi-parametric modeling), a vector of values mig
 
 The new parameter ``linparam1`` will now refer to the whole `N`-element vector of values. 
 
-.. _modelling_example3:
+.. _modeling_example3:
 
 Example: Gaussian convolution of a non-parametric distribution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -343,7 +343,7 @@ Sometimes, the linear parameters represent quantities that have certain normaliz
 
 Specifying normalization criteria does not affect the model evaluation or fitting. However, when the model is fitted and the fitted parameters are reported, the program will report the normalized value of ``linparam1`` as well as an additional value ``linparam1_scale`` which reports the normalization factor/scale of the linear parameter. 
 
-.. _modelling_constants:
+.. _modeling_constants:
 
 Models with constants 
 *********************
@@ -395,7 +395,7 @@ Let us print the model to examine the resulting model: ::
 We can see that the model has only the two non-linear parameters as expected, and under ``Constants`` we can see that ``x`` has been adequately defined. From the ``Signature`` we can also check that the ``x`` constant can be passed to evaluate the model. 
 
 
-.. _modelling_evaluation: 
+.. _modeling_evaluation: 
 
 Model evaluation
 -----------------
@@ -461,7 +461,7 @@ Model operations
 
 Up until now, we have seen how to construct and evaluate user-defined models. The following sections will focus on a collection of operations to construct/design complex models out of simpler ones. 
 
-.. _modelling_merging:
+.. _modeling_merging:
 
 Merging
 ******* 
@@ -469,7 +469,7 @@ Merging
 In DeerLab, we refer to a merge of models to combine a series of models and their outputs. A model merge takes several models and returns a single model, whose output consists of a list of all the outputs of the original models. With these operations, we can construct a single model that describes multiple datasets locally or globally. Merging models is an essential step towards constructing models for multi-dataset fitting. 
 
 
-.. image:: ./images/modelling_guide_merge.png
+.. image:: ./images/modeling_guide_merge.png
    :width: 40%
    :align: center
 
@@ -492,7 +492,7 @@ Models that are products of a merge will later require multiple datasets to be f
 Example: Merging two Gaussian models 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Let us take a straightforward example, where we merge two Gaussian models, taking the ``gauss`` model defined in :ref:`a previous example <modelling_example1>` ::
+Let us take a straightforward example, where we merge two Gaussian models, taking the ``gauss`` model defined in :ref:`a previous example <modeling_example1>` ::
 
     # Merge two Gaussian models
     mergegauss = dl.merge(gauss,gauss) 
@@ -529,7 +529,7 @@ Linear combinations
 
 The :ref:`mathematical structure <model_function>` of the plain models does not allow the definition of model function consisting of sums of terms. DeerLab provides the function ``lincombine`` to generate models, whose output/response is a linear combination of the outputs of the input models.  
 
-.. image:: ./images/modelling_guide_lincombine.png
+.. image:: ./images/modeling_guide_lincombine.png
    :width: 40%
    :align: center
 
@@ -548,7 +548,7 @@ If the new model ``newmodel`` is called with the appropriate parameters, it will
 
 The relative weighting of the responses is (typically) controlled by the linear parameters of the individual linearly combined models. However, it might be necessary to introduce non-linear weighting parameters for the linear combination in certain situations. 
 
-.. image:: ./images/modelling_guide_lincombine2.png
+.. image:: ./images/modeling_guide_lincombine2.png
    :width: 45%
    :align: center
 
@@ -562,7 +562,7 @@ If the new model ``newmodel`` is called with the appropriate parameters, it will
 Example: Bimodal Gaussian as a linear combination
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this example, let us construct the model of a bimodal Gaussian from the linear combination of two unimodal Gaussian ``gauss`` models defined in :ref:`another example <modelling_example1>` ::  
+In this example, let us construct the model of a bimodal Gaussian from the linear combination of two unimodal Gaussian ``gauss`` models defined in :ref:`another example <modeling_example1>` ::  
 
     # Linear combination of two Gaussians
     bigauss = dl.lincombine(gauss, gauss)
@@ -598,7 +598,7 @@ Now we can evaluate the bimodal Gauss model by calling ``bigauss``, for instance
 Example: Weighted linear combination of two non-parametric distributions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this example, we will construct a model describing a linear combination of two non-parametric distributions. For the sake of simplicity, we will use the Gaussian-convoluted non-parametric distribution ``gaussconv`` model defined in :ref:`a previous example <modelling_example3>`. Now, we do not want the weighting of the linear combination to arise from the linear parameters. For that purpose, we must use the ``addweights`` keyword argument when doing the linear combination :: 
+In this example, we will construct a model describing a linear combination of two non-parametric distributions. For the sake of simplicity, we will use the Gaussian-convoluted non-parametric distribution ``gaussconv`` model defined in :ref:`a previous example <modeling_example3>`. Now, we do not want the weighting of the linear combination to arise from the linear parameters. For that purpose, we must use the ``addweights`` keyword argument when doing the linear combination :: 
 
     # Linearly combine both models with non-linear weighting parameters
     combmodel = dl.lincombine(gaussconv, gaussconv, addweights=True)
@@ -629,7 +629,7 @@ Linking
 
 Parameter linking refers to the introduction of equality constraints between two or more parameters within a model. Parameter linking reduces the number of parameters and is crucial for the global analysis of multi-dataset models. DeerLab provides the function ``link`` for the introduction of such constraints between parameters in a model. 
 
-.. image:: ./images/modelling_guide_link.png
+.. image:: ./images/modeling_guide_link.png
    :width: 50%
    :align: center
 
@@ -686,7 +686,7 @@ Relating
 Similar to linking but more generally is the related operation. DeerLab refers to relating to the introduction of any functional relationship between two or more parameters. Using the ``relate`` function, DeerLab can introduce such relationships. 
 
 
-.. image:: ./images/modelling_guide_relate.png
+.. image:: ./images/modeling_guide_relate.png
    :width: 50%
    :align: center
 
@@ -711,7 +711,7 @@ The function will internally determine the best order in which to perform these 
 Example: Two Gaussians of related width
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For this example, we will model a bimodal Gaussian function where one of the Gaussian components has twice the width of the other one. We will use the ``bigauss`` from :ref:`a previous example <modelling_example2>` as the basis model.  
+For this example, we will model a bimodal Gaussian function where one of the Gaussian components has twice the width of the other one. We will use the ``bigauss`` from :ref:`a previous example <modeling_example2>` as the basis model.  
 
 To enforce the functional relationship between the widths of the two Gaussians in the ``bigauss`` model, we must relate the ``std1`` parameter to the ``std2`` parameter, such that the former's value is twice the latter's value  ::  
 
@@ -754,7 +754,7 @@ and the resulting model ``newmodel`` will now depend functionally on the ``param
 Example: Two Gaussians with functionalized amplitudes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For this example, we will model a bimodal Gaussian function where the amplitudes of the two Gaussian components can be modeled via some function. We will use the ``bigauss`` from :ref:`a previous example <modelling_example2>` as the basis model. 
+For this example, we will model a bimodal Gaussian function where the amplitudes of the two Gaussian components can be modeled via some function. We will use the ``bigauss`` from :ref:`a previous example <modeling_example2>` as the basis model. 
 
 Let us assume that the amplitudes `a_1` and `a_2` of the two Gaussians can be modeled as follows: 
 
