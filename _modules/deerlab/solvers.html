@@ -214,7 +214,7 @@
 
 <span class="k">def</span> <span class="nf">_plot</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">yuqs</span><span class="p">,</span><span class="n">noiselvls</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">gof</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">):</span>
 <span class="c1"># ===========================================================================================</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot method for the FitResult object</span>
 <span class="sd">    ====================================</span>
 
@@ -329,7 +329,7 @@
 
 <span class="c1"># ===========================================================================================</span>
 <span class="k">def</span> <span class="nf">_check_bounds</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Boundary conditions parsing and validation</span>
 <span class="sd">    ==========================================</span>
 
@@ -365,7 +365,7 @@
 
 <span class="c1"># ===========================================================================================</span>
 <span class="k">def</span> <span class="nf">_check_frozen</span><span class="p">(</span><span class="n">frozen</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Frozen parameters parsing and validation </span>
 <span class="sd">    ========================================</span>
 
@@ -389,7 +389,7 @@
 
 <span class="c1"># ==============================================================================================</span>
 <span class="k">def</span> <span class="nf">_lsqcomponents</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">L</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Linear least-squares components</span>
 <span class="sd">    ===============================</span>
 
@@ -422,7 +422,7 @@
 
 <span class="c1"># ===========================================================================================</span>
 <span class="k">def</span> <span class="nf">_prepare_linear_lsq</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">,</span><span class="n">reg</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">tol</span><span class="p">,</span><span class="n">maxiter</span><span class="p">,</span><span class="n">nnlsSolver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Preparation of linear least-squares </span>
 <span class="sd">    ===================================</span>
 
@@ -482,7 +482,7 @@
 
 <span class="c1"># ===========================================================================================</span>
 <span class="k">def</span> <span class="nf">_model_evaluation</span><span class="p">(</span><span class="n">ymodels</span><span class="p">,</span><span class="n">parfit</span><span class="p">,</span><span class="n">paruq</span><span class="p">,</span><span class="n">uq</span><span class="p">,</span><span class="n">modeluq</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model evaluation</span>
 <span class="sd">    ================</span>
 
@@ -501,7 +501,7 @@
 
 <span class="c1"># ===========================================================================================</span>
 <span class="k">def</span> <span class="nf">_goodness_of_fit_stats</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">nParam</span><span class="p">,</span><span class="n">masks</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluation of goodness-of-fit statistics</span>
 <span class="sd">    ========================================</span>
 
@@ -517,7 +517,7 @@
 
 <span class="k">def</span> <span class="nf">_penalty_augmentation</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="nb">type</span><span class="p">):</span>
 <span class="c1"># ===========================================================================================</span>
-    <span class="sd">&quot;&quot;&quot; </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    LSQ residual and Jacobian augmentation</span>
 <span class="sd">    =======================================</span>
 
@@ -577,7 +577,7 @@
           <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">regparamrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multistart</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">regop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alphareopt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">extrapenalty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subsets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
           <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">max_nfev</span><span class="o">=</span><span class="mf">1e8</span><span class="p">,</span> <span class="n">lin_tol</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">,</span> <span class="n">lin_maxiter</span><span class="o">=</span><span class="mf">1e4</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lin_frozen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
           <span class="n">nonlin_frozen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">modeluq</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Separable non-linear least squares (SNLLS) solver</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Separable non-linear least squares (SNLLS) solver</span>
 
 <span class="sd">    Fits a linear set of parameters `\theta_\mathrm{lin}` and non-linear parameters `\theta_\mathrm{nonlin}`</span>
 <span class="sd">    by solving the following general penalized separable non-linear least-squares problem: </span>
@@ -882,7 +882,7 @@
 
     <span class="k">def</span> <span class="nf">linear_problem</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">optimize_alpha</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
     <span class="c1">#===========================================================================</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Linear problem</span>
 <span class="sd">        ------------------</span>
 <span class="sd">        Solves the linear subproblem of the SNLLS objective function via linear LSQ </span>
@@ -923,7 +923,7 @@
 
     <span class="k">def</span> <span class="nf">ResidualsFcn</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
     <span class="c1">#===========================================================================</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Residuals function</span>
 <span class="sd">        ------------------</span>
 <span class="sd">        Provides vector of residuals, which is the objective function for the</span>
@@ -1187,7 +1187,7 @@
 
 <div class="viewcode-block" id="fnnls"><a class="viewcode-back" href="../../_autosummary/deerlab.fnnls.html#deerlab.fnnls">[docs]</a><span class="k">def</span> <span class="nf">fnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="c1">#=====================================================================================</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fast non-negative least-squares (NNLS) solver.</span>
 
 <span class="sd">    Solves the problem </span>
@@ -1316,7 +1316,7 @@
 
 <div class="viewcode-block" id="cvxnnls"><a class="viewcode-back" href="../../_autosummary/deerlab.cvxnnls.html#deerlab.cvxnnls">[docs]</a><span class="k">def</span> <span class="nf">cvxnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1">#=====================================================================================</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Non-negative least-squares (NNLS) via the CVXOPT package.</span>
 
 <span class="sd">    Solves the problem </span>
@@ -1388,7 +1388,7 @@
 
 <span class="c1">#=====================================================================================</span>
 <span class="k">def</span> <span class="nf">qpnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Non-negative least-squares (NNLS) via the quadprog package.</span>
 
 <span class="sd">    Solves the problem </span>

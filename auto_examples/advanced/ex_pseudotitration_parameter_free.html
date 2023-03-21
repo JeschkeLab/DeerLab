@@ -213,7 +213,7 @@ the chemical equilibrium  A + L &lt;-&gt; B.</p>
 <span class="n">violet</span> <span class="o">=</span> <span class="s1">&#39;#4550e6&#39;</span>
 
 <span class="k">def</span> <span class="nf">chemicalequilibrium</span><span class="p">(</span><span class="n">Kdis</span><span class="p">,</span><span class="n">L</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Prepare equilibrium of type: A + L &lt;-&gt; B&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare equilibrium of type: A + L &lt;-&gt; B&quot;&quot;&quot;</span>
     <span class="n">Ctot</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># total protein concentration, µM</span>
     <span class="n">Kb</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">Kdis</span>
     <span class="n">xB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roots</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">([</span><span class="n">Kb</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">Kb</span><span class="o">*</span><span class="n">L</span> <span class="o">+</span> <span class="n">Kb</span><span class="o">*</span><span class="n">Ctot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Kb</span><span class="o">*</span><span class="n">L</span><span class="p">]))</span>
@@ -333,7 +333,7 @@ the chemical equilibrium  A + L &lt;-&gt; B.</p>
 <li><img alt="ex pseudotitration parameter free" class="sphx-glr-multi-img" src="../../_images/sphx_glr_ex_pseudotitration_parameter_free_002.png" />
 </li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  39.953 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  52.129 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-pseudotitration-parameter-free-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/5719f81c809b149f078c013c299a753f/ex_pseudotitration_parameter_free.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_pseudotitration_parameter_free.py</span></code></a></p>

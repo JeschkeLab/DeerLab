@@ -197,7 +197,7 @@
 <span class="kn">from</span> <span class="nn">deerlab.noiselevel</span> <span class="kn">import</span> <span class="n">noiselevel</span>
 
 <div class="viewcode-block" id="bootstrap_analysis"><a class="viewcode-back" href="../../_autosummary/deerlab.bootstrap_analysis.html#deerlab.bootstrap_analysis">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_analysis</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span><span class="n">Vfit</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">memorylimit</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    Bootstrap analysis for uncertainty quantification</span>
 
 <span class="sd">    This function creates new synthetic datasets by using the noiseless model</span>
@@ -374,7 +374,7 @@
 
 <span class="c1">#-------------------------------------------------------------------------------</span>
 <span class="k">class</span> <span class="nc">_ProgressParallel</span><span class="p">(</span><span class="n">Parallel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Patch for joblib.Parallel</span>
 
 <span class="sd">    Overrides the print_progress() method to enable the synchronous use of the TQDM bar</span>

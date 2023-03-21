@@ -197,7 +197,7 @@
 
 <div class="viewcode-block" id="FitResult"><a class="viewcode-back" href="../../_autosummary/deerlab.FitResult.html#deerlab.FitResult">[docs]</a><span class="k">class</span> <span class="nc">FitResult</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
 <span class="c1"># ========================================================================</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Represents the results of a fit.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Represents the results of a fit.</span>
 <span class="sd"> </span>
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -265,7 +265,7 @@
 
 <div class="viewcode-block" id="UQResult"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult">[docs]</a><span class="k">class</span> <span class="nc">UQResult</span><span class="p">:</span>
 <span class="c1"># =========================================================================</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Represents the uncertainty quantification of fit results.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Represents the uncertainty quantification of fit results.</span>
 
 <span class="sd">    This class provides methods for performing uncertainty analysis on fit results. </span>
 <span class="sd">    The uncertainty analysis can be performed using moment-based, bootstrapped,</span>
@@ -311,7 +311,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="UQResult.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">uqtype</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">covmat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">profiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes the UQResult object.</span>
 
 <span class="sd">        Parameters</span>
@@ -440,7 +440,7 @@
     <span class="c1"># Combination of multiple uncertainties</span>
     <span class="c1">#--------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="UQResult.join"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.join">[docs]</a>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Combine multiple uncertainty quantification instances.</span>
 
 <span class="sd">        This method concatenates the parameter vectors of the object calling the method with the parameter vectors of</span>
@@ -500,7 +500,7 @@
     <span class="c1"># Parameter distributions</span>
     <span class="c1">#--------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="UQResult.pardist"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.pardist">[docs]</a>    <span class="k">def</span> <span class="nf">pardist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate the uncertainty distribution of the n-th parameter</span>
 
 <span class="sd">        This method generates the probability density function of the uncertainty </span>
@@ -604,7 +604,7 @@
     <span class="c1"># Parameter percentiles</span>
     <span class="c1">#--------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="UQResult.percentile"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.percentile">[docs]</a>    <span class="k">def</span> <span class="nf">percentile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the p-th percentiles of the parameters uncertainty distributions</span>
 
 <span class="sd">        Parameters</span>
@@ -643,7 +643,7 @@
 
     <span class="c1">#--------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="UQResult.ci"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.ci">[docs]</a>    <span class="k">def</span> <span class="nf">ci</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">coverage</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the confidence intervals for the parameters.</span>
 
 <span class="sd">        This method computes confidence intervals for the parameters of the fitted</span>
@@ -754,7 +754,7 @@
 
     <span class="c1">#--------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="UQResult.propagate"><a class="viewcode-back" href="../../_autosummary/deerlab.UQResult.html#deerlab.UQResult.propagate">[docs]</a>    <span class="k">def</span> <span class="nf">propagate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">samples</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Uncertainty propagation.</span>
 <span class="sd">        </span>
 <span class="sd">        The method performs uncertainty propagation on the model by applying the</span>

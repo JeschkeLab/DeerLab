@@ -203,7 +203,7 @@
 
 <span class="c1">#===================================================================================</span>
 <div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter">[docs]</a><span class="k">class</span> <span class="nc">Parameter</span><span class="p">():</span> 
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a model parameter or a single parameter vector. </span>
 
 <span class="sd">    Attributes</span>
@@ -248,7 +248,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Parameter.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new parameter object.</span>
 
 <span class="sd">        Parameters</span>
@@ -311,7 +311,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Parameter.set"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set one or multiple attributes for a parameter. See list of attributes for a reference list. </span>
 
 <span class="sd">        This method allows users to set the value of one or more attributes for a ``Parameter`` object. </span>
@@ -343,7 +343,7 @@
     
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Parameter.setas"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.setas">[docs]</a>    <span class="k">def</span> <span class="nf">setas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parameter</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy all attributes from an input parameter to the current parameter. </span>
 
 <span class="sd">        This method allows the user to copy all attributes from an input parameter object</span>
@@ -360,7 +360,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Parameter.freeze"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Freeze a parameter during a fit/optimization to a given value.</span>
 
 <span class="sd">        This method allows the user to freeze a parameter during optimization to a</span>
@@ -392,7 +392,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Parameter.unfreeze"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.unfreeze">[docs]</a>    <span class="k">def</span> <span class="nf">unfreeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Release a frozen parameter&#39;s value during a fit/optimization.</span>
 
 <span class="sd">        This method allows the user to release a previously frozen parameter during</span>
@@ -414,7 +414,7 @@
 
 <div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">():</span>
 <span class="c1">#===================================================================================</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a model.</span>
 
 <span class="sd">    The ``Model`` class provides a way to create a new model object from a</span>
@@ -448,7 +448,7 @@
     <span class="c1"># Use a wrapper function to facilitate internal arguments manipulation        </span>
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_model_with_constants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">constantsInfo</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate a non-linear model with constant arguments.</span>
 
 <span class="sd">        This internal method is used to evaluate a non-linear model with constant</span>
@@ -492,7 +492,7 @@
     
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Model.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">constants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> 
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new model from a non-linear function. </span>
 
 <span class="sd">        Parameters</span>
@@ -568,7 +568,7 @@
     <span class="c1"># Gets called when an attribute is accessed</span>
     <span class="c1">#--------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method is called when an attribute of this class instance is accessed.</span>
 <span class="sd">        It first tries to access the attribute using the ``super()`` method, which</span>
 <span class="sd">        will go up the inheritance chain to look for the attribute. If the attribute</span>
@@ -608,7 +608,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_parameter_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;alphabetical&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private method)</span>
 <span class="sd">        </span>
 <span class="sd">        Get the list of parameters defined in the model sorted alphabetically or by vector definition.</span>
@@ -647,7 +647,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_vecsort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramlist</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private method)</span>
 
 <span class="sd">        Sort vectorized parameters attributes from alphabetical ordering to vector indexing.</span>
@@ -679,7 +679,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_split_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private method)</span>
 
 <span class="sd">        Split a vector into non-linear and linear parameter subsets.</span>
@@ -718,7 +718,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_merge_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable_nonlin</span><span class="p">,</span><span class="n">variable_lin</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private method)</span>
 
 <span class="sd">        Merge a vector&#39;s non-linear and linear parameter subset vectors.</span>
@@ -748,7 +748,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_getvector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private method)</span>
 
 <span class="sd">        Get a vector of the given attribute for all parameters defined in the model. </span>
@@ -771,7 +771,7 @@
 
     <span class="c1">#-----------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_getparamuq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">uq_full</span><span class="p">,</span><span class="n">paramidx</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private method)</span>
 
 <span class="sd">        Get the uncertainty quantification of an individual parameter.</span>
@@ -812,7 +812,7 @@
 
     <span class="c1">#-----------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_error_if_already_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private method)</span>
 
 <span class="sd">        Check if the model has a parameter with a given name.</span>
@@ -840,7 +840,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Model.addnonlinear"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.addnonlinear">[docs]</a>    <span class="k">def</span> <span class="nf">addnonlinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a new non-linear parameter (:ref:`Parameter` object) to the model. </span>
 
 <span class="sd">        Parameters</span>
@@ -880,7 +880,7 @@
         <span class="c1"># Define a new model function with added non-linear parameter</span>
         <span class="c1">#------------------------------------------------</span>
         <span class="k">def</span> <span class="nf">model_with_constants_and_added_nonlin</span><span class="p">(</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            A helper function that takes in a set of input arguments, </span>
 <span class="sd">            extracts constants and non-linear parameters from the input</span>
 <span class="sd">            arguments and returns the model response.</span>
@@ -908,7 +908,7 @@
     
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Model.rename_parameter"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.rename_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">rename_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rename a parameter in the model. </span>
 
 <span class="sd">        This method renames a parameter in the model. If the</span>
@@ -933,7 +933,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Model.addlinear"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.addlinear">[docs]</a>    <span class="k">def</span> <span class="nf">addlinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normalization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a new linear parameter (:ref:`Parameter` object) to the model. </span>
 
 <span class="sd">        Parameters</span>
@@ -996,7 +996,7 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the model for a given set of parameters. </span>
 
 <span class="sd">        Takes the constant variables and (non-linear and linear) parameter </span>
@@ -1084,7 +1084,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Model.getmetadata"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.getmetadata">[docs]</a>    <span class="k">def</span> <span class="nf">getmetadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Utility function to quickly request all metadata attributes of the model in vector form. </span>
 <span class="sd">        All elements are sorted according to the model function signature.</span>
 
@@ -1111,7 +1111,7 @@
         
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_parameter_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private method)</span>
 
 <span class="sd">        Construct a parameter table for the model that describes each of the model&#39;s</span>
@@ -1125,9 +1125,9 @@
 
         <span class="c1"># Get the description and signature of the model</span>
         <span class="n">string</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    Description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">    Description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span>
 <span class="s2">    Signature: (</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span>
-<span class="s2">    Constants: [</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;argkey&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constantsInfo</span><span class="p">])</span><span class="si">}</span><span class="s2">]</span>
+<span class="s2">    Constants: [</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;argkey&#39;</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_constantsInfo</span><span class="p">])</span><span class="si">}</span><span class="s2">]</span>
 <span class="s2">    Parameter Table: </span>
 <span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
         <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -1158,7 +1158,7 @@
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a string representation of the model&#39;s parameters and their values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_table</span><span class="p">()</span>      </div>
@@ -1167,7 +1167,7 @@
 
 <span class="c1">#==============================================================================</span>
 <div class="viewcode-block" id="Penalty"><a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty">[docs]</a><span class="k">class</span> <span class="nc">Penalty</span><span class="p">():</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Represents a penalty term of the objective function.  </span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Represents a penalty term of the objective function.  </span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -1182,7 +1182,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">#--------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Penalty.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">penaltyfcn</span><span class="p">,</span><span class="n">selection</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new penalty object. </span>
 
 <span class="sd">        Parameters</span>
@@ -1212,7 +1212,7 @@
 <span class="sd">        &quot;&quot;&quot;</span> 
         <span class="c1">#-------------------------------------------------------------------------------</span>
         <span class="k">def</span> <span class="nf">selectionfunctional</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">log10weight</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            (Private function)</span>
 
 <span class="sd">            Calculate the selection functional used to find the optimal penalty weight.</span>
@@ -1299,7 +1299,7 @@
 
     <span class="c1">#--------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="Penalty.optimize"><a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Optimize the penalty weight. </span>
 
 <span class="sd">        Parameters</span>
@@ -1347,7 +1347,7 @@
 
 <span class="c1">#--------------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_outerOptimization</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">penalty_objects</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    A method to optimize the fit of a model with penalties.</span>
@@ -1391,7 +1391,7 @@
 
 <span class="k">def</span> <span class="nf">_propagate</span><span class="p">(</span><span class="n">fitresults</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">_paramlist</span><span class="p">,</span><span class="n">paramidx</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="o">*</span><span class="n">constants</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1"># ----------------------------------------------------------------------------</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Propagate the uncertainty in the fit results to a model&#39;s response.</span>
 
 <span class="sd">    Parameters</span>
@@ -1434,7 +1434,7 @@
 
 <span class="k">def</span> <span class="nf">_evaluate</span><span class="p">(</span><span class="n">params</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="o">*</span><span class="n">constants</span><span class="p">):</span>
 <span class="c1"># ----------------------------------------------------------------------------</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluate a model at the fitted parameter values. </span>
 
 <span class="sd">    Parameters</span>
@@ -1472,7 +1472,7 @@
 
 <span class="c1">#--------------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_print_fitresults</span><span class="p">(</span><span class="n">fitresult</span><span class="p">,</span><span class="n">model</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    Construct summary table of fit results to print</span>
@@ -1498,7 +1498,7 @@
 
     <span class="c1">#-----------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">spaces</span><span class="p">,</span> <span class="n">is_tty</span><span class="o">=</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">()):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private function)</span>
 
 <span class="sd">        Helper method that applies ANSI codes to add colors to the text</span>
@@ -1637,7 +1637,7 @@
 <span class="c1">#--------------------------------------------------------------------------</span>
 
 <span class="k">def</span> <span class="nf">_insert_snlls_optionals_docstrings</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private decorator)</span>
 <span class="sd">    </span>
 <span class="sd">    A decorator that takes a function ``func` as input and replaces the </span>
@@ -1673,7 +1673,7 @@
 <div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../_autosummary/deerlab.fit.html#deerlab.fit">[docs]</a><span class="nd">@_insert_snlls_optionals_docstrings</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">model_</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">constants</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">penalties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootstrap</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span><span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">regparamrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootcores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fit the model(s) to the dataset(s)</span>
 
 <span class="sd">    Fit the input model to the data ``y`` via one of the three following approaches: </span>
@@ -1975,7 +1975,7 @@
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_importparameter</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    Import relevant information from a parameter object.</span>
@@ -2012,7 +2012,7 @@
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_aresame</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    Compare two objects and return True if they have the same attribute values,</span>
@@ -2049,7 +2049,7 @@
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_linked_model_with_constants</span><span class="p">(</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">mapping</span><span class="p">,</span><span class="n">constantsInfo</span><span class="p">,</span><span class="n">linear_reduce_idx</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    Wrapper function that redistributes the input parameter vector and returns the mapped model response.</span>
@@ -2099,7 +2099,7 @@
 
 <span class="c1"># ==============================================================================</span>
 <div class="viewcode-block" id="link"><a class="viewcode-back" href="../../_autosummary/deerlab.link.html#deerlab.link">[docs]</a><span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="o">**</span><span class="n">links</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Link parameters together in a model to create equality relationships </span>
 <span class="sd">    between parameters. </span>
 
@@ -2130,7 +2130,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_linkparameter</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">newname</span><span class="p">):</span>
     <span class="c1"># ---------------------------------------------------------------------  </span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Private function)</span>
 
 <span class="sd">        Link parameters together in a model.</span>
@@ -2278,7 +2278,7 @@
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_unique_ordered</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    Returns a list of the unique elements in vec, ordered as they appear in vec.</span>
@@ -2308,7 +2308,7 @@
 
 <span class="c1">#---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_combined_nonlinmodel</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">nonlinfcns</span><span class="p">,</span><span class="n">Nlins</span><span class="p">,</span><span class="n">Nconst</span><span class="p">,</span><span class="n">arelinear</span><span class="p">,</span><span class="n">const_subsets</span><span class="p">,</span><span class="n">subsets_nonlin</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    Combine the output of multiple non-linear models.</span>
@@ -2382,7 +2382,7 @@
 
 <span class="c1">#---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_split_output</span><span class="p">(</span><span class="n">nonlinfcns</span><span class="p">,</span><span class="n">Nlins</span><span class="p">,</span><span class="n">Nconst</span><span class="p">,</span><span class="n">const_subsets</span><span class="p">,</span><span class="n">subsets_nonlin</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    Split the output of a model into the outputs of its submodels.</span>
@@ -2447,7 +2447,7 @@
 
 <span class="c1">#---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_combinemodels</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    Combine multiple ``Model`` objects into a single model. This helper function</span>
@@ -2602,7 +2602,7 @@
 
 <span class="c1">#==============================================================================================</span>
 <div class="viewcode-block" id="merge"><a class="viewcode-back" href="../../_autosummary/deerlab.merge.html#deerlab.merge">[docs]</a><span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a multi-response model from multiple individual models. </span>
 
 <span class="sd">    Parameters</span>
@@ -2632,7 +2632,7 @@
 
 <span class="c1">#==============================================================================================</span>
 <div class="viewcode-block" id="lincombine"><a class="viewcode-back" href="../../_autosummary/deerlab.lincombine.html#deerlab.lincombine">[docs]</a><span class="k">def</span> <span class="nf">lincombine</span><span class="p">(</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create model whose response is a linear combination of multiple individual model responses. </span>
 
 <span class="sd">    Parameters</span>
@@ -2661,7 +2661,7 @@
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_dependency_model_with_constants</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">constantsInfo</span><span class="p">,</span><span class="n">arguments_idx</span><span class="p">,</span><span class="n">dependent_idx</span><span class="p">,</span><span class="o">*</span><span class="n">inputargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Private function)</span>
 
 <span class="sd">    A helper function that maps the input arguments of a model and</span>
@@ -2723,7 +2723,7 @@
 
 <span class="c1">#==============================================================================================</span>
 <div class="viewcode-block" id="relate"><a class="viewcode-back" href="../../_autosummary/deerlab.relate.html#deerlab.relate">[docs]</a><span class="k">def</span> <span class="nf">relate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="o">**</span><span class="n">functions</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create functional relationships between model parameters. </span>
 
 <span class="sd">    Parameters</span>

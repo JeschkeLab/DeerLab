@@ -194,7 +194,7 @@
 
 <span class="k">def</span> <span class="nf">parse_multidatasets</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">noiselvl</span><span class="p">,</span> <span class="n">precondition</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subsets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1">#===============================================================================</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse one or multiple dataset(s) for local/global least-squares inference</span>
 
 <span class="sd">    This function takes an arbitrary number of datasets, along with the model matrices and noise</span>
@@ -305,7 +305,7 @@
 
     <span class="c1"># -----------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">prepare_model_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">nDatasets</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare model matrix for global fit</span>
 
 <span class="sd">        This function takes an arbitrary number of model matrices, and parses</span>
@@ -379,7 +379,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="formatted_table"><a class="viewcode-back" href="../../_autosummary/deerlab.formatted_table.html#deerlab.formatted_table">[docs]</a><span class="k">def</span> <span class="nf">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">align</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate formatted table in string form</span>
 
 <span class="sd">    This function takes a table as a list of rows, and returns a string representation </span>
@@ -441,7 +441,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="goodness_of_fit"><a class="viewcode-back" href="../../_autosummary/deerlab.goodness_of_fit.html#deerlab.goodness_of_fit">[docs]</a><span class="k">def</span> <span class="nf">goodness_of_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">xfit</span><span class="p">,</span><span class="n">Ndof</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Goodness of Fit statistics</span>
 
 <span class="sd">    Computes multiple statistical indicators of goodness of fit.</span>
@@ -513,7 +513,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="der_snr"><a class="viewcode-back" href="../../_autosummary/deerlab.der_snr.html#deerlab.der_snr">[docs]</a><span class="k">def</span> <span class="nf">der_snr</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DER-SNR noise estimation </span>
 
 <span class="sd">    Estimate the noise level using the DER_SNR method [1]_.</span>
@@ -544,7 +544,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="hccm"><a class="viewcode-back" href="../../_autosummary/deerlab.hccm.html#deerlab.hccm">[docs]</a><span class="k">def</span> <span class="nf">hccm</span><span class="p">(</span><span class="n">J</span><span class="p">,</span><span class="n">residual</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;HC1&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Heteroscedasticity Consistent Covariance Matrix (HCCM)</span>
 
 <span class="sd">    Computes the heteroscedasticity consistent covariance matrix (HCCM) of</span>
@@ -651,7 +651,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="Jacobian"><a class="viewcode-back" href="../../_autosummary/deerlab.Jacobian.html#deerlab.Jacobian">[docs]</a><span class="k">def</span> <span class="nf">Jacobian</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    Finite difference Jacobian estimation </span>
 <span class="sd">     </span>
 <span class="sd">    Estimates the Jacobian matrix of a vector-valued function `f(x)` at the </span>
@@ -683,7 +683,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="movmean"><a class="viewcode-back" href="../../_autosummary/deerlab.movmean.html#deerlab.movmean">[docs]</a><span class="k">def</span> <span class="nf">movmean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Moving mean filter</span>
 
 <span class="sd">    Returns an array of local `N`-point mean values, where each mean is calculated</span>
@@ -708,7 +708,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="ovl"><a class="viewcode-back" href="../../_autosummary/deerlab.ovl.html#deerlab.ovl">[docs]</a><span class="k">def</span> <span class="nf">ovl</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overlap index</span>
 
 <span class="sd">    Returns the overlap index between two vectors A and B with respect to zero.</span>
@@ -734,7 +734,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="nearest_psd"><a class="viewcode-back" href="../../_autosummary/deerlab.nearest_psd.html#deerlab.nearest_psd">[docs]</a><span class="k">def</span> <span class="nf">nearest_psd</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the nearest positive semi-definite matrix</span>
 
 <span class="sd">    This function takes a square matrix `A` and returns the nearest positive semi-definite matrix.</span>
@@ -777,7 +777,7 @@
 
 <span class="c1">#===============================================================================</span>
 <span class="k">def</span> <span class="nf">isnumeric</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check whether an object is numeric</span>
 
 <span class="sd">    This function checks whether an object supports the basic operations of a numeric type,</span>
@@ -799,7 +799,7 @@
 
 <span class="c1">#===============================================================================</span>
 <span class="k">def</span> <span class="nf">multistarts</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">x0</span><span class="p">,</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate multiple starting points</span>
 
 <span class="sd">    This function generates multiple starting points for optimization, based on a given initial point,</span>
@@ -853,7 +853,7 @@
     <span class="kn">import</span> <span class="nn">pytest</span>     
     <span class="c1">#===============================================================================</span>
     <span class="k">def</span> <span class="nf">skip_on</span><span class="p">(</span><span class="n">errclass</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Default reason&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Decorator for skipping failed tests during pytest&#39;s execution</span>
 
 <span class="sd">        Skip a unit test in Pytest if a particular exception occurs during the execution of the test.</span>
@@ -889,7 +889,7 @@
     <span class="kn">import</span> <span class="nn">inspect</span>
     <span class="c1">#===============================================================================</span>
     <span class="k">def</span> <span class="nf">assert_docstring</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if the docstring of a given function contains documentation for all of its input arguments.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -917,7 +917,7 @@
 
 <span class="c1"># --------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="store_pickle"><a class="viewcode-back" href="../../_autosummary/deerlab.store_pickle.html#deerlab.store_pickle">[docs]</a><span class="k">def</span> <span class="nf">store_pickle</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save/export an object to a ``.pkl`` file serialized as bytes.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -941,7 +941,7 @@
 
 <span class="c1"># --------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="read_pickle"><a class="viewcode-back" href="../../_autosummary/deerlab.read_pickle.html#deerlab.read_pickle">[docs]</a><span class="k">def</span> <span class="nf">read_pickle</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load a pickled object file ``.pkl`` and deserialize the bytes into a Python object.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -970,7 +970,7 @@
 
 <span class="c1"># --------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="sophegrid"><a class="viewcode-back" href="../../_autosummary/deerlab.sophegrid.html#deerlab.sophegrid">[docs]</a><span class="k">def</span> <span class="nf">sophegrid</span><span class="p">(</span><span class="n">octants</span><span class="p">,</span><span class="n">maxphi</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct spherical grid over spherical angles based on input parameters. </span>
 <span class="sd">    The grid implemented in this function is often called the SOPHE grid [1]_. </span>
 <span class="sd">    Adapted from Easyspin [2]_ ``sphgrid_`` source code. </span>
@@ -1088,7 +1088,7 @@
 
 <span class="c1"># ----------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="choleskycovmat"><a class="viewcode-back" href="../../_autosummary/deerlab.choleskycovmat.html#deerlab.choleskycovmat">[docs]</a><span class="k">def</span> <span class="nf">choleskycovmat</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">cholfactors</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the covariance matrix using Cholesky decomposition.</span>
 
 <span class="sd">    Parameters</span>

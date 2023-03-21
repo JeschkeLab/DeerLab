@@ -204,7 +204,7 @@
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="dipolarmodel"><a class="viewcode-back" href="../../_autosummary/deerlab.dipolarmodel.html#deerlab.dipolarmodel">[docs]</a><span class="k">def</span> <span class="nf">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Pmodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Bmodel</span><span class="o">=</span><span class="n">bg_hom3d</span><span class="p">,</span> <span class="n">experiment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parametrization</span><span class="o">=</span><span class="s1">&#39;reftimes&#39;</span><span class="p">,</span> <span class="n">npathways</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="n">spins</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">harmonics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">excbandwidth</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">orisel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="n">ge</span><span class="p">,</span><span class="n">ge</span><span class="p">],</span> <span class="n">gridsize</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">minamp</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">samespins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">triangles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a dipolar EPR signal model.</span>
 <span class="sd">    </span>
 <span class="sd">    This function generates a model for the dipolar EPR signal arising from the dipolar interactions</span>
@@ -335,7 +335,7 @@
 
     <span class="c1">#------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">_importparameter</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Private function for importing a parameter&#39;s metadata &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Private function for importing a parameter&#39;s metadata &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;lb&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">lb</span><span class="p">,</span>
             <span class="s1">&#39;ub&#39;</span> <span class="p">:</span> <span class="n">parameter</span><span class="o">.</span><span class="n">ub</span><span class="p">,</span>
@@ -375,7 +375,7 @@
 
     <span class="c1">#------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">dipolarpathways</span><span class="p">(</span><span class="o">*</span><span class="n">param</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Generator of dipolar pathways based on a parameter set. </span>
 
 <span class="sd">        Constructs all possible two-spin dipolar pathways based on a parameter set, </span>
@@ -611,7 +611,7 @@
 
     <span class="c1">#------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">Vtwospin_nonlinear_fcn</span><span class="p">(</span><span class="o">*</span><span class="n">nonlin</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Non-linear part of the dipolar signal function &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Non-linear part of the dipolar signal function &quot;&quot;&quot;</span>
 
         <span class="c1"># Make input arguments as array to access subsets easily</span>
         <span class="n">nonlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">nonlin</span><span class="p">)</span>
@@ -642,7 +642,7 @@
 
     <span class="c1">#------------------------------------------------------------------------</span>
     <span class="k">def</span> <span class="nf">Vmultispin_nonlinear_fcn</span><span class="p">(</span><span class="o">*</span><span class="n">nonlin</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Non-linear part of the dipolar signal function &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Non-linear part of the dipolar signal function &quot;&quot;&quot;</span>
         <span class="c1"># Make input arguments as array to access subsets easily</span>
         <span class="n">nonlin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">nonlin</span><span class="p">)</span>
         <span class="c1"># Construct the basis function of the intermolecular contribution</span>
@@ -774,7 +774,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="dipolarpenalty"><a class="viewcode-back" href="../../_autosummary/deerlab.dipolarpenalty.html#deerlab.dipolarpenalty">[docs]</a><span class="k">def</span> <span class="nf">dipolarpenalty</span><span class="p">(</span><span class="n">Pmodel</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct penalties based on the distance distribution.</span>
 
 
@@ -874,7 +874,7 @@
 
 <span class="c1">#===============================================================================</span>
 <span class="k">class</span> <span class="nc">ExperimentInfo</span><span class="p">():</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents information about a dipolar EPR experiment&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">reftimes</span><span class="p">,</span><span class="n">harmonics</span><span class="p">,</span><span class="n">pulselength</span><span class="p">,</span><span class="n">pathwaylabels</span><span class="p">,</span><span class="n">delays</span><span class="p">):</span>
@@ -889,7 +889,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="ex_3pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_3pdeer.html#deerlab.ex_3pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_3pdeer</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a 3-pulse DEER dipolar experiment model. </span>
 <span class="sd">    </span>
 <span class="sd">    The figure below shows the dipolar pathways in 3-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.</span>
@@ -950,7 +950,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="ex_4pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_4pdeer.html#deerlab.ex_4pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_4pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a 4-pulse DEER dipolar experiment model. </span>
 <span class="sd">    </span>
 <span class="sd">    The figure below shows the dipolar pathways in 4-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.</span>
@@ -1015,7 +1015,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="ex_rev5pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_rev5pdeer.html#deerlab.ex_rev5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_rev5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a reverse 5-pulse DEER dipolar experiment model. </span>
 <span class="sd">        </span>
 <span class="sd">    The figure below shows the dipolar pathways in reverse 5-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.</span>
@@ -1090,7 +1090,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="ex_fwd5pdeer"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_fwd5pdeer.html#deerlab.ex_fwd5pdeer">[docs]</a><span class="k">def</span> <span class="nf">ex_fwd5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a forward 5-pulse DEER dipolar experiment model. </span>
 <span class="sd">        </span>
 <span class="sd">    The figure below shows the dipolar pathways in forward 5-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.</span>
@@ -1163,7 +1163,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="ex_sifter"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_sifter.html#deerlab.ex_sifter">[docs]</a><span class="k">def</span> <span class="nf">ex_sifter</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a 4-pulse SIFTER dipolar experiment model. </span>
 <span class="sd">        </span>
 <span class="sd">    The figure below shows the dipolar pathways in 4-pulse SIFTER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.</span>
@@ -1228,7 +1228,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="ex_ridme"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_ridme.html#deerlab.ex_ridme">[docs]</a><span class="k">def</span> <span class="nf">ex_ridme</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a 5-pulse RIDME dipolar experiment model. </span>
 <span class="sd">        </span>
 <span class="sd">    The figure below shows the dipolar pathways in 5-pulse RIDME. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.</span>
@@ -1294,7 +1294,7 @@
 
 <span class="c1">#===============================================================================</span>
 <div class="viewcode-block" id="ex_dqc"><a class="viewcode-back" href="../../_autosummary/deerlab.ex_dqc.html#deerlab.ex_dqc">[docs]</a><span class="k">def</span> <span class="nf">ex_dqc</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">pulselength</span><span class="o">=</span><span class="mf">0.016</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a 6-pulse DQC dipolar experiment model. </span>
 <span class="sd">        </span>
 <span class="sd">    The figure below shows the dipolar pathways in 6-pulse DQC. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.</span>
