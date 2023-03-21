@@ -22,7 +22,7 @@ setup(
                         'numpy>=1.22.4',
                         'cvxopt>=1.0.0',
                         'scipy>=1.6.3',
-                        'joblib>-1.0.0',
+                        'joblib>=1.0.0',
                         'dill>=0.3.0',
                         'tqdm>=4.51.0',
                         'matplotlib>=3.3.4',
