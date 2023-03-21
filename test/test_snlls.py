@@ -287,11 +287,11 @@ def assert_solver(solver):
 
     assert  ovl(P,Pfit) > 0.95
 
-def test_nnls_cvx():
+def test_nnls_qp():
 #=======================================================================
     "Check that the 'cvx' algorithm used for the NNLS subproblem work"
 
-    assert_solver(solver='cvx')
+    assert_solver(solver='qp')
 #=======================================================================
 
 def test_nnls_fnnls():
