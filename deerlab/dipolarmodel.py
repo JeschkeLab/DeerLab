@@ -318,7 +318,6 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
     #-----------------------------------------------------------------------
     def _Pmultivar(param):
         rmeans,cholesky_factors = param[:Q], param[Q:]
-        np.random.seed(seed=1)
         Σ = choleskycovmat(Q,cholesky_factors)
         Pmultivar = multivariate_normal(rmeans, cov=Σ)
         return Pmultivar
@@ -470,7 +469,6 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
 
         # Sample from the multi-variate distance distribution
         Nsamples = 1000000
-        np.random.seed(seed=1)
         rsamples = Pmodel.nonlinmodel(nonlin[Psubset]).rvs(Nsamples)
         rsamples = np.maximum(rsamples,1e-16) # Avoid values exactly at zero 
 

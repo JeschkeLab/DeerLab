@@ -37,9 +37,8 @@ r = np.arange(rmin,rmax,Δr)
 
 # Experiment model
 experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1,2,3])
-reftime1 = experiment.reftimes[0]
-reftime2 = experiment.reftimes[1]
-reftime3 = experiment.reftimes[2]
+reftime1, reftime2, reftime3 = experiment.reftimes(tau1,tau2)
+
 
 # Construct the dipolar signal model
 Vmodel = dl.dipolarmodel(t,r,Pmodel=dl.dd_gauss, experiment=experiment) 
