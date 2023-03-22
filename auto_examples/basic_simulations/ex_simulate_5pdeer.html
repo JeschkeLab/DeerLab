@@ -44,8 +44,8 @@
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Simulating a three-pathway 4-pulse DEER signal" href="ex_simulate_4pdeer.html" />
-    <link rel="prev" title="Simulating a single-pathway 4-pulse DEER signal" href="ex_simulate_basic_4pdeer.html" />
+    <link rel="next" title="Basic analysis of a 4-pulse DEER signal" href="../basic/ex_fitting_4pdeer.html" />
+    <link rel="prev" title="Simulating a three-pathway 4-pulse DEER signal" href="ex_simulate_4pdeer.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -230,8 +230,7 @@ a Gaussian distance distribution</p>
 <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">rmin</span><span class="p">,</span><span class="n">rmax</span><span class="p">,</span><span class="n">Δr</span><span class="p">)</span>
 
 <span class="n">experiment</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">ex_rev5pdeer</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span><span class="n">tau2</span><span class="p">,</span><span class="n">tau3</span><span class="p">,</span> <span class="n">pathways</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">reftime1</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">reftime2</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">reftime1</span><span class="p">,</span> <span class="n">reftime2</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">(</span><span class="n">tau1</span><span class="p">,</span><span class="n">tau2</span><span class="p">,</span><span class="n">tau3</span><span class="p">)</span>
 
 <span class="c1"># Construct the dipolar signal model</span>
 <span class="n">Vmodel</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarmodel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">Pmodel</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">,</span> <span class="n">experiment</span><span class="o">=</span><span class="n">experiment</span><span class="p">)</span>
@@ -252,13 +251,8 @@ a Gaussian distance distribution</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;/home/runner/work/DeerLab/DeerLab/examples/basic_simulations/ex_simulate_5pdeer.py&quot;</span>, line <span class="m">40</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="n">reftime1</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">reftimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gr">TypeError</span>: <span class="n">&#39;function&#39; object is not subscriptable</span>
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.003 seconds)</p>
+<img alt="ex simulate 5pdeer" class="sphx-glr-single-img" src="../../_images/sphx_glr_ex_simulate_5pdeer_001.png" />
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.138 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-simulations-ex-simulate-5pdeer-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/11b0b82284e3316edec6f80fc0cf0b27/ex_simulate_5pdeer.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_simulate_5pdeer.py</span></code></a></p>
@@ -276,17 +270,17 @@ a Gaussian distance distribution</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="ex_simulate_basic_4pdeer.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="ex_simulate_4pdeer.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Simulating a single-pathway 4-pulse DEER signal</p>
+            <p class="prev-next-title">Simulating a three-pathway 4-pulse DEER signal</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="ex_simulate_4pdeer.html" title="next page">
+    <a class='right-next' id="next-link" href="../basic/ex_fitting_4pdeer.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Simulating a three-pathway 4-pulse DEER signal</p>
+        <p class="prev-next-title">Basic analysis of a 4-pulse DEER signal</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
