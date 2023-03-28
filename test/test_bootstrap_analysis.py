@@ -21,15 +21,15 @@ def model_complex(param):
 def model_global(param):
     return [model([param[0],param[1]]), model([param[2],param[3]])]
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='module')
 def dummy_data():
     return model(paramset1) + whitegaussnoise(x,noiselvl)
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='module')
 def dummy_complex_data():
     return model_complex(paramset1) + whitegaussnoise(x,noiselvl)
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='module')
 def dummy_global_data():
     data1 = model(paramset1) + whitegaussnoise(x,noiselvl)
     data2 = model(paramset2) + whitegaussnoise(x,noiselvl)
