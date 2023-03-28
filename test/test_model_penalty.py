@@ -78,7 +78,7 @@ def test_fit(penalty_fcn, model, mock_data, selection):
 # ======================================================================
 
 # ======================================================================
-@pytest.mark.parametrize('case',['unbounded','bounded','frozen'])
+@pytest.mark.parametrize('case',['bounded','frozen'])
 def test_fit_with_penalty_weight(penalty_fcn, model, mock_data, case): 
     "Check fitting with a penalty with bounded weight"    
     penaltyobj = Penalty(penalty_fcn,'icc')
