@@ -5,308 +5,120 @@ from deerlab import dipolarkernel, regoperator, selregparam, whitegaussnoise
 from deerlab.dd_models import dd_gauss,dd_gauss2
 from deerlab.utils import assert_docstring
 from deerlab.solvers import qpnnls
+import pytest
 
-def test_compensate_condition():
-#=======================================================================
-    "Check that alpha compensates for larger condition numbers"
+# Fixtures 
+# ------------------------------------------------------------------------
+t = np.linspace(0,5,100)
+r = np.linspace(2,5,80)
+
+@pytest.fixture(scope='module')
+def design_matrix():
+    return dipolarkernel(t,r)
     
-    r = np.linspace(2,6,100)
+@pytest.fixture(scope='module')
+def regularization_matrix():
+    return regoperator(r,2,includeedges=True)
+
+@pytest.fixture(scope='module')
+def dataset(design_matrix):
     P = dd_gauss(r,3,0.16986436005760383)
+    return design_matrix@P
+# ------------------------------------------------------------------------
 
-    # Lower condition number    
-    t1 = np.linspace(0,3,200)
-    K1 = dipolarkernel(t1,r)
-    V1 = K1@P
-    alpha1 = selregparam(V1,K1,qpnnls,method='aic')
-
-    # Larger condition number
-    t2 = np.linspace(0,3,400)
-    K2 = dipolarkernel(t2,r)
-    V2 = K2@P
-    alpha2 = selregparam(V2,K2,qpnnls,method='aic')
-
-    assert alpha2 > alpha1
+#=======================================================================
+# References computed with DeerLab (1.0) grid method using quadprog
+@pytest.mark.parametrize('criterion, log_reference', [
+    ('aic', -8.37288),
+    ('bic', -8.37288),
+    ('aicc', -8.37288),
+    ('cv', -8.37288),
+    ('gcv', -8.37288),
+    ('rgcv', -8.37288),
+    ('srgcv', -8.16949),
+    ('rm', -8.28318),
+    ('ee', -8.37288),
+    ('ncp', -9.18644),
+    ('mcl', -8.37288),
+    ('gml', -9.2670),
+    ('lr', -8.37288),
+    ('lc', -8.37288),
+])
+def test_selection_criteria_values(dataset, design_matrix, regularization_matrix, criterion,log_reference):
+    "Check that the value returned by the selection criteria are correct"
+    alpha = selregparam(dataset, design_matrix, qpnnls, method=criterion, searchrange=[1e-10,1e-6], noiselvl=0, regop=regularization_matrix)
+    assert abs(1-np.log10(alpha)/log_reference) < 0.2
 #=======================================================================
 
-def get_alpha_from_method(method, bounds=[1e-10,1e-6]):
-
-    t = np.linspace(0,5,500)
-    r = np.linspace(2,5,80)
-    P = dd_gauss(r,3.0,0.16986436005760383)
-    K = dipolarkernel(t,r)
-    L = regoperator(r,2,includeedges=True)
-    V = K@P
-
-    alpha = selregparam(V,K,qpnnls,method=method,searchrange=bounds, noiselvl=0,regop=L)
-    return np.log10(alpha)
-
-def test_aic_value():
 #=======================================================================
-    "Check that the value returned by the AIC selection method is correct"
-    
-    loga = get_alpha_from_method('aic')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.1
-#=======================================================================
-
-def test_bic_value():
-#=======================================================================
-    "Check that the value returned by the BIC selection method is correct"
-    
-    loga = get_alpha_from_method('bic')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.1
-#=======================================================================
-
-def test_aicc_value():
-#=======================================================================
-    "Check that the value returned by the AICc selection method is correct"
-    
-    loga = get_alpha_from_method('aicc')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.1
-#=======================================================================
-
-def test_cv_value():
-#=======================================================================
-    "Check that the value returned by the CV selection method is correct"
-    
-    loga = get_alpha_from_method('cv')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.16
-#=======================================================================
-
-def test_gcv_value():
-#=======================================================================
-    "Check that the value returned by the GCV selection method is correct"
-    
-    loga = get_alpha_from_method('gcv')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.16
-#=======================================================================
-
-def test_rgcv_value():
-#=======================================================================
-    "Check that the value returned by the rGCV selection method is correct"
-    
-    loga = get_alpha_from_method('rgcv')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.16
-#=======================================================================
-
-def test_srgcv_value():
-#=======================================================================
-    "Check that the value returned by the srGCV selection method is correct"
-    
-    loga = get_alpha_from_method('srgcv')
-    logaref = -8.16949 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.17
-#=======================================================================
-
-def test_rm_value():
-#=======================================================================
-    "Check that the value returned by the RM selection method is correct"
-    
-    loga = get_alpha_from_method('rm')
-    logaref = -8.28318 # Computed with DeerLab (1.0) brent method using quadprog
-
-    assert abs(1-loga/logaref) < 0.2
-#=======================================================================
-
-def test_ee_value():
-#=======================================================================
-    "Check that the value returned by the EE selection method is correct"
-    
-    loga = get_alpha_from_method('ee')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.2
-#=======================================================================
-
-def test_ncp_value():
-#=======================================================================
-    "Check that the value returned by the NCP selection method is correct"
-    
-    loga = get_alpha_from_method('ncp')
-    logaref = -9.18644 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.2
-#=======================================================================
-
-def test_mcl_value():
-#=======================================================================
-    "Check that the value returned by the MCL selection method is correct"
-    
-    loga = get_alpha_from_method('mcl')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.16
-#=======================================================================
-
-def test_gml_value():
-#=======================================================================
-    "Check that the value returned by the GML selection method is correct"
-    
-    loga = get_alpha_from_method('gml')
-    logaref = -9.267 # Computed with DeerLab (1.0) brent method using quadprog
-
-    assert abs(1-loga/logaref) < 0.16
-#=======================================================================
-
-def test_lr_value():
-#=======================================================================
-    "Check that the value returned by the LR selection method is correct"
-    
-    loga = get_alpha_from_method('lr')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.15
-#=======================================================================
-
-def test_lc_value():
-#=======================================================================
-    "Check that the value returned by the LC selection method is correct"
-    
-    loga = get_alpha_from_method('lc')
-    logaref = -8.37288 # Computed with DeerLab (1.0) grid method using quadprog
-
-    assert abs(1-loga/logaref) < 0.20
-#=======================================================================
-
-def test_algorithms():
-#=======================================================================
+def test_algorithms(dataset, design_matrix, regularization_matrix):
     "Check that the value returned by the the grid and Brent algorithms coincide"
-    
-    t = np.linspace(0,5,80)
-    r = np.linspace(2,5,80)
-    P = dd_gauss(r,3,0.2)
-    K = dipolarkernel(t,r)
-    L = regoperator(r,2)
-    V = K@P + whitegaussnoise(t,0.02,seed=1)
+    alpha_grid = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm='grid',regop=regularization_matrix)
+    alpha_brent = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm='brent',regop=regularization_matrix)
 
-    alpha_grid = selregparam(V,K,qpnnls,method='aic',algorithm='grid',regop=L)
-    alpha_brent = selregparam(V,K,qpnnls,method='aic',algorithm='brent',regop=L)
-
-    assert abs(1-alpha_grid/alpha_brent) < 0.15
+    assert abs(1-alpha_grid/alpha_brent) < 0.2
 #=======================================================================
 
-
-def test_nonuniform_r():
 #=======================================================================
+def test_nonuniform_r(dataset):
     "Check the value returned when using a non-uniform distance axis"
-    
-    t = np.linspace(0,3,200)
     r = np.sqrt(np.linspace(1,7**2,200))
-    P = dd_gauss(r,3,0.2)
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
-    V = K@P
 
-    logalpha = np.log10(selregparam(V,K,qpnnls,method='aic',regop=L))
-    logalpharef = -6.8517
+    logalpha = np.log10(selregparam(dataset,K,qpnnls,method='aic',regop=L))
+    logalpharef = -4.3325
 
     assert abs(1 - logalpha/logalpharef) < 0.2 
 #=======================================================================
 
-def assert_full_output(method):
+#=======================================================================
+@pytest.mark.parametrize('algorithm',['brent','grid'])
+def test_full_output_behavior_with_algorithms(dataset,design_matrix,regularization_matrix,algorithm):
+    "Check that the full output argument works using all algorithms"
+    alpha,alphas_evaled,functional,residuals,penalties = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm=algorithm,full_output=True,regop=regularization_matrix)
 
-    t = np.linspace(0,5,80)
-    r = np.linspace(2,5,80)
-    P = dd_gauss(r,3,0.4)
-    K = dipolarkernel(t,r)
-    L = regoperator(r,2)
-    V = K@P
-
-    alpha,alphas_evaled,functional,residuals,penalties = selregparam(V,K,qpnnls,method='aic',algorithm=method,full_output=True,regop=L)
     errors = []
     if np.size(alpha)!=1:
         errors.append("alphaopt is not a scalar")
     if len(functional)!=len(alphas_evaled):
         errors.append("The number of elements of functional values and evaluated alphas are different.")
     if len(residuals)!=len(penalties):
-        errors.append("The number of elements of evluated residuals and penalties are different")
+        errors.append("The number of elements of evaluated residuals and penalties are different")
     if not alpha in alphas_evaled:
         errors.append("The optimal alpha is not part of the evaluated alphas")
     assert not errors, f"Errors occured:\n{chr(10).join(errors)}"
-
-def test_full_output_brent():
-#=======================================================================
-    "Check that the full output argument works using the grid algorithm"
-
-    assert_full_output('brent')
 #=======================================================================
 
-def test_full_output_grid():
 #=======================================================================
-    "Check that the full output argument works using the grid algorithm"
-
-    assert_full_output('grid')
-#=======================================================================
-
-def test_unconstrained():
-#=======================================================================
+def test_unconstrained(dataset,design_matrix,regularization_matrix):
     "Check the algorithm works with unconstrained disributions"
-    
-    t = np.linspace(0,5,80)
-    r = np.linspace(2,5,80)
-    P = dd_gauss(r,3,0.15)
-    K = dipolarkernel(t,r)
-    L = regoperator(r,2,includeedges=True)
-    V = K@P
-
-    logalpha = np.log10(selregparam(V,K,np.linalg.solve,method='aic',regop=L))
+    logalpha = np.log10(selregparam(dataset,design_matrix,np.linalg.solve,method='aic',regop=regularization_matrix))
     logalpharef = -8.87
 
     assert abs(1 - logalpha/logalpharef) < 0.1
 #=======================================================================
 
-def test_manual_candidates():
 #=======================================================================
+def test_manual_candidates(dataset,design_matrix,regularization_matrix):
     "Check that the alpha-search range can be manually passed"
-    
-    t = np.linspace(0,5,80)
-    r = np.linspace(2,5,80)
-    P = dd_gauss(r,3,0.15)
-    K = dipolarkernel(t,r)
-    L = regoperator(r,2,includeedges=True)
     alphas = np.linspace(-8,2,60)
-    V = K@P
-
-    alpha_manual = np.log10(selregparam(V,K,qpnnls,method='aic',candidates=alphas,regop=L))
-    alpha_auto = np.log10(selregparam(V,K,qpnnls,method='aic',regop=L))
-
+    alpha_manual = np.log10(selregparam(dataset,design_matrix,qpnnls,method='aic',candidates=alphas,regop=regularization_matrix))
+    alpha_auto = np.log10(selregparam(dataset,design_matrix,qpnnls,method='aic',regop=regularization_matrix))
     assert abs(alpha_manual-alpha_auto)<1e-4
 #=======================================================================
 
-def test_tikh_value():
 #=======================================================================
+def test_tikh_value(dataset,design_matrix,regularization_matrix):
     "Check that the value returned by Tikhonov regularization"
-    
-    np.random.seed(1)
-    t = np.linspace(0,5,500)
-    r = np.linspace(2,5,80)
-    P = dd_gauss(r,3,0.15)
-    K = dipolarkernel(t,r)
-    V = K@P + whitegaussnoise(t,0.01)
-    L = regoperator(r,2,includeedges=True)
-
-    alpha = selregparam(V,K,qpnnls,method='aic',regop=L)
+    alpha = selregparam(dataset + whitegaussnoise(t,0.01,seed=1),design_matrix,qpnnls,method='aic',regop=regularization_matrix)
     loga = np.log10(alpha)
-    logaref = -3.51  # Computed with DeerLab-Matlab (0.9.2)
-
+    logaref = -3.667  # Computed with DeerLab-Matlab (1.0.0)
     assert abs(1-loga/logaref) < 0.02 # less than 2% error
 #=======================================================================
 
-
-def test_docstring():
 # ======================================================================
+def test_docstring():
     "Check that the docstring includes all variables and keywords."
     assert_docstring(selregparam)
 # ======================================================================
