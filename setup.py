@@ -20,7 +20,6 @@ setup(
     long_description_content_type="text/markdown",
     install_requires = [
                         'numpy>=1.22.4',
-                        'cvxopt>=1.0.0',
                         'scipy>=1.6.3',
                         'joblib>=1.0.0',
                         'dill>=0.3.0',
