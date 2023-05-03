@@ -36,6 +36,14 @@ def test_RLLS_fit_solvers(mock_data, design_matrix, reference, solver):
     "Check that the RLLS problem is correctly solved by all numerical solvers"
     fit = snlls(mock_data,design_matrix,lbl=lbl,nnlsSolver=solver,uq=False)
     assert ovl(reference,fit.param) > 0.95 # more than 95% overlap
+ 
+
+
+def test_RLLS_fit_solvers(mock_data, design_matrix, reference):
+    "Check that the RLLS problem is correctly solved by cvxopt solver"
+    pytest.importorskip("cvxopt")
+    fit = snlls(mock_data,design_matrix,lbl=lbl,nnlsSolver='cvx',uq=False)
+    assert ovl(reference,fit.param) > 0.95 # more than 95% overlap
 # ============================================================
 
 # ============================================================
