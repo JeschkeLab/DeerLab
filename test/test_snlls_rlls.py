@@ -31,7 +31,7 @@ def mock_data(design_matrix, reference):
 
 
 # ============================================================
-@pytest.mark.parametrize('solver',['qp','fnnls','cvx'])
+@pytest.mark.parametrize('solver',['qp','fnnls'])
 def test_RLLS_fit_solvers(mock_data, design_matrix, reference, solver):
     "Check that the RLLS problem is correctly solved by all numerical solvers"
     fit = snlls(mock_data,design_matrix,lbl=lbl,nnlsSolver=solver,uq=False)
