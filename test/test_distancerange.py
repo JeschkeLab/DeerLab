@@ -2,6 +2,7 @@ import numpy as np
 from deerlab import distancerange
 
 def test_distancerange_outsize():
+# ======================================================================
     "Verify that the output has the correct size"
 
     t = np.linspace(-1,5,300)
@@ -11,9 +12,11 @@ def test_distancerange_outsize():
     nr = 200
     r = distancerange(t,nr)
     assert len(r)==nr
+# ======================================================================
 
 
 def test_distancerange_rmin():
+# ======================================================================
     "Verify that the minimum distance is correct"
 
     t, dt = np.linspace(-1, 5, 300, retstep=True)
@@ -24,9 +27,11 @@ def test_distancerange_rmin():
     rmin_ref = (D/nu_max)**(1/3)
 
     assert np.max(np.abs(rmin - rmin_ref)) < 1e-10
+# ======================================================================
 
 
 def test_distancerange_rmax():
+# ======================================================================
     "Verify that the maximum distance is correct"
 
     t, dt = np.linspace(-1, 5, 300, retstep=True)
@@ -38,3 +43,4 @@ def test_distancerange_rmax():
     rmax_ref = (D*Tmax)**(1/3)
 
     assert np.max(np.abs(rmax - rmax_ref)) < 1e-10
+# ======================================================================

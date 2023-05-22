@@ -1244,7 +1244,10 @@ def qpnnls(AtA, Atb):
             # If AtA matrix is not positive definite, find nearest one
             x = solve_qp(dl.utils.nearest_psd(AtA), Atb, I, lb, meq)[0]
         except:
-            # For very rare cases
-            x = cvxnnls(AtA, Atb)
+            try:
+                # For very rare cases
+                x = cvxnnls(AtA, Atb)
+            except:
+                x = lb
     return x
 #=====================================================================================

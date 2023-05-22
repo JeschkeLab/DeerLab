@@ -3,135 +3,81 @@ from deerlab import noiselevel, whitegaussnoise, dipolarkernel
 from deerlab.dd_models import dd_gauss
 from deerlab.bg_models import bg_exp
 from deerlab.utils import assert_docstring
+import pytest 
 
-def test_filtered_movmean():
-#============================================================
-    "Check estimation of noiselevel using a moving-mean filter"
+# Fixtures 
+# ------------------------------------------------------------
+t = np.linspace(0,3,200)
+true_noiselvl = 0.03 
+@pytest.fixture(scope='module')
+def noise():
+    return whitegaussnoise(t,true_noiselvl,seed=1,rescale=True)
 
-    np.random.seed(1)
-    t = np.linspace(0,3,200)
+@pytest.fixture(scope='module')
+def mock_dataset(noise):
     r = np.linspace(2,6,100)
     P = dd_gauss(r,3, 0.5)
     lam = 0.25
     B = bg_exp(t,1.5)
-    noise = whitegaussnoise(t,0.05)
-    V = dipolarkernel(t,r,mod=lam,bg=B)@P + noise
+    return dipolarkernel(t,r,mod=lam,bg=B)@P + noise
+
+@pytest.fixture(scope='module')
+def mock_multiple_datasets(noise, mock_dataset):
+    N = 500
+    dataset = mock_dataset - noise 
+    datasets = np.zeros((len(t),N))
+    for i in range(N):
+        datasets[:,i] = dataset + whitegaussnoise(t,true_noiselvl,seed=i,rescale=True)
+    return datasets
+
+@pytest.fixture(scope='module')
+def mock_dataset_complex(noise, mock_dataset):
+    dataset = mock_dataset - noise 
+    dataset = dataset*np.exp(-1j*2/5*np.pi);
+    return dataset + noise + 1j*noise
+# ------------------------------------------------------------
 
 
-    truelevel = np.std(noise)
-    approxlevel = noiselevel(V,'movmean',3)
-
-    assert abs(approxlevel - truelevel) < 1e-2
-#============================================================
-
-
-def test_der():
+def test_filtered_movmean(mock_dataset):
 #============================================================
     "Check estimation of noiselevel using a moving-mean filter"
-
-    np.random.seed(1)
-    t = np.linspace(0,3,200)
-    r = np.linspace(2,6,100)
-    P = dd_gauss(r,3, 0.5)
-    lam = 0.25
-    B = bg_exp(t,1.5)
-    noise = whitegaussnoise(t,0.05)
-    V = dipolarkernel(t,r,mod=lam,bg=B)@P + noise
-
-
-    truelevel = np.std(noise)
-    approxlevel = noiselevel(V,'der')
-
-    assert abs(approxlevel - truelevel) < 1e-2
+    approxlevel = noiselevel(mock_dataset,'movmean',3)
+    assert abs(approxlevel - true_noiselvl) < 1e-2
 #============================================================
 
+def test_der(mock_dataset):
+#============================================================
+    "Check estimation of noiselevel using a moving-mean filter"
+    approxlevel = noiselevel(mock_dataset,'der')
+    assert abs(approxlevel - true_noiselvl) < 1e-2
+#============================================================
 
-
-def test_reference():
+def test_reference(noise, mock_dataset):
 #============================================================
     "Check estimation of noiselevel using a reference signal"
-
-    np.random.seed(1)
-    t = np.linspace(0,3,200)
-    r = np.linspace(2,6,100)
-    P = dd_gauss(r,3, 0.5)
-    lam = 0.25
-    B = bg_exp(t,1.5)
-    Vref = dipolarkernel(t,r,mod=lam,bg=B)@P
-    noise = whitegaussnoise(t,0.03)
-    V = Vref + noise
-
-
-    truelevel = np.std(noise)
-    approxlevel = noiselevel(V,'reference',Vref)
-
-    assert abs(approxlevel - truelevel) < 1e-2
+    approxlevel = noiselevel(mock_dataset,'reference',mock_dataset - noise)
+    assert abs(approxlevel - true_noiselvl) < 1e-2
 #============================================================
 
-
-def test_filtered_savgol():
+def test_filtered_savgol(mock_dataset):
 #============================================================
     "Check estimation of noiselevel using a Savitzky-Golay filter"
-
-    np.random.seed(1)
-    t = np.linspace(0,3,200)
-    r = np.linspace(2,6,100)
-    P = dd_gauss(r,3,0.5)
-    lam = 0.25
-    B = bg_exp(t,1.5)
-    noise = whitegaussnoise(t,0.03)
-    V = dipolarkernel(t,r,mod=lam,bg=B)@P + noise
-
-    truelevel = np.std(noise)
-    approxlevel = noiselevel(V,'savgol',11,3)
-
-    assert abs(approxlevel - truelevel) < 1e-2
+    approxlevel = noiselevel(mock_dataset,'savgol',11,3)
+    assert abs(approxlevel - true_noiselvl) < 1e-2
 #============================================================
 
-
-
-def test_multiscan():
+def test_multiscan(mock_multiple_datasets):
 #============================================================
     "Check estimation of noiselevel using multiple scans of a signal"
-
-    np.random.seed(1)
-    t = np.linspace(0,5,300)
-    r = np.linspace(2,6,200)
-    P = dd_gauss(r,4, 0.4)
-    K = dipolarkernel(t,r)
-
-    sigma_ref = 0.1
-    N = 500
-    V = np.zeros((len(t),N))
-    for i in range(N):
-        V[:,i] = K@P + whitegaussnoise(t,sigma_ref)
-
-    sigma = noiselevel(V,'scans')
-
-    assert abs(sigma - sigma_ref) < 1e-2
+    approxlevel = noiselevel(mock_multiple_datasets,'scans')
+    assert abs(approxlevel - true_noiselvl) < 1e-2
 #============================================================
 
-def test_complex():
+def test_complex(mock_dataset_complex):
 #============================================================
     "Check estimation of noiselevel using a complex signal"
-
-    t = np.linspace(0,3,200)
-    r = np.linspace(2,6,100)
-    P = dd_gauss(r,4, 0.4)
-    lam = 0.25
-    B = bg_exp(t,1.5)
-
-    np.random.seed(1)
-    noise = whitegaussnoise(t,0.03)
-    np.random.seed(2)
-    noisec = 1j*whitegaussnoise(t,0.03)
-    V = dipolarkernel(t,r,mod=lam,bg=B)@P
-    Vco = V*np.exp(-1j*np.pi/5)
-    Vco = Vco + noise + noisec
-    truelevel = np.std(noise)
-    approxlevel = noiselevel(Vco,'complex')
-
-    assert abs(truelevel - approxlevel) < 1e-2
+    approxlevel = noiselevel(mock_dataset_complex,'complex')
+    assert abs(approxlevel - true_noiselvl) < 1e-2
 #============================================================
 
 def test_docstring():
