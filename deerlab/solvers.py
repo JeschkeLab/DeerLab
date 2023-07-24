@@ -14,7 +14,6 @@ from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fi
 import time 
 from functools import partial
 from copy import deepcopy
-from quadprog import solve_qp
 
 
 def timestamp():
@@ -1232,6 +1231,15 @@ def qpnnls(AtA, Atb):
             Mathematical Programming, 27, 1-33.
 
     """
+
+    try:
+        from quadprog import solve_qp
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            'The quadprog package is required for this function.'+
+            'Install it with "pip install quadprog".')
+    
+    
     N = np.shape(AtA)[1]
     I = np.eye(N)
     lb = np.zeros(N)
