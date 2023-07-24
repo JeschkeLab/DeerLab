@@ -388,7 +388,7 @@ def _insertfrozen(parfit,parfrozen,frozen):
 # ===========================================================================================
 
 
-def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='qp', reg='auto', weights=None, verbose=0,
+def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None, verbose=0,
           regparam='aic', regparamrange=None, multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
           ftol=1e-8, xtol=1e-8, max_nfev=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None, mask=None,
           nonlin_frozen=None, uq=True, modeluq=False):
@@ -486,7 +486,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'qp'``.
+        The default is ``'cvx'``.
 
     noiselvl : array_like, optional
         Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 

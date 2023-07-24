@@ -1573,7 +1573,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'qp'``.
+        The default is ``'cvx'``.
 
     verbose : scalar integer, optional
         Level of verbosity during the analysis:
