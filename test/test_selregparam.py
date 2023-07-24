@@ -53,8 +53,8 @@ def test_selection_criteria_values(dataset, design_matrix, regularization_matrix
 #=======================================================================
 def test_algorithms(dataset, design_matrix, regularization_matrix):
     "Check that the value returned by the the grid and Brent algorithms coincide"
-    alpha_grid = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm='grid',regop=regularization_matrix)
-    alpha_brent = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm='brent',regop=regularization_matrix)
+    alpha_grid = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm='grid',regop=regularization_matrix, searchrange=[1e-10,1e-6])
+    alpha_brent = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm='brent',regop=regularization_matrix, searchrange=[1e-10,1e-6])
 
     assert abs(1-alpha_grid/alpha_brent) < 0.2
 #=======================================================================
