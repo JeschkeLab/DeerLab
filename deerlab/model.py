@@ -1569,7 +1569,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package. Only Python <= 3.10.
         * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
