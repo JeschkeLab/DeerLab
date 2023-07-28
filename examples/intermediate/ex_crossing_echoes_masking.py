@@ -27,6 +27,8 @@ violet = '#4550e6'
 # Load the experimental data
 t,Vexp = dl.deerload('../data/example_4pdeer_5.DTA')
 
+t *= 1e3 # convert from ms to us
+
 # Experimental parameters
 tau1 = 0.5  # First inter-pulse time delay, μs
 tau2 = 4.5  # Second inter-pulse time delay, μs

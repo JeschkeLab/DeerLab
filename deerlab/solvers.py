@@ -136,7 +136,6 @@ def _plot(ys,yfits,yuqs,noiselvls,axis=None,xlabel=None,gof=False,fontsize=13):
     # Adjust fontsize
     for ax in axs:
         for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-            label.set_fontname('Calibri')
             label.set_fontsize(fontsize)
 
     return fig
