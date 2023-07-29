@@ -6,6 +6,7 @@ on:
 
 jobs:
   tests:
+    name: python test
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
