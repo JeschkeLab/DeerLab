@@ -1754,7 +1754,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','cost','plot','residuals','stats','regparam']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','cost','plot','residuals','stats','regparam','regparam_stats']}
     _paramlist = model._parameter_list('vector')
 
     # Prepare the propagate() and evaluate() methods

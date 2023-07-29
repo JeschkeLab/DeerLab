@@ -14,6 +14,35 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
+Release ``v1.0.2`` - July 2023
+------------------------------------------
+- |fix| : Fixes errors in documentation (:pr:`429`).
+  
+  * Changes the file name of figures 'modelling*.png` to `modeling*.png`. To keep all spelling consistent with american english.
+  * Adds a missing `)` in `fitting_guide`
+  * Corrects the time axis in `echo_crossing` example.
+
+- |fix| : Fixes an errors in tests (:pr:`429`).
+  
+  * The test `test_algorithms` had an incorrect search range.
+
+- |fix| : Removes the default font from the `fit` function due to conflicts on some systems (:pr:`429`).
+
+Release ``v1.0.1`` - March 2023
+------------------------------------------
+- |fix| : Fixes some minor bugs in the documentation. 
+  
+  * The file modelling_guide.rst is renamed to modeling_guide.rst to keep spelling consistency. 
+  * The "Simulating a two-pathway 5-pulse DEER signal" and "Simulating a three-pathway 4-pulse DEER signal" examples now run correctly.
+  * 
+- |fix| : Fixes issues with CVXOPT in tests. 
+
+  * The testing will now use quadprog as the default solver. To account for the change tested values are now generated using the grid method
+
+- |fix| : Updates GitHub actions to use latest packages.
+- |api| : Hardcodes out Python 3.11 support. This will remain until quadprog is fixed.
+- |api| : Removes hard-wired RNG seeding
+
 Release ``v1.0.0`` - December 2022
 ------------------------------------------
 
