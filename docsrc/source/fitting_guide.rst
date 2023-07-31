@@ -66,7 +66,7 @@ Fitting multi-dataset models
 Models merged using the ``merge`` function (see :ref:`here <modeling_merging>` for details) can describe multiple datasets with a single model object and a common parameter set. To fit such a merged model to multiple datasets, the ``fit`` function can be used as above by passing a list of datasets ``[y1,y2,...,yN]`` instead of a single dataset  ::
 
     # Fit the model to multiple datasets
-    result = dl.fit(model, [y1,y2,y3]
+    result = dl.fit(model, [y1,y2,y3])
 
 The number of datasets must match the number of responses returned by the model. Additionally, the ordering in the list of datasets must match the order of responses from the model, i.e. ``response1`` of ``model`` will be fitted to ``y1``, and so on. 
 

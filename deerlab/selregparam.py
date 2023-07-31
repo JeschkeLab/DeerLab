@@ -99,7 +99,7 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     residuals : ndarray
         Values of the residual norms evaluated during the search. 
         Returned if full_output is True.
-    residuals : ndarray
+    penalties : ndarray
         Values of the penalty norms evaluated during the search. 
         Returned if full_output is True.
     """

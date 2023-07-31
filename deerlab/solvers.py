@@ -136,7 +136,6 @@ def _plot(ys,yfits,yuqs,noiselvls,axis=None,xlabel=None,gof=False,fontsize=13):
     # Adjust fontsize
     for ax in axs:
         for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-            label.set_fontname('Calibri')
             label.set_fontsize(fontsize)
 
     return fig
@@ -714,10 +713,18 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         yfrozen = (A[:,lin_frozen]@lin_parfrozen[lin_frozen]).astype(float)
 
         # Optimiza the regularization parameter only if needed
+        
+
         if optimize_alpha:
-            alpha = dl.selregparam((y-yfrozen)[mask], Ared[mask,:], linSolver, regparam, 
+            output = dl.selregparam((y-yfrozen)[mask], Ared[mask,:], linSolver, regparam, 
                                         weights=weights[mask], regop=L, candidates=regparamrange, 
-                                        noiselvl=noiselvl,searchrange=regparamrange)
+                                        noiselvl=noiselvl,searchrange=regparamrange,full_output=True)
+            alpha = output[0]
+            alpha_stats['alphas_evaled'] = output[1]
+            alpha_stats['functional'] = output[2]
+            alpha_stats['residuals'] = output[3]
+            alpha_stats['penalties'] = output[4]
+            
 
         # Components for linear least-squares
         AtA, Aty = _lsqcomponents((y-yfrozen)[mask], Ared[mask,:], L, alpha, weights=weights[mask])
@@ -732,8 +739,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         # Insert back the frozen linear parameters
         xfit = _insertfrozen(xfit,lin_parfrozen,lin_frozen)
 
-
         return xfit, alpha, Ndof
+
     #===========================================================================
 
     def ResidualsFcn(p):
@@ -745,8 +752,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         non-linear least-squares solver. 
         """
 
-        nonlocal par_prev, check, regparam_prev, xfit, alpha, Ndof, Ndof_lin
-
+        nonlocal par_prev, check, regparam_prev, xfit, alpha, alpha_stats, Ndof, Ndof_lin
+        
+        
+        
         # Non-linear model evaluation
         A = Amodel(p)
 
@@ -802,6 +811,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
         return res
     #===========================================================================
+
+    alpha_stats = {'alphas_evaled':[],'functional':[],'residuals':[],'penalties':[]}
 
     # -------------------------------------------------------------------
     #  Only linear parameters
@@ -981,7 +992,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
     return FitResult(nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
                      linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
-                     stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl)
+                     stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl,regparam_stats=alpha_stats)
 # ===========================================================================================
 
 
