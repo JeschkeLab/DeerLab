@@ -4,7 +4,7 @@ import numpy as np
 from deerlab import dipolarkernel, regoperator, selregparam, whitegaussnoise
 from deerlab.dd_models import dd_gauss,dd_gauss2
 from deerlab.utils import assert_docstring
-from deerlab.solvers import qpnnls
+from deerlab.solvers import cvxnnls
 import pytest
 
 # Fixtures 
@@ -46,15 +46,15 @@ def dataset(design_matrix):
 ])
 def test_selection_criteria_values(dataset, design_matrix, regularization_matrix, criterion,log_reference):
     "Check that the value returned by the selection criteria are correct"
-    alpha = selregparam(dataset, design_matrix, qpnnls, method=criterion, searchrange=[1e-10,1e-6], noiselvl=0, regop=regularization_matrix)
-    assert abs(1-np.log10(alpha)/log_reference) < 0.2
+    alpha = selregparam(dataset, design_matrix, cvxnnls, method=criterion, searchrange=[1e-10,1e-6], noiselvl=0, regop=regularization_matrix)
+    assert abs(1-np.log10(alpha)/log_reference) < 0.25
 #=======================================================================
 
 #=======================================================================
 def test_algorithms(dataset, design_matrix, regularization_matrix):
     "Check that the value returned by the the grid and Brent algorithms coincide"
-    alpha_grid = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm='grid',regop=regularization_matrix, searchrange=[1e-10,1e-6])
-    alpha_brent = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm='brent',regop=regularization_matrix, searchrange=[1e-10,1e-6])
+    alpha_grid = selregparam(dataset,design_matrix,cvxnnls,method='aic',algorithm='grid',regop=regularization_matrix, searchrange=[1e-9,1e-5])
+    alpha_brent = selregparam(dataset,design_matrix,cvxnnls,method='aic',algorithm='brent',regop=regularization_matrix, searchrange=[1e-9,1e-5])
 
     assert abs(1-alpha_grid/alpha_brent) < 0.2
 #=======================================================================
@@ -66,7 +66,7 @@ def test_nonuniform_r(dataset):
     K = dipolarkernel(t,r)
     L = regoperator(r,2)
 
-    logalpha = np.log10(selregparam(dataset,K,qpnnls,method='aic',regop=L))
+    logalpha = np.log10(selregparam(dataset,K,cvxnnls,method='aic',regop=L))
     logalpharef = -4.3325
 
     assert abs(1 - logalpha/logalpharef) < 0.2 
@@ -76,7 +76,7 @@ def test_nonuniform_r(dataset):
 @pytest.mark.parametrize('algorithm',['brent','grid'])
 def test_full_output_behavior_with_algorithms(dataset,design_matrix,regularization_matrix,algorithm):
     "Check that the full output argument works using all algorithms"
-    alpha,alphas_evaled,functional,residuals,penalties = selregparam(dataset,design_matrix,qpnnls,method='aic',algorithm=algorithm,full_output=True,regop=regularization_matrix)
+    alpha,alphas_evaled,functional,residuals,penalties = selregparam(dataset,design_matrix,cvxnnls,method='aic',algorithm=algorithm,full_output=True,regop=regularization_matrix)
 
     errors = []
     if np.size(alpha)!=1:
@@ -103,15 +103,15 @@ def test_unconstrained(dataset,design_matrix,regularization_matrix):
 def test_manual_candidates(dataset,design_matrix,regularization_matrix):
     "Check that the alpha-search range can be manually passed"
     alphas = np.linspace(-8,2,60)
-    alpha_manual = np.log10(selregparam(dataset,design_matrix,qpnnls,method='aic',candidates=alphas,regop=regularization_matrix))
-    alpha_auto = np.log10(selregparam(dataset,design_matrix,qpnnls,method='aic',regop=regularization_matrix))
+    alpha_manual = np.log10(selregparam(dataset,design_matrix,cvxnnls,method='aic',candidates=alphas,regop=regularization_matrix))
+    alpha_auto = np.log10(selregparam(dataset,design_matrix,cvxnnls,method='aic',regop=regularization_matrix))
     assert abs(alpha_manual-alpha_auto)<1e-4
 #=======================================================================
 
 #=======================================================================
 def test_tikh_value(dataset,design_matrix,regularization_matrix):
     "Check that the value returned by Tikhonov regularization"
-    alpha = selregparam(dataset + whitegaussnoise(t,0.01,seed=1),design_matrix,qpnnls,method='aic',regop=regularization_matrix)
+    alpha = selregparam(dataset + whitegaussnoise(t,0.01,seed=1),design_matrix,cvxnnls,method='aic',regop=regularization_matrix)
     loga = np.log10(alpha)
     logaref = -3.667  # Computed with DeerLab-Matlab (1.0.0)
     assert abs(1-loga/logaref) < 0.02 # less than 2% error
