@@ -1569,11 +1569,11 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package. Only Python <= 3.10.
         * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'qp'``.
+        The default is ``'cvx'``.
 
     verbose : scalar integer, optional
         Level of verbosity during the analysis:
@@ -1754,7 +1754,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','cost','plot','residuals','stats','regparam']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['param','paramUncert','model','cost','plot','residuals','stats','regparam','regparam_stats']}
     _paramlist = model._parameter_list('vector')
 
     # Prepare the propagate() and evaluate() methods

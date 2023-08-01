@@ -14,7 +14,6 @@ from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fi
 import time 
 from functools import partial
 from copy import deepcopy
-from quadprog import solve_qp
 
 
 def timestamp():
@@ -136,7 +135,6 @@ def _plot(ys,yfits,yuqs,noiselvls,axis=None,xlabel=None,gof=False,fontsize=13):
     # Adjust fontsize
     for ax in axs:
         for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-            label.set_fontname('Calibri')
             label.set_fontsize(fontsize)
 
     return fig
@@ -388,7 +386,7 @@ def _insertfrozen(parfit,parfrozen,frozen):
 # ===========================================================================================
 
 
-def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='qp', reg='auto', weights=None, verbose=0,
+def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver='cvx', reg='auto', weights=None, verbose=0,
           regparam='aic', regparamrange=None, multistart=1, regop=None, alphareopt=1e-3, extrapenalty=None, subsets=None,
           ftol=1e-8, xtol=1e-8, max_nfev=1e8, lin_tol=1e-15, lin_maxiter=1e4, noiselvl=None, lin_frozen=None, mask=None,
           nonlin_frozen=None, uq=True, modeluq=False):
@@ -482,11 +480,11 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     nnlsSolver : string, optional
         Solver used to solve a non-negative least-squares problem (if applicable):
 
-        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package.
+        * ``'qp'`` - Optimization of the NNLS problem using the ``quadprog`` package. Only Python <= 3.10.
         * ``'cvx'`` - Optimization of the NNLS problem using the ``cvxopt`` package.
         * ``'fnnls'`` - Optimization using the fast NNLS algorithm.
         
-        The default is ``'qp'``.
+        The default is ``'cvx'``.
 
     noiselvl : array_like, optional
         Noise standard deviation of the input signal(s), if not specified it is estimated automatically. 
@@ -714,10 +712,18 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         yfrozen = (A[:,lin_frozen]@lin_parfrozen[lin_frozen]).astype(float)
 
         # Optimiza the regularization parameter only if needed
+        
+
         if optimize_alpha:
-            alpha = dl.selregparam((y-yfrozen)[mask], Ared[mask,:], linSolver, regparam, 
+            output = dl.selregparam((y-yfrozen)[mask], Ared[mask,:], linSolver, regparam, 
                                         weights=weights[mask], regop=L, candidates=regparamrange, 
-                                        noiselvl=noiselvl,searchrange=regparamrange)
+                                        noiselvl=noiselvl,searchrange=regparamrange,full_output=True)
+            alpha = output[0]
+            alpha_stats['alphas_evaled'] = output[1]
+            alpha_stats['functional'] = output[2]
+            alpha_stats['residuals'] = output[3]
+            alpha_stats['penalties'] = output[4]
+            
 
         # Components for linear least-squares
         AtA, Aty = _lsqcomponents((y-yfrozen)[mask], Ared[mask,:], L, alpha, weights=weights[mask])
@@ -732,8 +738,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         # Insert back the frozen linear parameters
         xfit = _insertfrozen(xfit,lin_parfrozen,lin_frozen)
 
-
         return xfit, alpha, Ndof
+
     #===========================================================================
 
     def ResidualsFcn(p):
@@ -745,8 +751,10 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         non-linear least-squares solver. 
         """
 
-        nonlocal par_prev, check, regparam_prev, xfit, alpha, Ndof, Ndof_lin
-
+        nonlocal par_prev, check, regparam_prev, xfit, alpha, alpha_stats, Ndof, Ndof_lin
+        
+        
+        
         # Non-linear model evaluation
         A = Amodel(p)
 
@@ -802,6 +810,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
         return res
     #===========================================================================
+
+    alpha_stats = {'alphas_evaled':[],'functional':[],'residuals':[],'penalties':[]}
 
     # -------------------------------------------------------------------
     #  Only linear parameters
@@ -981,7 +991,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
 
     return FitResult(nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
                      linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
-                     stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl)
+                     stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl,regparam_stats=alpha_stats)
 # ===========================================================================================
 
 
@@ -1232,6 +1242,15 @@ def qpnnls(AtA, Atb):
             Mathematical Programming, 27, 1-33.
 
     """
+
+    try:
+        from quadprog import solve_qp
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            'The quadprog package is required for this function.'+
+            'Install it with "pip install quadprog".')
+    
+    
     N = np.shape(AtA)[1]
     I = np.eye(N)
     lb = np.zeros(N)
