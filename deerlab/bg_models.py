@@ -129,7 +129,7 @@ This model describes the phase shift due to inter-molecular interactions between
 The expression for this model is
 
 .. math::
-   B(t) = \mathrm{exp}\left(-\ii\frac{8\pi}{9\sqrt{3}}(\sqrt{3} + \mathrm{ln}(2-\sqrt{3}))\lambda c_s D |t|\right)`
+   B(t) = \mathrm{exp}\left(\frac{8\pi}{9\sqrt{3}}(\sqrt{3} + \mathrm{ln}(2-\sqrt{3}))\lambda c_s D |t|\right)
 
 where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and D is the dipolar constant
 
@@ -220,7 +220,7 @@ This implements the phase-shift arising from a hard-shell excluded-volume model,
 
 The expression for this model is
 
-.. math:: B(t) = \exp \Bigg(- \ii c_\mathrm{s}\lambda_k \bigg( V_\mathrm{ex} \mathrm{Im}\{\mathcal{K}_0(t, R_\mathrm{ex})\} + \mathcal{I}_\mathrm{C}(t) \bigg) 
+.. math:: B(t) = \exp \Bigg(- c_\mathrm{s}\lambda_k \bigg( V_\mathrm{ex} \mathrm{Im}\{\mathcal{K}_0(t, R_\mathrm{ex})\} + \mathcal{I}_\mathrm{C}(t) \bigg) 
 
 where `\mathcal{I}_\mathrm{C}(t)` is an integral without analytical form given by 
 
