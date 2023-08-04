@@ -46,13 +46,13 @@ The dipolar pathways of a newly constructed dipolar model are initialized at arb
  
 DeerLab provides a selection of experimental information generators for some of the most widely employed experimental methods (see the of :ref:`list of available experiments <modelsref_ex>`). These are functions that take the pulse sequence delays, and return an ``ExperimentInfo`` object. This can be passed to the ``dipolarmodel`` function via the ``experiment`` keyword argument, to incorporate the experiment information on the model and constrain some of its parameters. These experimental information generators can also take information on the duration of the longest microwave pulses to more accurately constraint the parameters when using long pulses such as in frequency-swept or shaped microwave pulses.
 
-When using experimental time delays and the ``experiment`` argument, the model assumes that the experimental time axis ``t`` has its zero time at the beginning of the interpulse delay (see the illustrations of the individual experiment models for details). However, experimentally it is common not to record the first few hundred nanoseconds of signal. This results in a so-called start time (often also referred to as a deadtime), which many commercial spectrometers (such as Bruker) do not account for when storing the time-vector. It is very important to account for that time shift in the model via :: 
+When using an experimental time axis ``t`` and the ``experiment`` argument, the model assumes that ``t`` is zero at the beginning of the interpulse delay (see the illustrations of the individual experiment models for details). For example, for 4-pulse DEER, this zero point would be immediately after the second pulse. However, experimentally, it is common that the time axis is defined and stored differently. For 4-pulse DEER, a commercial spectrometer usually defined ``t`` such that it is zero ``tau1`` after the second pulse. It is important to correct for this offset (also called start time or deadtime):: 
 
-    t0 = 0.4   # Experimental start time of 400ns, in μs
-    t = t - t0 # Shift the time axis to account for the start time 
+    t0 = 0.4   # Experimental time offset of 400 ns, in μs
+    t = t + t0 # Shift the experimental time axis to match DeerLab's definition 
 
-If the time vector ``t`` does not have any time shift, this step can be skipped. Otherwise, an incorrectly defined time vector will results in wrong results.
- 
+Without this shift, an incorrectly defined time vector will results in wrong results.
+
 
 Constructing the dipolar model 
 *******************************

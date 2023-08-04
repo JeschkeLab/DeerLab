@@ -1,6 +1,6 @@
 #%%
 """ 
-Analysis of a 6-pulse DQC signal with multiple dipolar pathays
+Analysis of a 6-pulse DQC signal with multiple dipolar pathways
 -------------------------------------------------------------------------
 
 Fit an experimental 6-pulse DQC signal with a model with a non-parametric

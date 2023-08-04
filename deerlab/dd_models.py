@@ -235,12 +235,12 @@ notes =  r"""
     <img src="../_images/model_scheme_dd_gengauss.png", style="width: 50%">
     <br><br><br>    
 
-:math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{(r-\left<r\right>)}{\sigma}\right)^\beta \right)`
+:math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{|r-\left<r\right>|}{\sigma}\right)^\beta \right)`
 
-where `\left<r\right>` is the mean distance,`\sigma` is the standard deviation, and `\beta` is the kurtosis of the distribution.
-"""  
-def _gengauss(r,mean,std,kurt):
-    P = kurt/(2*std*spc.gamma(1/kurt))*np.exp(-abs(r-mean)/std**kurt)
+where `\left<r\right>` is the mean distance,`\sigma` is the standard deviation, and `\beta` determines the shape of the distribution.
+"""
+def _gengauss(r,mean,std,beta):
+    P = beta/(2*std*spc.gamma(1/beta))*np.exp(-(abs(r-mean)/std)**beta)
     return _normalize(r,P) 
 # Create model
 dd_gengauss = Model(_gengauss,constants='r')
@@ -248,7 +248,7 @@ dd_gengauss.description = 'Generalized Gaussian distribution model'
 # Parameters
 dd_gengauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, unit='nm')
 dd_gengauss.std.set(description='Standard deviation', lb=0.05, ub=2.5, par0=0.2, unit='nm')
-dd_gengauss.kurt.set(description='Kurtosis', lb=0.25, ub=15, par0=5.0, unit='')
+dd_gengauss.beta.set(description='beta parameter', lb=0.25, ub=15, par0=5.0, unit='')
 # Add documentation
 dd_gengauss.__doc__ = _dd_docstring(dd_gengauss,notes) +  docstr_example('dd_gengauss')
 
