@@ -1,6 +1,6 @@
 # %% [markdown]
 """ 
-Analysis of a 4-pulse DEER signal with multiple dipolar pathays
+Analysis of a 4-pulse DEER signal with multiple dipolar pathways
 -------------------------------------------------------------------------
 
 Fit a 4-pulse DEER with multiple dipolar pathways and display the individual pathway contributions. 

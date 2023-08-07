@@ -21,7 +21,7 @@ violet = '#4550e6'
 tau1 = 3.5          # 1st experimental time delay, μs
 tau2 = 4.2          # 2nd experimental time delay, μs
 tau3 = 0.3          # 3rd experimental time delay, μs
-conc = 150           # Spin concentration, μs
+conc = 150           # Spin concentration, μM
 lam1 = 0.30         # Amplitude of dipolar pathway refocusing at t=tau3, μs    
 lam2 = 0.15         # Amplitude of dipolar pathway refocusing at t=tau2, μs    
 rmean = 4.0         # Mean distance, nm

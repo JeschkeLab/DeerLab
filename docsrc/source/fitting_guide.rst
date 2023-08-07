@@ -150,9 +150,9 @@ The first step is to construct the penalty function. First, it must be a callabl
 Third, a selection functional for the optimal selection of the penalty weight must be chosen from a list of built-in functionals: 
 
 - Informational complexity criterion (``icc``)
-- Akaike complexity criterion (``aic``)
-- Bayesian complexity criterion (``aic``)
-- Corrected Akaike complexity criterion (``aicc``)
+- Akaike information criterion (``aic``)
+- Bayesian information criterion (``bic``)
+- Corrected Akaike information criterion (``aicc``)
 
 Last, the penalty can be constructed using the ``Penalty()`` constructor passing the penalty function and selection functional :: 
 
