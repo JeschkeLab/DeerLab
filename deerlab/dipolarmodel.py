@@ -1058,18 +1058,18 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
     ----------
 
     tau1 : float scalar
-        1st static interpulse delay `\tau_1`. 
+        1st static interpulse delay `\tau_1`.
 
     tau2 : float scalar
-        2nd static interpulse delay `\tau_2`.  
+        2nd static interpulse delay `\tau_2`.
 
     pathways :  array_like, optional 
         Pathways to include in the model. The pathways are specified as a list of pathways labels `p`. 
         By default, pathways 1-4 are included as shown in the table above.
 
-    pulselength : float scalar, optional 
-        Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
-        boundaries of the pathway refocusing times.
+    pulselength : float scalar, optional
+        Length of the longest microwave pulse in the sequence, in microseconds. Used to determine
+        the uncertainty in the boundaries of the pathway refocusing times.
 
     Returns
     -------
@@ -1079,25 +1079,25 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
 
     """
     # Theoretical refocusing times
-    def reftimes(tau1,tau2):
-        tref = [   0,
-                tau2,
-               -tau1,
-           tau2-tau1]
+    def reftimes(tau1, tau2):
+        tref = [tau1,
+                tau1+tau2,
+                0,
+                tau2]
         # Sort according to pathways order
         if pathways is not None:
             tref = [tref[pathway-1] for pathway in pathways]
         return tref
     # Pulse delays 
-    delays = [tau1,tau2]
+    delays = [tau1, tau2]
     # Theoretical dipolar harmonics
-    harmonics = [ 1, 1, 1, 1]
+    harmonics = [1, 1, 1, 1]
     # Pathway labels
-    pathwaylabels = np.arange(1,len(harmonics)+1)
+    pathwaylabels = np.arange(1, len(harmonics)+1)
 
     # Sort according to pathways order
     if pathways is not None:
-        _checkpathways(pathways,Nmax=len(harmonics))
+        _checkpathways(pathways, Nmax=len(harmonics))
         harmonics = [harmonics[pathway-1] for pathway in pathways] 
         pathwaylabels = [pathwaylabels[pathway-1] for pathway in pathways]
 
