@@ -3,7 +3,7 @@
 User Guide
 ============================================================
 
-This is the introductory guide to DeerLab for any dipolar electron paramagnetic resonance (EPR) spectroscopy applications.
+This introductory guide explains how to simulate and fit dipolar electron paramagnetic resonance (EPR) spectroscopy data using DeerLab.
 
 .. toctree::
     :maxdepth: 2
