@@ -98,6 +98,8 @@ Publications
         ETH Doctoral Dissertation Nr. 28808
 
         DOI: 10.3929/ethz-b-000585847 
+
+
     .. image:: https://img.shields.io/badge/Download-blue
             :alt: Static Badge
             :target: https://www.research-collection.ethz.ch/handle/20.500.11850/585847

@@ -35,11 +35,9 @@ In addition, there is both a cheatsheet that can be downloaded and printed for q
         :link: _static/CheatSheet.pdf
 
     .. grid-item-card:: Workshop 2023 @ EFEPR
+        :img-top: https://github.com/JeschkeLab/DeerLabWorkshop2023/blob/main/images/Title_slide.png?raw=true
         :link: https://github.com/JeschkeLab/DeerLabWorkshop2023
 
-
-.. include:: changelog.rst
-    :start-after: Version
 
 .. toctree::
     :hidden:
