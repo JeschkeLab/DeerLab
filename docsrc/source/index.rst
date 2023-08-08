@@ -32,7 +32,7 @@ In addition, there is both a cheatsheet that can be downloaded and printed for q
 
     .. grid-item-card:: Cheatsheet
         :img-top: _static/CheatSheet_low.jpg
-        :link: _static/CheatSheet.pdf
+        :link: https://github.com/JeschkeLab/DeerLabWorkshop2023/blob/main/CheatSheet.pdf?raw
 
     .. grid-item-card:: Workshop 2023 @ EFEPR
         :img-top: https://github.com/JeschkeLab/DeerLabWorkshop2023/blob/main/images/Title_slide.png?raw=true
