@@ -25,6 +25,17 @@ Getting Started with DeerLab
 
 We have a User Guide that explains how to install and use DeerLab. In addition, we have a set of examples that demonstrate how to use DeerLab for various applications, from basic to advanced.
 
+In addition, there is both a cheatsheet that can be downloaded and printed for quick reference, and a online workshop that covers the basics of DeerLab.
+
+.. grid:: 2
+
+
+    .. grid-item-card:: Cheatsheet
+        :img-top: _static/CheatSheet_low.jpg
+        :link: _static/CheatSheet.pdf
+
+    .. grid-item-card:: Workshop 2023 @ EFEPR
+        :link: https://github.com/JeschkeLab/DeerLabWorkshop2023
 
 
 .. include:: changelog.rst
