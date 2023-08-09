@@ -770,6 +770,8 @@ def ex_4pdeer(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
     The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
     harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
     The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
+    
+    The dipolar time axis is defined such that `t=0` right after the second observer pulse.
 
     .. figure:: ../images/ex_4pdeer_pathways.png
         :width: 350px
@@ -1048,6 +1050,8 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
     The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
     harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
     The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
+    
+    The dipolar time axis is defined such that `t=0` right after the second pulse.
 
     (Note that the model does not account for any relaxation-induced effects)
 

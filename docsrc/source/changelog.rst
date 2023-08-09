@@ -26,6 +26,8 @@ Release Notes
 
 Release ``v1.0.2`` - July 2023
 ------------------------------------------
+- |api| : The definition of the dipolar time axis for RIDME has changed to match the one for 4-pulse DEER (:pr:`436`).
+
 - |fix| : Fixes errors in documentation (:pr:`429`).
   
   * Changes the file name of figures 'modelling*.png` to `modeling*.png`. To keep all spelling consistent with American english.
