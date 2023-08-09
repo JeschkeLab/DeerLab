@@ -23,7 +23,7 @@ In order to compile the documentation the following steps must be followed:
         pip install sphinx-design
 
 5) Download and install [dvisvgm](https://dvisvgm.de/Downloads/).
-		
+
 ### Runnning the Sphinx builder
 
 To build the documentation from the source, call the `Makefile` or `make.bat` scripts:
@@ -31,7 +31,7 @@ To build the documentation from the source, call the `Makefile` or `make.bat` sc
         # To compile using the cached data
         ./docsrc/make.bat
         # To compile from scratch
-        ./docsrc/make.bat clean    
+        ./docsrc/make.bat clean 
 
 If the `sphinx-build` command is not found, the documentation can be built with the following command 
 

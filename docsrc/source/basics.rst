@@ -8,7 +8,7 @@ All functions in DeerLab use the same units: all distances are in units of **nan
 Distance distributions
 *********************************
 
-A distance distribution `P(r)` between two spins is represented by a pair of vectors: a distance vector ``r`` (in nanometers) and a vector of densities ``P`` (in inverse nanometers). The distance vector ``r`` can have linearly or non-linearly increasing values, but must have positive non-zero values. The elements ``P[i]`` are the distance distribution values at ``r[i]`` and are posiive or zero. Outside of the range defined by ``r``, the distribution ``P`` is assumed to be zero, i.e. the distribution is truncated to the range ``r``. The distance distribution ``P`` is normalized such that the integral over the range of the provided ``r`` equals one:
+A distance distribution `P(r)` between two spins is represented by a pair of vectors: a distance vector ``r`` (in nanometers) and a vector of densities ``P`` (in inverse nanometers). The distance vector ``r`` can have linearly or non-linearly increasing values, but must have positive non-zero values. The elements ``P[i]`` are the distance distribution values at ``r[i]`` and are positive or zero. Outside of the range defined by ``r``, the distribution ``P`` is assumed to be zero, i.e. the distribution is truncated to the range ``r``. The distance distribution ``P`` is normalized such that the integral over the range of the provided ``r`` equals one:
 
 .. math:: \int_{r_\mathrm{min}}^{r_\mathrm{max}} P(r) \mathrm{d}r = 1
 
