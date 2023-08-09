@@ -42,20 +42,20 @@ def dipolarbackground(t, pathways, basis):
 
     pathways : list of dictionaries  or ``None``, optional
         List of dipolar pathways. 
-        :raw-html:`<br /><br />`
+        
         For *two-spin dipolar interactions*, each pathway is defined as a dictionary containing the pathway's amplitude :math:`\lambda_k` (``'amp'``), 
         refocusing time :math:`t_{\mathrm{ref},k}` (``'reftime'``) in microseconds, and (sub)harmonic :math:`\delta_k` (``'harmonic'``).
         For example, for a one-dimensional experiment ``{'amp:'lambda, 'reftime':tref, 'harmonic':delta}`` or ``{'amp:'lambda, 'reftime':tref}``. If ``'harmonic'`` is not
         specified, it is assumed to be 1 (modulated). For an unmodulated pathway, specify only the amplitude, i.e. ``{'amp':Lambda0}``.
-        :raw-html:`<br /><br />`
+        
         For *multi-dimensional experiments*, the pathway refocusing times \mathbf{\t}_{\mathrm{ref},k}` and harmonics `\mathbf{\delta}_k` 
         along the different dimensions must be specified as a list, e.g. for a pathway in a two-dimensional experiment 
         ``{'amp:'lambda, 'reftime':[tref1,tref2], 'harmonic':[delta1,delta2]}``
-        :raw-html:`<br /><br />`
+        `
         For *three-spin interactions*, each pathway is defined as a dictionary containing the pathway's amplitude :math:`\lambda_k` (``'amp'``),
         a tuple of refocusing times :math:`t_{\mathrm{ref},k,q}` (``'reftime'``), and a tuple of (sub)harmonics :math:`\delta_{k,q}` (``'harmonic'``). 
         For example, for a one-dimensional experiment ``{'amp:'lambda, 'reftime':(tref1,tref2,tref3), 'harmonic':(delta1,delta2,delta3)}``. 
-        :raw-html:`<br /><br />`
+        
         If neither ``pathways`` or ``mod`` are specified (or set to ``None``), ``pathways=[{'amp':1,'reftime':0}]`` is used as the default.
     
     basis : callable or array_like or ``None``, optional
