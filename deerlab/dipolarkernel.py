@@ -130,7 +130,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         Requires the ``'grid'`` or ``'integral'`` methods.
 
     excbandwidth : scalar, optional
-        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth [5]_.
+        Excitation bandwidth of the pulses in MHz to account for limited excitation bandwidth.
         If not specified, an infinite excitation bandwidth is used.
         Requires the ``'grid'`` or ``'integral'`` methods.
 

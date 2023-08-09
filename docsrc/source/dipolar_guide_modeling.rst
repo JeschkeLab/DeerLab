@@ -27,10 +27,12 @@ The time range
 The time range depends the expected range of distances, but is typically beteen about 0.5 and several microseconds. If you are planning to use this model to fit experimental data, the time vector should be the same as the one used in the experiment. Otherwise, to construct a time vector, use the ``linspace`` or ``arange`` functions from NumPy: ::
 
    # time from 0.2 µs to 3.0 µs with a resolution of 0.01 µs, 321 points
-   t = np.linspace(0.2,3.0,321)  # start, stop, number of points
-   t = np.arange(0.2,3.0,0.01)   # start, stop, step size
+   t = np.linspace(0.2, 3.0, 321)  # start, stop, number of points
+   t = np.arange(0.2, 3.0, 0.01)   # start, stop, step size
  
-Note that DeerLab interprets ``t`` such that its zero point is right at the end of the preceding pulse (e.g. right after the second observer pulse in 4-pulse DEER) rather than at the refocusing point of the signal (after `\tau_1` after the second observer pulse).
+Note that DeerLab's definition of ``t`` depends on the type of dipolar experiment, and it might differ from how the time is conventionally defined in the literature or in experimental acquired data.
+
+For example, for 4-pulse DEER and 5-pulse RIDME, ``t`` in DeerLab is defined such that it is zero right at the end of the second observer pulse rather than at the refocusing point of the main dipolar signal (after `\tau_1` after the second observer pulse). Make sure to check the time definition in the :ref:`list of experiment models <modelsref>`.
 
 The distance range
 *************************
