@@ -1,4 +1,4 @@
-# %% [markdown]
+#%% [markdown]
 """ 
 Analysing the selection of regularisation parameter
 -------------------------------------------------------------------------
@@ -40,28 +40,25 @@ Vmodel = dl.dipolarmodel(t,r, experiment=dl.ex_4pdeer(tau1,tau2, pathways=[1]))
 # Fit the model to the data with compactness criterion
 results= dl.fit(Vmodel,Vexp,regparam='bic')
 print(results)
+#%%
+# The regularisation parameter in DeerLab can be selected using a variety of criteria. 
+# The default criterion is the Akaike complexity criterion (aic) however other 
+# criterion exists and can be selected.
+# 
+# Each criterion has its own functional, which is minimised. These functionals 
+# are often based on the residuals of the fit vs the raw data, such that a minimal functional value
+# will occur at the location of the best fit. Some methods such as the L-Curve-based methods do not follow this approach.
+# 
+# Traditionally the L-Curve has been used to investigate and select the regularisation parameter. 
+# The L-Curve is a plot of the Residual Norm against the Penalty Norm. Each point represents a 
+# different regularisation parameter. Normally the optimal regularisation parameter can be found at the kink
+# of the curve, i.e. the place that has both a low Residual Norm and a low Pentalty Norm.
+# Recently, this approach has taken a back foot as the existence of an L-shape or kink is not guaranteed. 
+# Nonetheless, it can be useful to diagnose problems in the selection of the regularisation parameter. 
 
-""" 
-The regularisation parameter in DeerLab can be selected using a variety of criteria. 
-The default criterion is the Akaike complexity criterion (aic) however other 
-criterion exists and can be selected.
-
-Each criterion has its own functional, which is minimised. These functionals 
-are often based on the residuals of the fit vs the raw data, such that a minimal functional value
-will occur at the location of the best fit. Some methods such as the L-Curve-based methods do not follow this approach.
-
-Traditionally the L-Curve has been used to investigate and select the regularisation parameter. 
-The L-Curve is a plot of the Residual Norm against the Penalty Norm. Each point represents a 
-different regularisation parameter. Normally the optimal regularisation parameter can be found at the kink
-of the curve, i.e. the place that has both a low Residual Norm and a low Pentalty Norm.
-Recently, this approach has taken a back foot as the existence of an L-shape or kink is not guaranteed. 
-Nonetheless, it can be useful to diagnose problems in the selection of the regularisation parameter. 
-
-""" 
-# %%
+#%%
 
 fig, axs =plt.subplots(1,3, figsize=(9,4),width_ratios=(1,1,0.1))
-fig.tight_layout()
 alphas = results.regparam_stats['alphas_evaled'][1:]
 funcs = results.regparam_stats['functional'][1:]
 
@@ -92,25 +89,22 @@ for i in range(n_points):
     axs[1].plot(x[i], y[i],marker = '.', ms=8, color=cmap(norm(lams[i])))
 
 i_optimal = np.argmin(np.abs(lams - results.regparam))
-axs[1].annotate(fr"$\lambda =$ {results.regparam:.2g}", xy = (x[i_optimal],y[i_optimal]),arrowprops=dict(facecolor='black', shrink=0.05, width=5), xytext=(20, 20),textcoords='offset pixels')
+axs[1].annotate(fr"$\alpha =$ {results.regparam:.2g}", xy = (x[i_optimal],y[i_optimal]),arrowprops=dict(facecolor='black', shrink=0.05, width=5), xytext=(20, 20),textcoords='offset pixels')
 fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap),cax=axs[2])
 axs[1].set_ylabel("Penalties")
 axs[2].set_ylabel("Regularisation Parameter")
 axs[1].set_xlabel("Residuals")
 axs[1].set_title("L-Curve");
+fig.tight_layout()
+
 
 # %%
-"""
-Over and Under selection of the regularisation parameter
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Over and Under selection of the regularisation parameter
+# --------------------------------------------------------
+# Here we will demonstrate the effect of selecting a regularisation parameter
+# that is either too small or too large. 
 
-Here we will demonstrate the effect of selecting a regularisation parameter
-that is either too small or too large. 
-
-
-
-"""
-
+#%%
 result_high= dl.fit(Vmodel,Vexp,regparam=1.0)
 
 result_low= dl.fit(Vmodel,Vexp,regparam=1e-4)
@@ -145,18 +139,13 @@ axs[1].set_xlabel('Distance $r$ (nm)')
 axs[1].set_ylabel('$P(r)$ (nm$^{-1}$)')
 
 
-# %%
-"""
-As we can see when the regularisation parameter is too small we still get a high
-quality fit in the time domain, however, our distance domain data is now way too
-spikey and non-physical. 
-
-In contrast when the regularisation parameter is too large we struggle to get
-a good fit, however, we get a much smoother distance distribution.
-
-This could have been seen from the selection functional above. The effect of
-lower regularisation parameter had a smaller effect on the functional than the 
-effect of going to a larger one. 
-
-
-"""
+#%%
+# 
+# As we can see when the regularisation parameter is too small we still get a high
+# quality fit in the time domain, however, our distance domain data is now way too
+# spikey and non-physical. 
+# In contrast when the regularisation parameter is too large we struggle to get
+# a good fit, however, we get a much smoother distance distribution.
+# This could have been seen from the selection functional above. The effect of
+# lower regularisation parameter had a smaller effect on the functional than the 
+# effect of going to a larger one. 

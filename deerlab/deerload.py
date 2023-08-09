@@ -28,17 +28,17 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
 
     Returns
     -------
-    t : ndarray
+    t : ndarray, or list of ndarray
         Time axis in microseconds. Its structure depends on the dimensionality of the experimental datasets:
 
-        * 1D-datasets: the time axis of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``
-        * 2D-datasets: the ``M`` time-axes of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th axis can be accessed via ``t[:,i]``.
+        * 1D datasets: the time axis is returned as a one-dimensional ndarray of shape ``(N,)``
+        * 2D datasets: the axes are returned as elements of a list, with the first axis typically being the time axis of shape ``(N,)``
         
     V : ndarray
         Experimental signal(s). Its structure depends on the dimensionality of the experimental datasets:
 
-        * 1D-datasets: the signal of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``
-        * 2D-datasets: the ``M`` signals of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th  signal can be accessed via ``V[:,i]``.
+        * 1D datasets: the signal of ``N`` points is returned as a one-dimensional ndarray of shape ``(N,)``
+        * 2D datasets: the ``M`` signals of ``N`` points are returned as a two-dimensional ndarray of shape ``(N,M)``. The i-th  signal can be accessed via ``V[:,i]``.
         
     pars : dict
         Parameter file entries, returned if ``full_output`` is ``True``.
@@ -217,7 +217,7 @@ def deerload(fullbasename, plot=False, full_output=False, *args,**kwargs):
     abscissa = np.squeeze(abscissa)
     abscissas = []
     # Convert to list of abscissas 
-    for absc in abscissa.T: 
+    for absc in abscissa.T:
         # Do not include abcissas full of NaNs
         if not all(np.isnan(absc)):
             # ns -> µs converesion

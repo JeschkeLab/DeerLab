@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="191.01341mm"
-   height="137.51036mm"
-   viewBox="0 0 171.91205 123.75939"
+   width="191.013mm"
+   height="137.38475mm"
+   viewBox="0 0 171.91168 123.64635"
    version="1.1"
    id="svg8"
-   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    sodipodi:docname="ex_dqc_pathways.svg"
-   inkscape:export-filename="C:\Users\Luis\polybox\projects\DeerLab\DeerLab\docsrc\source\images\ex_dqc_pathways.png"
-   inkscape:export-xdpi="450"
-   inkscape:export-ydpi="450"
+   inkscape:export-filename="ex_dqc_pathways.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -6127,17 +6127,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.28"
-     inkscape:cx="316.40625"
-     inkscape:cy="258.20313"
+     inkscape:zoom="1.586906"
+     inkscape:cx="360.76492"
+     inkscape:cy="259.62471"
      inkscape:document-units="mm"
-     inkscape:current-layer="g86156-4-8"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:snap-global="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:window-height="1027"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -6147,55 +6147,24 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:document-rotation="0"
-     inkscape:pagecheckerboard="0">
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
        id="grid15534"
-       originx="-3938.0378"
-       originy="838.66663" />
+       originx="-3938.0252"
+       originy="838.55712" />
     <sodipodi:guide
-       position="-3901.1252,-573.76742"
+       position="-3901.1252,-573.76743"
        orientation="1,0"
        id="guide17328"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="-3888.5298,-573.69552"
+       position="-3888.5298,-573.69553"
        orientation="1,0"
        id="guide18341"
        inkscape:locked="false" />
-    <sodipodi:guide
-       position="-3267.6187,-586.21862"
-       orientation="1,0"
-       id="guide187727"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       position="-2810.1808,-659.14899"
-       orientation="0,-1"
-       id="guide29363" />
-    <sodipodi:guide
-       position="-2736.0327,-624.10248"
-       orientation="1,0"
-       id="guide29791" />
-    <sodipodi:guide
-       position="-458.01323,-92.827317"
-       orientation="0,-1"
-       id="guide169901" />
-    <sodipodi:guide
-       position="-1497.8947,-383.04146"
-       orientation="1,0"
-       id="guide33682" />
-    <sodipodi:guide
-       position="-1329.1891,-140.87828"
-       orientation="0,-1"
-       id="guide49380" />
-    <sodipodi:guide
-       position="-469.02872,780.21505"
-       orientation="0,-1"
-       id="guide19756" />
-    <sodipodi:guide
-       position="255.43223,334.65374"
-       orientation="0,-1"
-       id="guide17344" />
   </sodipodi:namedview>
   <metadata
      id="metadata5">
@@ -6205,7 +6174,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -6213,18 +6181,13 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-3954.3192,561.86022)">
+     transform="translate(-3954.3192,561.74718)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:4.445px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.238125"
        x="314"
        y="103.61914"
        id="text160854" />
-    <path
-       style="fill:none;stroke-width:0.3175;stroke-linecap:butt;stroke-linejoin:round"
-       d="M 238.69158,360.55287 H 373.43263 V 261.86188 H 238.69158 Z"
-       id="path166539"
-       inkscape:connector-curvature="0" />
     <g
        style="stroke-linecap:butt;stroke-linejoin:round"
        id="line2d_14"

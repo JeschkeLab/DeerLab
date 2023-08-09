@@ -1,10 +1,20 @@
 .. _changelog:
 
+.. |feature| image:: https://img.shields.io/badge/Feature-28A744
+    :alt: feature
+.. |efficiency| image:: https://img.shields.io/badge/Efficiency-15A2B8
+    :alt: efficiency
+.. |enhancement| image:: https://img.shields.io/badge/Enhancement-5356E1
+    :alt: enhancement
+.. |fix| image:: https://img.shields.io/badge/Fix-DC3545
+    :alt: fix
+.. |api| image:: https://img.shields.io/badge/Api-C79502
+    :alt: api
+
 
 --------------
 Release Notes
 --------------
-
 
 .. rubric:: Legend
 
@@ -18,15 +28,19 @@ Release ``v1.0.2`` - July 2023
 ------------------------------------------
 - |fix| : Fixes errors in documentation (:pr:`429`).
   
-  * Changes the file name of figures 'modelling*.png` to `modeling*.png`. To keep all spelling consistent with american english.
+  * Changes the file name of figures 'modelling*.png` to `modeling*.png`. To keep all spelling consistent with American english.
   * Adds a missing `)` in `fitting_guide`
   * Corrects the time axis in `echo_crossing` example.
+  * Corrects plotting in `ex_simulate_basic_4pdeer` example.
 
 - |fix| : Fixes an errors in tests (:pr:`429`).
   
-  * The test `test_algorithms` had an incorrect search range.
+  * The test ``test_algorithms`` had an incorrect search range.
 
+- |fix| : Fixes an errors in the general Gaussian distribution model (:pr:`435`).
+  
 - |fix| : Removes the default font from the `fit` function due to conflicts on some systems (:pr:`429`).
+
 
 Release ``v1.0.1`` - March 2023
 ------------------------------------------
@@ -34,7 +48,7 @@ Release ``v1.0.1`` - March 2023
   
   * The file modelling_guide.rst is renamed to modeling_guide.rst to keep spelling consistency. 
   * The "Simulating a two-pathway 5-pulse DEER signal" and "Simulating a three-pathway 4-pulse DEER signal" examples now run correctly.
-  * 
+  
 - |fix| : Fixes issues with CVXOPT in tests. 
 
   * The testing will now use quadprog as the default solver. To account for the change tested values are now generated using the grid method
@@ -91,41 +105,49 @@ Release ``v1.0.0`` - December 2022
 - |api| Removes the subpackage ``deerlab.utils`` and makes its functions part of the main package for simpler maintenance (:pr:`408`). Removes multiple unused private functions.
 
 .. rubric:: ``fit``
-- |enhancement| The function now returns a full uncertainty quantification for the normalization factor of any model parameter with a normalization condition (:pr:`372`).
-- |efficiency| |api| Removes the automatic computation of the ``modelUncert`` output containing the propagated uncertainty estimate of the model's response (:pr:`401`). This significantly speeds up the runtime of the function by disabling the automatic propagation of uncertainty to the model's response which could take from several seconds to several minutes in complex models (:issue:`391`).
+
+  - |enhancement| The function now returns a full uncertainty quantification for the normalization factor of any model parameter with a normalization condition (:pr:`372`).
+  - |efficiency| |api| Removes the automatic computation of the ``modelUncert`` output containing the propagated uncertainty estimate of the model's response (:pr:`401`). This significantly speeds up the runtime of the function by disabling the automatic propagation of uncertainty to the model's response which could take from several seconds to several minutes in complex models (:issue:`391`).
 
 
 .. rubric:: ``dipolarkernel``
-- |feature| Implements multi-spin dipolar pathways up to three-spin interactions (:pr:`385`). The function takes now a list of distance vectors ``[r1,r2,...,rQ]`` for multi-spin kernels. 
-- |feature| Expands the function to be able to account for arbitrary experimental time coordinates (:pr:`385`). Now a list of time vectors ``[t1,t2,...,tD]`` can be specified to construct a D-dimensional dipolar kernel.
-- |enhancement| : Refactors most code in the function (:pr:`385`). THe code should now be more logically ordered using mathematical symbols for clearer equations. 
-- |api| Introduces a new and clearer syntax for defining dipolar pathways (:pr:`385`). Now, instead of specifying a list of pathways, where each pathway is a list of values (being the amplitude, refocusing time, and harmonic in that order), now pathways are specified as a list of dictionaries, e.g. ``pathways = [{'amp':0.5}, 'reftime':0, 'harmonic':1]``.
-- |feature| |efficiency| Adds a new optional argument ``tinterp`` to construct a dipolar kernel for a pathway and interpolate other pathways from that one (:pr:`393`). 
+
+  - |feature| Implements multi-spin dipolar pathways up to three-spin interactions (:pr:`385`). The function takes now a list of distance vectors ``[r1,r2,...,rQ]`` for multi-spin kernels. 
+  - |feature| Expands the function to be able to account for arbitrary experimental time coordinates (:pr:`385`). Now a list of time vectors ``[t1,t2,...,tD]`` can be specified to construct a D-dimensional dipolar kernel.
+  - |enhancement| : Refactors most code in the function (:pr:`385`). THe code should now be more logically ordered using mathematical symbols for clearer equations. 
+  - |api| Introduces a new and clearer syntax for defining dipolar pathways (:pr:`385`). Now, instead of specifying a list of pathways, where each pathway is a list of values (being the amplitude, refocusing time, and harmonic in that order), now pathways are specified as a list of dictionaries, e.g. ``pathways = [{'amp':0.5}, 'reftime':0, 'harmonic':1]``.
+  - |feature| |efficiency| Adds a new optional argument ``tinterp`` to construct a dipolar kernel for a pathway and interpolate other pathways from that one (:pr:`393`). 
 
 .. rubric:: ``dipolarbackground``
-- |feature| Implements multi-spin dipolar pathways up to three-spin interactions (:pr:`385`).
-- |feature| Expands the function to be able to account for arbitrary experimental time coordinates (:pr:`385`). Now a list of time vectors ``[t1,t2,...,tD]`` can be specified to construct a D-dimensional dipolar background function.
-- |api| Introduces the same new syntax for defining dipolar pathways as in ``dipolarkernel`` (:pr:`385`).
+
+  - |feature| Implements multi-spin dipolar pathways up to three-spin interactions (:pr:`385`).
+  - |feature| Expands the function to be able to account for arbitrary experimental time coordinates (:pr:`385`). Now a list of time vectors ``[t1,t2,...,tD]`` can be specified to construct a D-dimensional dipolar background function.
+  - |api| Introduces the same new syntax for defining dipolar pathways as in ``dipolarkernel`` (:pr:`385`).
 
 
 .. rubric:: ``correctphase``
-- Adds a new optional argument ``offset`` to enable a numerical optimization of the phase while accounting for a non-zero imaginary component offset (:issue:`392`, :pr:`395`).
+
+  - Adds a new optional argument ``offset`` to enable a numerical optimization of the phase while accounting for a non-zero imaginary component offset (:issue:`392`, :pr:`395`).
 
 .. rubric:: ``snlls``
-- Adds an optional argument ``modeluq`` to enable /disable the model uncertainty propagation (:pr:`401`).
+
+  - Adds an optional argument ``modeluq`` to enable /disable the model uncertainty propagation (:pr:`401`).
 
 Release ``v0.14.5`` - December 2022
 ------------------------------------------
 
-- |fix| The distribution of DeerLab through Anaconda and its ``conda`` manager has been deprecated as of this release (:pr:`400`).
+- |fix| The distribution of DeerLab through Anaconda and its ``conda`` manager has been deprecated as of this release (:pr:`400`). 
 - |fix| Fix errors in the background function plots used in the examples showing 4-pulse DEER analyses. 
 
 .. rubric:: ``fit``
-- |fix| Expose the ``cores`` option of ``bootstrap_analysis`` to parallelize bootstrap analysis from the ``fit`` function (:pr:`387`).
-- |fix| Correct behavior of masking during fitting (:pr:`394`). When using the ``mask`` option of the ``fit`` function, certain steps such as noise estimation and goodness-of-fit assessment were not taking into account the mask during the analysis.
+
+  - |fix| Expose the ``cores`` option of ``bootstrap_analysis`` to parallelize bootstrap analysis from the ``fit`` function (:pr:`387`).
+  - |fix| Correct behavior of masking during fitting (:pr:`394`). When using the ``mask`` option of the ``fit`` function, certain steps such as noise estimation and goodness-of-fit assessment were not taking into account the mask during the analysis.
 
 .. rubric:: ``bootstrap_analysis``
-- |fix| Fix error prompted when analyzing scalar variables (:pr:`402`).
+
+  - |fix| Fix error prompted when analyzing scalar variables (:pr:`402`).
+
 
 
 Release ``v0.14.4`` - August 2022
@@ -138,10 +160,13 @@ Release ``v0.14.4`` - August 2022
 - |fix| Multiple issues with the incorrect dark theming of the webpage (:pr:`359`) 
 
 .. rubric:: ``fit``
-- |fix| Added multiple missing optional keyword arguments to the documentation of the function (:pr:`367`).
+
+  - |fix| Added multiple missing optional keyword arguments to the documentation of the function (:pr:`367`).
 
 .. rubric:: ``dd_randcoil``
-- |fix| Fixed the erronously switched descriptions of the model parameters (:pr:`361`).
+
+  - |fix| Fixed the erronously switched descriptions of the model parameters (:pr:`361`).
+
 
 
 Release ``v0.14.3`` - July 2022
@@ -253,7 +278,7 @@ Release ``v0.14.0`` - April 2022
 - |api| Deprecated the ``regparamrange`` function (:pr:`232`). It depended on home-written code for the GSVD, which (as shown in previous issues) was prone to LAPACK backend problems and other bugs. This function was still a derelict from DeerAnalysis methodology.
 - |api| The function ``time2dist`` has been renamed to ``distancerange`` (:issue:`273`, :pr:`274`).- |api| The function ``time2dist`` has been renamed to ``distancerange`` (:issue:`273`, :pr:`274`).
 - |api| The convergence control arguments of the fit functions have now been renamed for consistency with the ``least_squares`` function of the SciPy package (:pr:`296`).
-- |api| Changed the name of the parameter ``width`` to ``std`` in the ``dd_gauss``, ``dd_gauss2``, ``dd_gauss3``, and ``dd_skewgauss``models (:issue:`278`, :pr:`280`).
+- |api| Changed the name of the parameter ``width`` to ``std`` in the ``dd_gauss``, ``dd_gauss2``, ``dd_gauss3``, and ``dd_skewgauss`` models (:issue:`278`, :pr:`280`).
 - |fix| When using the ``multistart`` keyword argument, no longer includes the parameter boundaries in the set of multiple start values (:pr:`218`). 
 - |fix| Fixed error (manifesting as ``nan`` values in the confidence intervals) caused by a division-by-zero in the covariance matrix estimation (:pr:`218`).
 - |fix| Fix encoding error during installation (:pr:`252`). This error could disrupt the installation in OS with default encoding different from CP-1252.
@@ -268,44 +293,53 @@ Release ``v0.14.0`` - April 2022
 - |fix| Fix bug when globally fitting multiple datasets. The global weights were not being manipulated correctly in the estimation of the linear parameters leading to incorrect results (:pr:`302`)
 
 .. rubric:: ``bootstrap_analysis``
-- |efficiency| Added a new keyword argument ``memorylimit`` to specify the maximal memory used by the bootstrap analysis (by default 8GB). If the total analysis is expected to exceed the memory limit, the function will abort the execution (:issue:`200`, :pr:`238`).
+
+  - |efficiency| Added a new keyword argument ``memorylimit`` to specify the maximal memory used by the bootstrap analysis (by default 8GB). If the total analysis is expected to exceed the memory limit, the function will abort the execution (:issue:`200`, :pr:`238`).
 
 .. rubric:: ``dipolarkernel``
-- |feature| Added a new option `complex` to request the complex-valued dipolar kernel to simulate the out-of-phase contributions to the dipolar signals (:pr:`258`).
-- |efficiency| Added a new keyword argument ``memorylimit`` to specify the maximal memory used by the dipolar kernel (by default 8GB). If the dipolar kernel is expected to exceed the memory limit, the function will abort the execution (:issue:`200`, :pr:`238`).
-- |fix| Prompts error if wrong method is selected when specifying a limited excitation bandwidth (:issue:`181`, :pr:`183`). 
+
+  - |feature| Added a new option `complex` to request the complex-valued dipolar kernel to simulate the out-of-phase contributions to the dipolar signals (:pr:`258`).
+  - |efficiency| Added a new keyword argument ``memorylimit`` to specify the maximal memory used by the dipolar kernel (by default 8GB). If the dipolar kernel is expected to exceed the memory limit, the function will abort the execution (:issue:`200`, :pr:`238`).
+  - |fix| Prompts error if wrong method is selected when specifying a limited excitation bandwidth (:issue:`181`, :pr:`183`). 
 
 .. rubric:: ``bg_models``
-- |feature| Implemented the time-dependent phase shifts for all the built-in physical background models, namely ``bg_hon3d_phase``, ``bg_hom3dex_phase``, and ``bg_homfractal_phase`` (:pr:`258`).   
-- |enhancement| Changed the implementation of ``bg_hom3dex`` (:pr:`258`). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions ``calculate_exvolume_redfactor`` and ``load_exvolume_redfactor`` have been removed.
-- |fix| Improved the implementation and behavior of the ``bg_homfractal`` model (:pr:`258`).
+
+  - |feature| Implemented the time-dependent phase shifts for all the built-in physical background models, namely ``bg_hon3d_phase``, ``bg_hom3dex_phase``, and ``bg_homfractal_phase`` (:pr:`258`).
+  - |enhancement| Changed the implementation of ``bg_hom3dex`` (:pr:`258`). This avoids the use of tabulated pre-calculated values. Accordingly the utility functions ``calculate_exvolume_redfactor`` and ``load_exvolume_redfactor`` have been removed.
+  - |fix| Improved the implementation and behavior of the ``bg_homfractal`` model (:pr:`258`).
 
 .. rubric:: ``diststats``
-- |fix| Fixed the behavior when dealing with distributions with arbitrary integral values
+
+  - |fix| Fixed the behavior when dealing with distributions with arbitrary integral values
 
 .. rubric:: ``selregparam``
-- |enhancement| Implemented a general LSQ solver as backend to adapt to different regularized optimization problem structures.
-- |enhancement| Generalized the linear least-squares solver. (:pr:`216`).
-- |enhancement| In the ``brent`` mode, the search range is no longer selected from the min/max of ``regparamrange`` output, but from a new keyword argument ``searchrange`` set by default to ``[1e-8,1e2]``. The default values were chosen as the statistical means of Monte-Carlo simulations of the min/max values of ``regparamrange``'s output for typical 4-pulse DEER kernels (:pr:`232`).
-- |enhancement|  In the ``grid`` mode, the grid-values are passed by the pre-existing keyword argument ``candidates``. By default, if not specified, a grid will be generated from the ``searchrange`` argument (:pr:`232`).
+
+  - |enhancement| Implemented a general LSQ solver as backend to adapt to different regularized optimization problem structures.
+  - |enhancement| Generalized the linear least-squares solver. (:pr:`216`).
+  - |enhancement| In the ``brent`` mode, the search range is no longer selected from the min/max of ``regparamrange`` output, but from a new keyword argument ``searchrange`` set by default to ``[1e-8,1e2]``. The default values were chosen as the statistical means of Monte-Carlo simulations of the min/max values of ``regparamrange``'s output for typical 4-pulse DEER kernels (:pr:`232`).
+  - |enhancement|  In the ``grid`` mode, the grid-values are passed by the pre-existing keyword argument ``candidates``. By default, if not specified, a grid will be generated from the ``searchrange`` argument (:pr:`232`).
 
 .. rubric:: ``UQResult``
-- |fix| Ensures non-negativity of estimated parameter uncertainty probability density functions.
-- |enhancement| Improve the behavior of ``UQresult.propagate()`` for bootstrapped uncertainty results. Now, instead of propagating bootstrapped uncertainty via the estimated covariance matrix, the uncertainty is propagated by bootstrapping from the bootstrapped uncertainty distributions (:pr:`218`). 
-- |fix| Fix behavior of the bootstrap median (:pr:`254`).
-- |fix| Suppress multiple ``DeprecationWarning`` warnings during uncertainty calculations (:pr:`255`).
-- |fix| Fix error prompt when requesting private methods such as ``__deepcopy__`` (:issue:`301`, :pr:`303`).
+
+  - |fix| Ensures non-negativity of estimated parameter uncertainty probability density functions.
+  - |enhancement| Improve the behavior of ``UQresult.propagate()`` for bootstrapped uncertainty results. Now, instead of propagating bootstrapped uncertainty via the estimated covariance matrix, the uncertainty is propagated by bootstrapping from the bootstrapped uncertainty distributions (:pr:`218`). 
+  - |fix| Fix behavior of the bootstrap median (:pr:`254`).
+  - |fix| Suppress multiple ``DeprecationWarning`` warnings during uncertainty calculations (:pr:`255`).
+  - |fix| Fix error prompt when requesting private methods such as ``__deepcopy__`` (:issue:`301`, :pr:`303`).
 
 .. rubric:: ``correctphase``
-- |fix| Implement a fully vectorized analytical solution, resulting in a 30-150x speedup (:pr:`256`, :pr:`279`). 
-- |api| Eliminate the ``phase='posrealint'`` and ``phase='negrealint'`` options (:pr:`279`).
+
+  -  |fix| Implement a fully vectorized analytical solution, resulting in a 30-150x speedup (:pr:`256`, :pr:`279`). 
+  - |api| Eliminate the ``phase='posrealint'`` and ``phase='negrealint'`` options (:pr:`279`).
 
 .. rubric:: ``deerload``
-- |fix| Raise warning instead of exception when parsing lines without key-value pairs (:pr:`256`). This avoid errors when trying to load BES3T files with PulseSPEL scripts edited in different OS systems.
+
+  - |fix| Raise warning instead of exception when parsing lines without key-value pairs (:pr:`256`). This avoid errors when trying to load BES3T files with PulseSPEL scripts edited in different OS systems.
 
 .. rubric:: ``whitegaussnoise``
-- |api| Renamed the argument ``level`` to ``std`` for clarity (:pr:`276`).
-- |api| Make the argument ``std`` a required positional argument and no longer provide a default value (:pr:`276`).
+
+  - |api| Renamed the argument ``level`` to ``std`` for clarity (:pr:`276`).
+  - |api| Make the argument ``std`` a required positional argument and no longer provide a default value (:pr:`276`).
 
 Release ``v0.13.2`` - July 2021
 ------------------------------------------

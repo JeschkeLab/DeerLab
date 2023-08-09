@@ -728,7 +728,7 @@ def ex_3pdeer(tau, pathways=[1,2], pulselength=0.016):
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
-        boundaries of the pathay refocusing times.
+        boundaries of the pathway refocusing times.
 
     Returns
     -------
@@ -792,7 +792,7 @@ def ex_4pdeer(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
-        boundaries of the pathay refocusing times.
+        boundaries of the pathway refocusing times.
 
     Returns
     -------
@@ -860,7 +860,7 @@ def ex_rev5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5], pulselength=0.016):
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
-        boundaries of the pathay refocusing times.
+        boundaries of the pathway refocusing times.
 
     Returns
     -------
@@ -935,7 +935,7 @@ def ex_fwd5pdeer(tau1, tau2, tau3, pathways=[1,2,3,4,5], pulselength=0.016):
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
-        boundaries of the pathay refocusing times.
+        boundaries of the pathway refocusing times.
 
     Returns
     -------
@@ -979,7 +979,7 @@ def ex_sifter(tau1, tau2, pathways=[1,2,3], pulselength=0.016):
     r"""
     Generate a 4-pulse SIFTER dipolar experiment model. 
         
-    The figure below shows the dipolar pathways in 4-pulse SIFTER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The figure below shows the dipolar pathways in 4-pulse SIFTER. The pulses and the interpulse delays are shown on the top.
     The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
     harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
     The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
@@ -1005,7 +1005,7 @@ def ex_sifter(tau1, tau2, pathways=[1,2,3], pulselength=0.016):
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
-        boundaries of the pathay refocusing times.
+        boundaries of the pathway refocusing times.
 
     Returns
     -------
@@ -1044,7 +1044,7 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
     r"""
     Generate a 5-pulse RIDME dipolar experiment model. 
         
-    The figure below shows the dipolar pathways in 5-pulse RIDME. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The figure below shows the dipolar pathways in 5-pulse RIDME. The pulses and their interpulse delays are shown on the top.
     The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
     harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
     The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
@@ -1069,7 +1069,7 @@ def ex_ridme(tau1, tau2, pathways=[1,2,3,4], pulselength=0.016):
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
-        boundaries of the pathay refocusing times.
+        boundaries of the pathway refocusing times.
 
     Returns
     -------
@@ -1110,7 +1110,7 @@ def ex_dqc(tau1, tau2, tau3, pathways=[1,2,3], pulselength=0.016):
     r"""
     Generate a 6-pulse DQC dipolar experiment model. 
         
-    The figure below shows the dipolar pathways in 6-pulse DQC. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
+    The figure below shows the dipolar pathways in 6-pulse DQC. The pulses and their interpulse delays are shown on the top.
     The middle table summarizes all detectable modulated dipolar pathways `p` along their dipolar phase accumulation factors `\mathbf{s}_p`,
     harmonics `\delta_p` and refocusing times `t_{\mathrm{ref},p}`. The most commonly encountered pathways are highlighted in color. 
     The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).
@@ -1139,7 +1139,7 @@ def ex_dqc(tau1, tau2, tau3, pathways=[1,2,3], pulselength=0.016):
 
     pulselength : float scalar, optional 
         Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 
-        boundaries of the pathay refocusing times.
+        boundaries of the pathway refocusing times.
 
     Returns
     -------

@@ -331,7 +331,7 @@ def der_snr(y):
     """
     DER-SNR noise estimation 
 
-    Estimate the noise level using the DER_SNR method [1]_.
+    Estimate the noise level using the DER_SNR method [1].
     
     Parameters
     ----------
