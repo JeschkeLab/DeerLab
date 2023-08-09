@@ -12,14 +12,15 @@ In order to compile the documentation the following steps must be followed:
 
 3) Install Sphinx and Sphinx extensions
 
-        pip install sphinx==4.2
-        pip install pydata-sphinx-theme==0.7.1
+        pip install sphinx
+        pip install furo
         pip install sphinxcontrib-httpdomain
         pip install sphinx-gallery
         pip install sphinxcontrib-ghcontributors
         pip install sphinx-issues
         pip install sphinx-copybutton 
         pip install numpydoc
+        pip install sphinx-design
 
 5) Download and install [dvisvgm](https://dvisvgm.de/Downloads/).
 		
