@@ -23,7 +23,7 @@ from scipy.interpolate import make_interp_spline
 
 # Simulation parameters
 reftime = 0         # Refocusing time, μs
-conc = 50           # Spin concentration, μs
+conc = 50           # Spin concentration, μM
 moddepth = 0.4      # Modulation depth
 contour = 4.0       # Contour length, nm
 persistence = 5.0   # Persistence length, nm
