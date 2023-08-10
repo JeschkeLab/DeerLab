@@ -326,7 +326,7 @@ def test_fit_Pnonparametric_normalization(V1path):
 # ----------------------------------------------------------------------
 tdeer = np.linspace(-0.5,5,300)
 tsifter = np.linspace(-2,4,300)
-tridme = np.linspace(-1,3,300)
+tridme = np.linspace(0,3,300)
 tau1,tau2,tau3 = 1,2,3
 @fixture(scope='module')
 def V3pdeer(Pr,Bfcn): 
@@ -345,7 +345,7 @@ def Vsifter(Pr,Bfcn):
     return 1e5*dipolarkernel(tsifter,r,pathways=[{'amp':0.3},{'amp':0.5,'reftime':tau2-tau1,'harmonic':1},{'amp':0.1,'reftime':2*tau2,'harmonic':1/2},{'amp':0.1,'reftime':-2*tau1,'harmonic':1/2}],bg=Bfcn)@Pr
 @fixture(scope='module')
 def Vridme(Pr,Bfcn): 
-    return 1e5*dipolarkernel(tridme,r,pathways=[{'amp':0.3},{'amp':0.5,'reftime':0},{'amp':0.1,'reftime':tau2},{'amp':0.1,'reftime':-tau1}],bg=Bfcn)@Pr
+    return 1e5*dipolarkernel(tridme,r,pathways=[{'amp':0.3},{'amp':0.5,'reftime':tau1},{'amp':0.1,'reftime':tau1+tau2},{'amp':0.1,'reftime':0}],bg=Bfcn)@Pr
 # ----------------------------------------------------------------------
 
 # ======================================================================
@@ -502,14 +502,14 @@ def test_ex_ridme_type():
 # ======================================================================
 
 # ======================================================================
-def test_ex_ridme_fit(Vridme,Pr): 
+def test_ex_ridme_fit(Vridme, Pr): 
     "Check the RIDME experimental model in fitting."
 
-    experiment = ex_ridme(tau1,tau2, pathways=[1,2,3])
-    Vmodel = dipolarmodel(tridme,r,Bmodel=bg_hom3d,experiment=experiment)
-    result = fit(Vmodel,Vridme,ftol=1e-4)
+    experiment = ex_ridme(tau1, tau2, pathways=[1,2,3])
+    Vmodel = dipolarmodel(tridme, r, Bmodel=bg_hom3d, experiment=experiment)
+    result = fit(Vmodel, Vridme, ftol=1e-4)
 
-    assert np.allclose(Vridme,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
+    assert np.allclose(Vridme, result.model, rtol=1e-3) and ovl(result.P/1e5, Pr)>0.975
 # ======================================================================
 
 # ======================================================================
