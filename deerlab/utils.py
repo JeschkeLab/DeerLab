@@ -567,7 +567,7 @@ def nearest_psd(A):
     Notes
     -----
 
-    Modified from the algorithm in [1]_.
+    Modified from the algorithm in [1].
 
     References
     ----------
@@ -920,8 +920,8 @@ def choleskycovmat(Q,cholfactors):
     Σ : ndarray 
         Covariance matrix.
 
-    Example
-    -------
+    Examples
+    --------
     >>> choleskycovmat(3, [3.0, 2.0, 1.0, 0.5, 0.5, 0.5])
     array([[3.  , 1.5 , 0.75],
            [1.5 , 2.25, 1.25],

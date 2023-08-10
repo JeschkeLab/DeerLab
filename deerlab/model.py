@@ -15,7 +15,6 @@ from copy import copy,deepcopy
 from functools import partial
 import difflib
 from sys import stdout
-
 #===================================================================================
 class Parameter(): 
     r"""
@@ -52,8 +51,6 @@ class Parameter():
         Value at which the parameter will be frozen during a fit.
 
 
-    Methods
-    -------
 
     """
 

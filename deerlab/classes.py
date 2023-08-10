@@ -120,8 +120,7 @@ class UQResult:
     threshold : scalar
         Treshold value used for the profile method. Only available for ``type='profile'``.  
 
-    Methods
-    -------
+    
 
     """
 
