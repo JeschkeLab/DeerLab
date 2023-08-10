@@ -78,7 +78,7 @@ def parse_multidatasets(y_, A, weights, noiselvl, precondition=False, masks=None
     prescales = np.ones(nDatasets)
     for i in range(nDatasets):
         if precondition:
-            prescales[i] = max(V[i])
+            prescales[i] = max(y[i])
             ylist.append(y[i]/prescales[i])
         else:
             ylist.append(y[i])

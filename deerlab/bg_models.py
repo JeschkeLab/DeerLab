@@ -129,7 +129,7 @@ This model describes the phase shift due to inter-molecular interactions between
 The expression for this model is
 
 .. math::
-   B(t) = \mathrm{exp}\left(i \frac{8\pi}{9\sqrt{3}}(\sqrt{3} + \mathrm{ln}(2-\sqrt{3}))\lambda c_s D t\right)
+   B(t) = \mathrm{exp}\left(\mathrm{i}\frac{8\pi}{9\sqrt{3}}(\sqrt{3} + \mathrm{ln}(2-\sqrt{3}))\lambda c_s D t\right)
 
 where `c_s` is the spin concentration (entered in spins/m\ :sup:`3` into this expression) and D is the dipolar constant
 

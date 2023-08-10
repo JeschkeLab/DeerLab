@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="88.423378mm"
    height="131.77725mm"
    viewBox="0 0 88.423378 131.77725"
    version="1.1"
    id="svg22369"
-   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
-   sodipodi:docname="ex_ridme_pathways.svg">
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="ex_ridme_pathways.svg"
+   inkscape:export-filename="ex_ridme_pathways.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs22363">
     <marker
@@ -68,8 +71,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="192.95084"
-     inkscape:cy="267.91021"
+     inkscape:cx="107.5"
+     inkscape:cy="239.28571"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -77,20 +80,14 @@
      inkscape:snap-global="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="2560"
-     inkscape:window-height="1377"
-     inkscape:window-x="1912"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1">
-    <sodipodi:guide
-       position="88.2206,112.46387"
-       orientation="1,0"
-       id="guide24527" />
-    <sodipodi:guide
-       position="0.060226829,113.23081"
-       orientation="1,0"
-       id="guide24535" />
-  </sodipodi:namedview>
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata22366">
     <rdf:RDF>
@@ -99,7 +96,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -164,48 +161,9 @@
    id="tspan396850-7-9-6-8-9-6">)</tspan></tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       x="93.970467"
-       y="106.54089"
-       id="text7872-55-6-2-0-7-4-7-7-7-1-1-3-8-9-4-5-7-1-5-4-5-30-8-6-7-2-4-0-5-7"
-       transform="scale(1.0004731,0.99952712)"
-       inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
-       inkscape:export-xdpi="450"
-       inkscape:export-ydpi="450"><tspan
-         sodipodi:role="line"
-         id="tspan7870-3-7-7-6-5-9-8-1-3-6-7-5-9-8-2-1-2-2-2-6-5-88-4-5-7-8-67-4-7-4"
-         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         x="93.970467"
-         y="106.54089">-τ<tspan
-   style="font-style:normal;font-size:3.11855px;baseline-shift:sub;fill:#000000;stroke:none;stroke-width:0.165;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-   id="tspan11052-2-7-1-0-2-8-86-94-0">1</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round"
-       x="95.922424"
-       y="79.014259"
-       id="text10389-3-9-9-6-2-3-9-2-5-0-7-5-7-6-6"
-       transform="scale(0.9999337,1.0000663)"
-       inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
-       inkscape:export-xdpi="450"
-       inkscape:export-ydpi="450"><tspan
-         sodipodi:role="line"
-         id="tspan10387-08-6-7-6-0-4-4-5-2-5-1-2-4-61-1"
-         x="95.922424"
-         y="79.014259"
-         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';text-align:center;text-anchor:middle;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round">t<tspan
-   id="tspan397405-3-2"
-   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.11855px;font-family:Cambria;-inkscape-font-specification:Cambria;text-align:center;baseline-shift:sub;text-anchor:middle;stroke-width:0.264583">p</tspan></tspan><tspan
-         sodipodi:role="line"
-         x="95.922424"
-         y="85.011482"
-         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';text-align:center;text-anchor:middle;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round"
-         id="tspan397436-4-1" /></text>
-    <text
-       xml:space="preserve"
        style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round"
        x="80.82431"
-       y="79.163727"
+       y="79.352699"
        id="text10389-3-9-9-6-2-3-9-2-5-0-7-5-7-3-9-8"
        transform="scale(0.9999337,1.0000663)"
        inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
@@ -214,13 +172,13 @@
          sodipodi:role="line"
          id="tspan10387-08-6-7-6-0-4-4-5-2-5-1-2-4-6-2-2"
          x="80.82431"
-         y="79.163727"
+         y="79.352699"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';text-align:center;text-anchor:middle;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round">δ<tspan
    style="font-size:3.11855px;baseline-shift:sub;stroke-width:0.264583"
    id="tspan147515">p</tspan></tspan><tspan
          sodipodi:role="line"
          x="80.82431"
-         y="85.16095"
+         y="85.349922"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';text-align:center;text-anchor:middle;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round"
          id="tspan397423-0-95" /></text>
     <text
@@ -347,8 +305,8 @@
     <text
        xml:space="preserve"
        style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       x="91.842041"
-       y="115.44064"
+       x="94.933266"
+       y="116.57512"
        id="text7872-55-6-2-0-7-4-7-7-7-1-1-3-8-9-4-5-7-1-5-4-5-30-8-6-7-2-4-4"
        transform="scale(1.0004731,0.99952712)"
        inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
@@ -357,14 +315,12 @@
          sodipodi:role="line"
          id="tspan7870-3-7-7-6-5-9-8-1-3-6-7-5-9-8-2-1-2-2-2-6-5-88-4-5-7-8-67-5"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         x="91.842041"
-         y="115.44064">τ<tspan
+         x="94.933266"
+         y="116.57512">τ<tspan
    style="font-style:normal;font-size:3.11855px;baseline-shift:sub;fill:#000000;stroke:none;stroke-width:0.165;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
    id="tspan11052-2-7-1-0-2-8-0">2</tspan><tspan
    style="font-style:normal;font-size:4.79778px;fill:#000000;stroke:none;stroke-width:0.165;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-   id="tspan11058-4-7-4-5-5-16-4">-</tspan>τ<tspan
-   style="font-style:normal;font-size:3.11855px;baseline-shift:sub;stroke-width:0.165"
-   id="tspan10723-4">1</tspan> </tspan></text>
+   id="tspan11058-4-7-4-5-5-16-4" /></tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.231;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 22.353909,82.225884 H 110.41028"
@@ -699,21 +655,6 @@
    id="tspan396846-0-4-7-3-1-70-9">(−</tspan>1,−1, 0, +1,−1<tspan
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Calibri;-inkscape-font-specification:'Calibri Italic';fill:#000000;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
    id="tspan396850-7-6-4-1-0-64-3">)</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       x="94.627068"
-       y="89.650421"
-       id="text7872-55-6-2-0-7-4-7-7-7-1-1-3-8-9-4-5-7-1-5-4-5-3-4-2-3-3-8-7-2-7-3-0"
-       transform="scale(1.0004731,0.99952712)"
-       inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
-       inkscape:export-xdpi="450"
-       inkscape:export-ydpi="450"><tspan
-         sodipodi:role="line"
-         id="tspan7870-3-7-7-6-5-9-8-1-3-6-7-5-9-8-2-1-2-2-2-6-5-8-2-4-9-8-7-2-8-8-31-2"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         x="94.627068"
-         y="89.650421">0</tspan></text>
     <circle
        style="fill:#42a399;fill-opacity:1;stroke:none;stroke-width:0.300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
        id="path35689-1-8-02-4-0-0-9-7-1-4-8-0-0-6-6-6-2-3-5-3"
@@ -768,25 +709,6 @@
    id="tspan396846-0-4-7-2-4-5-1-1-2">(−</tspan>1,−1, 0, +1,+1<tspan
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Calibri;-inkscape-font-specification:'Calibri Italic';fill:#000000;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
    id="tspan396850-7-6-4-4-62-2-6-7-6">)</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       x="94.775467"
-       y="97.731331"
-       id="text7872-55-6-2-0-7-4-7-7-7-1-1-3-8-9-4-5-7-1-5-4-5-30-8-6-7-2-4-0-5-7-7-6-5"
-       transform="scale(1.0004731,0.99952712)"
-       inkscape:transform-center-x="-0.78928072"
-       inkscape:transform-center-y="0.13154679"
-       inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
-       inkscape:export-xdpi="450"
-       inkscape:export-ydpi="450"><tspan
-         sodipodi:role="line"
-         id="tspan7870-3-7-7-6-5-9-8-1-3-6-7-5-9-8-2-1-2-2-2-6-5-88-4-5-7-8-67-4-7-4-8-0-6"
-         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         x="94.775467"
-         y="97.731331">τ<tspan
-   style="font-style:normal;font-size:3.11855px;baseline-shift:sub;fill:#000000;stroke:none;stroke-width:0.165;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-   id="tspan11052-2-7-1-0-2-8-86-94-0-9-2-8">2</tspan></tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.231;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 22.320152,120.62698 H 110.5095"
@@ -981,5 +903,81 @@
          x="66.276817"
          y="183.07962"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.3975px;font-family:Cambria;-inkscape-font-specification:'Cambria Bold';stroke-width:0.264583">t</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round"
+       x="96.86998"
+       y="79.344513"
+       id="text10389-3-9-9-6-2-3-9-2-5-0-7-5-7-6-6"
+       transform="scale(0.9999337,1.0000663)"><tspan
+         sodipodi:role="line"
+         id="tspan10387-08-6-7-6-0-4-4-5-2-5-1-2-4-61-1"
+         x="96.86998"
+         y="79.344513"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';text-align:center;text-anchor:middle;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round">t<tspan
+   style="font-style:normal;font-size:3.11856px;baseline-shift:sub;stroke-width:0.264583"
+   id="tspan10257">ref,</tspan><tspan
+   id="tspan397405-3-2"
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.11856px;font-family:Cambria;-inkscape-font-specification:Cambria;text-align:center;baseline-shift:sub;text-anchor:middle;stroke-width:0.264583">p</tspan></tspan><tspan
+         sodipodi:role="line"
+         x="96.86998"
+         y="85.341736"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';text-align:center;text-anchor:middle;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:round"
+         id="tspan397436-4-1" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="95.573807"
+       y="107.42371"
+       id="text2921"
+       transform="scale(1.0004731,0.99952712)"
+       inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
+       inkscape:export-xdpi="450"
+       inkscape:export-ydpi="450"><tspan
+         sodipodi:role="line"
+         id="tspan2919"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="95.573807"
+         y="107.42371">0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="91.468056"
+       y="98.612755"
+       id="text2931"
+       transform="scale(1.0004731,0.99952712)"
+       inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
+       inkscape:export-xdpi="450"
+       inkscape:export-ydpi="450"><tspan
+         sodipodi:role="line"
+         id="tspan2929"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="91.468056"
+         y="98.612755">τ<tspan
+   style="font-style:normal;font-size:3.11855px;baseline-shift:sub;fill:#000000;stroke:none;stroke-width:0.165;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan2923">1</tspan><tspan
+   style="font-style:normal;font-size:4.79778px;fill:#000000;stroke:none;stroke-width:0.165;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan2925">+</tspan>τ<tspan
+   style="font-style:normal;font-size:3.11855px;baseline-shift:sub;stroke-width:0.165"
+   id="tspan2927">2</tspan> </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;line-height:1.25;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="94.929459"
+       y="89.726105"
+       id="text2961"
+       transform="scale(1.0004731,0.99952712)"
+       inkscape:export-filename="D:\lufa\projects\DeerLab\DeerLab\docsrc\source\images\ex_ridme_pathways.png"
+       inkscape:export-xdpi="450"
+       inkscape:export-ydpi="450"><tspan
+         sodipodi:role="line"
+         id="tspan2959"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.79778px;font-family:Cambria;-inkscape-font-specification:'Cambria Italic';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.165;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="94.929459"
+         y="89.726105">τ<tspan
+   style="font-style:normal;font-size:3.11855px;baseline-shift:sub;fill:#000000;stroke:none;stroke-width:0.165;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan2955">1</tspan><tspan
+   style="font-style:normal;font-size:4.79778px;fill:#000000;stroke:none;stroke-width:0.165;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan2957" /></tspan></text>
   </g>
 </svg>
