@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 from scipy.optimize import least_squares, lsq_linear
 # DeerLab dependencies
 import deerlab as dl
-from deerlab.classes import UQResult, FitResult
+from deerlab.classes import UQResult
+from deerlab.fitresult import FitResult
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
 import time 
 from functools import partial
@@ -989,9 +990,12 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         modelfit = modelfit[0]
         modelfituq = modelfituq[0]
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
-                     linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
-                     stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl,regparam_stats=alpha_stats)
+    # return FitResult(y=ys, mask=mask, nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
+    #                  linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
+    #                  stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl, regparam_stats=alpha_stats)
+    return FitResult(y=ys, mask=mask, nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
+                    linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha,
+                    stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl, regparam_stats=alpha_stats)
 # ===========================================================================================
 
 
