@@ -18,6 +18,7 @@ Reference Index
     Penalty
     FitResult
     UQResult
+    ExperimentInfo
 
 
 .. currentmodule:: deerlab
