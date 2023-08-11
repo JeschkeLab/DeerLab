@@ -688,9 +688,43 @@ def _checkpathways(pathways,Nmax):
 #===============================================================================
 class ExperimentInfo():
     r"""
-    Represents information about a dipolar EPR experiment"""
+    Represents information about a dipolar EPR experiment
+    
+    Attributes    
+    ----------
+    name : string
+        Name of the experiment.
+    reftimes : list of floats
+        List of refocusing times, in microseconds.
+    harmonics : list
+        List of harmonics of the refocusing times.
+    pulselength : float
+        Length of the longest microwave pulse in the sequence in microseconds.
+    pathwaylabels : list
+        List of pathway labels.
+    delays : list
+        List of pulse delays.
+            
+    """
 
     def __init__(self,name,reftimes,harmonics,pulselength,pathwaylabels,delays):
+        """ Populates the attributes of the ExperimentInfo object.
+
+        Parameters
+        ----------
+        name : string
+            Name of the experiment.
+        reftimes : list of floats
+            List of refocusing times, in microseconds.
+        harmonics : list
+            List of harmonics of the refocusing times.  
+        pulselength : float
+            Length of the longest microwave pulse in the sequence in microseconds.
+        pathwaylabels : list
+            List of pathway labels.
+        delays : list
+            List of pulse delays.
+        """
         self.npathways = len(harmonics)
         self.reftimes = reftimes
         self.harmonics = harmonics

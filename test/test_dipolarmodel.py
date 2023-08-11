@@ -1,7 +1,8 @@
 from deerlab.dipolarkernel import dipolarkernel
 from deerlab.utils import ovl
 import numpy as np
-from deerlab.model import Model,fit
+from deerlab.model import Model
+from deerlab.fit import fit
 from deerlab.dipolarmodel import ExperimentInfo,dipolarpenalty, dipolarmodel, ex_4pdeer, ex_3pdeer,ex_fwd5pdeer, ex_rev5pdeer, ex_sifter, ex_ridme, ex_dqc
 from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp
 from deerlab.utils import assert_docstring
