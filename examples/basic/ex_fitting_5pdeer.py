@@ -29,16 +29,17 @@ path = '../data/'
 file = 'example_5pdeer_1.DTA'
 
 # Experimental parameters (reversed 5pDEER)
-tau1 = 3.9               # First inter-pulse delay, μs
-tau2 = 3.7               # Second inter-pulse delay, μs
-tau3 = 0.5               # Third inter-pulse delay, μs
-deadtime = 0.3           # Acquisition deadtime, μs
+tau1 = 3.9              # First inter-pulse delay, μs
+tau2 = 3.7              # Second inter-pulse delay, μs
+tau3 = 0.5              # Third inter-pulse delay, μs
+tmin = 0.3              # Acquisition deadtime, μs
 
 # Load the experimental data
 t,Vexp = dl.deerload(path + file)
 Vexp = dl.correctphase(Vexp)    # Phase correction
-Vexp = Vexp/np.max(Vexp)         # Rescaling (aesthetic)
-t = t + deadtime       # Account for deadtime
+Vexp = Vexp/np.max(Vexp)        # Rescaling (aesthetic)
+t = t - t[0]                    # Account for zerotime
+t = t + tmin      
 
 # Distance vector
 r = np.arange(3,5,0.025) # nm

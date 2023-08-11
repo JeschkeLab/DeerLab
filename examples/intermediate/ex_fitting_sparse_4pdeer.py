@@ -24,7 +24,7 @@ timingsfile = 'experimental_sparse_4pdeer_timings.DTA'
 # Experimental parameters
 tau1 = 0.400      # First inter-pulse delay, μs
 tau2 = 8.000      # Second inter-pulse delay, μs
-deadtime = 0.482  # Acquisition deadtime, μs
+tmin = 0.482      # Acquisition deadtime, μs
 
 # Load the experimental data and the grid of recorded timings (this depends on how the data were acquired)
 _,Vexp = dl.deerload(path + datafile)
@@ -34,7 +34,8 @@ t = t/1000 # ns -> μs
 # Pre-processing
 Vexp = dl.correctphase(Vexp) # Phase correction
 Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
-t = t + deadtime             # Account for deadtime
+t = t - t[0]                     # Account for zerotime
+t = t + tmin    
 
 # Distance vector
 r = np.arange(2,10,0.05) # nm

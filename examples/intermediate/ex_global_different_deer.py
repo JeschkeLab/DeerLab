@@ -21,23 +21,27 @@ file5p = 'example_5pdeer_2.DTA'
 # Experimental parameters (4pDEER)
 tau1_4p = 0.5               # First inter-pulse delay, μs
 tau2_4p = 3.5               # Second inter-pulse delay, μs
-deadtime_4p = 0.1           # Acquisition deadtime, μs
+tmin_4p = 0.1               # Acquisition deadtime, μs
 # Experimental parameters (reversed 5pDEER)
 tau1_5p = 2.9               # First inter-pulse delay, μs
 tau2_5p = 3.3               # Second inter-pulse delay, μs
 tau3_5p = 0.3               # Third inter-pulse delay, μs
-deadtime_5p = 0.1           # Acquisition deadtime, μs
+tmin_5p = 0.1               # Acquisition deadtime, μs
 
 # Load the experimental data (4pDEER)
 t4p,V4p = dl.deerload(path + file4p)
 V4p = dl.correctphase(V4p)    # Phase correction
 V4p = V4p/np.max(V4p)         # Rescaling (aesthetic)
-t4p = t4p + deadtime_4p       # Account for deadtime
+t4p = t4p - t4p[0]            # Account for zerotime
+t4p = t4p + tmin_4p    
+
 # Load the experimental data (reversed 5pDEER)
 t5p,V5p = dl.deerload(path + file5p)
 V5p = dl.correctphase(V5p)    # Phase correction
 V5p = V5p/np.max(V5p)         # Rescaling (aesthetic)
-t5p = t5p + deadtime_5p       # Account for deadtime
+t5p = t5p - t5p[0]            # Account for zerotime
+t5p = t5p + tmin_5p    
+
 
 # Run fit
 r = np.arange(2.5,6,0.05)

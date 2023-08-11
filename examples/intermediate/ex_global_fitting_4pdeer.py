@@ -23,10 +23,10 @@ files = [
 # Experimental parameters
 tau1s = [0.3, 0.5]      # First inter-pulse delay, μs
 tau2s = [2.0, 4.0]      # Second inter-pulse delay, μs
-deadtimes = [0.1, 0.3]  # Acquisition deadtime, μs
+tmins = [0.1, 0.3]      # Acquisition deadtime, μs
 
 Vmodels,ts,Vs = [],[],[]
-for file, tau1, tau2, deadtime in zip(files, tau1s, tau2s, deadtimes): 
+for file, tau1, tau2, tmin in zip(files, tau1s, tau2s, tmins): 
 
     # Load the experimental data
     t,Vexp = dl.deerload(path + file)
@@ -34,7 +34,8 @@ for file, tau1, tau2, deadtime in zip(files, tau1s, tau2s, deadtimes):
     # Pre-processing
     Vexp = dl.correctphase(Vexp) # Phase correction
     Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
-    t = t + deadtime             # Account for deadtime
+    t = t - t[0]                     # Account for zerotime
+    t = t + tmin   
 
     # Distance vector
     r = np.arange(1.5,7,0.05) # nm

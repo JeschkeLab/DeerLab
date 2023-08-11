@@ -23,7 +23,7 @@ file = 'example_4pdeer_1.DTA'
 # Experimental parameters
 tau1 = 0.3      # First inter-pulse delay, μs
 tau2 = 4.0      # Second inter-pulse delay, μs
-deadtime = 0.1  # Acquisition deadtime, μs
+tmin = 0.1      # Acquisition deadtime, μs
 
 # Load the experimental data
 t,Vexp = dl.deerload(path + file)
@@ -31,7 +31,8 @@ t,Vexp = dl.deerload(path + file)
 # Pre-processing
 Vexp = dl.correctphase(Vexp) # Phase correction
 Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
-t = t + deadtime             # Account for deadtime
+t = t - t[0]                 # Account for zerotime
+t = t + tmin   
 
 # Construct the dipolar signal model
 r = np.arange(2,6,0.02)

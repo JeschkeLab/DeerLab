@@ -30,7 +30,7 @@ files = [
 # Experimental parameters
 tau1 = 0.4  # First inter-pulse delay, μs
 tau2 = 4.5  # Second inter-pulse delay, μs
-deadtime = 0.2  # Acquisition deadtime, μs
+tmin = 0.2  # Acquisition deadtime, μs
 
 Vmodels, ts, Vexps = [], [], []
 for file in files:
@@ -39,10 +39,11 @@ for file in files:
     t, Vexp = dl.deerload(path + file)
 
     # Pre-processing
-    Vexp = dl.correctphase(Vexp)  # Phase correction
-    Vexp = Vexp / np.max(Vexp)  # Rescaling (aesthetic)
-    t = t + deadtime  # Account for deadtime
-
+    Vexp = dl.correctphase(Vexp)    # Phase correction
+    Vexp = Vexp / np.max(Vexp)      # Rescaling (aesthetic)
+    t = t - t[0]                    # Account for zerotime
+    t = t + tmin  
+     
     # Put the datasets into lists
     ts.append(t)
     Vexps.append(Vexp)
