@@ -6,7 +6,7 @@ from deerlab.solvers import snlls
 from deerlab.fitresult import FitResult
 from deerlab.utils import formatted_table, parse_multidatasets
 from deerlab.bootstrap_analysis import bootstrap_analysis
-
+from deerlab.classes import UQResult
 from sys import stdout
 
 from deerlab.model import Model

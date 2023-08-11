@@ -1,6 +1,7 @@
 import numpy as np
 import deerlab as dl 
-from deerlab.model import Model,fit,merge
+from deerlab.model import Model,merge
+from deerlab.fit import fit
 from deerlab.utils import store_pickle, read_pickle
 import os 
 
