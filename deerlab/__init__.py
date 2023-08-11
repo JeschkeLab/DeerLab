@@ -1,7 +1,7 @@
 # __init__.py
 from .dd_models import *
 from .bg_models import *
-from .model import Model, Penalty, Parameter, link, lincombine, merge, relate, fit
+from .model import Model, Penalty, Parameter, link, lincombine, merge, relate
 from .deerload import deerload
 from .selregparam import selregparam
 from .dipolarkernel import dipolarkernel
@@ -16,7 +16,9 @@ from .whitegaussnoise import whitegaussnoise
 from .bootstrap_analysis import bootstrap_analysis
 from .fftspec import fftspec
 from .distancerange import distancerange
-from .classes import FitResult, UQResult
+from .classes import UQResult
+from .fit import fit
+from .fitresult import FitResult
 from .diststats import diststats
 from .profile_analysis import profile_analysis
 from .utils import *

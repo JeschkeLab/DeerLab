@@ -1,6 +1,7 @@
 import numpy as np
 from deerlab import dd_gauss, whitegaussnoise
-from deerlab.model import Penalty,fit
+from deerlab.model import Penalty
+from deerlab.fit import fit
 from deerlab.utils import ovl
 from copy import deepcopy 
 import pytest 

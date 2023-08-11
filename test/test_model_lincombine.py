@@ -1,6 +1,7 @@
 import numpy as np
 import deerlab as dl 
-from deerlab.model import Model,fit,lincombine
+from deerlab.model import Model,lincombine
+from deerlab.fit import fit
 from deerlab.utils import store_pickle, read_pickle  
 from copy import deepcopy
 import os 

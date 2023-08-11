@@ -1,6 +1,7 @@
 from collections import namedtuple
 from deerlab.whitegaussnoise import whitegaussnoise
-from deerlab.model import Model, fit
+from deerlab.model import Model
+from deerlab.fit import fit
 import numpy as np 
 import pytest
 import os 

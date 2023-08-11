@@ -1,34 +1,72 @@
 .. _{{ objname }}:
 
-{{ fullname | escape | underline}}
+{{ fullname | escape | underline }}
 
 .. currentmodule:: {{ module }}
-
 .. autoclass:: {{ objname }}
-   :members:                                    <-- add at least this line
-   :show-inheritance:                           <-- plus I want to show inheritance...
-   :inherited-members:                          <-- ...and inherited members too
 
-   {% block methods %}
-   .. automethod:: __init__
+{% block attributes %}
+{% if attributes %}
 
-   {% if methods %}
-   .. rubric:: {{ _('Methods') }}
+Attributes table
+~~~~~~~~~~~~~~~~
+.. autosummary::
 
-   .. autosummary::
-   {% for item in methods %}
-      ~{{ name }}.{{ item }}
-   {%- endfor %}
-   {% endif %}
-   {% endblock %}
+{% for item in attributes %}
+    ~{{ fullname }}.{{ item }}
 
-   {% block attributes %}
-   {% if attributes %}
-   .. rubric:: {{ _('Attributes') }}
+{% endfor %}
+{% endif %}
+{% endblock %}
 
-   .. autosummary::
-   {% for item in attributes %}
-      ~{{ name }}.{{ item }}
-   {%- endfor %}
-   {% endif %}
-   {% endblock %}
+{% block methods %}
+{% if methods %}
+
+Methods table
+~~~~~~~~~~~~~
+.. autosummary::
+
+{% for item in methods %}
+    {%- if item not in inherited_members %}
+
+    ~{{ fullname }}.{{ item }}
+    {% endif %}
+
+{% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block attributes_documentation %}
+{% if attributes %}
+
+Attributes
+~~~~~~~~~~
+{% for item in attributes %}
+{{ item | escape | underline(line='^') }}
+.. autoattribute:: {{ [objname, item] | join(".") }}
+{% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block methods_documentation %}
+{% if methods %}
+
+Methods
+~~~~~~~
+
+{% for item in methods %}
+{%- if item not in inherited_members %}
+.. automethod:: {{ [objname, item] | join(".") }}
+{% endif %}
+{% endfor %}
+
+Inherited Methods
++++++++++++++++++
+{% for item in methods %}
+{% if item in inherited_members %}
+.. automethod:: {{ [objname, item] | join(".") }}
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% endblock %}
