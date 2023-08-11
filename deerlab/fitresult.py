@@ -96,8 +96,11 @@ class FitResult(dict):
                 if param.normalization is not None:
                     normfactor_key = f'{key}_scale'
                     normfactor_keys.append(normfactor_key)
-                    model.addnonlinear(normfactor_key,lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
-                    getattr(model,normfactor_key).freeze(1)
+                    try:
+                        model.addnonlinear(normfactor_key,lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
+                        getattr(model,normfactor_key).freeze(1)
+                    except KeyError:
+                        pass
                     normalization = True
                     
 
@@ -202,9 +205,9 @@ class FitResult(dict):
 
             Plots the input dataset(s), their fits, and uncertainty bands.
             """
-            yfits=self.model
-            yuqs=self.modelUncert
-            ys = self.y
+                
+            ys, yfits, yuqs, noiselvl, masks = getattr(self,'__plot_inputs')
+
             # Check which datasets are complex-valued
             complexy = [np.iscomplex(y).any() for y in ys]
 
@@ -230,7 +233,12 @@ class FitResult(dict):
                 xlabel = 'Array elements'
 
             # Go through every dataset
-            for i,(y,yfit,yuq,noiselvl) in enumerate(zip(ys,yfits,yuqs,self.noiselvls)): 
+            for i,(y,yfit,yuq,noiselvl,mask) in enumerate(zip(ys,yfits,yuqs,noiselvl,masks)): 
+
+                axis_masked = axis[i][mask]
+                y_masked = y[mask]
+                y_hidden = y[~mask]
+                
 
                 # If dataset is complex-valued, plot the real and imaginary parts separately
                 if complexy[i]:
@@ -240,9 +248,11 @@ class FitResult(dict):
                     components = [np.real]
                     componentstrs = ['']
                 for component,componentstr in zip(components,componentstrs):
-
+                    
                     # Plot the experimental signal and fit
-                    axs[n].plot(axis[i],component(y),'.',color='grey',label='Data'+componentstr)
+                    axs[n].plot(axis_masked,component(y_masked),'.',color='grey',label='Data'+componentstr)
+                    if y_hidden.size>0:
+                        axs[n].plot(axis[i][~mask],component(y_hidden),'.',color='grey',alpha=0.4, label='Masked data'+componentstr)
                     axs[n].plot(axis[i],component(yfit),color='#4550e6',label='Model fit')
                     if yuq.type!='void': 
                         axs[i].fill_between(axis[i],component(yuq.ci(95)[:,0]),component(yuq.ci(95)[:,1]),alpha=0.4,linewidth=0,color='#4550e6',label='95%-confidence interval')
@@ -257,13 +267,14 @@ class FitResult(dict):
                     # Plot the visual guides to assess the goodness-of-fit (if requested)
                     if gof: 
                         # Get the residual
-                        residuals = component(yfit - y)
+                        residuals = component(yfit[mask] - y[mask])
+                        
 
                         # Plot the residual values along the estimated noise level and mean value
-                        axs[n].plot(axis[i],residuals,'.',color='grey')
-                        axs[n].hlines(np.mean(residuals),axis[i][0],axis[i][-1],color='#4550e6',label='Mean')
-                        axs[n].hlines(np.mean(residuals)+noiselvl,axis[i][0],axis[i][-1],color='#4550e6',linestyle='dashed',label='Estimated noise level')
-                        axs[n].hlines(np.mean(residuals)-noiselvl,axis[i][0],axis[i][-1],color='#4550e6',linestyle='dashed')
+                        axs[n].plot(axis_masked,residuals,'.',color='grey')
+                        axs[n].hlines(np.mean(residuals),axis[i][0],axis_masked[-1],color='#4550e6',label='Mean')
+                        axs[n].hlines(np.mean(residuals)+noiselvl,axis_masked[0],axis_masked[-1],color='#4550e6',linestyle='dashed',label='Estimated noise level')
+                        axs[n].hlines(np.mean(residuals)-noiselvl,axis_masked[0],axis_masked[-1],color='#4550e6',linestyle='dashed')
                         axs[n].set_xlabel(xlabel,size=fontsize)        
                         axs[n].set_ylabel(f'Residual #{i+1}'+componentstr,size=fontsize)      
                         axs[n].spines.right.set_visible(False)

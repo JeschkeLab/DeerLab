@@ -524,7 +524,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['y','mask','param','paramUncert','model','cost','plot','residuals','stats','regparam','regparam_stats']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['y','mask','param','paramUncert','model','cost','plot','residuals','stats','regparam','regparam_stats','__plot_inputs']}
     _paramlist = model._parameter_list('vector')
 
     # Enforce normalization of the linear parameters (if needed) for the final output
@@ -546,7 +546,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                     FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
-
+    
     # Generate FitResult object from all the dictionaries
     fitresult = FitResult({**FitResult_param_,**FitResult_paramuq_, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl}) 
 

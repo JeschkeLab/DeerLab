@@ -982,8 +982,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     Ndof = Nnonlin + Ndof_lin 
     stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof,masks)
 
-    # Display function
-    plotfcn = partial(_plot,ys,yfits,yuq,noiselvl)
+    # Prepare the plot function inputs 
+    plot_inputs=[ys,yfits,yuq,noiselvl,masks]
 
     if len(stats) == 1: 
         stats = stats[0]
@@ -995,7 +995,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     #                  stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl, regparam_stats=alpha_stats)
     return FitResult(y=ys, mask=mask, nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
                     linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha,
-                    stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl, regparam_stats=alpha_stats)
+                    stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl, regparam_stats=alpha_stats, __plot_inputs=plot_inputs)
 # ===========================================================================================
 
 
