@@ -237,7 +237,7 @@ notes =  r"""
 
 :math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{|r-\left<r\right>|}{\sigma}\right)^\beta \right)`
 
-where `\left<r\right>` is the mean distance,`\sigma` is the standard deviation, and `\beta` determines the shape of the distribution.
+where `\left<r\right>` is the mean distance, `\sigma` is the standard deviation, and `\beta` determines the shape of the distribution.
 """
 def _gengauss(r,mean,std,beta):
     P = beta/(2*std*spc.gamma(1/beta))*np.exp(-(abs(r-mean)/std)**beta)
@@ -265,9 +265,9 @@ notes = r"""
     <img src="../_images/model_scheme_dd_skewgauss.png", style="width: 50%">
     <br><br><br>  
 
-:math:`P(r) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{2\sigma^2}\right)\left(1 + \mathrm{erf}\left(\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
+:math:`P(r) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{2\sigma^2}\right)\left(1 + \mathrm{erf}\left(\alpha\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
 
-where `\left<r\right>` is the center distance,`\sigma` is the spread, and `\alpha` is the skewness of the distribution.
+where `\left<r\right>` is the center distance, `\sigma` is the spread, and `\alpha` is the skewness of the distribution.
 """
 def _skewgauss(r,center,std,skew):
     x = (r-center)/std
