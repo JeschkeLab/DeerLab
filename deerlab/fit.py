@@ -345,13 +345,6 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         
         The default is ``'cvx'``.
 
-    verbose : scalar integer, optional
-        Level of verbosity during the analysis:
-
-            * ``0`` : Work silently (default).
-            * ``1`` : Display progress including the non-linear least-squares' solver termination report.
-            * ``2`` : Display progress including the non-linear least-squares' solver iteration details.
-
     snlls_keyargs_docstrings
 
     Returns
@@ -384,21 +377,6 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Value of the cost function at the solution.
     noiselvl : ndarray
         Estimated or user-given noise standard deviations of the individual datasets.
-    plot(axis=None,xlabel='',gof=False) : callable
-        Function to display the results. It will display the fitted data.
-        A vector for the x-axis and its label can be specified by calling ``FitResult.plot(axis=x,xlabel='xlabel')``.
-        A set of goodness-of-fit plots can be displayed by enabling the ``gof`` option by calling ``FitResult.plot(gof=True)``.        
-    evaluate(model, constants) : callable
-        Function to evaluate a model at the fitted parameter values. Takes a model object or callable function ``model`` to be evaluated.
-        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.   
-        Any model constants present required by the model must be specified as a second argument ``constants``.  
-        It returns the model's response at the fitted parameter values as an ndarray. 
-    propagate(model,constants,lb,ub) : callable
-        Function to propagate the uncertainty in the fit results to a model's response. Takes a model object or callable function ``model`` to be evaluated.
-        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.  
-        Any model constants present required by the model must be specified as a second argument ``constants``. The lower bounds ``lb`` and upper bounds ``ub``
-        of the model's response can be specified as a third and fourth argument respectively.  
-        It returns the model's response uncertainty quantification as a ``UQResult`` object.
     """
 
     if not isinstance(model_,Model):

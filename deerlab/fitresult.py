@@ -18,6 +18,11 @@ class FitResult(dict):
         The fitted model response.
     modelUncert : 
         Uncertainty quantification of the fitted model response.
+    param : ndarray
+        Fitted parameter vector ordered according to the model parameter indices.
+    paramUncert : :ref:`UQResult`
+        Uncertainty quantification of the parameter vector ordered according to the model parameter indices.
+
     regparam : float scalar
         Regularization parameter used in the fit.
     noiselvl: ndarray
@@ -37,6 +42,15 @@ class FitResult(dict):
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+
+    nonlin : ndarray
+        Fitted non-linear parameters. [:ref:`snlls` specific attribute]
+    nonlinUncert : :ref:`UQResult`
+        Uncertainty quantification of the non-linear parameter set. [:ref:`snlls` specific attribute]
+    lin : ndarray
+        Fitted linear parameters. [:ref:`snlls` specific attribute]
+    linUncert : :ref:`UQResult`
+        Uncertainty quantification of the linear parameter set. [:ref:`snlls` specific attribute]
 
     """
 
@@ -80,7 +94,6 @@ class FitResult(dict):
             raise ValueError('The fit object does not contain any fitted parameters.')
 
         # Enforce model normalization
-        normalization = False
         normfactor_keys = []
         for key in model._parameter_list():
             param = getattr(model,key)
@@ -93,7 +106,6 @@ class FitResult(dict):
                         getattr(model,normfactor_key).freeze(1)
                     except KeyError:
                         pass
-                    normalization = True
                     
 
         # Get some basic information on the parameter vector
@@ -162,6 +174,7 @@ class FitResult(dict):
         the model's response can be specified as a third and fourth argument 
         respectively. It returns the model's response uncertainty 
         quantification as a UQResult object.
+        
         Parameters
         ----------
 
@@ -193,12 +206,33 @@ class FitResult(dict):
     def plot(self,axis=None,xlabel=None,gof=False,fontsize=13):
             """
             Function to display the results. 
-            It will display the fitted data. A 
-            vector for the x-axis and its label can be specified by calling 
-            FitResult.plot(axis=x,xlabel='xlabel'). A set of goodness-of-fit plots 
-            can be displayed by enabling the gof option by calling FitResult.plot(gof=True).
+            
+            This can also plot goodness-of-fit tests if requested.
 
-            Plots the input dataset(s), their fits, and uncertainty bands.
+            * Plot of residuals along with the estimated noise level and mean value
+            * Histogram of the residuals weighted by the noise level, compared to the standard normal distribution
+            * Autocorrelogram of the residuals, along the confidence region for a white noise vector
+            
+            Parameters
+            ----------
+            axis : array_like, optional
+                Vector for the x-axis. If not specified, the default is the array indices.
+
+            xlabel : str, optional
+                Label for the x-axis. If not specified, the default is 'Array elements'.
+
+            gof : bool, optional
+                If set to True, the goodness-of-fit plots will be displayed, the default is False.
+            
+            fontsize : int, optional
+                Fontsize of the figure labels, the default is 13.
+
+            Returns
+            -------
+            fig : matplotlib.Figure
+                Figure object containing the plot.
+
+
             """
                 
             ys, yfits, yuqs, noiselvl, masks = getattr(self,'__plot_inputs')

@@ -448,11 +448,6 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Uncertainty quantification of the fitted model. Only computed if ``modeluq=True``.
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
-    plot : callable
-        Function to display the results. It will display the fitted data.
-        The function returns the figure object (``matplotlib.figure.Figure``)
-        object as output, which can be modified. Using ``fig = plot(show=False)`` 
-        will not render the figure unless ``display(fig)`` is called. 
     stats : dict
         Goodness of fit statistical estimators
 
