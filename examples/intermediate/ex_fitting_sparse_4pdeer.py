@@ -24,7 +24,7 @@ timingsfile = 'experimental_sparse_4pdeer_timings.DTA'
 # Experimental parameters
 tau1 = 0.400      # First inter-pulse delay, μs
 tau2 = 8.000      # Second inter-pulse delay, μs
-tmin = 0.482      # Acquisition deadtime, μs
+tmin = 0.482      # Start time, μs
 
 # Load the experimental data and the grid of recorded timings (this depends on how the data were acquired)
 _,Vexp = dl.deerload(path + datafile)

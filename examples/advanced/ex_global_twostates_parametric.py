@@ -30,7 +30,7 @@ files = [
 # Experimental parameters
 tau1 = 0.4  # First inter-pulse delay, μs
 tau2 = 4.5  # Second inter-pulse delay, μs
-tmin = 0.2  # Acquisition deadtime, μs
+tmin = 0.2  # Start time, μs
 
 Vmodels, ts, Vexps = [], [], []
 for file in files:

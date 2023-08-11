@@ -32,7 +32,7 @@ t *= 1e3 # convert from ms to us
 # Experimental parameters
 tau1 = 0.5  # First inter-pulse time delay, μs
 tau2 = 4.5  # Second inter-pulse time delay, μs
-tmin = 0.3    # Acquisition deadtime, μs
+tmin = 0.3    # Start time, μs
 
 t = t - t[0]                     # Account for zerotime
 t = t + tmin    

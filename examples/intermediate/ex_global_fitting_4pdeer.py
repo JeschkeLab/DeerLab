@@ -23,7 +23,7 @@ files = [
 # Experimental parameters
 tau1s = [0.3, 0.5]      # First inter-pulse delay, μs
 tau2s = [2.0, 4.0]      # Second inter-pulse delay, μs
-tmins = [0.1, 0.3]      # Acquisition deadtime, μs
+tmins = [0.1, 0.3]      # Start time, μs
 
 Vmodels,ts,Vs = [],[],[]
 for file, tau1, tau2, tmin in zip(files, tau1s, tau2s, tmins): 

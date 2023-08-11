@@ -21,12 +21,12 @@ file5p = 'example_5pdeer_2.DTA'
 # Experimental parameters (4pDEER)
 tau1_4p = 0.5               # First inter-pulse delay, μs
 tau2_4p = 3.5               # Second inter-pulse delay, μs
-tmin_4p = 0.1               # Acquisition deadtime, μs
+tmin_4p = 0.1               # Start time, μs
 # Experimental parameters (reversed 5pDEER)
 tau1_5p = 2.9               # First inter-pulse delay, μs
 tau2_5p = 3.3               # Second inter-pulse delay, μs
 tau3_5p = 0.3               # Third inter-pulse delay, μs
-tmin_5p = 0.1               # Acquisition deadtime, μs
+tmin_5p = 0.1               # Start time, μs
 
 # Load the experimental data (4pDEER)
 t4p,V4p = dl.deerload(path + file4p)

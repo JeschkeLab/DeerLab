@@ -21,7 +21,7 @@ file = 'example_ridme_1.DTA'
 # Experimental parameters
 tau1 = 0.4      # First inter-pulse delay, μs
 tau2 = 4.2      # Second inter-pulse delay, μs
-tmin = 0.28  # Acquisition deadtime, μs
+tmin = 0.28  # Start time, μs
 
 # Load the experimental data
 t,Vexp = dl.deerload(path + file)

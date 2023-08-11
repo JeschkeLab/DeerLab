@@ -28,7 +28,7 @@ file = 'example_4pdeer_1.DTA'
 # Experimental parameters
 tau1 = 0.3      # First inter-pulse delay, μs
 tau2 = 4.0      # Second inter-pulse delay, μs
-deadtime = 0.1  # Acquisition deadtime, μs
+deadtime = 0.1  # Start time, μs
 
 # Load the experimental data
 t,Vexp = dl.deerload(path + file)
