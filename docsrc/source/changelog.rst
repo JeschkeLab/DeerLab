@@ -52,6 +52,9 @@ Release ``v1.1`` - August 2023
 
 - |enhancement| : Added a RIDME example (:pr:`438`).
 
+- |fix| : Masked data points are no-longer included in gof statistics in `FitResult.plot()`.
+
+
 
 Release ``v1.0.1`` - March 2023
 ------------------------------------------
