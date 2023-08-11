@@ -38,14 +38,6 @@ class FitResult(dict):
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
 
-    Methods
-    -------
-    plot(axis=None,xlabel='',gof=False)
-        Function to display the results. It will display the fitted data. A 
-        vector for the x-axis and its label can be specified by calling 
-        FitResult.plot(axis=x,xlabel='xlabel'). A set of goodness-of-fit plots 
-        can be displayed by enabling the gof option by calling FitResult.plot(gof=True).
-    
     """
 
     def __getattr__(self, attr):
@@ -200,8 +192,11 @@ class FitResult(dict):
 
     def plot(self,axis=None,xlabel=None,gof=False,fontsize=13):
             """
-            Plot method for the FitResult object
-            ====================================
+            Function to display the results. 
+            It will display the fitted data. A 
+            vector for the x-axis and its label can be specified by calling 
+            FitResult.plot(axis=x,xlabel='xlabel'). A set of goodness-of-fit plots 
+            can be displayed by enabling the gof option by calling FitResult.plot(gof=True).
 
             Plots the input dataset(s), their fits, and uncertainty bands.
             """
