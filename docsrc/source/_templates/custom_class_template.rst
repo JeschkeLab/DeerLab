@@ -27,12 +27,10 @@ Methods table
 .. autosummary::
 
 {% for item in methods %}
-    {% if item != '__init__' %}
     {%- if item not in inherited_members %}
 
     ~{{ fullname }}.{{ item }}
     {% endif %}
-      {% endif %}
 
 {% endfor %}
 {% endif %}
@@ -57,20 +55,16 @@ Methods
 ~~~~~~~
 
 {% for item in methods %}
-{% if item != '__init__' %}
 {%- if item not in inherited_members %}
 .. automethod:: {{ [objname, item] | join(".") }}
-{% endif %}
 {% endif %}
 {% endfor %}
 
 Inherited Methods
 +++++++++++++++++
 {% for item in methods %}
-{% if item != '__init__' %}
-{%- if item in inherited_members %}
+{% if item in inherited_members %}
 .. automethod:: {{ [objname, item] | join(".") }}
-{% endif %}
 {% endif %}
 {% endfor %}
 
