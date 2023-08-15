@@ -87,45 +87,76 @@ class FitResult(dict):
         if callable(model):
             try:
                 modelparam = model._parameter_list('vector')
+                function_type=False
             except AttributeError:
+                function_type=True
                 modelparam = inspect.getfullargspec(model).args
 
         if not hasattr(self,'param'):
             raise ValueError('The fit object does not contain any fitted parameters.')
 
-        # Enforce model normalization
-        normfactor_keys = []
-        for key in model._parameter_list():
-            param = getattr(model,key)
-            if np.all(param.linear):
-                if param.normalization is not None:
-                    normfactor_key = f'{key}_scale'
-                    normfactor_keys.append(normfactor_key)
-                    try:
-                        model.addnonlinear(normfactor_key,lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
-                        getattr(model,normfactor_key).freeze(1)
-                    except KeyError:
-                        pass
+        # # Enforce model normalization
+        # normfactor_keys = []
+        # for key in modelparam:
+        #     param = getattr(model,key)
+        #     if np.all(param.linear):
+        #         if param.normalization is not None:
+        #             normfactor_key = f'{key}_scale'
+        #             normfactor_keys.append(normfactor_key)
+        #             try:
+        #                 model.addnonlinear(normfactor_key,lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
+        #                 getattr(model,normfactor_key).freeze(1)
+        #             except KeyError:
+        #                 pass
                     
 
-        # Get some basic information on the parameter vector
-        modelparam = model._parameter_list(order='vector')
-        param_idx = [[] for _ in model._parameter_list('vector')]
-        idxprev = 0
-        for islinear in [False,True]:
-            for n,param in enumerate(model._parameter_list('vector')):
-                if np.all(getattr(model,param).linear == islinear):
-                    N = len(np.atleast_1d(getattr(model,param).idx))
-                    param_idx[n] = np.arange(idxprev,idxprev + N)
-                    idxprev += N  
+        # # Get some basic information on the parameter vector
+        # modelparam = model._parameter_list(order='vector')
+        # param_idx = [[] for _ in model._parameter_list('vector')]
+        # idxprev = 0
+        # for islinear in [False,True]:
+        #     for n,param in enumerate(model._parameter_list('vector')):
+        #         if np.all(getattr(model,param).linear == islinear):
+        #             N = len(np.atleast_1d(getattr(model,param).idx))
+        #             param_idx[n] = np.arange(idxprev,idxprev + N)
+        #             idxprev += N  
 
-        params = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key,fitvalue in zip(modelparam,[self.param[idx] for idx in param_idx])}
+        fitparams = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key, fitvalue in zip(self.paramlist,[self.param[idx] for idx in self._param_idx])}
         # Check that all parameters are in the fit object
         for param in modelparam:
-            if not param in params: 
+            if not param in fitparams: 
                 raise KeyError(f'The fit object does not contain the {param} parameter.')
+        
 
-        return modelparam, params, param_idx
+        params = {param : fitparams[param] for param in modelparam}
+        params_idx = [self._param_idx[self.paramlist.index(param)] for param in modelparam]
+
+        return modelparam, params, params_idx
+
+    def _extract_params_from_function(self,function):
+        """
+        Extracts the fitted parameters from a callable function. 
+
+        Assumes that all parameters are length 1.
+        
+        """
+        # Get the parameter names from the function definition
+        modelparam = inspect.getfullargspec(function).args
+        
+        fitparam_idx = self._param_idx
+        
+        # Get the parameter values from the fit object
+        fitparams = {param : self.param[i] for i,param in enumerate(self.paramlist)}
+        params = {param : fitparams[param] for param in modelparam}
+        params_idx = [fitparam_idx[self.paramlist.index(param)] for param in modelparam]
+        # fitparams = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key, fitvalue in zip(modelparam,[self.param[idx] for idx in fitparam_idx])}
+
+        
+    
+            
+        return modelparam, params, params_idx
+
+
 
     def evaluate(self, model, *constants):
     # ----------------------------------------------------------------------------
@@ -154,9 +185,14 @@ class FitResult(dict):
         response : array_like 
             Model response at the fitted parameter values. 
         """
-
-        modelparam, params, _ = self._extarct_params_from_model(model)
-        parameters = {param: params[param] for param in modelparam}
+        try:
+            modelparam = model._parameter_list('vector')
+            modelparam, fitparams, fitparam_idx = self._extarct_params_from_model(model)
+        except AttributeError:
+            modelparam, fitparams, fitparam_idx = self._extract_params_from_function(model)
+        
+        
+        parameters = {param: fitparams[param] for param in modelparam}
 
         # Evaluate the input model
         response = model(*constants,**parameters)
@@ -195,11 +231,16 @@ class FitResult(dict):
             Uncertainty quantification of the model's response.
         """
 
-        modelparam,_, param_idx = self._extarct_params_from_model(model)
-        # Determine the indices of the subset of parameters the model depends on
-        subset = [param_idx[np.where(np.asarray(modelparam)==param)[0][0]] for param in modelparam]
+        try:
+            modelparam = model._parameter_list('vector')
+            modelparam, fitparams, fitparam_idx = self._extarct_params_from_model(model)
+
+        except AttributeError:
+            modelparam, fitparams, fitparam_idx = self._extract_params_from_function(model)
+
+
         # Propagate the uncertainty from that subset to the model
-        modeluq = self.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in subset]),lb,ub)
+        modeluq = self.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in fitparam_idx]),lb,ub)
         return modeluq
     
 

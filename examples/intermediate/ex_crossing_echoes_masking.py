@@ -32,10 +32,10 @@ t *= 1e3 # convert from ms to us
 # Experimental parameters
 tau1 = 0.5  # First inter-pulse time delay, μs
 tau2 = 4.5  # Second inter-pulse time delay, μs
-t0 = 0.3    # Acquisition deadtime, μs
+tmin = 0.3    # Start time, μs
 
-# Adjust for the deadtime 
-t = t - t[0] + t0
+t = t - t[0]                     # Account for zerotime
+t = t + tmin    
 
 # Plot the real part of the raw data
 plt.figure(figsize=[6,4])

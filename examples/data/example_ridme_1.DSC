@@ -1,0 +1,24 @@
+* Exported from Python using EasySpin, 2023-08-11 12:49:46
+#DESC	1.2 * DESCRIPTOR INFORMATION ***********************
+DSRC	MAN
+BSEQ	LIT
+IKKF	CPLX
+IRFMT	D
+IIFMT	D
+XTYP	IDX
+YTYP	NODATA
+ZTYP	NODATA
+XPTS	540
+XMIN	280.0
+XWID	4312.000000000004
+*
+************************************************************
+*
+#SPL	1.2 * STANDARD PARAMETER LAYER
+OPER	
+DATE	11/08/23
+TIME	12:49:46
+CMNT	
+SAMP	
+SFOR	
+MWFQ	3.405e+10
