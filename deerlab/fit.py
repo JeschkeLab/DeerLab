@@ -358,6 +358,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         Fitted parameter vector ordered according to the model parameter indices.
     paramUncert : :ref:`UQResult`
         Uncertainty quantification of the parameter vector ordered according to the model parameter indices.
+    paramlist : list
+        List of the fitted parameter names ordered according to the model parameter indices.
     model : ndarray
         Fitted model response.     
     regparam : scalar
@@ -505,6 +507,15 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     FitResult_dict = {key: getattr(fitresults,key) for key in ['y','mask','param','paramUncert','model','cost','plot','residuals','stats','regparam','regparam_stats','__plot_inputs']}
     _paramlist = model._parameter_list('vector')
 
+    param_idx = [[] for _ in _paramlist]
+    idxprev = 0
+    for islinear in [False,True]:
+        for n,param in enumerate(_paramlist):
+            if np.all(getattr(model,param).linear == islinear):
+                N = len(np.atleast_1d(getattr(model,param).idx))
+                param_idx[n] = np.arange(idxprev,idxprev + N)
+                idxprev += N  
+
     # Enforce normalization of the linear parameters (if needed) for the final output
     FitResult_param_,FitResult_paramuq_ = FitResult_param.copy(),FitResult_paramuq.copy()
     if normalization:
@@ -526,7 +537,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         noiselvl = noiselvl[0]
     
     # Generate FitResult object from all the dictionaries
-    fitresult = FitResult({**FitResult_param_,**FitResult_paramuq_, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl}) 
+    fitresult = FitResult({**FitResult_param_,**FitResult_paramuq_, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl,'paramlist':_paramlist, '_param_idx':param_idx}) 
 
     fitresult._summary = _print_fitresults(fitresult,model)
 
