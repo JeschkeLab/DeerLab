@@ -68,7 +68,7 @@ for n,param in enumerate(['conc','mod']):
     plt.ylim([1.1*(np.min(profile['y'])-threshold),1.5*threshold])  
     plt.xlabel(f'{getattr(Vmodel,param).description} ({getattr(Vmodel,param).unit})')
     plt.ylabel('Profile objective function')
-    plt.legend(['Profile (long trace)','Profile (short trace)','Threshold'],frameon=False,loc='best')
+    plt.legend(['Profile (long trace)','Threshold','Profile (short trace)'],frameon=False,loc='best')
 
 plt.tight_layout()
 plt.show()
