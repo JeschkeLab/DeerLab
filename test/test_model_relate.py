@@ -1,6 +1,7 @@
 import numpy as np
 from deerlab.dd_models import dd_gauss,dd_gauss2,dd_gauss3
-from deerlab.model import Model,fit,relate
+from deerlab.model import Model,relate
+from deerlab.fit import fit
 from deerlab.utils import store_pickle, read_pickle 
 from copy import deepcopy
 import os 

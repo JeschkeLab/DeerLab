@@ -1,6 +1,7 @@
 from collections import namedtuple
 from deerlab.whitegaussnoise import whitegaussnoise
-from deerlab.model import Model, fit
+from deerlab.model import Model
+from deerlab.fit import fit
 import numpy as np 
 import pytest
 import os 
@@ -565,6 +566,31 @@ def test_fit_propagate_through_model(mock_data,mock_x,model_type,method):
     ci_upper = response_ci[:,1]
 
     assert np.less_equal(ci_lower,ci_upper).all()
+# ================================================================
+
+
+@pytest.mark.parametrize('method', ['bootstrap','moment'])
+@pytest.mark.parametrize('model_type', ['parametric'])
+def test_fit_propagate_through_function(mock_data,mock_x,model_type,method):
+    
+    model = _generate_model(model_type, fixed_axis=False)
+    
+    if method=='bootstrap':
+        results = fit(model,mock_data,mock_x, bootstrap=3)
+    else: 
+        results = fit(model,mock_data,mock_x)
+    
+    if model_type=='parametric':
+        fun = lambda mean1,mean2,std1,std2,amp1,amp2: bigauss(mock_x,mean1,mean2,std1,std2,amp1,amp2)
+        response_ci = results.propagate(fun, lb=np.zeros_like(mock_x)).ci(95)
+    
+    ci_lower = response_ci[:,0]
+    ci_upper = response_ci[:,1]
+
+    assert np.less_equal(ci_lower,ci_upper).all()
+
+    
+
 # ================================================================
 
 def gauss_multiaxis(axis1,axis2,mean,std): 

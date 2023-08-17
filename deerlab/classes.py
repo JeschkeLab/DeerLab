@@ -8,74 +8,8 @@ from scipy.signal import fftconvolve
 from scipy.linalg import block_diag
 from scipy.optimize import brentq
 from scipy.interpolate import interp1d
-import difflib
 
-class FitResult(dict):
-# ========================================================================
-    r""" Represents the results of a fit.
- 
-    Attributes
-    ----------
-    x : ndarray
-        The solution of the optimization.
-    success : bool
-        Whether or not the optimizer exited successfully.
-    cost : float
-        Value of the cost function at the solution.
-    residuals : ndarray
-        Vector of residuals at the solution.
-    stats : dict
-        Goodness of fit statistical estimators:
 
-        * ``stats['chi2red']`` - Reduced \chi^2 test
-        * ``stats['r2']`` - R^2 test
-        * ``stats['rmsd']`` - Root-mean squared deviation (RMSD)
-        * ``stats['aic']`` - Akaike information criterion
-        * ``stats['aicc']`` - Corrected Akaike information criterion
-        * ``stats['bic']`` - Bayesian information criterion
-
-    Methods
-    -------
-    plot()
-        Display the fit results on a Matplotlib window. The script returns a 
-        `matplotlib.axes <https://matplotlib.org/api/axes_api.html>`_ object.
-        All graphical parameters can be adjusted from this object.
-
-    Notes
-    -----
-    There may be additional attributes not listed above depending of the
-    specific fit function. Since this class is essentially a subclass of dict
-    with attribute accessors, one can see which attributes are available
-    using the `keys()` method. 
-    """
-
-    def __getattr__(self, attr):
-        try:
-            return self[attr]
-        except KeyError:
-            errstr = f"The results object has no attribute '{attr}'."
-            attributes = [key for key in self.keys()]
-            proposal = difflib.get_close_matches(attr, attributes)
-            if len(proposal)>0:
-                errstr += f' \n Did you mean: {proposal} ?'
-            raise AttributeError(errstr)
-
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-
-    def __str__(self): 
-        return self._summary
-
-    def __repr__(self):
-        if self.keys():
-            m = max(map(len, list(self.keys()))) + 1
-            return '\n'.join([k.rjust(m) + ': ' + repr(v)
-                              for k, v in sorted(self.items())])
-        else:
-            return self.__class__.__name__ + "()"
-
-    def __dir__(self):
-        return list(self.keys())
 # =========================================================================
 
 class UQResult:

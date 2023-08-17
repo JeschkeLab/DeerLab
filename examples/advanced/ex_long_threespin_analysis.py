@@ -20,7 +20,7 @@ import deerlab as dl
 files = [f'../data/triradical_protein_deer_{dB}dB.DTA' for dB in [0,6,9]]
 
 # Experiment information
-t0  = 0.280 # Acquisition deadtime, μs
+t0  = 0.280 # Start time, μs
 tau1 = 0.40 # First interpulse delay, μs
 tau2 = 9.00 # Second interpulse delay, μs
 
@@ -34,7 +34,7 @@ for n,file in enumerate(files):
     t,Vexp, descriptor = dl.deerload(file,full_output=True)
     t = t[:-80]
     Vexp = Vexp[:-80]
-    # Adjust the start time
+    # Adjust the Start time
     t = t - t[0] + t0
 
     # Pre-processing

@@ -1,10 +1,10 @@
 # %% [markdown]
 """ 
-Basic analysis of a 4-pulse DEER signal
+Basic analysis of a RIDME signal
 -------------------------------------------------------------------------
 
-Fit a simple 4-pulse DEER signal with a model with a non-parametric
-distribution and a homogeneous background, using Tikhonov regularization.
+Fit a simple RIDME signal with a model with a non-parametric
+distribution and a stretched exponetial background, using Tikhonov regularization.
 """ 
 
 import numpy as np
@@ -16,12 +16,12 @@ import deerlab as dl
 
 # File location
 path = '../data/'
-file = 'example_4pdeer_1.DTA'
+file = 'example_ridme_1.DTA'
 
 # Experimental parameters
-tau1 = 0.3      # First inter-pulse delay, μs
-tau2 = 4.0      # Second inter-pulse delay, μs
-tmin = 0.1      # Start time, μs
+tau1 = 0.4      # First inter-pulse delay, μs
+tau2 = 4.2      # Second inter-pulse delay, μs
+tmin = 0.28  # Start time, μs
 
 # Load the experimental data
 t,Vexp = dl.deerload(path + file)
@@ -29,13 +29,15 @@ t,Vexp = dl.deerload(path + file)
 # Pre-processing
 Vexp = dl.correctphase(Vexp) # Phase correction
 Vexp = Vexp/np.max(Vexp)     # Rescaling (aesthetic)
-t = t - t[0]                  # Account for zerotime
-t = t + tmin    
+t = t - t[0]             # Account for zerotime
+t = t + tmin             
+
 # Distance vector
-r = np.arange(2.5,5,0.01) # nm
+r = np.linspace(1.5,6,50) # nm
 
 # Construct the model
-Vmodel = dl.dipolarmodel(t,r, experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1]))
+experimentmodel = dl.ex_ridme(tau1,tau2, pathways=[1])
+Vmodel = dl.dipolarmodel(t,r,Bmodel=dl.bg_strexp, experiment =experimentmodel)
 
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp)
@@ -54,7 +56,7 @@ Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,conc,reftime: results.P_scale*(1-mod)*dl.bg_hom3d(t-reftime,conc,mod)
+Bfcn = lambda mod,decay,stretch,reftime: results.P_scale*(1-mod)*dl.bg_strexp(t-reftime,decay,stretch)
 Bfit = results.evaluate(Bfcn)
 Bci = results.propagate(Bfcn).ci(95)
 

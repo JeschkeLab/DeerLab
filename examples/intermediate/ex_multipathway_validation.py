@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 file = "../data/experimental_mbp_protein_4pdeer.DTA"
 
 # Experiment information
-t0 = 0.040
+tmin = 0.040
 tau1 = 0.4 
 tau2 = 3.0
 
@@ -37,7 +37,7 @@ t = t[:-2]
 Vexp = Vexp[:-2]
 Vexp = dl.correctphase(Vexp) 
 Vexp = Vexp/max(Vexp)
-t = t- t[0] + t0
+t = t- t[0] + tmin
 
 # Define the distance vector
 r = np.arange(3,4.5,0.05)

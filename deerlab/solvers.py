@@ -5,15 +5,13 @@
 
 # External dependencies
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.optimize import least_squares, lsq_linear
 # DeerLab dependencies
 import deerlab as dl
-from deerlab.classes import UQResult, FitResult
+from deerlab.classes import UQResult
+from deerlab.fitresult import FitResult
 from deerlab.utils import multistarts, hccm, parse_multidatasets, goodness_of_fit, Jacobian
 import time 
-from functools import partial
-from copy import deepcopy
 
 
 def timestamp():
@@ -24,120 +22,6 @@ def timestamp():
     timeObj = time.localtime(secondsSinceEpoch)
     # get the current timestamp elements from struct_time object i.e.
     return '[%d-%d-%d %d:%d:%d]' % ( timeObj.tm_mday, timeObj.tm_mon, timeObj.tm_year, timeObj.tm_hour, timeObj.tm_min, timeObj.tm_sec)
-# ===========================================================================================
-
-def _plot(ys,yfits,yuqs,noiselvls,axis=None,xlabel=None,gof=False,fontsize=13):
-# ===========================================================================================
-    """
-    Plot method for the FitResult object
-    ====================================
-
-    Plots the input dataset(s), their fits, and uncertainty bands.
-    """
-
-    # Check which datasets are complex-valued
-    complexy = [np.iscomplex(y).any() for y in ys]
-
-    # Determine the distribution of the subplots in the figure
-    nrows = len(ys) + np.sum(complexy)
-    if gof:
-        ncols = 4
-        fig,axs = plt.subplots(nrows,ncols,figsize=[4*ncols,4*nrows], constrained_layout=True)
-    else: 
-        ncols = 1
-        fig,axs = plt.subplots(nrows,ncols,figsize=[7*ncols,4*nrows])
-    axs = np.atleast_1d(axs)
-    axs = axs.flatten() 
-    n = 0 # Index for subplots
-
-    # If abscissa of the datasets are not specified, resort to default 
-    if axis is None: 
-        axis = [np.arange(len(y)) for y in ys]
-    if not isinstance(axis,list): 
-        axis = [axis]
-    axis = [np.real(ax) for ax in axis]
-    if xlabel is None: 
-        xlabel = 'Array elements'
-
-    # Go through every dataset
-    for i,(y,yfit,yuq,noiselvl) in enumerate(zip(ys,yfits,yuqs,noiselvls)): 
-
-        # If dataset is complex-valued, plot the real and imaginary parts separately
-        if complexy[i]:
-            components = [np.real,np.imag]
-            componentstrs = [' (real)',' (imag)']
-        else:
-            components = [np.real]
-            componentstrs = ['']
-        for component,componentstr in zip(components,componentstrs):
-
-            # Plot the experimental signal and fit
-            axs[n].plot(axis[i],component(y),'.',color='grey',label='Data'+componentstr)
-            axs[n].plot(axis[i],component(yfit),color='#4550e6',label='Model fit')
-            if yuq.type!='void': 
-                axs[i].fill_between(axis[i],component(yuq.ci(95)[:,0]),component(yuq.ci(95)[:,1]),alpha=0.4,linewidth=0,color='#4550e6',label='95%-confidence interval')
-            axs[n].set_xlabel(xlabel,size=fontsize)
-            axs[n].set_ylabel(f'Dataset #{i+1}'+componentstr,size=fontsize)
-            axs[n].spines.right.set_visible(False)
-            axs[n].spines.top.set_visible(False) 
-            axs[n].legend(loc='best',frameon=False)
-            plt.autoscale(enable=True, axis='both', tight=True)
-            n += 1
-
-            # Plot the visual guides to assess the goodness-of-fit (if requested)
-            if gof: 
-                # Get the residual
-                residuals = component(yfit - y)
-
-                # Plot the residual values along the estimated noise level and mean value
-                axs[n].plot(axis[i],residuals,'.',color='grey')
-                axs[n].hlines(np.mean(residuals),axis[i][0],axis[i][-1],color='#4550e6',label='Mean')
-                axs[n].hlines(np.mean(residuals)+noiselvl,axis[i][0],axis[i][-1],color='#4550e6',linestyle='dashed',label='Estimated noise level')
-                axs[n].hlines(np.mean(residuals)-noiselvl,axis[i][0],axis[i][-1],color='#4550e6',linestyle='dashed')
-                axs[n].set_xlabel(xlabel,size=fontsize)        
-                axs[n].set_ylabel(f'Residual #{i+1}'+componentstr,size=fontsize)      
-                axs[n].spines.right.set_visible(False)
-                axs[n].spines.top.set_visible(False) 
-                axs[n].legend(loc='best',frameon=False)
-                plt.axis("tight")
-                n += 1
-
-                # Plot the histogram of the residuals weighted by the noise level, compared to the standard normal distribution
-                bins = np.linspace(-4,4,20)
-                axs[n].hist(residuals/noiselvl,bins,density=True,color='b',alpha=0.6, label='Residuals')
-                bins = np.linspace(-4,4,300)
-                N0 = dl.dd_gauss(bins,0,1)
-                axs[n].get_yaxis().set_visible(False)
-                axs[n].fill(bins,N0,'k',alpha=0.4, label='$\mathcal{N}(0,1)$')
-                axs[n].set_xlabel('Normalized residuals',size=fontsize)       
-                axs[n].set_yticks([])
-                axs[n].spines.right.set_visible(False)
-                axs[n].spines.left.set_visible(False)
-                axs[n].spines.top.set_visible(False) 
-                axs[n].legend(loc='best',frameon=False)
-                n += 1
-
-                # Plot the autocorrelogram of the residuals, along the confidence region for a white noise vector
-                maxLag = len(residuals)-1
-                axs[n].acorr(residuals, usevlines=True, normed=True, maxlags=maxLag, lw=2,color='#4550e6',label='Residual autocorrelation')
-                threshold = 1.96/np.sqrt(len(residuals))
-                axs[n].fill_between(np.linspace(0,maxLag),-threshold,threshold,color='k',alpha=0.3,linewidth=0,label='White noise confidence region')
-                axs[n].get_yaxis().set_visible(False)
-                plt.axis("tight")
-                axs[n].set_xbound(lower=-0.5, upper=maxLag)
-                axs[n].spines.right.set_visible(False)
-                axs[n].spines.left.set_visible(False)
-                axs[n].spines.top.set_visible(False)
-                axs[n].set_xlabel('Lags',size=fontsize)       
-                axs[n].legend(loc='best',frameon=False)
-                n += 1
-
-    # Adjust fontsize
-    for ax in axs:
-        for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-            label.set_fontsize(fontsize)
-
-    return fig
 # ===========================================================================================
 
 # ===========================================================================================
@@ -564,11 +448,6 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         Uncertainty quantification of the fitted model. Only computed if ``modeluq=True``.
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
-    plot : callable
-        Function to display the results. It will display the fitted data.
-        The function returns the figure object (``matplotlib.figure.Figure``)
-        object as output, which can be modified. Using ``fig = plot(show=False)`` 
-        will not render the figure unless ``display(fig)`` is called. 
     stats : dict
         Goodness of fit statistical estimators
 
@@ -981,17 +860,20 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
     Ndof = Nnonlin + Ndof_lin 
     stats = _goodness_of_fit_stats(ys,yfits,noiselvl,Ndof,masks)
 
-    # Display function
-    plotfcn = partial(_plot,ys,yfits,yuq,noiselvl)
+    # Prepare the plot function inputs 
+    plot_inputs=[ys,yfits,yuq,noiselvl,masks]
 
     if len(stats) == 1: 
         stats = stats[0]
         modelfit = modelfit[0]
         modelfituq = modelfituq[0]
 
-    return FitResult(nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
-                     linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
-                     stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl,regparam_stats=alpha_stats)
+    # return FitResult(y=ys, mask=mask, nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
+    #                  linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,
+    #                  stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl, regparam_stats=alpha_stats)
+    return FitResult(y=ys, mask=mask, nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,
+                    linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha,
+                    stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl, regparam_stats=alpha_stats, __plot_inputs=plot_inputs)
 # ===========================================================================================
 
 
