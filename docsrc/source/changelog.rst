@@ -24,9 +24,11 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
-Release ``v1.0.2`` - July 2023
+Release ``v1.1.0`` - August 2023
 ------------------------------------------
 - |api| : The definition of the dipolar time axis for RIDME has changed to match the one for 4-pulse DEER (:pr:`436`).
+
+- |feature| : The doc theme has moved to furo (:pr:`432`).
 
 - |fix| : Fixes errors in documentation (:pr:`429`).
   
@@ -42,6 +44,16 @@ Release ``v1.0.2`` - July 2023
 - |fix| : Fixes an errors in the general Gaussian distribution model (:pr:`435`).
   
 - |fix| : Removes the default font from the `fit` function due to conflicts on some systems (:pr:`429`).
+  
+- |api| : Methods of the `FitResult` class are now defined with the class (:pr:`440`).
+  
+  * `FitResult` class now in file `fitresults.py`
+  * `fit` function now in file `fit.py`
+
+- |enhancement| : Added a RIDME example (:pr:`438`).
+
+- |fix| : Masked data points are no-longer included in gof statistics in `FitResult.plot()`.
+
 
 
 Release ``v1.0.1`` - March 2023
