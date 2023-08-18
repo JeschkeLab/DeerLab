@@ -28,7 +28,7 @@ jobs:
            python -m pip install --upgrade pip
            python -m pip install furo
            python -m pip install numpydoc
-           python -m pip install sphinx-gallery==0.9.0
+           python -m pip install sphinx-gallery
            python -m pip install sphinxcontrib-httpdomain
            python -m pip install sphinxcontrib-ghcontributors
            python -m pip install sphinx-issues
