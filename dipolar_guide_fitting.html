@@ -1,277 +1,361 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Theory" href="theory.html" /><link rel="prev" title="Modeling" href="dipolar_guide_modeling.html" />
 
-<!DOCTYPE html>
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Fitting &#8212; DeerLab</title>
-    
-  <link href="_static/css/theme.css" rel="stylesheet">
-  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
-
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-
-    
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+        <title>Fitting - DeerLab</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
-    <link rel="stylesheet" type="text/css" href="_static/gallery-binder.css" />
-    <link rel="stylesheet" type="text/css" href="_static/gallery-dataframe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/gallery-rendered-html.css" />
-    <link rel="stylesheet" type="text/css" href="_static/theme_override.css" />
-    
-  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
-
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Theory" href="theory.html" />
-    <link rel="prev" title="Modeling" href="dipolar_guide_modeling.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
-
-  <div id="navbar-start">
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
-<a class="navbar-brand" href="index.html">
-  <img src="_static/logo_docs_paths.svg" class="logo" alt="logo">
-</a>
 
-
-    
-  </div>
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
   
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
-    <div id="navbar-center" class="mr-auto">
-      
-      <div class="navbar-center-item">
-        <div class="container-fluid  px-0">
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
   
-    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="installation.html">Installation</a>
-        </li>
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
 
-        <li class="dropdown">
-          <a class="dropbtn" href="user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
-          <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="nav-dropdown-item dropdown-item" href="basics.html">Basics</a>
-              <a class="nav-dropdown-item dropdown-item" href="getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="dipolar_guide_modeling.html">Modeling</a>
-              <a class="nav-dropdown-item dropdown-item" href="#">Fitting</a>
-              <a class="nav-dropdown-item dropdown-item" href="theory.html">Theory</a>
-          </div>
-        </li>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
 
-        <li class="dropdown">
-            <a class="dropbtn" href="advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
-            <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="modeling_guide.html">Modeling Guide</a>
-                <a class="nav-dropdown-item dropdown-item" href="fitting_guide.html">Fitting Guide</a>
-                <a class="nav-dropdown-item dropdown-item" href="uncertainty_guide.html">Uncertainty Guide</a>
-            </div>
-          </li>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
 
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="examples.html">Examples</a>
-        </li>
 
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="modelsref.html">Models</a>
-        </li>
 
-        
-        <li class="nav-item">
-            <a class="nav-link nav-link" href="reference.html">Reference Index</a>
-          </li>
-
-        <li class="dropdown">
-          <a class="dropbtn nav-link dropdown-toggle" href="more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
-          <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="nav-dropdown-item dropdown-item" href="changelog.html">Release Notes</a>
-              <a class="nav-dropdown-item dropdown-item" href="publications.html">Publications</a>
-              <a class="nav-dropdown-item dropdown-item" href="contributing.html">Contributing</a>
-              <a class="nav-dropdown-item dropdown-item" href="support.html">Support</a>
-              <a class="nav-dropdown-item dropdown-item" href="license.html">License</a>
-              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
-              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
-          </div>
-        </li>
-      </ul>
-
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
     </div>
-  </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">DeerLab</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
       </div>
-      
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
     </div>
-
-    <div id="navbar-end">
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
       
-      <div class="navbar-end-item">
-        <form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="_static/logo_docs.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="_static/logo_docs_light.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
 </form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="user_guide.html">User Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of User Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basics.html">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dipolar_guide_modeling.html">Modeling</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="theory.html">Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="advanced_guide.html">Advanced</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Advanced</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="modeling_guide.html">Modeling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fitting_guide.html">Fitting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uncertainty_guide.html">Uncertainty Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic_simulations/ex_simulate_basic_4pdeer.html">Simulating a 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic_simulations/ex_simulate_5pdeer.html">Simulating a 5-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic_simulations/ex_simulate_4pdeer.html">Simulating a three-pathway 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic/ex_fitting_4pdeer.html">Basic analysis of a 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic/ex_fitting_ridme.html">Basic analysis of a RIDME signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic/ex_fitting_4pdeer_compactness.html">Analysis of a 4-pulse DEER signal with a compactness penalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic/ex_bootstrapping.html">Bootstrapped confidence intervals in routine analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic/ex_fitting_4pdeer_gauss.html">Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic/ex_fitting_5pdeer.html">Basic fitting of a 5-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/basic/ex_restraints_4pdeer.html">Distance restraints from 4-pulse DEER data, non-parametric distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_multipathway_validation.html">Validating multi-pathway models based on the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_fitting_4pdeer_pathways.html">Analysis of a 4-pulse DEER signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_fitting_dqc_pathways.html">Analysis of a 6-pulse DQC signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_global_fitting_4pdeer.html">Global fitting of multiple 4-pulse DEER signals, non-parametric distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_fitting_5pdeer_pathways.html">Analysis of a 5-pulse DEER signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_fitting_sparse_4pdeer.html">Basic analysis of a sparsely sampled 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_compactness_with_without.html">Comparing the analysis with and without compactness criterion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_global_different_deer.html">Global fitting of multiple different DEER signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_selregparam.html">Analysing the selection of regularisation parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_selregparam.html#over-and-under-selection-of-the-regularisation-parameter">Over and Under selection of the regularisation parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_crossing_echoes_masking.html">Analyzing data with crossing echoes robustly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_simulating_oop.html">Simulating polarization effects on low-temperature DEER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_global_twostates_parametric.html">Global fitting of a two-state model to a series of DEER traces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_dipolarpathways_selection.html">Dipolar pathways model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_forcefield_fit.html">Fit a polynomial force field to a dipolar signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_pseudotitration_parameter_free.html">Analyzing pseudo-titration (dose-response) curves with non-parametric distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_droplets_model.html">Global analysis of 5-pulse DEER on a liquid-droplet protein system</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modelsref.html">Models</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ex_3pdeer.html">deerlab.ex_3pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ex_4pdeer.html">deerlab.ex_4pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ex_rev5pdeer.html">deerlab.ex_rev5pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ex_fwd5pdeer.html">deerlab.ex_fwd5pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ex_sifter.html">deerlab.ex_sifter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ex_dqc.html">deerlab.ex_dqc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ex_ridme.html">deerlab.ex_ridme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_gauss.html">deerlab.dd_gauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_gauss2.html">deerlab.dd_gauss2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_gauss3.html">deerlab.dd_gauss3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_rice.html">deerlab.dd_rice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_rice2.html">deerlab.dd_rice2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_rice3.html">deerlab.dd_rice3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_gengauss.html">deerlab.dd_gengauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_skewgauss.html">deerlab.dd_skewgauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_cos.html">deerlab.dd_cos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_wormchain.html">deerlab.dd_wormchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_wormgauss.html">deerlab.dd_wormgauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_randcoil.html">deerlab.dd_randcoil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_sphere.html">deerlab.dd_sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_spheresurf.html">deerlab.dd_spheresurf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_spherepoint.html">deerlab.dd_spherepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_shell.html">deerlab.dd_shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_shellshell.html">deerlab.dd_shellshell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_shellsphere.html">deerlab.dd_shellsphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_shellvoidshell.html">deerlab.dd_shellvoidshell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_shellvoidsphere.html">deerlab.dd_shellvoidsphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_circle.html">deerlab.dd_circle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_triangle.html">deerlab.dd_triangle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dd_uniform.html">deerlab.dd_uniform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_hom3d.html">deerlab.bg_hom3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_hom3dex.html">deerlab.bg_hom3dex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_homfractal.html">deerlab.bg_homfractal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_hom3d_phase.html">deerlab.bg_hom3d_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_hom3dex_phase.html">deerlab.bg_hom3dex_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_homfractal_phase.html">deerlab.bg_homfractal_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_exp.html">deerlab.bg_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_strexp.html">deerlab.bg_strexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_sumstrexp.html">deerlab.bg_sumstrexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_prodstrexp.html">deerlab.bg_prodstrexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_poly1.html">deerlab.bg_poly1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_poly2.html">deerlab.bg_poly2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bg_poly3.html">deerlab.bg_poly3</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="reference.html">Reference Index</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Reference Index</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.Model.html">deerlab.Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.Parameter.html">deerlab.Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.Penalty.html">deerlab.Penalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.FitResult.html">deerlab.FitResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.UQResult.html">deerlab.UQResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ExperimentInfo.html">deerlab.ExperimentInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.fit.html">deerlab.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.merge.html">deerlab.merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.link.html">deerlab.link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.lincombine.html">deerlab.lincombine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.relate.html">deerlab.relate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.regoperator.html">deerlab.regoperator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.selregparam.html">deerlab.selregparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.noiselevel.html">deerlab.noiselevel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.whitegaussnoise.html">deerlab.whitegaussnoise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.diststats.html">deerlab.diststats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.correctphase.html">deerlab.correctphase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.bootstrap_analysis.html">deerlab.bootstrap_analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.profile_analysis.html">deerlab.profile_analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.snlls.html">deerlab.snlls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.fnnls.html">deerlab.fnnls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.cvxnnls.html">deerlab.cvxnnls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.goodness_of_fit.html">deerlab.goodness_of_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dipolarmodel.html">deerlab.dipolarmodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dipolarpenalty.html">deerlab.dipolarpenalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.deerload.html">deerlab.deerload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dipolarkernel.html">deerlab.dipolarkernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.dipolarbackground.html">deerlab.dipolarbackground</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.fftspec.html">deerlab.fftspec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.distancerange.html">deerlab.distancerange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.store_pickle.html">deerlab.store_pickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.read_pickle.html">deerlab.read_pickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.sophegrid.html">deerlab.sophegrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.choleskycovmat.html">deerlab.choleskycovmat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.hccm.html">deerlab.hccm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.Jacobian.html">deerlab.Jacobian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.nearest_psd.html">deerlab.nearest_psd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.movmean.html">deerlab.movmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.ovl.html">deerlab.ovl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.der_snr.html">deerlab.der_snr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/deerlab.formatted_table.html">deerlab.formatted_table</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/JeschkeLab/DeerLab">Github</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/JeschkeLab/DeerLab/discussions">Discussion Board</a></li>
+</ul>
+
+</div>
+</div>
+
       </div>
       
     </div>
-  </div>
-</div>
-    </nav>
-    
-
-    <div class="container-xl">
-      <div class="row">
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
-    <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="basics.html">
-   Basics
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="getting_started.html">
-   Getting Started
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dipolar_guide_modeling.html">
-   Modeling
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Fitting
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="theory.html">
-   Theory
-  </a>
- </li>
-</ul>
-
-  </div>
-</nav>
-            </div>
-            
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
-
-<nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#fitting-the-model">
-   Fitting the model
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#adding-penalties">
-   Adding penalties
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-fitting-a-non-parametric-distribution-with-a-compactness-criterion">
-     Example: Fitting a non-parametric distribution with a compactness criterion
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-fitting-a-gaussian-distribution-with-a-compactness-criterion">
-     Example: Fitting a Gaussian distribution with a compactness criterion
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#displaying-the-results">
-   Displaying the results
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#assessing-the-goodness-of-fit">
-   Assessing the goodness-of-fit
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exporting-the-figure-and-the-data">
-   Exporting the figure and the data
-  </a>
- </li>
-</ul>
-
-</nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
           </div>
-          
-
-          
-          
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
-              <div>
-                
-  <section id="fitting">
-<span id="dipolar-fitting"></span><h1>Fitting<a class="headerlink" href="#fitting" title="Permalink to this headline">¶</a></h1>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="fitting">
+<span id="dipolar-fitting"></span><h1>Fitting<a class="headerlink" href="#fitting" title="Link to this heading">#</a></h1>
 <section id="fitting-the-model">
-<h2>Fitting the model<a class="headerlink" href="#fitting-the-model" title="Permalink to this headline">¶</a></h2>
+<h2>Fitting the model<a class="headerlink" href="#fitting-the-model" title="Link to this heading">#</a></h2>
 <p>The model <code class="docutils literal notranslate"><span class="pre">Vmodel</span></code> can be fitted to the experimental data <code class="docutils literal notranslate"><span class="pre">V</span></code> by calling the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">Vexp</span><span class="p">)</span>  <span class="c1"># Fit the model to the experimental data</span>
 </pre></div>
@@ -279,7 +363,7 @@
 <p>After <code class="docutils literal notranslate"><span class="pre">fit</span></code> has found a solution, it returns an object that we assigned to <code class="docutils literal notranslate"><span class="pre">result</span></code>. This object contains fields with all quantities of interest with the fit results, such as the fitted model and parameters, goodness-of-fit statistics, and uncertainty information. Check out the <a class="reference internal" href="fitting_guide.html#fitting-fitresult"><span class="std std-ref">fitting guide</span></a> for more details on the quantities provided in <code class="docutils literal notranslate"><span class="pre">result</span></code>.</p>
 </section>
 <section id="adding-penalties">
-<h2>Adding penalties<a class="headerlink" href="#adding-penalties" title="Permalink to this headline">¶</a></h2>
+<h2>Adding penalties<a class="headerlink" href="#adding-penalties" title="Link to this heading">#</a></h2>
 <p>Penalty terms can be added to the objective function to impose certain properties upon the solution. While DeerLab can take any kind of penalty function (see the <a class="reference internal" href="fitting_guide.html#fitting-guide"><span class="std std-ref">fitting guide</span></a> for details), for dipolar models it provides a specialized function <code class="docutils literal notranslate"><span class="pre">dipolarpenalty</span></code> which easily generates penalties based on the distance distribution.</p>
 <p>To generate such a penalty, you must provide the model <code class="docutils literal notranslate"><span class="pre">Pmodel</span></code> for the distance distribution (as provided in <code class="docutils literal notranslate"><span class="pre">dipolarmodel</span></code>), as well as the distance axis vector <code class="docutils literal notranslate"><span class="pre">r</span></code>. Next, the type of penalty must be specified:</p>
 <ul class="simple">
@@ -289,7 +373,7 @@
 <p>All penalties are weighted by a weighting parameter, which is optimized according to a selection criterion which must be specified to the <code class="docutils literal notranslate"><span class="pre">dipolarpenalty</span> <span class="pre">method</span></code>. For the <code class="docutils literal notranslate"><span class="pre">smoothness</span></code> penalty, the <code class="docutils literal notranslate"><span class="pre">'aic'</span></code> criterion is recommended, while for the <code class="docutils literal notranslate"><span class="pre">smoothness</span></code> criterion, the <code class="docutils literal notranslate"><span class="pre">'icc'</span></code> criterion is recommended.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">dipolarpenalty</span></code> function will return a <code class="docutils literal notranslate"><span class="pre">Penalty</span></code> object which can be passed to the fit function through the <code class="docutils literal notranslate"><span class="pre">penalties</span></code> keyword argument.</p>
 <section id="example-fitting-a-non-parametric-distribution-with-a-compactness-criterion">
-<h3>Example: Fitting a non-parametric distribution with a compactness criterion<a class="headerlink" href="#example-fitting-a-non-parametric-distribution-with-a-compactness-criterion" title="Permalink to this headline">¶</a></h3>
+<h3>Example: Fitting a non-parametric distribution with a compactness criterion<a class="headerlink" href="#example-fitting-a-non-parametric-distribution-with-a-compactness-criterion" title="Link to this heading">#</a></h3>
 <p>For example, to introduce compactness in the fit of a dipolar model with a non-parametric distance distribution we must set the distribution model to <code class="docutils literal notranslate"><span class="pre">None</span></code> to indicate a non-parametric distribution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">compactness_penalty</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarpenalty</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="s1">&#39;compactness&#39;</span><span class="p">,</span> <span class="s1">&#39;icc&#39;</span><span class="p">)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span> <span class="n">penalties</span><span class="o">=</span><span class="n">compactness_penalty</span><span class="p">)</span>
@@ -297,7 +381,7 @@
 </div>
 </section>
 <section id="example-fitting-a-gaussian-distribution-with-a-compactness-criterion">
-<h3>Example: Fitting a Gaussian distribution with a compactness criterion<a class="headerlink" href="#example-fitting-a-gaussian-distribution-with-a-compactness-criterion" title="Permalink to this headline">¶</a></h3>
+<h3>Example: Fitting a Gaussian distribution with a compactness criterion<a class="headerlink" href="#example-fitting-a-gaussian-distribution-with-a-compactness-criterion" title="Link to this heading">#</a></h3>
 <p>For example, to introduce compactness in the fit of a dipolar model with a Gaussian distance distribution we must set the distribution model to <code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code> to indicate the parametric distribution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">compactness_penalty</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarpenalty</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="s1">&#39;compactness&#39;</span><span class="p">,</span> <span class="s1">&#39;icc&#39;</span><span class="p">)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Vmodel</span><span class="p">,</span><span class="n">Vexp</span><span class="p">,</span> <span class="n">penalties</span><span class="o">=</span><span class="n">compactness_penalty</span><span class="p">)</span>
@@ -306,7 +390,7 @@
 </section>
 </section>
 <section id="displaying-the-results">
-<h2>Displaying the results<a class="headerlink" href="#displaying-the-results" title="Permalink to this headline">¶</a></h2>
+<h2>Displaying the results<a class="headerlink" href="#displaying-the-results" title="Link to this heading">#</a></h2>
 <p>For just a quick display of the results, you can use the <code class="docutils literal notranslate"><span class="pre">plot()</span></code> method of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> object that will display a figure with you experimental data, the corresponding fit including confidence bands.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (μs)&#39;</span><span class="p">)</span> <span class="c1"># display results</span>
 </pre></div>
@@ -357,10 +441,10 @@ The values of vectorized parameters such as <code class="docutils literal notran
 </div>
 </section>
 <section id="assessing-the-goodness-of-fit">
-<h2>Assessing the goodness-of-fit<a class="headerlink" href="#assessing-the-goodness-of-fit" title="Permalink to this headline">¶</a></h2>
+<h2>Assessing the goodness-of-fit<a class="headerlink" href="#assessing-the-goodness-of-fit" title="Link to this heading">#</a></h2>
 <p>The results summary shown above contains several key quantities to quickly assess whether the model estimate obtained by the <code class="docutils literal notranslate"><span class="pre">fit</span></code>
 function is a proper descriptor of the data. For each dataset analyzed, several quantities are returned. The <code class="docutils literal notranslate"><span class="pre">Noise</span> <span class="pre">level</span></code> value shows
-either the estimated noise level of that dataset or the one specified by the user. The <code class="docutils literal notranslate"><span class="pre">Reduced</span> <span class="pre">𝛘2</span></code> value indicates how good the model fit describes the data. Values close to 1 indicate a good fit of the data. The <code class="docutils literal notranslate"><span class="pre">Residual</span> <span class="pre">autocorr.</span></code> value (computed as <img class="math" src="_images/math/4d6d8a8fe6969d7e297583a5068a16c088398107.svg" alt="\vert 2 - d_\mathrm{DW} \vert"/>, where <img class="math" src="_images/math/c70cc9d6a79993a2b4c3377a432ed76837161d1d.svg" alt="d_\mathrm{DW}"/> is the Durbin–Watson statistic) indicates the degree of (first-order) autocorrelation in the fit residual. Values larger than 0.5 indicate a significant amount of autocorrelation, meaning that either the noise if not independent or that the model might not have fully captured all features in the data. Such autocorrelation con commonly originate from a simplified distance distribution model failing to capture all dipolar modulations or a insufficient set of dipolar pathways that fail to capture all contributions to the data. The <code class="docutils literal notranslate"><span class="pre">RMSD</span></code> value does not provide any insight by itself, however, it can be used to compare the goodness-of-fit between different models.</p>
+either the estimated noise level of that dataset or the one specified by the user. The <code class="docutils literal notranslate"><span class="pre">Reduced</span> <span class="pre">𝛘2</span></code> value indicates how good the model fit describes the data. Values close to 1 indicate a good fit of the data. The <code class="docutils literal notranslate"><span class="pre">Residual</span> <span class="pre">autocorr.</span></code> value (computed as <span class="math">\vert 2 - d_\mathrm{DW} \vert</span>, where <span class="math">d_\mathrm{DW}</span> is the Durbin–Watson statistic) indicates the degree of (first-order) autocorrelation in the fit residual. Values larger than 0.5 indicate a significant amount of autocorrelation, meaning that either the noise if not independent or that the model might not have fully captured all features in the data. Such autocorrelation con commonly originate from a simplified distance distribution model failing to capture all dipolar modulations or a insufficient set of dipolar pathways that fail to capture all contributions to the data. The <code class="docutils literal notranslate"><span class="pre">RMSD</span></code> value does not provide any insight by itself, however, it can be used to compare the goodness-of-fit between different models.</p>
 <p>To facilitate the inspection of the goodness-of-fit, DeerLab will highlight those values that indicate a potential failure of the analysis. If either or both the <code class="docutils literal notranslate"><span class="pre">Reduced</span> <span class="pre">𝛘2</span></code> or <code class="docutils literal notranslate"><span class="pre">Residual</span> <span class="pre">autocorr.</span></code> values are highlighted in yellow, it will indicate that there is a significant possibility that the model does not properly describe the data. In such cases, one must inspect, e.g. visually using <code class="docutils literal notranslate"><span class="pre">results.plot(gof=True)</span></code> (see <a class="reference internal" href="fitting_guide.html#fitting-goodnessoffit"><span class="std std-ref">here</span></a> for details), whether the model estimate actually is a good descriptor of the data. If the values are shown in red, it will indicate that the model does certainly not properly describe the data.</p>
 <p>If yellow or red goodness-of-fit quantities are obtained after an analysis, the following steps can be taken to amend that:</p>
 <ul class="simple">
@@ -370,7 +454,7 @@ either the estimated noise level of that dataset or the one specified by the use
 </ul>
 </section>
 <section id="exporting-the-figure-and-the-data">
-<h2>Exporting the figure and the data<a class="headerlink" href="#exporting-the-figure-and-the-data" title="Permalink to this headline">¶</a></h2>
+<h2>Exporting the figure and the data<a class="headerlink" href="#exporting-the-figure-and-the-data" title="Link to this heading">#</a></h2>
 <p>After completing the fit, you might want to export the figure with the fit. Here is one way to do it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">figure</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>                       <span class="c1"># get figure object</span>
 <span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;DEERFig.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>    <span class="c1"># save figure as png file</span>
@@ -389,51 +473,88 @@ either the estimated noise level of that dataset or the one specified by the use
 </section>
 </section>
 
-
-              </div>
-              
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="dipolar_guide_modeling.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Modeling</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="theory.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Theory</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-              
-          </main>
-          
-
+        </article>
       </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="theory.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Theory</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="dipolar_guide_modeling.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Modeling</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2019-2023, Luis Fábregas-Ibáñez, Stefan Stoll, Hugo Karas and others
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
     </div>
-  
-  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
-</p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
-</p>
-    </div>
-    
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Fitting</a><ul>
+<li><a class="reference internal" href="#fitting-the-model">Fitting the model</a></li>
+<li><a class="reference internal" href="#adding-penalties">Adding penalties</a><ul>
+<li><a class="reference internal" href="#example-fitting-a-non-parametric-distribution-with-a-compactness-criterion">Example: Fitting a non-parametric distribution with a compactness criterion</a></li>
+<li><a class="reference internal" href="#example-fitting-a-gaussian-distribution-with-a-compactness-criterion">Example: Fitting a Gaussian distribution with a compactness criterion</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#displaying-the-results">Displaying the results</a></li>
+<li><a class="reference internal" href="#assessing-the-goodness-of-fit">Assessing the goodness-of-fit</a></li>
+<li><a class="reference internal" href="#exporting-the-figure-and-the-data">Exporting the figure and the data</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
   </div>
-</footer>
-  </body>
+</div><script src="_static/documentation_options.js?v=7f41d439"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=4ea706d9"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    </body>
 </html>

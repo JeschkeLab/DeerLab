@@ -1,188 +1,356 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-<!DOCTYPE html>
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>deerlab.model &#8212; DeerLab</title>
-    
-  <link href="../../_static/css/theme.css" rel="stylesheet">
-  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
-
-    
-  <link rel="stylesheet"
-    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-
-    
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+        <title>deerlab.model - DeerLab</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
-    
-  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
-
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
-
-  <div id="navbar-start">
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
-<a class="navbar-brand" href="../../index.html">
-  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
-</a>
 
-
-    
-  </div>
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
   
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
-    <div id="navbar-center" class="mr-auto">
-      
-      <div class="navbar-center-item">
-        <div class="container-fluid  px-0">
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
   
-    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="../../installation.html">Installation</a>
-        </li>
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
 
-        <li class="dropdown">
-          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
-          <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
-          </div>
-        </li>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
 
-        <li class="dropdown">
-            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
-            <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
-                <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
-                <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
-            </div>
-          </li>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
 
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="../../examples.html">Examples</a>
-        </li>
 
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="../../modelsref.html">Models</a>
-        </li>
 
-        
-        <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
-          </li>
-
-        <li class="dropdown">
-          <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
-          <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
-              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
-              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
-          </div>
-        </li>
-      </ul>
-
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
     </div>
-  </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">DeerLab</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
       </div>
-      
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
     </div>
-
-    <div id="navbar-end">
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
       
-      <div class="navbar-end-item">
-        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo_docs.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo_docs_light.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
 </form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of User Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../dipolar_guide_modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../dipolar_guide_fitting.html">Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced_guide.html">Advanced</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Advanced</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modeling_guide.html">Modeling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fitting_guide.html">Fitting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../uncertainty_guide.html">Uncertainty Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../examples.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic_simulations/ex_simulate_basic_4pdeer.html">Simulating a 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic_simulations/ex_simulate_5pdeer.html">Simulating a 5-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic_simulations/ex_simulate_4pdeer.html">Simulating a three-pathway 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_4pdeer.html">Basic analysis of a 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_ridme.html">Basic analysis of a RIDME signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_4pdeer_compactness.html">Analysis of a 4-pulse DEER signal with a compactness penalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_bootstrapping.html">Bootstrapped confidence intervals in routine analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_4pdeer_gauss.html">Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_5pdeer.html">Basic fitting of a 5-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_restraints_4pdeer.html">Distance restraints from 4-pulse DEER data, non-parametric distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_multipathway_validation.html">Validating multi-pathway models based on the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_fitting_4pdeer_pathways.html">Analysis of a 4-pulse DEER signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_fitting_dqc_pathways.html">Analysis of a 6-pulse DQC signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_global_fitting_4pdeer.html">Global fitting of multiple 4-pulse DEER signals, non-parametric distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_fitting_5pdeer_pathways.html">Analysis of a 5-pulse DEER signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_fitting_sparse_4pdeer.html">Basic analysis of a sparsely sampled 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_compactness_with_without.html">Comparing the analysis with and without compactness criterion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_global_different_deer.html">Global fitting of multiple different DEER signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_selregparam.html">Analysing the selection of regularisation parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_selregparam.html#over-and-under-selection-of-the-regularisation-parameter">Over and Under selection of the regularisation parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_crossing_echoes_masking.html">Analyzing data with crossing echoes robustly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_simulating_oop.html">Simulating polarization effects on low-temperature DEER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_global_twostates_parametric.html">Global fitting of a two-state model to a series of DEER traces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_dipolarpathways_selection.html">Dipolar pathways model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_forcefield_fit.html">Fit a polynomial force field to a dipolar signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_pseudotitration_parameter_free.html">Analyzing pseudo-titration (dose-response) curves with non-parametric distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_droplets_model.html">Global analysis of 5-pulse DEER on a liquid-droplet protein system</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modelsref.html">Models</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_3pdeer.html">deerlab.ex_3pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_4pdeer.html">deerlab.ex_4pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_rev5pdeer.html">deerlab.ex_rev5pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_fwd5pdeer.html">deerlab.ex_fwd5pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_sifter.html">deerlab.ex_sifter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_dqc.html">deerlab.ex_dqc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_ridme.html">deerlab.ex_ridme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_gauss.html">deerlab.dd_gauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_gauss2.html">deerlab.dd_gauss2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_gauss3.html">deerlab.dd_gauss3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_rice.html">deerlab.dd_rice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_rice2.html">deerlab.dd_rice2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_rice3.html">deerlab.dd_rice3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_gengauss.html">deerlab.dd_gengauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_skewgauss.html">deerlab.dd_skewgauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_cos.html">deerlab.dd_cos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_wormchain.html">deerlab.dd_wormchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_wormgauss.html">deerlab.dd_wormgauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_randcoil.html">deerlab.dd_randcoil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_sphere.html">deerlab.dd_sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_spheresurf.html">deerlab.dd_spheresurf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_spherepoint.html">deerlab.dd_spherepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shell.html">deerlab.dd_shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shellshell.html">deerlab.dd_shellshell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shellsphere.html">deerlab.dd_shellsphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shellvoidshell.html">deerlab.dd_shellvoidshell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shellvoidsphere.html">deerlab.dd_shellvoidsphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_circle.html">deerlab.dd_circle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_triangle.html">deerlab.dd_triangle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_uniform.html">deerlab.dd_uniform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_hom3d.html">deerlab.bg_hom3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_hom3dex.html">deerlab.bg_hom3dex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_homfractal.html">deerlab.bg_homfractal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_hom3d_phase.html">deerlab.bg_hom3d_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_hom3dex_phase.html">deerlab.bg_hom3dex_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_homfractal_phase.html">deerlab.bg_homfractal_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_exp.html">deerlab.bg_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_strexp.html">deerlab.bg_strexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_sumstrexp.html">deerlab.bg_sumstrexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_prodstrexp.html">deerlab.bg_prodstrexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_poly1.html">deerlab.bg_poly1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_poly2.html">deerlab.bg_poly2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_poly3.html">deerlab.bg_poly3</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../reference.html">Reference Index</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Reference Index</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.Model.html">deerlab.Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.Parameter.html">deerlab.Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.Penalty.html">deerlab.Penalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.FitResult.html">deerlab.FitResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.UQResult.html">deerlab.UQResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ExperimentInfo.html">deerlab.ExperimentInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.fit.html">deerlab.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.merge.html">deerlab.merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.link.html">deerlab.link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.lincombine.html">deerlab.lincombine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.relate.html">deerlab.relate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.regoperator.html">deerlab.regoperator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.selregparam.html">deerlab.selregparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.noiselevel.html">deerlab.noiselevel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.whitegaussnoise.html">deerlab.whitegaussnoise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.diststats.html">deerlab.diststats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.correctphase.html">deerlab.correctphase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bootstrap_analysis.html">deerlab.bootstrap_analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.profile_analysis.html">deerlab.profile_analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.snlls.html">deerlab.snlls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.fnnls.html">deerlab.fnnls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.cvxnnls.html">deerlab.cvxnnls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.goodness_of_fit.html">deerlab.goodness_of_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dipolarmodel.html">deerlab.dipolarmodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dipolarpenalty.html">deerlab.dipolarpenalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.deerload.html">deerlab.deerload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dipolarkernel.html">deerlab.dipolarkernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dipolarbackground.html">deerlab.dipolarbackground</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.fftspec.html">deerlab.fftspec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.distancerange.html">deerlab.distancerange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.store_pickle.html">deerlab.store_pickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.read_pickle.html">deerlab.read_pickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.sophegrid.html">deerlab.sophegrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.choleskycovmat.html">deerlab.choleskycovmat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.hccm.html">deerlab.hccm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.Jacobian.html">deerlab.Jacobian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.nearest_psd.html">deerlab.nearest_psd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.movmean.html">deerlab.movmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ovl.html">deerlab.ovl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.der_snr.html">deerlab.der_snr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.formatted_table.html">deerlab.formatted_table</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/JeschkeLab/DeerLab">Github</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/JeschkeLab/DeerLab/discussions">Discussion Board</a></li>
+</ul>
+
+</div>
+</div>
+
       </div>
       
     </div>
-  </div>
-</div>
-    </nav>
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
-    
-  </div>
-</nav>
-            </div>
-            
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
           </div>
-          
-
-          
-          
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
-              <div>
-                
-  <h1>Source code for deerlab.model</h1><div class="highlight"><pre>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for deerlab.model</h1><div class="highlight"><pre>
 <span></span><span class="c1"># model.py - DeerLab&#39;s modeling interface</span>
 <span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md). </span>
@@ -191,18 +359,17 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">block_diag</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fminbound</span>
-<span class="kn">from</span> <span class="nn">deerlab.solvers</span> <span class="kn">import</span> <span class="n">snlls</span>
-<span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">FitResult</span><span class="p">,</span> <span class="n">UQResult</span>
+<span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UQResult</span>
 <span class="kn">from</span> <span class="nn">deerlab.bootstrap_analysis</span> <span class="kn">import</span> <span class="n">bootstrap_analysis</span>
 <span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">formatted_table</span><span class="p">,</span> <span class="n">parse_multidatasets</span>
 <span class="kn">import</span> <span class="nn">inspect</span> 
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span><span class="p">,</span><span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">difflib</span>
-<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stdout</span>
-
 <span class="c1">#===================================================================================</span>
-<div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter">[docs]</a><span class="k">class</span> <span class="nc">Parameter</span><span class="p">():</span> 
+<div class="viewcode-block" id="Parameter">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter">[docs]</a>
+<span class="k">class</span> <span class="nc">Parameter</span><span class="p">():</span> 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a model parameter or a single parameter vector. </span>
 
@@ -237,8 +404,6 @@
 <span class="sd">        Value at which the parameter will be frozen during a fit.</span>
 
 
-<span class="sd">    Methods</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -247,7 +412,9 @@
     <span class="c1">#=======================================================================================</span>
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Parameter.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
+<div class="viewcode-block" id="Parameter.__init__">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new parameter object.</span>
 
@@ -303,6 +470,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="n">frozen</span>  <span class="c1"># Frozen</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>    <span class="c1"># Value at which it is frozen</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">linear</span>  <span class="c1"># Linearity</span></div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1">#=======================================================================================</span>
@@ -310,7 +478,9 @@
     <span class="c1">#=======================================================================================</span>
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Parameter.set"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
+<div class="viewcode-block" id="Parameter.set">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.set">[docs]</a>
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set one or multiple attributes for a parameter. See list of attributes for a reference list. </span>
 
@@ -339,10 +509,13 @@
                 <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is not a valid parameter attribute.&quot;</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
         <span class="k">return</span> </div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Parameter.setas"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.setas">[docs]</a>    <span class="k">def</span> <span class="nf">setas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parameter</span><span class="p">):</span>
+<div class="viewcode-block" id="Parameter.setas">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.setas">[docs]</a>
+    <span class="k">def</span> <span class="nf">setas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parameter</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy all attributes from an input parameter to the current parameter. </span>
 
@@ -356,10 +529,13 @@
 <span class="sd">            Model parameters from which to extract the attributes. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">_importparameter</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span></div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Parameter.freeze"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="Parameter.freeze">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.freeze">[docs]</a>
+    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Freeze a parameter during a fit/optimization to a given value.</span>
 
@@ -388,10 +564,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>        </div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Parameter.unfreeze"><a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.unfreeze">[docs]</a>    <span class="k">def</span> <span class="nf">unfreeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Parameter.unfreeze">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Parameter.html#deerlab.Parameter.unfreeze">[docs]</a>
+    <span class="k">def</span> <span class="nf">unfreeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Release a frozen parameter&#39;s value during a fit/optimization.</span>
 
@@ -406,13 +585,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>        
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span></div>
+</div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <span class="c1">#===================================================================================</span>
 
 
 
-<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">():</span>
+<div class="viewcode-block" id="Model">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model">[docs]</a>
+<span class="k">class</span> <span class="nc">Model</span><span class="p">():</span>
 <span class="c1">#===================================================================================</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a model.</span>
@@ -491,7 +674,9 @@
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Model.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">constants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> 
+<div class="viewcode-block" id="Model.__init__">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nonlinfcn</span><span class="p">,</span><span class="n">constants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new model from a non-linear function. </span>
 
@@ -521,7 +706,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check if nonlinfcn is callable and create a wrapper function if it&#39;s not</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">nonlinfcn</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">nonlinfcn</span><span class="p">):</span>
             <span class="n">Amatrix</span> <span class="o">=</span> <span class="n">nonlinfcn</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">nonlinfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="n">Amatrix</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">nonlinmodel</span> <span class="o">=</span> <span class="n">nonlinfcn</span>
@@ -563,6 +748,7 @@
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parameters</span><span class="p">):</span> 
             <span class="n">newparam</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">param</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">,</span><span class="n">newparam</span><span class="p">)</span></div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1"># Gets called when an attribute is accessed</span>
@@ -839,7 +1025,9 @@
     <span class="c1">#=======================================================================================</span>
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Model.addnonlinear"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.addnonlinear">[docs]</a>    <span class="k">def</span> <span class="nf">addnonlinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.addnonlinear">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.addnonlinear">[docs]</a>
+    <span class="k">def</span> <span class="nf">addnonlinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a new non-linear parameter (:ref:`Parameter` object) to the model. </span>
 
@@ -904,10 +1092,13 @@
         <span class="c1"># Update the model function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nonlinmodel</span> <span class="o">=</span> <span class="n">model_with_constants_and_added_nonlin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
     
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Model.rename_parameter"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.rename_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">rename_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.rename_parameter">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.rename_parameter">[docs]</a>
+    <span class="k">def</span> <span class="nf">rename_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rename a parameter in the model. </span>
 
@@ -929,10 +1120,13 @@
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">))</span>
         <span class="c1"># Delete the old parameter</span>
         <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span></div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Model.addlinear"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.addlinear">[docs]</a>    <span class="k">def</span> <span class="nf">addlinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normalization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.addlinear">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.addlinear">[docs]</a>
+    <span class="k">def</span> <span class="nf">addlinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normalization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a new linear parameter (:ref:`Parameter` object) to the model. </span>
 
@@ -984,13 +1178,14 @@
         <span class="c1"># Check if the normalization function is valid</span>
         <span class="n">newparam</span><span class="o">.</span><span class="n">normalization</span> <span class="o">=</span> <span class="n">normalization</span> 
         <span class="k">if</span> <span class="n">newparam</span><span class="o">.</span><span class="n">normalization</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">normalization</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">normalization</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The normalization function must be a callable function.&#39;</span><span class="p">)</span>
                 <span class="n">newparam</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">newparam</span><span class="o">.</span><span class="n">description</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; (normalized)&#39;</span> 
 
         <span class="c1"># Add linear parameter to the model</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">newparam</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
 
@@ -1083,7 +1278,9 @@
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
     <span class="c1">#---------------------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Model.getmetadata"><a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.getmetadata">[docs]</a>    <span class="k">def</span> <span class="nf">getmetadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.getmetadata">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Model.html#deerlab.Model.getmetadata">[docs]</a>
+    <span class="k">def</span> <span class="nf">getmetadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Utility function to quickly request all metadata attributes of the model in vector form. </span>
 <span class="sd">        All elements are sorted according to the model function signature.</span>
@@ -1106,6 +1303,7 @@
             <span class="s1">&#39;values&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)),</span>
             <span class="s1">&#39;units&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;unit&#39;</span><span class="p">)),</span>
             <span class="p">}</span></div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 
         
@@ -1162,11 +1360,14 @@
 <span class="sd">        Return a string representation of the model&#39;s parameters and their values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_table</span><span class="p">()</span>      </div>
+
     <span class="c1">#---------------------------------------------------------------------------------------</span>
 <span class="c1">#===================================================================================</span>
 
 <span class="c1">#==============================================================================</span>
-<div class="viewcode-block" id="Penalty"><a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty">[docs]</a><span class="k">class</span> <span class="nc">Penalty</span><span class="p">():</span>
+<div class="viewcode-block" id="Penalty">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty">[docs]</a>
+<span class="k">class</span> <span class="nc">Penalty</span><span class="p">():</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Represents a penalty term of the objective function.  </span>
 
 <span class="sd">    Attributes</span>
@@ -1181,7 +1382,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">#--------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Penalty.__init__"><a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">penaltyfcn</span><span class="p">,</span><span class="n">selection</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Penalty.__init__">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">penaltyfcn</span><span class="p">,</span><span class="n">selection</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">signature</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new penalty object. </span>
 
@@ -1295,10 +1498,13 @@
         <span class="c1"># Remove useless attributes</span>
         <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span><span class="s1">&#39;par0&#39;</span><span class="p">)</span>
         <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span></div>
+
     <span class="c1">#--------------------------------------------------------------------------</span>
 
     <span class="c1">#--------------------------------------------------------------------------</span>
-<div class="viewcode-block" id="Penalty.optimize"><a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="Penalty.optimize">
+<a class="viewcode-back" href="../../_autosummary/deerlab.Penalty.html#deerlab.Penalty.optimize">[docs]</a>
+    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Optimize the penalty weight. </span>
 
@@ -1341,637 +1547,12 @@
         <span class="c1"># Get the fit result</span>
         <span class="n">fitresult</span> <span class="o">=</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">optweight</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">fitresult</span><span class="p">,</span><span class="n">optweight</span></div></div>
+        <span class="k">return</span> <span class="n">fitresult</span><span class="p">,</span><span class="n">optweight</span></div>
+</div>
+
     <span class="c1">#--------------------------------------------------------------------------</span>
 <span class="c1">#==============================================================================</span>
 
-<span class="c1">#--------------------------------------------------------------------------</span>
-<span class="k">def</span> <span class="nf">_outerOptimization</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">penalty_objects</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    (Private function)</span>
-
-<span class="sd">    A method to optimize the fit of a model with penalties.</span>
-
-<span class="sd">    This method returns a function that can be used to evaluate the fit of a model with penalties. It takes in the following arguments:</span>
-
-<span class="sd">    fitfcn : callable</span>
-<span class="sd">    The function to be optimized, which takes in a set of parameters and returns a scalar value representing the fit of the model.</span>
-
-<span class="sd">    penalty_objects : list of Penalty objects</span>
-<span class="sd">    A list of penalty objects that define the penalty functions to be applied to the fit function. The list can have up to three penalty objects.</span>
-
-<span class="sd">    sigma : numpy.ndarray</span>
-<span class="sd">    The vector of observation uncertainties to be used in the penalty functions.</span>
-<span class="sd">    Returns</span>
-
-<span class="sd">    fitfcn_ : callable</span>
-<span class="sd">    A function that can be used to evaluate the fit of a model with penalties. This function takes in a set of parameters and returns a scalar value representing the fit of the model.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># If there are no penalties</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">penalty_objects</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">fitfcn_</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,[</span><span class="kc">None</span><span class="p">])</span>
-
-    <span class="c1"># Otherwise, prepare to solve multiobjective problem </span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">penalty_objects</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
-        <span class="n">thirdfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span><span class="o">*</span><span class="n">param</span><span class="p">:</span> <span class="n">penalty_objects</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">weight</span><span class="p">:</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,[</span><span class="o">*</span><span class="n">param</span><span class="p">,</span><span class="n">weight</span><span class="p">]),</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">secondfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span><span class="o">*</span><span class="n">param</span><span class="p">:</span> <span class="n">penalty_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">weight</span><span class="p">:</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,[</span><span class="o">*</span><span class="n">param</span><span class="p">,</span><span class="n">weight</span><span class="p">,</span><span class="n">thirdfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="o">*</span><span class="n">param</span><span class="p">,</span><span class="n">weight</span><span class="p">)]),</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">fitfcn_</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">penalty_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">weight</span><span class="p">:</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,[</span><span class="n">weight</span><span class="p">,</span><span class="n">secondfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">weight</span><span class="p">),</span><span class="n">thirdfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">weight</span><span class="p">,</span><span class="n">secondfcn</span><span class="p">(</span><span class="n">weight</span><span class="p">))]),</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">penalty_objects</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
-        <span class="n">secondfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span><span class="o">*</span><span class="n">param</span><span class="p">:</span> <span class="n">penalty_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">weight</span><span class="p">:</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,[</span><span class="o">*</span><span class="n">param</span><span class="p">,</span><span class="n">weight</span><span class="p">]),</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">fitfcn_</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">penalty_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">weight</span><span class="p">:</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,[</span><span class="n">weight</span><span class="p">,</span><span class="n">secondfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">weight</span><span class="p">)]),</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">penalty_objects</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
-        <span class="n">fitfcn_</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">penalty_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">weight</span><span class="p">:</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">,[</span><span class="n">weight</span><span class="p">]),</span><span class="n">y</span><span class="p">,</span><span class="n">sigma</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The fit() function can only handle up to three penalties.&#39;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">fitfcn_</span>
-<span class="c1">#--------------------------------------------------------------------------</span>
-
-<span class="k">def</span> <span class="nf">_propagate</span><span class="p">(</span><span class="n">fitresults</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">_paramlist</span><span class="p">,</span><span class="n">paramidx</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="o">*</span><span class="n">constants</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="c1"># ----------------------------------------------------------------------------</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Propagate the uncertainty in the fit results to a model&#39;s response.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-
-<span class="sd">    model : :ref:`Model` or callable</span>
-<span class="sd">        Model object or callable function to be evaluated. All the parameters in the model or in the callable definition</span>
-<span class="sd">        must match their corresponding parameter names in the ``FitResult`` object.   </span>
-<span class="sd">    constants : array_like </span>
-<span class="sd">        Model constants. </span>
-<span class="sd">    lb : array_like, optional </span>
-<span class="sd">        Lower bounds of the model response.</span>
-<span class="sd">    ub : array_like, optional </span>
-<span class="sd">        Upper bounds of the model response.   </span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
-<span class="sd">    responseUncert : :ref:`UQResult`</span>
-<span class="sd">        Uncertainty quantification of the model&#39;s response.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get the parameter names of the input model</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">Model</span><span class="p">):</span>
-        <span class="n">modelparam</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
-        <span class="n">modelparam</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input must be a deerlab.Model object or a callable.&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Check that all parameters are in the fit object</span>
-    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">modelparam</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span> 
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The fit object does not contain the </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> parameter.&#39;</span><span class="p">)</span>
-    <span class="c1"># Determine the indices of the subset of parameters the model depends on</span>
-    <span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="n">paramidx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_paramlist</span><span class="p">)</span><span class="o">==</span><span class="n">param</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">modelparam</span><span class="p">]</span>
-    <span class="c1"># Propagate the uncertainty from that subset to the model</span>
-    <span class="n">modeluq</span> <span class="o">=</span> <span class="n">fitresults</span><span class="o">.</span><span class="n">paramUncert</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">param</span><span class="p">:</span> <span class="n">model</span><span class="p">(</span><span class="o">*</span><span class="n">constants</span><span class="p">,</span><span class="o">*</span><span class="p">[</span><span class="n">param</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">subset</span><span class="p">]),</span><span class="n">lb</span><span class="p">,</span><span class="n">ub</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">modeluq</span>
-<span class="c1"># ----------------------------------------------------------------------------</span>
-
-<span class="k">def</span> <span class="nf">_evaluate</span><span class="p">(</span><span class="n">params</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="o">*</span><span class="n">constants</span><span class="p">):</span>
-<span class="c1"># ----------------------------------------------------------------------------</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Evaluate a model at the fitted parameter values. </span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-
-<span class="sd">    model : :ref:`Model` or callable</span>
-<span class="sd">        Model object or callable function to be evaluated. All the parameters in the model or in the callable definition</span>
-<span class="sd">        must match their corresponding parameter names in the ``FitResult`` object.   </span>
-<span class="sd">    constants : array_like </span>
-<span class="sd">        Any model constants present required by the model.  </span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-
-<span class="sd">    response : array_like </span>
-<span class="sd">        Model response at the fitted parameter values. </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">Model</span><span class="p">):</span>
-        <span class="n">modelparam</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
-        <span class="n">modelparam</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input must be a deerlab.Model object or a callable.&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Check that all parameters are in the fit object</span>
-    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">modelparam</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span> 
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The fit object does not contain the </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> parameter.&#39;</span><span class="p">)</span>
-    <span class="c1"># Determine the indices of the subset of parameters the model depends on</span>
-    <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">modelparam</span><span class="p">}</span>
-    <span class="c1"># Evaluate the input model</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">*</span><span class="n">constants</span><span class="p">,</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">response</span>
-<span class="c1"># ----------------------------------------------------------------------------</span>
-
-<span class="c1">#--------------------------------------------------------------------------</span>
-<span class="k">def</span> <span class="nf">_print_fitresults</span><span class="p">(</span><span class="n">fitresult</span><span class="p">,</span><span class="n">model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    (Private function)</span>
-
-<span class="sd">    Construct summary table of fit results to print</span>
-<span class="sd">    </span>
-<span class="sd">    This helper method takes the output of a model fit and constructs a</span>
-<span class="sd">    summary table of the goodness-of-fit statistics, along with the </span>
-<span class="sd">    hyperparameters of the model (if any). The method is intended to be used</span>
-<span class="sd">    to print the results of the model fit.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    fitresult : ``FitResult`` object</span>
-<span class="sd">        Result of a model fit.</span>
-<span class="sd">        </span>
-<span class="sd">    model : ``Model`` object</span>
-<span class="sd">        Model object instance used for the fit.</span>
-<span class="sd">        </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    table_string : str</span>
-<span class="sd">        A string containing the summary table of the fit results.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1">#-----------------------------------------------------</span>
-    <span class="k">def</span> <span class="nf">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">spaces</span><span class="p">,</span> <span class="n">is_tty</span><span class="o">=</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">()):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        (Private function)</span>
-
-<span class="sd">        Helper method that applies ANSI codes to add colors to the text</span>
-<span class="sd">        in a terminal. </span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        str : str </span>
-<span class="sd">            The string to be colored.</span>
-<span class="sd">        color : str</span>
-<span class="sd">            The color to be applied to the text. It can be &#39;red&#39;, &#39;yellow&#39;, or &#39;white&#39;.</span>
-<span class="sd">        spaces : int</span>
-<span class="sd">            The number of spaces to add to the beginning and end of the string.</span>
-<span class="sd">        is_tty : bool</span>
-<span class="sd">            A boolean value indicating whether the output is a terminal or not.</span>
-<span class="sd">            If it is not a terminal, the method simply returns the string without</span>
-<span class="sd">            applying any coloring.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        colored_str : str</span>
-<span class="sd">            Colored string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">color</span><span class="o">==</span><span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[91m&#39;</span>
-        <span class="k">if</span> <span class="n">color</span><span class="o">==</span><span class="s1">&#39;yellow&#39;</span><span class="p">:</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[93m&#39;</span>
-        <span class="k">if</span> <span class="n">color</span><span class="o">==</span><span class="s1">&#39;white&#39;</span><span class="p">:</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">is_tty</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">str</span>
-        <span class="k">else</span><span class="p">:</span> 
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">spaces</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">spaces</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[00m&quot;</span> 
-    <span class="c1">#-----------------------------------------------------</span>
-
-    <span class="c1"># Start printout string</span>
-    <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="c1"># Get number of models in the fit</span>
-    <span class="n">modelfits</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">model</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">modelfits</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
-        <span class="n">modelfits</span> <span class="o">=</span> <span class="p">[</span><span class="n">modelfits</span><span class="p">]</span>
-    <span class="n">Ndatasets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">modelfits</span><span class="p">)</span>
-
-    <span class="c1"># Construct table of goodness-of-fit statistics</span>
-    <span class="n">table</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;Dataset&#39;</span><span class="p">,</span><span class="s1">&#39;Noise level&#39;</span><span class="p">,</span><span class="s1">&#39;Reduced 𝛘2&#39;</span><span class="p">,</span><span class="s1">&#39;Residual autocorr.&#39;</span><span class="p">,</span><span class="s1">&#39;RMSD&#39;</span><span class="p">])</span> <span class="c1"># Header</span>
-    <span class="n">alignment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">]</span> <span class="c1"># Tab alignment</span>
-    <span class="n">stats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">fitresult</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
-    <span class="n">noiselevels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">fitresult</span><span class="o">.</span><span class="n">noiselvl</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ndatasets</span><span class="p">):</span>
-        <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">noiselevels</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
-        <span class="n">chi2red</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;chi2red&#39;</span><span class="p">]</span>
-        <span class="n">rmsd</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;rmsd&#39;</span><span class="p">]</span>
-        <span class="n">autocorr</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;autocorr&#39;</span><span class="p">]</span>
-        <span class="c1"># Use colored text to warn of very poor fits</span>
-        <span class="n">autocorrcolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;white&#39;</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">autocorr</span><span class="o">&gt;</span><span class="mf">0.5</span> <span class="ow">and</span> <span class="n">autocorr</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># Relatively acceptable autocorrelations (yellow)</span>
-            <span class="n">autocorrcolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">autocorr</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># Worrisome autocorrelations (red)</span>
-            <span class="n">autocorrcolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
-        <span class="n">chicolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;white&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-        <span class="c1"># Standard deviation of reduced 𝛘2 statistic&#39;s uncertainty (Gaussian limit)</span>
-        <span class="n">chi2red_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">modelfits</span><span class="p">[</span><span class="n">n</span><span class="p">]))</span><span class="o">*</span><span class="mi">3</span> 
-        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">chi2red</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">3</span><span class="o">*</span><span class="n">chi2red_sigma</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">chi2red</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">6</span><span class="o">*</span><span class="n">chi2red_sigma</span><span class="p">:</span>
-            <span class="c1"># Poor case (yellow), 𝛘2 exceeds thrice the expected uncertainty </span>
-            <span class="n">chicolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">chi2red</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">6</span><span class="o">*</span><span class="n">chi2red_sigma</span><span class="p">:</span>
-            <span class="c1"># Horrible case (red), 𝛘2 exceeds six times the expected uncertainty </span>
-            <span class="n">chicolor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="nb">str</span><span class="p">:</span> <span class="n">colortxt</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-        <span class="c1"># Convert numbers to well-formatted strings</span>
-        <span class="n">noiselvl</span><span class="p">,</span><span class="n">chi2red</span><span class="p">,</span><span class="n">autocorr</span><span class="p">,</span><span class="n">rmsd</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">var</span><span class="o">&lt;</span><span class="mf">1e3</span> <span class="ow">or</span> <span class="n">var</span><span class="o">&gt;</span><span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">chi2red</span><span class="p">,</span><span class="n">autocorr</span><span class="p">,</span><span class="n">rmsd</span><span class="p">]]</span> 
-        <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;#</span><span class="si">{</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">chicolor</span><span class="p">(</span><span class="n">chi2red</span><span class="p">),</span><span class="n">autocorrcolor</span><span class="p">(</span><span class="n">autocorr</span><span class="p">),</span><span class="n">rmsd</span><span class="p">])</span>
-    <span class="c1"># Add auto-formatted table string</span>
-    <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;Goodness-of-fit: </span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="n">string</span> <span class="o">+=</span> <span class="n">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">alignment</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-
-    <span class="c1"># Construct table of model hyperparameters</span>
-    <span class="n">hasregularization</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">regparam</span><span class="o">!=</span><span class="mi">0</span>
-    <span class="n">haspenalties</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">penweights</span>
-    <span class="k">if</span> <span class="n">hasregularization</span> <span class="ow">or</span> <span class="n">haspenalties</span><span class="p">:</span>
-        <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;Model hyperparameters: </span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">tags</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">alignment</span> <span class="o">=</span> <span class="p">[],[],[]</span>
-        <span class="c1"># If regularization was used, add regularization parameter</span>
-        <span class="k">if</span> <span class="n">hasregularization</span><span class="p">:</span>
-            <span class="n">alignment</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">)</span>
-            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Regularization parameter&#39;</span><span class="p">)</span>      
-            <span class="n">regparam</span> <span class="o">=</span> <span class="n">fitresult</span><span class="o">.</span><span class="n">regparam</span>
-            <span class="k">if</span> <span class="n">regparam</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">regparam</span> <span class="o">=</span> <span class="mi">0</span>  
-            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">regparam</span><span class="p">)</span> 
-        <span class="c1"># If additional penalties were used, add their weights</span>
-        <span class="k">if</span> <span class="n">haspenalties</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">penweight</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fitresult</span><span class="o">.</span><span class="n">penweights</span><span class="p">):</span>
-                <span class="n">alignment</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">)</span>
-                <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Penalty weight #</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>        
-                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">penweight</span><span class="p">)</span> 
-        <span class="c1"># Format the values</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">var</span><span class="o">&lt;</span><span class="mf">1e3</span> <span class="ow">and</span> <span class="n">var</span><span class="o">&gt;</span><span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span> 
-        <span class="n">table</span> <span class="o">=</span> <span class="p">[</span><span class="n">tags</span><span class="p">,</span><span class="n">values</span><span class="p">]</span> 
-        <span class="c1"># Add to the table</span>
-        <span class="n">string</span> <span class="o">+=</span> <span class="n">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">alignment</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-
-    <span class="c1"># Construct table of model parameters fits</span>
-    <span class="n">table</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;Parameter&#39;</span><span class="p">,</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span><span class="s1">&#39;95%-Confidence interval&#39;</span><span class="p">,</span><span class="s1">&#39;Unit&#39;</span><span class="p">,</span><span class="s1">&#39;Description&#39;</span><span class="p">])</span> <span class="c1"># Header</span>
-    <span class="n">alignment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;&#39;</span><span class="p">]</span> <span class="c1"># Alignment</span>
-    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">idx</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">frozen</span><span class="p">):</span> 
-                <span class="c1"># If parameter is frozen, print just the value</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span> <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e3</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="n">ci</span> <span class="o">=</span> <span class="s1">&#39;(frozen)&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># If parameter is scalar, report values and CIs</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fitresult</span><span class="p">,</span><span class="n">param</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fitresult</span><span class="p">,</span><span class="n">param</span><span class="o">+</span><span class="s1">&#39;Uncert&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;void&#39;</span><span class="p">:</span>
-                    <span class="n">ci</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ci_lower</span><span class="p">,</span><span class="n">ci_upper</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fitresult</span><span class="p">,</span><span class="n">param</span><span class="o">+</span><span class="s1">&#39;Uncert&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)</span>
-                    <span class="n">value</span><span class="p">,</span><span class="n">ci_lower</span><span class="p">,</span><span class="n">ci_upper</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e3</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-3</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="n">value</span><span class="p">,</span><span class="n">ci_lower</span><span class="p">,</span><span class="n">ci_upper</span><span class="p">]]</span>
-                    <span class="n">ci</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">ci_lower</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">ci_upper</span><span class="si">}</span><span class="s1">)&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># If parameter is vectorial, print just dots</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
-            <span class="n">ci</span> <span class="o">=</span> <span class="s1">&#39;(...,...)&#39;</span>
-        <span class="n">unit</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">ci</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">description</span><span class="p">])</span>
-    <span class="c1"># Add auto-formatted table string</span>
-    <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;Model parameters: </span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="n">string</span> <span class="o">+=</span> <span class="n">formatted_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">alignment</span><span class="p">)</span>
-    <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="k">return</span> <span class="n">string</span>
-<span class="c1">#--------------------------------------------------------------------------</span>
-
-<span class="k">def</span> <span class="nf">_insert_snlls_optionals_docstrings</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    (Private decorator)</span>
-<span class="sd">    </span>
-<span class="sd">    A decorator that takes a function ``func` as input and replaces the </span>
-<span class="sd">    string ``&#39;snlls_keyargs_docstrings&#39;`` in the function&#39;s docstring with</span>
-<span class="sd">    the optional keyword arguments documentation for the ``snlls.py`` </span>
-<span class="sd">    function. This is done by splitting the ``snlls.py`` docstring into </span>
-<span class="sd">    paragraphs, filtering out paragraphs that are already included in the</span>
-<span class="sd">    outer function&#39;s docstring, and concatenating the remaining paragraphs.</span>
-<span class="sd">    The resulting string is then inserted into ``func``&#39;s docstring and </span>
-<span class="sd">    the modified function is returned. This allows for the optional keyword</span>
-<span class="sd">    arguments documentation to be easily updated in the docstring of any </span>
-<span class="sd">    function that uses the ``snlls.py`` function.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get the documentation for the optional keyword arguments in snlls.py also used by fit()</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="n">snlls</span><span class="o">.</span><span class="vm">__doc__</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="c1"># Exclude arguments already set by the outer function</span>
-    <span class="n">exclude</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lb&#39;</span><span class="p">,</span><span class="s1">&#39;ub&#39;</span><span class="p">,</span><span class="s1">&#39;lbl&#39;</span><span class="p">,</span><span class="s1">&#39;ubl&#39;</span><span class="p">,</span><span class="s1">&#39;subsets&#39;</span><span class="p">,</span><span class="s1">&#39;lin_frozen&#39;</span><span class="p">,</span><span class="s1">&#39;nonlin_frozen&#39;</span><span class="p">,</span><span class="s1">&#39;regparam&#39;</span><span class="p">,</span><span class="s1">&#39;reg&#39;</span><span class="p">,</span><span class="s1">&#39;regparamrange&#39;</span><span class="p">,</span> <span class="s1">&#39;extrapenalty&#39;</span><span class="p">]</span>
-    <span class="n">paragraphs</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">e</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">)]</span>
-    <span class="c1"># Concatenate the arguments</span>
-    <span class="n">snlls_keyargs_docs</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">for</span> <span class="n">paragraph</span> <span class="ow">in</span> <span class="n">paragraphs</span><span class="p">:</span> 
-        <span class="c1"># Only keep optional keyword arguments</span>
-        <span class="k">if</span> <span class="s1">&#39;optional&#39;</span> <span class="ow">in</span> <span class="n">paragraph</span><span class="p">:</span>
-            <span class="n">snlls_keyargs_docs</span> <span class="o">+=</span> <span class="n">paragraph</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> 
-
-    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;snlls_keyargs_docstrings&#39;</span><span class="p">,</span><span class="n">snlls_keyargs_docs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">func</span>
-    <span class="k">return</span> <span class="n">decorator</span>
-
-<span class="c1">#==============================================================================================</span>
-<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../_autosummary/deerlab.fit.html#deerlab.fit">[docs]</a><span class="nd">@_insert_snlls_optionals_docstrings</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">model_</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">constants</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">penalties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootstrap</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span><span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">regparamrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bootcores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Fit the model(s) to the dataset(s)</span>
-
-<span class="sd">    Fit the input model to the data ``y`` via one of the three following approaches: </span>
-<span class="sd">    </span>
-<span class="sd">    - Non-linear least-squares </span>
-<span class="sd">    - Regularized linear-least-squares </span>
-<span class="sd">    - Separable non-linear least-squares </span>
-
-<span class="sd">    The most appropiate solver is chosen automatically based on the model structure. </span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    model : :ref:`Model`</span>
-<span class="sd">        Model object. </span>
-
-<span class="sd">    y : array_like </span>
-<span class="sd">        Data to be fitted. </span>
-
-<span class="sd">    par0 : array_like, optional </span>
-<span class="sd">        Value at which to initialize the parameter at the start of a fit routine. </span>
-<span class="sd">        Must be specified if not defined in the model. Otherwise, it overrides the definition in the model. </span>
-
-<span class="sd">    penalties: callable or list thereof, optional</span>
-<span class="sd">        Custom penalty function(s) to impose upon the solution. A single penalty must be specified as a callable function. </span>
-<span class="sd">        Multiple penalties can be specified as a list of callable functons. Each function must take two inputs, a vector of non-linear parameters</span>
-<span class="sd">        and a vector of linear parameters, and return a vector to be added to the residual vector (``pen = fcn(pnonlin,plin)``).  </span>
-<span class="sd">        The square of the penalty is computed internally.</span>
-
-<span class="sd">    bootstrap : scalar, optional,</span>
-<span class="sd">        Bootstrap samples for uncertainty quantification. If ``bootstrap&gt;0``, the uncertainty quantification will be </span>
-<span class="sd">        performed via the boostrapping method with based on the number of samples specified as the argument.</span>
-<span class="sd">    </span>
-<span class="sd">    bootcores : scalar, optional</span>
-<span class="sd">        Number of CPU cores/processes for parallelization of the bootstrap uncertainty quantification. If ``cores=1`` no parallel </span>
-<span class="sd">        computing is used. If ``cores=-1`` all available CPUs are used. The default is one core (no parallelization).</span>
-
-<span class="sd">    reg : boolean or string, optional</span>
-<span class="sd">        Determines the use of regularization on the solution of the linear problem.</span>
-<span class="sd">        </span>
-<span class="sd">        * ``&#39;auto&#39;`` - Automatic decision based con the condition number of the non-linear model ``Amodel``.</span>
-<span class="sd">        * ``True`` - Forces regularization regardless of the condition number</span>
-<span class="sd">        * ``False`` - Disables regularization regardless of the condition number</span>
-<span class="sd">        </span>
-<span class="sd">        The default is ``&#39;auto&#39;``.</span>
-
-<span class="sd">    regparam : string or float scalar, optional</span>
-<span class="sd">        Method for the automatic selection of the optimal regularization parameter:</span>
-
-<span class="sd">        * ``&#39;lr&#39;`` - L-curve minimum-radius method (LR)</span>
-<span class="sd">        * ``&#39;lc&#39;`` - L-curve maximum-curvature method (LC)</span>
-<span class="sd">        * ``&#39;cv&#39;`` - Cross validation (CV)</span>
-<span class="sd">        * ``&#39;gcv&#39;`` - Generalized Cross Validation (GCV)</span>
-<span class="sd">        * ``&#39;rgcv&#39;`` - Robust Generalized Cross Validation (rGCV)</span>
-<span class="sd">        * ``&#39;srgcv&#39;`` - Strong Robust Generalized Cross Validation (srGCV)</span>
-<span class="sd">        * ``&#39;aic&#39;`` - Akaike information criterion (AIC)</span>
-<span class="sd">        * ``&#39;bic&#39;`` - Bayesian information criterion (BIC)</span>
-<span class="sd">        * ``&#39;aicc&#39;`` - Corrected Akaike information criterion (AICC)</span>
-<span class="sd">        * ``&#39;rm&#39;`` - Residual method (RM)</span>
-<span class="sd">        * ``&#39;ee&#39;`` - Extrapolated Error (EE)</span>
-<span class="sd">        * ``&#39;ncp&#39;`` - Normalized Cumulative Periodogram (NCP)</span>
-<span class="sd">        * ``&#39;gml&#39;`` - Generalized Maximum Likelihood (GML)</span>
-<span class="sd">        * ``&#39;mcl&#39;`` - Mallows&#39; C_L (MCL)</span>
-<span class="sd">        </span>
-<span class="sd">        The regularization parameter can be manually specified by passing a scalar value</span>
-<span class="sd">        instead of a string. The default ``&#39;aic&#39;``.</span>
-
-<span class="sd">    regparamrange : array_like, optional </span>
-<span class="sd">        Search range for the optimization of the regularization parameter. Must be specified as a list ``[regparam_lb, regparam_ub]`` </span>
-<span class="sd">        with the lower/upper boundaries of the regularization parameter. The default range is ``[1e-8, 1e3]``. </span>
-
-<span class="sd">    regop : 2D array_like, optional</span>
-<span class="sd">        Regularization operator matrix, the default is the second-order differential operator.</span>
-
-<span class="sd">    alphareopt : float scalar, optional</span>
-<span class="sd">        Relative parameter change threshold for reoptimizing the regularization parameter</span>
-<span class="sd">        when using a selection method, the default is ``1e-3``.</span>
-
-<span class="sd">    nnlsSolver : string, optional</span>
-<span class="sd">        Solver used to solve a non-negative least-squares problem (if applicable):</span>
-
-<span class="sd">        * ``&#39;qp&#39;`` - Optimization of the NNLS problem using the ``quadprog`` package.</span>
-<span class="sd">        * ``&#39;cvx&#39;`` - Optimization of the NNLS problem using the ``cvxopt`` package.</span>
-<span class="sd">        * ``&#39;fnnls&#39;`` - Optimization using the fast NNLS algorithm.</span>
-<span class="sd">        </span>
-<span class="sd">        The default is ``&#39;qp&#39;``.</span>
-
-<span class="sd">    verbose : scalar integer, optional</span>
-<span class="sd">        Level of verbosity during the analysis:</span>
-
-<span class="sd">            * ``0`` : Work silently (default).</span>
-<span class="sd">            * ``1`` : Display progress including the non-linear least-squares&#39; solver termination report.</span>
-<span class="sd">            * ``2`` : Display progress including the non-linear least-squares&#39; solver iteration details.</span>
-
-<span class="sd">    snlls_keyargs_docstrings</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    :ref:`FitResult` with the following fields defined:</span>
-<span class="sd">    &lt;parameter_name&gt; : :ref:`Parameter`</span>
-<span class="sd">        Fitted value of the &lt;parameter_name&gt; model parameter.</span>
-<span class="sd">    &lt;parameter_name&gt;Uncert : :ref:`UQResult`</span>
-<span class="sd">        Uncertainty quantification of the &lt;parameter_name&gt; model parameter.</span>
-<span class="sd">    param : ndarray</span>
-<span class="sd">        Fitted parameter vector ordered according to the model parameter indices.</span>
-<span class="sd">    paramUncert : :ref:`UQResult`</span>
-<span class="sd">        Uncertainty quantification of the parameter vector ordered according to the model parameter indices.</span>
-<span class="sd">    model : ndarray</span>
-<span class="sd">        Fitted model response.     </span>
-<span class="sd">    regparam : scalar</span>
-<span class="sd">        Regularization parameter value used for the regularization of the linear parameters.</span>
-<span class="sd">    penweights : scalar or list thereof </span>
-<span class="sd">        Penalty weight value(s) used for the penalties specified through ``penalties``.</span>
-<span class="sd">    stats : dict</span>
-<span class="sd">        Goodness of fit statistical estimators</span>
-
-<span class="sd">        * ``stats[&#39;chi2red&#39;]`` - Reduced \chi^2 test</span>
-<span class="sd">        * ``stats[&#39;r2&#39;]`` - R^2 test</span>
-<span class="sd">        * ``stats[&#39;rmsd&#39;]`` - Root-mean squared deviation (RMSD)</span>
-<span class="sd">        * ``stats[&#39;aic&#39;]`` - Akaike information criterion</span>
-<span class="sd">        * ``stats[&#39;aicc&#39;]`` - Corrected Akaike information criterion</span>
-<span class="sd">        * ``stats[&#39;bic&#39;]`` - Bayesian information criterion</span>
-<span class="sd">    cost : float</span>
-<span class="sd">        Value of the cost function at the solution.</span>
-<span class="sd">    noiselvl : ndarray</span>
-<span class="sd">        Estimated or user-given noise standard deviations of the individual datasets.</span>
-<span class="sd">    plot(axis=None,xlabel=&#39;&#39;,gof=False) : callable</span>
-<span class="sd">        Function to display the results. It will display the fitted data.</span>
-<span class="sd">        A vector for the x-axis and its label can be specified by calling ``FitResult.plot(axis=x,xlabel=&#39;xlabel&#39;)``.</span>
-<span class="sd">        A set of goodness-of-fit plots can be displayed by enabling the ``gof`` option by calling ``FitResult.plot(gof=True)``.        </span>
-<span class="sd">    evaluate(model, constants) : callable</span>
-<span class="sd">        Function to evaluate a model at the fitted parameter values. Takes a model object or callable function ``model`` to be evaluated.</span>
-<span class="sd">        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.   </span>
-<span class="sd">        Any model constants present required by the model must be specified as a second argument ``constants``.  </span>
-<span class="sd">        It returns the model&#39;s response at the fitted parameter values as an ndarray. </span>
-<span class="sd">    propagate(model,constants,lb,ub) : callable</span>
-<span class="sd">        Function to propagate the uncertainty in the fit results to a model&#39;s response. Takes a model object or callable function ``model`` to be evaluated.</span>
-<span class="sd">        All the parameters in the model or in the callable definition must match their corresponding parameter names in the ``FitResult`` object.  </span>
-<span class="sd">        Any model constants present required by the model must be specified as a second argument ``constants``. The lower bounds ``lb`` and upper bounds ``ub``</span>
-<span class="sd">        of the model&#39;s response can be specified as a third and fourth argument respectively.  </span>
-<span class="sd">        It returns the model&#39;s response uncertainty quantification as a ``UQResult`` object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model_</span><span class="p">,</span><span class="n">Model</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input model must be a valid deerlab.Model object.&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">model_</span><span class="p">)</span>
-
-    <span class="n">required</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_constantsInfo</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span><span class="o">!=</span><span class="n">required</span><span class="p">:</span> 
-        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The input model requires </span><span class="si">{</span><span class="n">required</span><span class="si">}</span><span class="s1"> constant(s) to be specified. Specify them via fit(model,y,*constants).&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">constants</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Nlin</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">addlinear</span><span class="p">(</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span><span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Scaling factor&#39;</span><span class="p">)</span>
-
-    <span class="n">normalization</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">normfactor_keys</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">():</span>
-        <span class="n">param</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">linear</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">normalization</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">normfactor_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scale&#39;</span>
-                <span class="n">normfactor_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normfactor_key</span><span class="p">)</span>
-                <span class="n">model</span><span class="o">.</span><span class="n">addnonlinear</span><span class="p">(</span><span class="n">normfactor_key</span><span class="p">,</span><span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">par0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Normalization factor of </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">normfactor_key</span><span class="p">)</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">normalization</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="c1"># Get boundaries and conditions for the linear and nonlinear parameters</span>
-    <span class="n">ubl</span><span class="p">,</span><span class="n">ub</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_split_linear</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;ub&#39;</span><span class="p">)))</span>
-    <span class="n">lbl</span><span class="p">,</span><span class="n">lb</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_split_linear</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;lb&#39;</span><span class="p">)))</span>
-    <span class="n">frozenl</span><span class="p">,</span><span class="n">frozen</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_split_linear</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;frozen&#39;</span><span class="p">)))</span>
-    <span class="n">valuesl</span><span class="p">,</span><span class="n">values</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_split_linear</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)))</span>
-
-    <span class="c1"># Check the initial conditions and whether they are defined</span>
-    <span class="k">if</span> <span class="n">par0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">_</span><span class="p">,</span><span class="n">par0</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_split_linear</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;par0&#39;</span><span class="p">)))</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">par0</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;It appears some start values (par0) have not been specified. Either specify them in the model definition or using the keyword.&quot;</span><span class="p">)</span>
-
-    <span class="n">linfrozen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Nlin</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">linfrozen</span><span class="p">[</span><span class="n">frozenl</span><span class="p">]</span> <span class="o">=</span> <span class="n">valuesl</span><span class="p">[</span><span class="n">frozenl</span><span class="p">]</span>
-    <span class="n">nonlinfrozen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Nnonlin</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">nonlinfrozen</span><span class="p">[</span><span class="n">frozen</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">frozen</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">linfrozen</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="n">linfrozen</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">:</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">]</span>
-    <span class="n">ysplit</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">y</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">ysubsets</span><span class="p">,</span> <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">parse_multidatasets</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">noiselvl</span><span class="p">,</span> <span class="n">precondition</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masks</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
-    <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">yset</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span> <span class="k">for</span> <span class="n">sigma</span><span class="p">,</span><span class="n">yset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">ysplit</span><span class="p">)])</span>
-
-
-    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Nlin</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">model</span><span class="o">.</span><span class="n">Nnonlin</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The model has no parameters to fit.&#39;</span><span class="p">)</span>    
-
-    <span class="c1"># Get parameter indices in the order spitted out by the solver</span>
-    <span class="n">param_idx</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">)]</span>
-    <span class="n">idxprev</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">islinear</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">linear</span> <span class="o">==</span> <span class="n">islinear</span><span class="p">):</span>
-                <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">idx</span><span class="p">))</span>
-                <span class="n">param_idx</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">idxprev</span><span class="p">,</span><span class="n">idxprev</span> <span class="o">+</span> <span class="n">N</span><span class="p">)</span>
-                <span class="n">idxprev</span> <span class="o">+=</span> <span class="n">N</span>  
-
-    <span class="c1"># If there are penalties in the model</span>
-    <span class="k">if</span> <span class="n">penalties</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">penalties</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span> 
-            <span class="n">penalties</span> <span class="o">=</span> <span class="p">[</span><span class="n">penalties</span><span class="p">]</span>
-        <span class="c1"># Get the parameter names of the model</span>
-        <span class="n">modelparam</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
-        <span class="n">penaltyfcns</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">penalty</span> <span class="ow">in</span> <span class="n">penalties</span><span class="p">:</span>
-            <span class="c1"># Determine the indices of the subset of parameters the model depends on</span>
-            <span class="n">subsets</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">modelparam</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">modelparam</span><span class="p">)</span><span class="o">==</span><span class="n">param</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">idx</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">penalty</span><span class="o">.</span><span class="n">signature</span><span class="p">]</span>
-            <span class="c1"># Adapt the signature of penaltyfcn for snlls</span>
-            <span class="n">penaltyfcns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span> <span class="n">pnonlin</span><span class="p">,</span><span class="n">plin</span><span class="p">,</span><span class="n">weight</span><span class="p">:</span> <span class="n">penalty</span><span class="o">.</span><span class="n">penaltyfcn</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span><span class="o">*</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">pnonlin</span><span class="p">,</span><span class="n">plin</span><span class="p">])[</span><span class="n">subset</span><span class="p">]</span> <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">subsets</span><span class="p">]))</span>
-
-        <span class="c1"># Prepare the penalties to input to snlls</span>
-        <span class="n">extrapenalties</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">weights</span><span class="p">:</span> <span class="p">[</span><span class="k">lambda</span> <span class="n">nonlin</span><span class="p">,</span><span class="n">lin</span><span class="p">:</span> <span class="n">penaltyfcn</span><span class="p">(</span><span class="n">nonlin</span><span class="p">,</span><span class="n">lin</span><span class="p">,</span><span class="n">weight</span><span class="p">)</span> <span class="k">for</span> <span class="n">penaltyfcn</span><span class="p">,</span><span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">penaltyfcns</span><span class="p">,</span><span class="n">weights</span><span class="p">)]</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="c1"># If there are no penalties in the model</span>
-        <span class="n">penalties</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">extrapenalties</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="kc">None</span>
-
-    <span class="c1"># Prepare the separable non-linear least-squares solver</span>
-    <span class="n">Amodel_fcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">param</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">nonlinmodel</span><span class="p">(</span><span class="o">*</span><span class="n">constants</span><span class="p">,</span><span class="o">*</span><span class="n">param</span><span class="p">)</span>
-    <span class="n">fitfcn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">,</span><span class="n">penweights</span><span class="p">:</span> <span class="n">snlls</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Amodel_fcn</span><span class="p">,</span> <span class="n">par0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">ub</span><span class="p">,</span> <span class="n">lbl</span><span class="o">=</span><span class="n">lbl</span><span class="p">,</span> <span class="n">ubl</span><span class="o">=</span><span class="n">ubl</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> 
-                                                <span class="n">subsets</span><span class="o">=</span><span class="n">ysubsets</span><span class="p">,</span> <span class="n">lin_frozen</span><span class="o">=</span><span class="n">linfrozen</span><span class="p">,</span> <span class="n">nonlin_frozen</span><span class="o">=</span><span class="n">nonlinfrozen</span><span class="p">,</span>
-                                                <span class="n">regparam</span><span class="o">=</span><span class="n">regparam</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span> <span class="n">regparamrange</span><span class="o">=</span><span class="n">regparamrange</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">,</span>
-                                                <span class="n">extrapenalty</span><span class="o">=</span><span class="n">extrapenalties</span><span class="p">(</span><span class="n">penweights</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>        
-
-    <span class="c1"># Prepare outer optimization of the penalty weights, if necessary</span>
-    <span class="n">fitfcn</span> <span class="o">=</span> <span class="n">_outerOptimization</span><span class="p">(</span><span class="n">fitfcn</span><span class="p">,</span><span class="n">penalties</span><span class="p">,</span><span class="n">sigmas</span><span class="p">)</span>
-
-    <span class="c1"># Run the fitting algorithm </span>
-    <span class="n">fitresults</span> <span class="o">=</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="n">penweights</span> <span class="o">=</span> <span class="p">[</span><span class="n">penalty</span><span class="o">.</span><span class="n">_weight_value</span> <span class="k">for</span> <span class="n">penalty</span> <span class="ow">in</span> <span class="n">penalties</span><span class="p">]</span>
-
-    <span class="c1"># If requested, perform a bootstrap analysis</span>
-    <span class="k">if</span> <span class="n">bootstrap</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> 
-        <span class="k">def</span> <span class="nf">bootstrap_fcn</span><span class="p">(</span><span class="n">ysim</span><span class="p">):</span> 
-            <span class="n">fit</span> <span class="o">=</span> <span class="n">fitfcn</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">ysim</span><span class="p">))</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span> <span class="n">fit</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="p">[</span><span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">]</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">param</span><span class="p">,</span><span class="o">*</span><span class="n">fit</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-        <span class="c1"># Bootstrapped uncertainty quantification</span>
-        <span class="n">param_uq</span> <span class="o">=</span> <span class="n">bootstrap_analysis</span><span class="p">(</span><span class="n">bootstrap_fcn</span><span class="p">,</span><span class="n">ysplit</span><span class="p">,</span><span class="n">fitresults</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">samples</span><span class="o">=</span><span class="n">bootstrap</span><span class="p">,</span><span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">cores</span><span class="o">=</span><span class="n">bootcores</span><span class="p">)</span>
-        <span class="c1"># Include information on the boundaries for better uncertainty estimates</span>
-        <span class="n">paramlb</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;lb&#39;</span><span class="p">))[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">param_idx</span><span class="p">)]</span> 
-        <span class="n">paramub</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_vecsort</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_getvector</span><span class="p">(</span><span class="s1">&#39;ub&#39;</span><span class="p">))[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">param_idx</span><span class="p">)]</span> 
-        <span class="n">fitresults</span><span class="o">.</span><span class="n">paramUncert</span> <span class="o">=</span> <span class="n">UQResult</span><span class="p">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">param_uq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">samples</span><span class="p">,</span><span class="n">lb</span><span class="o">=</span><span class="n">paramlb</span><span class="p">,</span><span class="n">ub</span><span class="o">=</span><span class="n">paramub</span><span class="p">)</span>
-        <span class="n">fitresults</span><span class="o">.</span><span class="n">param</span> <span class="o">=</span> <span class="n">fitresults</span><span class="o">.</span><span class="n">paramUncert</span><span class="o">.</span><span class="n">median</span>
-        <span class="c1"># Get the uncertainty estimates for the model response</span>
-        <span class="n">fitresults</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="p">[</span><span class="n">param_uq</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">median</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">param_uq</span><span class="p">))]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fitresults</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> 
-            <span class="n">fitresults</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">fitresults</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># Get some basic information on the parameter vector</span>
-    <span class="n">keys</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Dictionary of parameter names and fitted values</span>
-    <span class="n">FitResult_param</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span> <span class="p">:</span> <span class="n">fitvalue</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fitvalue</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span> <span class="n">fitvalue</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">fitvalue</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,[</span><span class="n">fitresults</span><span class="o">.</span><span class="n">param</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">param_idx</span><span class="p">])}</span>
-    <span class="c1"># Dictionary of parameter names and fit uncertainties</span>
-    <span class="n">FitResult_paramuq</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">Uncert&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">_getparamuq</span><span class="p">(</span><span class="n">fitresults</span><span class="o">.</span><span class="n">paramUncert</span><span class="p">,</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span><span class="n">param_idx</span><span class="p">)}</span>
-    <span class="c1"># Dictionary of other fit quantities of interest</span>
-    <span class="n">FitResult_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fitresults</span><span class="p">,</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;param&#39;</span><span class="p">,</span><span class="s1">&#39;paramUncert&#39;</span><span class="p">,</span><span class="s1">&#39;model&#39;</span><span class="p">,</span><span class="s1">&#39;cost&#39;</span><span class="p">,</span><span class="s1">&#39;plot&#39;</span><span class="p">,</span><span class="s1">&#39;residuals&#39;</span><span class="p">,</span><span class="s1">&#39;stats&#39;</span><span class="p">,</span><span class="s1">&#39;regparam&#39;</span><span class="p">]}</span>
-    <span class="n">_paramlist</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_parameter_list</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Prepare the propagate() and evaluate() methods</span>
-    <span class="n">propagate</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_propagate</span><span class="p">,</span><span class="n">fitresults</span><span class="p">,</span><span class="n">FitResult_param</span><span class="p">,</span><span class="n">_paramlist</span><span class="p">,</span><span class="n">param_idx</span><span class="p">)</span>
-    <span class="n">evaluate</span> <span class="o">=</span>  <span class="n">partial</span><span class="p">(</span><span class="n">_evaluate</span><span class="p">,</span><span class="n">FitResult_param</span><span class="p">)</span>
-
-    <span class="c1"># Enforce normalization of the linear parameters (if needed) for the final output</span>
-    <span class="n">FitResult_param_</span><span class="p">,</span><span class="n">FitResult_paramuq_</span> <span class="o">=</span> <span class="n">FitResult_param</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span><span class="n">FitResult_paramuq</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">normalization</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-            <span class="n">param</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">normfactor_keys</span><span class="p">:</span>
-                <span class="n">param</span><span class="o">.</span><span class="n">unfreeze</span><span class="p">()</span> 
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">linear</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">normalization</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">def</span> <span class="nf">_scale</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
-                        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">param</span><span class="o">.</span><span class="n">normalization</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-                    <span class="n">FitResult_param_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_scale</span><span class="p">(</span><span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="c1"># Normalization factor</span>
-                    <span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">normalization</span><span class="p">(</span><span class="n">FitResult_param_</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="c1"># Normalized value</span>
-
-                    <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scaleUncert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">Uncert&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">_scale</span><span class="p">)</span>
-                    <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">Uncert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FitResult_paramuq_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">Uncert&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">/</span><span class="n">FitResult_param_</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">_scale&#39;</span><span class="p">],</span> <span class="n">lb</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">ub</span><span class="p">)</span> <span class="c1"># Normalization of the uncertainty</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">noiselvl</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> 
-        <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">noiselvl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="c1"># Generate FitResult object from all the dictionaries</span>
-    <span class="n">fitresult</span> <span class="o">=</span> <span class="n">FitResult</span><span class="p">({</span><span class="o">**</span><span class="n">FitResult_param_</span><span class="p">,</span><span class="o">**</span><span class="n">FitResult_paramuq_</span><span class="p">,</span> <span class="o">**</span><span class="n">FitResult_dict</span><span class="p">,</span><span class="s1">&#39;penweights&#39;</span><span class="p">:</span><span class="n">penweights</span><span class="p">,</span><span class="s1">&#39;noiselvl&#39;</span><span class="p">:</span><span class="n">noiselvl</span><span class="p">,</span> <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="n">propagate</span><span class="p">,</span> <span class="s1">&#39;evaluate&#39;</span><span class="p">:</span> <span class="n">evaluate</span><span class="p">})</span> 
-    <span class="n">fitresult</span><span class="o">.</span><span class="n">_summary</span> <span class="o">=</span> <span class="n">_print_fitresults</span><span class="p">(</span><span class="n">fitresult</span><span class="p">,</span><span class="n">model</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">fitresult</span></div>
-<span class="c1">#==============================================================================================</span>
 
 <span class="c1"># ---------------------------------------------------------------------</span>
 <span class="k">def</span> <span class="nf">_importparameter</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
@@ -2098,7 +1679,9 @@
 <span class="c1"># ---------------------------------------------------------------------</span>
 
 <span class="c1"># ==============================================================================</span>
-<div class="viewcode-block" id="link"><a class="viewcode-back" href="../../_autosummary/deerlab.link.html#deerlab.link">[docs]</a><span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="o">**</span><span class="n">links</span><span class="p">):</span>
+<div class="viewcode-block" id="link">
+<a class="viewcode-back" href="../../_autosummary/deerlab.link.html#deerlab.link">[docs]</a>
+<span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="o">**</span><span class="n">links</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Link parameters together in a model to create equality relationships </span>
 <span class="sd">    between parameters. </span>
@@ -2274,6 +1857,7 @@
             <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">newmodel</span><span class="o">.</span><span class="n">signature</span><span class="p">:</span> 
                 <span class="n">newmodel</span><span class="o">.</span><span class="n">signature</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">newmodel</span></div>
+
 <span class="c1">#==============================================================================================</span>
 
 <span class="c1"># ---------------------------------------------------------------------</span>
@@ -2601,7 +2185,9 @@
 <span class="c1">#---------------------------------------------------------------------</span>
 
 <span class="c1">#==============================================================================================</span>
-<div class="viewcode-block" id="merge"><a class="viewcode-back" href="../../_autosummary/deerlab.merge.html#deerlab.merge">[docs]</a><span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="merge">
+<a class="viewcode-back" href="../../_autosummary/deerlab.merge.html#deerlab.merge">[docs]</a>
+<span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a multi-response model from multiple individual models. </span>
 
@@ -2628,10 +2214,13 @@
 <span class="sd">        correponding to each of the input models. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_combinemodels</span><span class="p">(</span><span class="s1">&#39;merge&#39;</span><span class="p">,</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="n">addweights</span><span class="p">)</span></div>
+
 <span class="c1">#==============================================================================================</span>
 
 <span class="c1">#==============================================================================================</span>
-<div class="viewcode-block" id="lincombine"><a class="viewcode-back" href="../../_autosummary/deerlab.lincombine.html#deerlab.lincombine">[docs]</a><span class="k">def</span> <span class="nf">lincombine</span><span class="p">(</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="lincombine">
+<a class="viewcode-back" href="../../_autosummary/deerlab.lincombine.html#deerlab.lincombine">[docs]</a>
+<span class="k">def</span> <span class="nf">lincombine</span><span class="p">(</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create model whose response is a linear combination of multiple individual model responses. </span>
 
@@ -2657,6 +2246,7 @@
 <span class="sd">        combination of the input models.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_combinemodels</span><span class="p">(</span><span class="s1">&#39;lincombine&#39;</span><span class="p">,</span><span class="o">*</span><span class="n">inputmodels</span><span class="p">,</span><span class="n">addweights</span><span class="o">=</span><span class="n">addweights</span><span class="p">)</span></div>
+
 <span class="c1">#==============================================================================================</span>
 
 <span class="c1"># ---------------------------------------------------------------------</span>
@@ -2722,7 +2312,9 @@
 <span class="c1"># ---------------------------------------------------------------------</span>
 
 <span class="c1">#==============================================================================================</span>
-<div class="viewcode-block" id="relate"><a class="viewcode-back" href="../../_autosummary/deerlab.relate.html#deerlab.relate">[docs]</a><span class="k">def</span> <span class="nf">relate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="o">**</span><span class="n">functions</span><span class="p">):</span>
+<div class="viewcode-block" id="relate">
+<a class="viewcode-back" href="../../_autosummary/deerlab.relate.html#deerlab.relate">[docs]</a>
+<span class="k">def</span> <span class="nf">relate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="o">**</span><span class="n">functions</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create functional relationships between model parameters. </span>
 
@@ -2850,39 +2442,46 @@
         <span class="n">newmodel</span> <span class="o">=</span> <span class="n">_relate</span><span class="p">(</span><span class="n">newmodel</span><span class="p">,</span><span class="n">functions</span><span class="p">[</span><span class="n">dependent</span><span class="p">],</span><span class="n">dependent</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">newmodel</span></div>
+
 <span class="c1">#==============================================================================================</span>
 </pre></div>
-
-              </div>
-              
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-</div>
-              
-          </main>
-          
-
+        </article>
       </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2019-2023, Luis Fábregas-Ibáñez, Stefan Stoll, Hugo Karas and others
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
     </div>
-  
-  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
-</p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
-</p>
-    </div>
-    
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
   </div>
-</footer>
-  </body>
+</div><script src="../../_static/documentation_options.js?v=7f41d439"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=4ea706d9"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    </body>
 </html>

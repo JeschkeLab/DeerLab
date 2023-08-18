@@ -1,188 +1,356 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-<!DOCTYPE html>
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>deerlab.solvers &#8212; DeerLab</title>
-    
-  <link href="../../_static/css/theme.css" rel="stylesheet">
-  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
-
-    
-  <link rel="stylesheet"
-    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-
-    
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/blank.css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+        <title>deerlab.solvers - DeerLab</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/theme_override.css" />
-    
-  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
-
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
-
-  <div id="navbar-start">
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
-<a class="navbar-brand" href="../../index.html">
-  <img src="../../_static/logo_docs_paths.svg" class="logo" alt="logo">
-</a>
 
-
-    
-  </div>
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
   
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
-    <div id="navbar-center" class="mr-auto">
-      
-      <div class="navbar-center-item">
-        <div class="container-fluid  px-0">
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
   
-    <div class="navbar-collapse collapse navbar-collapse" id="navbar-collapsible">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="../../installation.html">Installation</a>
-        </li>
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
 
-        <li class="dropdown">
-          <a class="dropbtn" href="../../user_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Guide</a>
-          <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="nav-dropdown-item dropdown-item" href="../../basics.html">Basics</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../getting_started.html">Getting Started</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_modeling.html">Modeling</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../dipolar_guide_fitting.html">Fitting</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../theory.html">Theory</a>
-          </div>
-        </li>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
 
-        <li class="dropdown">
-            <a class="dropbtn" href="../../advanced_guide.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Advanced Guides</a>
-            <div class="dropdown-content" aria-labelledby="navbarDropdown">
-                <a class="nav-dropdown-item dropdown-item" href="../../modeling_guide.html">Modeling Guide</a>
-                <a class="nav-dropdown-item dropdown-item" href="../../fitting_guide.html">Fitting Guide</a>
-                <a class="nav-dropdown-item dropdown-item" href="../../uncertainty_guide.html">Uncertainty Guide</a>
-            </div>
-          </li>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
 
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="../../examples.html">Examples</a>
-        </li>
 
-        <li class="nav-item">
-          <a class="nav-link nav-link" href="../../modelsref.html">Models</a>
-        </li>
 
-        
-        <li class="nav-item">
-            <a class="nav-link nav-link" href="../../reference.html">Reference Index</a>
-          </li>
-
-        <li class="dropdown">
-          <a class="dropbtn nav-link dropdown-toggle" href="../../more.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
-          <div class="dropdown-content" aria-labelledby="navbarDropdown">
-              <a class="nav-dropdown-item dropdown-item" href="../../changelog.html">Release Notes</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../publications.html">Publications</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../contributing.html">Contributing</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../support.html">Support</a>
-              <a class="nav-dropdown-item dropdown-item" href="../../license.html">License</a>
-              <a class="nav-dropdown-item dropdown-item" href="https://github.com/JeschkeLab/DeerLab">GitHub</a>
-              <a class="nav-dropdown-item dropdown-item" href="https://pypi.org/project/DeerLab/#history">Other Versions and Download</a>
-          </div>
-        </li>
-      </ul>
-
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
     </div>
-  </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">DeerLab</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
       </div>
-      
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
     </div>
-
-    <div id="navbar-end">
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
       
-      <div class="navbar-end-item">
-        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo_docs.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo_docs_light.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
 </form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of User Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basics.html">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../dipolar_guide_modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../dipolar_guide_fitting.html">Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../theory.html">Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced_guide.html">Advanced</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Advanced</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modeling_guide.html">Modeling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fitting_guide.html">Fitting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../uncertainty_guide.html">Uncertainty Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../examples.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic_simulations/ex_simulate_basic_4pdeer.html">Simulating a 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic_simulations/ex_simulate_5pdeer.html">Simulating a 5-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic_simulations/ex_simulate_4pdeer.html">Simulating a three-pathway 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_4pdeer.html">Basic analysis of a 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_ridme.html">Basic analysis of a RIDME signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_4pdeer_compactness.html">Analysis of a 4-pulse DEER signal with a compactness penalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_bootstrapping.html">Bootstrapped confidence intervals in routine analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_4pdeer_gauss.html">Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_fitting_5pdeer.html">Basic fitting of a 5-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/basic/ex_restraints_4pdeer.html">Distance restraints from 4-pulse DEER data, non-parametric distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_multipathway_validation.html">Validating multi-pathway models based on the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_fitting_4pdeer_pathways.html">Analysis of a 4-pulse DEER signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_fitting_dqc_pathways.html">Analysis of a 6-pulse DQC signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_global_fitting_4pdeer.html">Global fitting of multiple 4-pulse DEER signals, non-parametric distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_fitting_5pdeer_pathways.html">Analysis of a 5-pulse DEER signal with multiple dipolar pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_fitting_sparse_4pdeer.html">Basic analysis of a sparsely sampled 4-pulse DEER signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_compactness_with_without.html">Comparing the analysis with and without compactness criterion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_global_different_deer.html">Global fitting of multiple different DEER signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_selregparam.html">Analysing the selection of regularisation parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_selregparam.html#over-and-under-selection-of-the-regularisation-parameter">Over and Under selection of the regularisation parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/intermediate/ex_crossing_echoes_masking.html">Analyzing data with crossing echoes robustly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_simulating_oop.html">Simulating polarization effects on low-temperature DEER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_global_twostates_parametric.html">Global fitting of a two-state model to a series of DEER traces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_dipolarpathways_selection.html">Dipolar pathways model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_forcefield_fit.html">Fit a polynomial force field to a dipolar signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_pseudotitration_parameter_free.html">Analyzing pseudo-titration (dose-response) curves with non-parametric distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_droplets_model.html">Global analysis of 5-pulse DEER on a liquid-droplet protein system</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modelsref.html">Models</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_3pdeer.html">deerlab.ex_3pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_4pdeer.html">deerlab.ex_4pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_rev5pdeer.html">deerlab.ex_rev5pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_fwd5pdeer.html">deerlab.ex_fwd5pdeer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_sifter.html">deerlab.ex_sifter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_dqc.html">deerlab.ex_dqc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ex_ridme.html">deerlab.ex_ridme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_gauss.html">deerlab.dd_gauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_gauss2.html">deerlab.dd_gauss2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_gauss3.html">deerlab.dd_gauss3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_rice.html">deerlab.dd_rice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_rice2.html">deerlab.dd_rice2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_rice3.html">deerlab.dd_rice3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_gengauss.html">deerlab.dd_gengauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_skewgauss.html">deerlab.dd_skewgauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_cos.html">deerlab.dd_cos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_wormchain.html">deerlab.dd_wormchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_wormgauss.html">deerlab.dd_wormgauss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_randcoil.html">deerlab.dd_randcoil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_sphere.html">deerlab.dd_sphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_spheresurf.html">deerlab.dd_spheresurf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_spherepoint.html">deerlab.dd_spherepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shell.html">deerlab.dd_shell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shellshell.html">deerlab.dd_shellshell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shellsphere.html">deerlab.dd_shellsphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shellvoidshell.html">deerlab.dd_shellvoidshell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_shellvoidsphere.html">deerlab.dd_shellvoidsphere</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_circle.html">deerlab.dd_circle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_triangle.html">deerlab.dd_triangle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dd_uniform.html">deerlab.dd_uniform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_hom3d.html">deerlab.bg_hom3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_hom3dex.html">deerlab.bg_hom3dex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_homfractal.html">deerlab.bg_homfractal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_hom3d_phase.html">deerlab.bg_hom3d_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_hom3dex_phase.html">deerlab.bg_hom3dex_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_homfractal_phase.html">deerlab.bg_homfractal_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_exp.html">deerlab.bg_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_strexp.html">deerlab.bg_strexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_sumstrexp.html">deerlab.bg_sumstrexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_prodstrexp.html">deerlab.bg_prodstrexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_poly1.html">deerlab.bg_poly1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_poly2.html">deerlab.bg_poly2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bg_poly3.html">deerlab.bg_poly3</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../reference.html">Reference Index</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Reference Index</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.Model.html">deerlab.Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.Parameter.html">deerlab.Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.Penalty.html">deerlab.Penalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.FitResult.html">deerlab.FitResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.UQResult.html">deerlab.UQResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ExperimentInfo.html">deerlab.ExperimentInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.fit.html">deerlab.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.merge.html">deerlab.merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.link.html">deerlab.link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.lincombine.html">deerlab.lincombine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.relate.html">deerlab.relate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.regoperator.html">deerlab.regoperator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.selregparam.html">deerlab.selregparam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.noiselevel.html">deerlab.noiselevel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.whitegaussnoise.html">deerlab.whitegaussnoise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.diststats.html">deerlab.diststats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.correctphase.html">deerlab.correctphase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.bootstrap_analysis.html">deerlab.bootstrap_analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.profile_analysis.html">deerlab.profile_analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.snlls.html">deerlab.snlls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.fnnls.html">deerlab.fnnls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.cvxnnls.html">deerlab.cvxnnls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.goodness_of_fit.html">deerlab.goodness_of_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dipolarmodel.html">deerlab.dipolarmodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dipolarpenalty.html">deerlab.dipolarpenalty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.deerload.html">deerlab.deerload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dipolarkernel.html">deerlab.dipolarkernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.dipolarbackground.html">deerlab.dipolarbackground</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.fftspec.html">deerlab.fftspec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.distancerange.html">deerlab.distancerange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.store_pickle.html">deerlab.store_pickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.read_pickle.html">deerlab.read_pickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.sophegrid.html">deerlab.sophegrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.choleskycovmat.html">deerlab.choleskycovmat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.hccm.html">deerlab.hccm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.Jacobian.html">deerlab.Jacobian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.nearest_psd.html">deerlab.nearest_psd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.movmean.html">deerlab.movmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.ovl.html">deerlab.ovl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.der_snr.html">deerlab.der_snr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/deerlab.formatted_table.html">deerlab.formatted_table</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/JeschkeLab/DeerLab">Github</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/JeschkeLab/DeerLab/discussions">Discussion Board</a></li>
+</ul>
+
+</div>
+</div>
+
       </div>
       
     </div>
-  </div>
-</div>
-    </nav>
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
-    
-  </div>
-</nav>
-            </div>
-            
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
           </div>
-          
-
-          
-          
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
-              <div>
-                
-  <h1>Source code for deerlab.solvers</h1><div class="highlight"><pre>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for deerlab.solvers</h1><div class="highlight"><pre>
 <span></span><span class="c1"># solvers.py - Collection of least-squares solvers</span>
 <span class="c1"># --------------------------------------------------</span>
 <span class="c1"># This file is a part of DeerLab. License is MIT (see LICENSE.md).</span>
@@ -190,16 +358,13 @@
 
 <span class="c1"># External dependencies</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">least_squares</span><span class="p">,</span> <span class="n">lsq_linear</span>
 <span class="c1"># DeerLab dependencies</span>
 <span class="kn">import</span> <span class="nn">deerlab</span> <span class="k">as</span> <span class="nn">dl</span>
-<span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UQResult</span><span class="p">,</span> <span class="n">FitResult</span>
+<span class="kn">from</span> <span class="nn">deerlab.classes</span> <span class="kn">import</span> <span class="n">UQResult</span>
+<span class="kn">from</span> <span class="nn">deerlab.fitresult</span> <span class="kn">import</span> <span class="n">FitResult</span>
 <span class="kn">from</span> <span class="nn">deerlab.utils</span> <span class="kn">import</span> <span class="n">multistarts</span><span class="p">,</span> <span class="n">hccm</span><span class="p">,</span> <span class="n">parse_multidatasets</span><span class="p">,</span> <span class="n">goodness_of_fit</span><span class="p">,</span> <span class="n">Jacobian</span>
 <span class="kn">import</span> <span class="nn">time</span> 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">quadprog</span> <span class="kn">import</span> <span class="n">solve_qp</span>
 
 
 <span class="k">def</span> <span class="nf">timestamp</span><span class="p">():</span>
@@ -210,121 +375,6 @@
     <span class="n">timeObj</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">secondsSinceEpoch</span><span class="p">)</span>
     <span class="c1"># get the current timestamp elements from struct_time object i.e.</span>
     <span class="k">return</span> <span class="s1">&#39;[</span><span class="si">%d</span><span class="s1">-</span><span class="si">%d</span><span class="s1">-</span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">:</span><span class="si">%d</span><span class="s1">:</span><span class="si">%d</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">timeObj</span><span class="o">.</span><span class="n">tm_mday</span><span class="p">,</span> <span class="n">timeObj</span><span class="o">.</span><span class="n">tm_mon</span><span class="p">,</span> <span class="n">timeObj</span><span class="o">.</span><span class="n">tm_year</span><span class="p">,</span> <span class="n">timeObj</span><span class="o">.</span><span class="n">tm_hour</span><span class="p">,</span> <span class="n">timeObj</span><span class="o">.</span><span class="n">tm_min</span><span class="p">,</span> <span class="n">timeObj</span><span class="o">.</span><span class="n">tm_sec</span><span class="p">)</span>
-<span class="c1"># ===========================================================================================</span>
-
-<span class="k">def</span> <span class="nf">_plot</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">yuqs</span><span class="p">,</span><span class="n">noiselvls</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">gof</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">):</span>
-<span class="c1"># ===========================================================================================</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Plot method for the FitResult object</span>
-<span class="sd">    ====================================</span>
-
-<span class="sd">    Plots the input dataset(s), their fits, and uncertainty bands.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># Check which datasets are complex-valued</span>
-    <span class="n">complexy</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
-
-    <span class="c1"># Determine the distribution of the subplots in the figure</span>
-    <span class="n">nrows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">complexy</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">gof</span><span class="p">:</span>
-        <span class="n">ncols</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">fig</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span><span class="n">ncols</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="o">*</span><span class="n">ncols</span><span class="p">,</span><span class="mi">4</span><span class="o">*</span><span class="n">nrows</span><span class="p">],</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="n">ncols</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">fig</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span><span class="n">ncols</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="o">*</span><span class="n">ncols</span><span class="p">,</span><span class="mi">4</span><span class="o">*</span><span class="n">nrows</span><span class="p">])</span>
-    <span class="n">axs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">axs</span><span class="p">)</span>
-    <span class="n">axs</span> <span class="o">=</span> <span class="n">axs</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> 
-    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Index for subplots</span>
-
-    <span class="c1"># If abscissa of the datasets are not specified, resort to default </span>
-    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
-        <span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span> 
-        <span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-    <span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">xlabel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
-        <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;Array elements&#39;</span>
-
-    <span class="c1"># Go through every dataset</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">y</span><span class="p">,</span><span class="n">yfit</span><span class="p">,</span><span class="n">yuq</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">yuqs</span><span class="p">,</span><span class="n">noiselvls</span><span class="p">)):</span> 
-
-        <span class="c1"># If dataset is complex-valued, plot the real and imaginary parts separately</span>
-        <span class="k">if</span> <span class="n">complexy</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-            <span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">]</span>
-            <span class="n">componentstrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39; (real)&#39;</span><span class="p">,</span><span class="s1">&#39; (imag)&#39;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">]</span>
-            <span class="n">componentstrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">component</span><span class="p">,</span><span class="n">componentstr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">components</span><span class="p">,</span><span class="n">componentstrs</span><span class="p">):</span>
-
-            <span class="c1"># Plot the experimental signal and fit</span>
-            <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">component</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="o">+</span><span class="n">componentstr</span><span class="p">)</span>
-            <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">component</span><span class="p">(</span><span class="n">yfit</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#4550e6&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Model fit&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">yuq</span><span class="o">.</span><span class="n">type</span><span class="o">!=</span><span class="s1">&#39;void&#39;</span><span class="p">:</span> 
-                <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">component</span><span class="p">(</span><span class="n">yuq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">]),</span><span class="n">component</span><span class="p">(</span><span class="n">yuq</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mi">95</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]),</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#4550e6&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;95</span><span class="si">%-c</span><span class="s1">onfidence interval&#39;</span><span class="p">)</span>
-            <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
-            <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Dataset #</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">componentstr</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
-            <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> 
-            <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
-
-            <span class="c1"># Plot the visual guides to assess the goodness-of-fit (if requested)</span>
-            <span class="k">if</span> <span class="n">gof</span><span class="p">:</span> 
-                <span class="c1"># Get the residual</span>
-                <span class="n">residuals</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">yfit</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
-
-                <span class="c1"># Plot the residual values along the estimated noise level and mean value</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">residuals</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">residuals</span><span class="p">),</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#4550e6&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Mean&#39;</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span><span class="o">+</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#4550e6&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Estimated noise level&#39;</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span><span class="o">-</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#4550e6&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>        
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Residual #</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">componentstr</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>      
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> 
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
-                <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
-
-                <span class="c1"># Plot the histogram of the residuals weighted by the noise level, compared to the standard normal distribution</span>
-                <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">residuals</span><span class="o">/</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Residuals&#39;</span><span class="p">)</span>
-                <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
-                <span class="n">N0</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dd_gauss</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span><span class="n">N0</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$\mathcal</span><span class="si">{N}</span><span class="s1">(0,1)$&#39;</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Normalized residuals&#39;</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>       
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> 
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
-
-                <span class="c1"># Plot the autocorrelogram of the residuals, along the confidence region for a white noise vector</span>
-                <span class="n">maxLag</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">acorr</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">usevlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">maxlags</span><span class="o">=</span><span class="n">maxLag</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#4550e6&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Residual autocorrelation&#39;</span><span class="p">)</span>
-                <span class="n">threshold</span> <span class="o">=</span> <span class="mf">1.96</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">residuals</span><span class="p">))</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">maxLag</span><span class="p">),</span><span class="o">-</span><span class="n">threshold</span><span class="p">,</span><span class="n">threshold</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;White noise confidence region&#39;</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_xbound</span><span class="p">(</span><span class="n">lower</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">maxLag</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Lags&#39;</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>       
-                <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="c1"># Adjust fontsize</span>
-    <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axs</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()</span> <span class="o">+</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()):</span>
-            <span class="n">label</span><span class="o">.</span><span class="n">set_fontname</span><span class="p">(</span><span class="s1">&#39;Calibri&#39;</span><span class="p">)</span>
-            <span class="n">label</span><span class="o">.</span><span class="n">set_fontsize</span><span class="p">(</span><span class="n">fontsize</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">fig</span>
 <span class="c1"># ===========================================================================================</span>
 
 <span class="c1"># ===========================================================================================</span>
@@ -573,7 +623,9 @@
 <span class="c1"># ===========================================================================================</span>
 
 
-<div class="viewcode-block" id="snlls"><a class="viewcode-back" href="../../_autosummary/deerlab.snlls.html#deerlab.snlls">[docs]</a><span class="k">def</span> <span class="nf">snlls</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ubl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnlsSolver</span><span class="o">=</span><span class="s1">&#39;qp&#39;</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<div class="viewcode-block" id="snlls">
+<a class="viewcode-back" href="../../_autosummary/deerlab.snlls.html#deerlab.snlls">[docs]</a>
+<span class="k">def</span> <span class="nf">snlls</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">par0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ubl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnlsSolver</span><span class="o">=</span><span class="s1">&#39;cvx&#39;</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
           <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;aic&#39;</span><span class="p">,</span> <span class="n">regparamrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multistart</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">regop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alphareopt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">extrapenalty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subsets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
           <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">max_nfev</span><span class="o">=</span><span class="mf">1e8</span><span class="p">,</span> <span class="n">lin_tol</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">,</span> <span class="n">lin_maxiter</span><span class="o">=</span><span class="mf">1e4</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lin_frozen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
           <span class="n">nonlin_frozen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">modeluq</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -667,11 +719,11 @@
 <span class="sd">    nnlsSolver : string, optional</span>
 <span class="sd">        Solver used to solve a non-negative least-squares problem (if applicable):</span>
 
-<span class="sd">        * ``&#39;qp&#39;`` - Optimization of the NNLS problem using the ``quadprog`` package.</span>
+<span class="sd">        * ``&#39;qp&#39;`` - Optimization of the NNLS problem using the ``quadprog`` package. Only Python &lt;= 3.10.</span>
 <span class="sd">        * ``&#39;cvx&#39;`` - Optimization of the NNLS problem using the ``cvxopt`` package.</span>
 <span class="sd">        * ``&#39;fnnls&#39;`` - Optimization using the fast NNLS algorithm.</span>
 <span class="sd">        </span>
-<span class="sd">        The default is ``&#39;qp&#39;``.</span>
+<span class="sd">        The default is ``&#39;cvx&#39;``.</span>
 
 <span class="sd">    noiselvl : array_like, optional</span>
 <span class="sd">        Noise standard deviation of the input signal(s), if not specified it is estimated automatically. </span>
@@ -751,11 +803,6 @@
 <span class="sd">        Uncertainty quantification of the fitted model. Only computed if ``modeluq=True``.</span>
 <span class="sd">    regparam : scalar</span>
 <span class="sd">        Regularization parameter value used for the regularization of the linear parameters.</span>
-<span class="sd">    plot : callable</span>
-<span class="sd">        Function to display the results. It will display the fitted data.</span>
-<span class="sd">        The function returns the figure object (``matplotlib.figure.Figure``)</span>
-<span class="sd">        object as output, which can be modified. Using ``fig = plot(show=False)`` </span>
-<span class="sd">        will not render the figure unless ``display(fig)`` is called. </span>
 <span class="sd">    stats : dict</span>
 <span class="sd">        Goodness of fit statistical estimators</span>
 
@@ -784,7 +831,7 @@
     <span class="c1"># Parse multiple datsets and non-linear operators into a single concatenated vector/matrix</span>
     <span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">subsets</span><span class="p">,</span> <span class="n">noiselvl</span> <span class="o">=</span> <span class="n">parse_multidatasets</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">Amodel</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">noiselvl</span><span class="p">,</span> <span class="n">masks</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">subsets</span><span class="o">=</span><span class="n">subsets</span><span class="p">)</span>    
     
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">Amodel</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">Amodel</span><span class="p">):</span>
         <span class="n">Amatrix</span> <span class="o">=</span> <span class="n">Amodel</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">Amodel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">Amatrix</span>
         <span class="n">par0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
@@ -834,7 +881,7 @@
     <span class="k">if</span> <span class="n">includeExtrapenalty</span><span class="p">:</span>
         <span class="n">extrapenalty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">extrapenalty</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">penalty</span> <span class="ow">in</span> <span class="n">extrapenalty</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">penalty</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">penalty</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The keyword argument &#39;extrapenalty&#39; must be a callable function or a list thereof.&quot;</span><span class="p">)</span>
 
 
@@ -899,10 +946,18 @@
         <span class="n">yfrozen</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">[:,</span><span class="n">lin_frozen</span><span class="p">]</span><span class="nd">@lin_parfrozen</span><span class="p">[</span><span class="n">lin_frozen</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 
         <span class="c1"># Optimiza the regularization parameter only if needed</span>
+        
+
         <span class="k">if</span> <span class="n">optimize_alpha</span><span class="p">:</span>
-            <span class="n">alpha</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">selregparam</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">yfrozen</span><span class="p">)[</span><span class="n">mask</span><span class="p">],</span> <span class="n">Ared</span><span class="p">[</span><span class="n">mask</span><span class="p">,:],</span> <span class="n">linSolver</span><span class="p">,</span> <span class="n">regparam</span><span class="p">,</span> 
+            <span class="n">output</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">selregparam</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">yfrozen</span><span class="p">)[</span><span class="n">mask</span><span class="p">],</span> <span class="n">Ared</span><span class="p">[</span><span class="n">mask</span><span class="p">,:],</span> <span class="n">linSolver</span><span class="p">,</span> <span class="n">regparam</span><span class="p">,</span> 
                                         <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">regop</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">candidates</span><span class="o">=</span><span class="n">regparamrange</span><span class="p">,</span> 
-                                        <span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">searchrange</span><span class="o">=</span><span class="n">regparamrange</span><span class="p">)</span>
+                                        <span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">searchrange</span><span class="o">=</span><span class="n">regparamrange</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">alpha_stats</span><span class="p">[</span><span class="s1">&#39;alphas_evaled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">alpha_stats</span><span class="p">[</span><span class="s1">&#39;functional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">alpha_stats</span><span class="p">[</span><span class="s1">&#39;residuals&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">alpha_stats</span><span class="p">[</span><span class="s1">&#39;penalties&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            
 
         <span class="c1"># Components for linear least-squares</span>
         <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span> <span class="o">=</span> <span class="n">_lsqcomponents</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">yfrozen</span><span class="p">)[</span><span class="n">mask</span><span class="p">],</span> <span class="n">Ared</span><span class="p">[</span><span class="n">mask</span><span class="p">,:],</span> <span class="n">L</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
@@ -917,8 +972,8 @@
         <span class="c1"># Insert back the frozen linear parameters</span>
         <span class="n">xfit</span> <span class="o">=</span> <span class="n">_insertfrozen</span><span class="p">(</span><span class="n">xfit</span><span class="p">,</span><span class="n">lin_parfrozen</span><span class="p">,</span><span class="n">lin_frozen</span><span class="p">)</span>
 
-
         <span class="k">return</span> <span class="n">xfit</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">Ndof</span>
+
     <span class="c1">#===========================================================================</span>
 
     <span class="k">def</span> <span class="nf">ResidualsFcn</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
@@ -930,8 +985,10 @@
 <span class="sd">        non-linear least-squares solver. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">nonlocal</span> <span class="n">par_prev</span><span class="p">,</span> <span class="n">check</span><span class="p">,</span> <span class="n">regparam_prev</span><span class="p">,</span> <span class="n">xfit</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">Ndof</span><span class="p">,</span> <span class="n">Ndof_lin</span>
-
+        <span class="k">nonlocal</span> <span class="n">par_prev</span><span class="p">,</span> <span class="n">check</span><span class="p">,</span> <span class="n">regparam_prev</span><span class="p">,</span> <span class="n">xfit</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">alpha_stats</span><span class="p">,</span> <span class="n">Ndof</span><span class="p">,</span> <span class="n">Ndof_lin</span>
+        
+        
+        
         <span class="c1"># Non-linear model evaluation</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">Amodel</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
@@ -987,6 +1044,8 @@
 
         <span class="k">return</span> <span class="n">res</span>
     <span class="c1">#===========================================================================</span>
+
+    <span class="n">alpha_stats</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;alphas_evaled&#39;</span><span class="p">:[],</span><span class="s1">&#39;functional&#39;</span><span class="p">:[],</span><span class="s1">&#39;residuals&#39;</span><span class="p">:[],</span><span class="s1">&#39;penalties&#39;</span><span class="p">:[]}</span>
 
     <span class="c1"># -------------------------------------------------------------------</span>
     <span class="c1">#  Only linear parameters</span>
@@ -1156,17 +1215,21 @@
     <span class="n">Ndof</span> <span class="o">=</span> <span class="n">Nnonlin</span> <span class="o">+</span> <span class="n">Ndof_lin</span> 
     <span class="n">stats</span> <span class="o">=</span> <span class="n">_goodness_of_fit_stats</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">Ndof</span><span class="p">,</span><span class="n">masks</span><span class="p">)</span>
 
-    <span class="c1"># Display function</span>
-    <span class="n">plotfcn</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_plot</span><span class="p">,</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">yuq</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">)</span>
+    <span class="c1"># Prepare the plot function inputs </span>
+    <span class="n">plot_inputs</span><span class="o">=</span><span class="p">[</span><span class="n">ys</span><span class="p">,</span><span class="n">yfits</span><span class="p">,</span><span class="n">yuq</span><span class="p">,</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">masks</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> 
         <span class="n">stats</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">modelfit</span> <span class="o">=</span> <span class="n">modelfit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">modelfituq</span> <span class="o">=</span> <span class="n">modelfituq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">FitResult</span><span class="p">(</span><span class="n">nonlin</span><span class="o">=</span><span class="n">nonlinfit</span><span class="p">,</span> <span class="n">lin</span><span class="o">=</span><span class="n">linfit</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="n">parfit</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">modelfit</span><span class="p">,</span> <span class="n">nonlinUncert</span><span class="o">=</span><span class="n">paramuq_nonlin</span><span class="p">,</span>
-                     <span class="n">linUncert</span><span class="o">=</span><span class="n">paramuq_lin</span><span class="p">,</span> <span class="n">paramUncert</span><span class="o">=</span><span class="n">paramuq</span><span class="p">,</span> <span class="n">modelUncert</span><span class="o">=</span><span class="n">modelfituq</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">plotfcn</span><span class="p">,</span>
-                     <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span> <span class="n">cost</span><span class="o">=</span><span class="n">fvals</span><span class="p">,</span> <span class="n">residuals</span><span class="o">=</span><span class="n">res</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">)</span></div>
+    <span class="c1"># return FitResult(y=ys, mask=mask, nonlin=nonlinfit, lin=linfit, param=parfit, model=modelfit, nonlinUncert=paramuq_nonlin,</span>
+    <span class="c1">#                  linUncert=paramuq_lin, paramUncert=paramuq, modelUncert=modelfituq, regparam=alpha, plot=plotfcn,</span>
+    <span class="c1">#                  stats=stats, cost=fvals, residuals=res, noiselvl=noiselvl, regparam_stats=alpha_stats)</span>
+    <span class="k">return</span> <span class="n">FitResult</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">ys</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">nonlin</span><span class="o">=</span><span class="n">nonlinfit</span><span class="p">,</span> <span class="n">lin</span><span class="o">=</span><span class="n">linfit</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="n">parfit</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">modelfit</span><span class="p">,</span> <span class="n">nonlinUncert</span><span class="o">=</span><span class="n">paramuq_nonlin</span><span class="p">,</span>
+                    <span class="n">linUncert</span><span class="o">=</span><span class="n">paramuq_lin</span><span class="p">,</span> <span class="n">paramUncert</span><span class="o">=</span><span class="n">paramuq</span><span class="p">,</span> <span class="n">modelUncert</span><span class="o">=</span><span class="n">modelfituq</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+                    <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span> <span class="n">cost</span><span class="o">=</span><span class="n">fvals</span><span class="p">,</span> <span class="n">residuals</span><span class="o">=</span><span class="n">res</span><span class="p">,</span> <span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">,</span> <span class="n">regparam_stats</span><span class="o">=</span><span class="n">alpha_stats</span><span class="p">,</span> <span class="n">__plot_inputs</span><span class="o">=</span><span class="n">plot_inputs</span><span class="p">)</span></div>
+
 <span class="c1"># ===========================================================================================</span>
 
 
@@ -1185,7 +1248,9 @@
 
 
 
-<div class="viewcode-block" id="fnnls"><a class="viewcode-back" href="../../_autosummary/deerlab.fnnls.html#deerlab.fnnls">[docs]</a><span class="k">def</span> <span class="nf">fnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="fnnls">
+<a class="viewcode-back" href="../../_autosummary/deerlab.fnnls.html#deerlab.fnnls">[docs]</a>
+<span class="k">def</span> <span class="nf">fnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="c1">#=====================================================================================</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fast non-negative least-squares (NNLS) solver.</span>
@@ -1312,9 +1377,12 @@
     
     <span class="k">return</span> <span class="n">x</span></div>
 
+
 <span class="c1">#=====================================================================================</span>
 
-<div class="viewcode-block" id="cvxnnls"><a class="viewcode-back" href="../../_autosummary/deerlab.cvxnnls.html#deerlab.cvxnnls">[docs]</a><span class="k">def</span> <span class="nf">cvxnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="cvxnnls">
+<a class="viewcode-back" href="../../_autosummary/deerlab.cvxnnls.html#deerlab.cvxnnls">[docs]</a>
+<span class="k">def</span> <span class="nf">cvxnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="c1">#=====================================================================================</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Non-negative least-squares (NNLS) via the CVXOPT package.</span>
@@ -1384,6 +1452,7 @@
     <span class="k">except</span><span class="p">:</span> 
         <span class="n">P</span> <span class="o">=</span> <span class="n">x0</span>
     <span class="k">return</span> <span class="n">P</span></div>
+
 <span class="c1">#=====================================================================================</span>
 
 <span class="c1">#=====================================================================================</span>
@@ -1417,6 +1486,15 @@
 <span class="sd">            Mathematical Programming, 27, 1-33.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">quadprog</span> <span class="kn">import</span> <span class="n">solve_qp</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
+            <span class="s1">&#39;The quadprog package is required for this function.&#39;</span><span class="o">+</span>
+            <span class="s1">&#39;Install it with &quot;pip install quadprog&quot;.&#39;</span><span class="p">)</span>
+    
+    
     <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">AtA</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
@@ -1429,42 +1507,51 @@
             <span class="c1"># If AtA matrix is not positive definite, find nearest one</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">solve_qp</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">nearest_psd</span><span class="p">(</span><span class="n">AtA</span><span class="p">),</span> <span class="n">Atb</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">meq</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="c1"># For very rare cases</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">cvxnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># For very rare cases</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">cvxnnls</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Atb</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">lb</span>
     <span class="k">return</span> <span class="n">x</span>
 <span class="c1">#=====================================================================================</span>
 </pre></div>
-
-              </div>
-              
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-</div>
-              
-          </main>
-          
-
+        </article>
       </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2019-2023, Luis Fábregas-Ibáñez, Stefan Stoll, Hugo Karas and others
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
     </div>
-  
-  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2019-2022, Luis Fábregas-Ibáñez, Stefan Stoll, and others.<br>
-</p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br>
-</p>
-    </div>
-    
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
   </div>
-</footer>
-  </body>
+</div><script src="../../_static/documentation_options.js?v=7f41d439"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=4ea706d9"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    </body>
 </html>

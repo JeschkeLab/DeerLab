@@ -1,6 +1,6 @@
 # %% [markdown]
 """ 
-Analysis of a 5-pulse DEER signal with multiple dipolar pathays
+Analysis of a 5-pulse DEER signal with multiple dipolar pathways
 -------------------------------------------------------------------------
 
 Fit a 5-pulse DEER with multiple dipolar pathways and display the individual pathway contributions. 
@@ -18,17 +18,18 @@ path = '../data/'
 file = 'example_5pdeer_3.DTA'
 
 # Experimental parameters (reversed 5pDEER)
-tau1 = 3.7               # First inter-pulse delay, μs
-tau2 = 3.5               # Second inter-pulse delay, μs
-tau3 = 0.3               # Third inter-pulse delay, μs
-deadtime = 0.1           # Acquisition deadtime, μs
+tau1 = 3.7              # First inter-pulse delay, μs
+tau2 = 3.5              # Second inter-pulse delay, μs
+tau3 = 0.3              # Third inter-pulse delay, μs
+tmin = 0.1              # Start time, μs
 
 # Load the experimental data
 t,Vexp = dl.deerload(path + file)
 Vexp = dl.correctphase(Vexp)   # Phase correction
 Vexp = Vexp/np.max(Vexp)       # Rescaling (aesthetic)
-t = t + deadtime               # Account for deadtime
-
+t = t - t[0]                     # Account for zerotime
+t = t + tmin   
+ 
 # Distance vector
 r = np.arange(2.5,5.5,0.025) # nm
 
