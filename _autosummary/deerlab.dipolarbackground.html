@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.fftspec" href="deerlab.fftspec.html" /><link rel="prev" title="deerlab.dipolarkernel" href="deerlab.dipolarkernel.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>deerlab.dipolarbackground - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -363,11 +363,11 @@ due to intermolecular dipolar interactions over a sample (background contributio
 contributions arising from different dipolar pathways <a class="reference internal" href="#r8d7f6cb812e6-1" id="id1">[1]</a> during a pulse sequence. The two-spin dipolar background reads:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">B(\mathbf{t}) = \prod_k B_\mathrm{basis} \Big( \lambda_k, \mathbf{\delta}_k (\mathbf{t} - \mathbf{t}_{\mathrm{ref},k}) \Big)</span></p>
+<p><img src="../_images/math/e5e66b664dae166a24ab73bd46ae03cf4d9f2516.svg" alt="B(\mathbf{t}) = \prod_k B_\mathrm{basis} \Big( \lambda_k, \mathbf{\delta}_k (\mathbf{t} - \mathbf{t}_{\mathrm{ref},k}) \Big)"/></p>
 </div></div>
-<p>where <span class="math">\mathbf{t}=(t_1,\dots,t_D)</span> are the experimental time incrementation vectors of a <span class="math">D</span>-dimensional experiment. 
-The dipolar pathways are characterized by their amplitudes <span class="math">\lambda_k</span>, their refocusing times <span class="math">\mathbf{t}_{\mathrm{ref},k}</span>, 
-and their (sub)harmonic factors <span class="math">\mathbf{\delta}_k</span>. The function <span class="math">B_\mathrm{basis}(\lambda,t)</span> represents the background basis function that
+<p>where <img class="math" src="../_images/math/d9a87300dc6e74f6afd317e64d4d6a88a66c5877.svg" alt="\mathbf{t}=(t_1,\dots,t_D)"/> are the experimental time incrementation vectors of a <img class="math" src="../_images/math/91ed96946f7dc4c45632cfe10ffc6499ceb0f9a0.svg" alt="D"/>-dimensional experiment. 
+The dipolar pathways are characterized by their amplitudes <img class="math" src="../_images/math/dd976a3de643503b9e23013b00f16793d9da7902.svg" alt="\lambda_k"/>, their refocusing times <img class="math" src="../_images/math/ec6f90ab7747959b57fda6065b423500d15a8a98.svg" alt="\mathbf{t}_{\mathrm{ref},k}"/>, 
+and their (sub)harmonic factors <img class="math" src="../_images/math/e7311a6dd18c947607e1aeb3dab886853931839c.svg" alt="\mathbf{\delta}_k"/>. The function <img class="math" src="../_images/math/d4f7cdd14f43ca0ab6681736755ac0879a6afdb6.svg" alt="B_\mathrm{basis}(\lambda,t)"/> represents the background basis function that
 describes the shape of the intermolecular contributions for a single dipolar pathway.</p>
 <p>The function can also compute three-spin interaction dipolar background functions that account for the additional the structure and shape
 of the echo modulation in multi-spin systems <a class="reference internal" href="#r8d7f6cb812e6-2" id="id2">[2]</a>. The three-spin dipolar background is constructed from the contributions arising from 
@@ -375,29 +375,29 @@ the combinations of different pair dipolar pathways <a class="reference internal
 The three-spin dipolar background function reads:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">B^{(3)}(\mathbf{t}) = \prod_k\prod_q^3 B_\mathrm{basis}\Big(\lambda_k, \mathbf{\delta}_{k,q} (\mathbf{t} - \mathbf{t}_{\mathrm{ref},k,q}) \Big)</span></p>
+<p><img src="../_images/math/5a6d9ff1931d8964662a739675250319ec762209.svg" alt="B^{(3)}(\mathbf{t}) = \prod_k\prod_q^3 B_\mathrm{basis}\Big(\lambda_k, \mathbf{\delta}_{k,q} (\mathbf{t} - \mathbf{t}_{\mathrm{ref},k,q}) \Big)"/></p>
 </div></div>
 <dl class="simple">
-<dt>The three-spin dipolar pathways are now characterized by an amplitude <span class="math">\lambda_k</span>, and by a set of three refocusing times</dt><dd><p><span class="math">\mathbf{t}_{\mathrm{ref},k,q}</span> and three (sub)harmonic factors <span class="math">\mathbf{\delta}_{k,q}</span>.</p>
+<dt>The three-spin dipolar pathways are now characterized by an amplitude <img class="math" src="../_images/math/dd976a3de643503b9e23013b00f16793d9da7902.svg" alt="\lambda_k"/>, and by a set of three refocusing times</dt><dd><p><img class="math" src="../_images/math/fcae49ba9eb1e41bc796cb8bc98975396a2665da.svg" alt="\mathbf{t}_{\mathrm{ref},k,q}"/> and three (sub)harmonic factors <img class="math" src="../_images/math/300668781108b25ea8a7011eac7d94095fd4310b.svg" alt="\mathbf{\delta}_{k,q}"/>.</p>
 </dd>
 </dl>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>t</strong><span class="classifier">ndarray or list thereof</span></dt><dd><p>Experimental time incrementation vectors (time coordinates) <span class="math">t</span>, in microseconds. For multi-dimensional experiments, 
-specify a list <code class="docutils literal notranslate"><span class="pre">[t1,...,tD]</span></code> of the time coordinates <span class="math">\mathbf{t}</span> along each of the <code class="docutils literal notranslate"><span class="pre">D</span></code> different experimental dimensions.</p>
+<dt><strong>t</strong><span class="classifier">ndarray or list thereof</span></dt><dd><p>Experimental time incrementation vectors (time coordinates) <img class="math" src="../_images/math/7c46b27b14a80a7100681079b15c66c3e13c5c78.svg" alt="t"/>, in microseconds. For multi-dimensional experiments, 
+specify a list <code class="docutils literal notranslate"><span class="pre">[t1,...,tD]</span></code> of the time coordinates <img class="math" src="../_images/math/1824aa75bd44d15e3947a8a271a1639c8f7da124.svg" alt="\mathbf{t}"/> along each of the <code class="docutils literal notranslate"><span class="pre">D</span></code> different experimental dimensions.</p>
 </dd>
 <dt><strong>pathways</strong><span class="classifier">list of dictionaries  or <code class="docutils literal notranslate"><span class="pre">None</span></code>, optional</span></dt><dd><p>List of dipolar pathways.</p>
-<p>For <em>two-spin dipolar interactions</em>, each pathway is defined as a dictionary containing the pathway’s amplitude <span class="math">\lambda_k</span> (<code class="docutils literal notranslate"><span class="pre">'amp'</span></code>), 
-refocusing time <span class="math">t_{\mathrm{ref},k}</span> (<code class="docutils literal notranslate"><span class="pre">'reftime'</span></code>) in microseconds, and (sub)harmonic <span class="math">\delta_k</span> (<code class="docutils literal notranslate"><span class="pre">'harmonic'</span></code>).
+<p>For <em>two-spin dipolar interactions</em>, each pathway is defined as a dictionary containing the pathway’s amplitude <img class="math" src="../_images/math/dd976a3de643503b9e23013b00f16793d9da7902.svg" alt="\lambda_k"/> (<code class="docutils literal notranslate"><span class="pre">'amp'</span></code>), 
+refocusing time <img class="math" src="../_images/math/d808fc9335ef5aa2cf46d22e39cdf2e3c5d49eeb.svg" alt="t_{\mathrm{ref},k}"/> (<code class="docutils literal notranslate"><span class="pre">'reftime'</span></code>) in microseconds, and (sub)harmonic <img class="math" src="../_images/math/d289e7decadda1caf09110902f96fbe52e3dac02.svg" alt="\delta_k"/> (<code class="docutils literal notranslate"><span class="pre">'harmonic'</span></code>).
 For example, for a one-dimensional experiment <code class="docutils literal notranslate"><span class="pre">{'amp:'lambda,</span> <span class="pre">'reftime':tref,</span> <span class="pre">'harmonic':delta}</span></code> or <code class="docutils literal notranslate"><span class="pre">{'amp:'lambda,</span> <span class="pre">'reftime':tref}</span></code>. If <code class="docutils literal notranslate"><span class="pre">'harmonic'</span></code> is not
 specified, it is assumed to be 1 (modulated). For an unmodulated pathway, specify only the amplitude, i.e. <code class="docutils literal notranslate"><span class="pre">{'amp':Lambda0}</span></code>.</p>
-<p>For <em>multi-dimensional experiments</em>, the pathway refocusing times mathbf{t}_{mathrm{ref},k}` and harmonics <span class="math">\mathbf{\delta}_k</span> 
+<p>For <em>multi-dimensional experiments</em>, the pathway refocusing times mathbf{t}_{mathrm{ref},k}` and harmonics <img class="math" src="../_images/math/e7311a6dd18c947607e1aeb3dab886853931839c.svg" alt="\mathbf{\delta}_k"/> 
 along the different dimensions must be specified as a list, e.g. for a pathway in a two-dimensional experiment 
 <code class="docutils literal notranslate"><span class="pre">{'amp:'lambda,</span> <span class="pre">'reftime':[tref1,tref2],</span> <span class="pre">'harmonic':[delta1,delta2]}</span></code>
 `
-For <em>three-spin interactions</em>, each pathway is defined as a dictionary containing the pathway’s amplitude <span class="math">\lambda_k</span> (<code class="docutils literal notranslate"><span class="pre">'amp'</span></code>),
-a tuple of refocusing times <span class="math">t_{\mathrm{ref},k,q}</span> (<code class="docutils literal notranslate"><span class="pre">'reftime'</span></code>), and a tuple of (sub)harmonics <span class="math">\delta_{k,q}</span> (<code class="docutils literal notranslate"><span class="pre">'harmonic'</span></code>). 
+For <em>three-spin interactions</em>, each pathway is defined as a dictionary containing the pathway’s amplitude <img class="math" src="../_images/math/dd976a3de643503b9e23013b00f16793d9da7902.svg" alt="\lambda_k"/> (<code class="docutils literal notranslate"><span class="pre">'amp'</span></code>),
+a tuple of refocusing times <img class="math" src="../_images/math/060dea68557abd6de1ee6d023af09f64500be136.svg" alt="t_{\mathrm{ref},k,q}"/> (<code class="docutils literal notranslate"><span class="pre">'reftime'</span></code>), and a tuple of (sub)harmonics <img class="math" src="../_images/math/f677d25b729148cbc859b41904c634c31fa80071.svg" alt="\delta_{k,q}"/> (<code class="docutils literal notranslate"><span class="pre">'harmonic'</span></code>). 
 For example, for a one-dimensional experiment <code class="docutils literal notranslate"><span class="pre">{'amp:'lambda,</span> <span class="pre">'reftime':(tref1,tref2,tref3),</span> <span class="pre">'harmonic':(delta1,delta2,delta3)}</span></code>.</p>
 <p>If neither <code class="docutils literal notranslate"><span class="pre">pathways</span></code> or <code class="docutils literal notranslate"><span class="pre">mod</span></code> are specified (or set to <code class="docutils literal notranslate"><span class="pre">None</span></code>), <code class="docutils literal notranslate"><span class="pre">pathways=[{'amp':1,'reftime':0}]</span></code> is used as the default.</p>
 </dd>
@@ -429,7 +429,7 @@ Dipolar pathways in multi-spin and multi-dimensional dipolar EPR spectroscopy, P
 </div>
 </div>
 <p class="rubric">Examples</p>
-<p>To specify single-pathway background based on a homogenous 3D distribution of spins that refocuses at time <span class="math">t=0</span>, use:</p>
+<p>To specify single-pathway background based on a homogenous 3D distribution of spins that refocuses at time <img class="math" src="../_images/math/2a13f4adb339f1b85dba334e065045af643d7551.svg" alt="t=0"/>, use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="mf">0.4</span>  <span class="c1"># modulation depth</span>
 <span class="n">pathways</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">lam</span><span class="p">,</span> <span class="s1">&#39;reftime&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
@@ -483,7 +483,7 @@ Dipolar pathways in multi-spin and multi-dimensional dipolar EPR spectroscopy, P
 <span class="n">B</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dipolarbackground</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">pathways</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To construct a background function for a three-spin system studied with a two-dimensional experiment, with a single dipolar pathway refocusing at, e.g.,  <span class="math">t=(\tau_1,\tau_2)</span> use:</p>
+<p>To construct a background function for a three-spin system studied with a two-dimensional experiment, with a single dipolar pathway refocusing at, e.g.,  <img class="math" src="../_images/math/fcd698a493549dc9cb6b51c5e13ef6005a9804ac.svg" alt="t=(\tau_1,\tau_2)"/> use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Three dipolar pathways needed, one for each dipolar interaction in the three-spin system </span>
 <span class="n">pathways</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">lam</span><span class="p">},</span>

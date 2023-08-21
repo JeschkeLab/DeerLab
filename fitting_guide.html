@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Uncertainty Guide" href="uncertainty_guide.html" /><link rel="prev" title="Modeling Guide" href="modeling_guide.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>Fitting Guide - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -354,22 +354,22 @@
         <article role="main">
           <section id="fitting-guide">
 <span id="id1"></span><h1>Fitting Guide<a class="headerlink" href="#fitting-guide" title="Link to this heading">#</a></h1>
-<p>This guide will focus on the last step of the DeerLab workflow, i.e., the fitting. Due to the separation of non-linear parameters <span class="math">\theta_\mathrm{nonlin}</span> and linear parameters <span class="math">\theta_\mathrm{lin}</span> in the model structure of DeerLab, the program can use penalized separable non-linear least-squares to fit the model to the data. The fitting procedure aims to find the following optimization problem with the objective function</p>
+<p>This guide will focus on the last step of the DeerLab workflow, i.e., the fitting. Due to the separation of non-linear parameters <img class="math" src="_images/math/8e9f8e664891f997469cb4ad9e5439e81d0660dc.svg" alt="\theta_\mathrm{nonlin}"/> and linear parameters <img class="math" src="_images/math/68a93297867e31caa33516d8d3534ab818c7e905.svg" alt="\theta_\mathrm{lin}"/> in the model structure of DeerLab, the program can use penalized separable non-linear least-squares to fit the model to the data. The fitting procedure aims to find the following optimization problem with the objective function</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">\min_{\theta_\mathrm{nonlin}} \left\{ \Vert y - A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}(\theta_\mathrm{nonlin}) \Vert^2  + \sum_i \gamma_i\mathcal{P}_i(\theta_\mathrm{nonlin},\theta_\mathrm{lin}) \right\} \\</span></p>
+<p><img src="_images/math/0a669195c4e733f32c693cf9fd4a7e8dcebd67e4.svg" alt="\min_{\theta_\mathrm{nonlin}} \left\{ \Vert y - A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}(\theta_\mathrm{nonlin}) \Vert^2  + \sum_i \gamma_i\mathcal{P}_i(\theta_\mathrm{nonlin},\theta_\mathrm{lin}) \right\} \\"/></p>
 </div></div>
 <p>with the linear part of the objective given by</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">\theta_\mathrm{lin}(\theta_\mathrm{nonlin}) = {\arg\!\min}_{\theta} \left\{ \Vert y - A(\theta_\mathrm{nonlin})\theta \Vert^2 +  \alpha^2\mathcal{R}(\theta) \right\} \\</span></p>
+<p><img src="_images/math/f2a2f74864f4b81b5b0096880839c879d86ec4fd.svg" alt="\theta_\mathrm{lin}(\theta_\mathrm{nonlin}) = {\arg\!\min}_{\theta} \left\{ \Vert y - A(\theta_\mathrm{nonlin})\theta \Vert^2 +  \alpha^2\mathcal{R}(\theta) \right\} \\"/></p>
 </div></div>
 <p>and all subject to the boundary conditions defined in the model</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">\theta_\mathrm{lb} \leq \theta_\mathrm{nonlin} \leq \theta_\mathrm{ub} \quad\quad \theta_\mathrm{lbl} \leq \theta_\mathrm{lin} \leq \theta_\mathrm{ubl}</span></p>
+<p><img src="_images/math/c399199c56f71b63c379203f10eba352c504b0ff.svg" alt="\theta_\mathrm{lb} \leq \theta_\mathrm{nonlin} \leq \theta_\mathrm{ub} \quad\quad \theta_\mathrm{lbl} \leq \theta_\mathrm{lin} \leq \theta_\mathrm{ubl}"/></p>
 </div></div>
-<p>The term <span class="math">A(\theta_\mathrm{nonlin})</span> is the non-linear function of the model. A regularization penalty <span class="math">\mathcal{R}(\theta_\mathrm{lin})</span> weighted by a regularization weight or parameter <span class="math">\alpha</span>, and multiple additional arbitrary penalty terms <span class="math">\mathcal{P}_i(\theta_\mathrm{nonlin},\theta_\mathrm{lin})</span> each weighted by its own penalty weight <span class="math">\gamma_i</span>, can be added to this objective function if wanted</p>
+<p>The term <img class="math" src="_images/math/9fa5636af77a9ff7c61943c7cddf370d0c09b274.svg" alt="A(\theta_\mathrm{nonlin})"/> is the non-linear function of the model. A regularization penalty <img class="math" src="_images/math/a2ea4e28b134adf895ee4d079b65868e160eb647.svg" alt="\mathcal{R}(\theta_\mathrm{lin})"/> weighted by a regularization weight or parameter <img class="math" src="_images/math/f36a3f8dbda6bea20079ecea63562c7932d00b1b.svg" alt="\alpha"/>, and multiple additional arbitrary penalty terms <img class="math" src="_images/math/c46422b33964608af7cf63390b465616f54031e9.svg" alt="\mathcal{P}_i(\theta_\mathrm{nonlin},\theta_\mathrm{lin})"/> each weighted by its own penalty weight <img class="math" src="_images/math/1befffcd1b819f2e5057daadfdb4d960e52b5f49.svg" alt="\gamma_i"/>, can be added to this objective function if wanted</p>
 <section id="the-fit-function">
 <h2>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> function<a class="headerlink" href="#the-fit-function" title="Link to this heading">#</a></h2>
 <p>DeerLab provides a centralized fitting function called <code class="docutils literal notranslate"><span class="pre">fit</span></code>. Its syntax is generally straightforward, taking a dataset and a model to be fitted to it. The function will always return a <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object containing all of the fitted quantities, including uncertainty estimates, as well as other quantities of interest. Assume that we have some dataset <code class="docutils literal notranslate"><span class="pre">y</span></code> described by some model called <code class="docutils literal notranslate"><span class="pre">model</span></code>. The fit can be executed as follows</p>
@@ -424,7 +424,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 <p>The regularization penalty weight (a.k.a regularization parameter) is optimally selected according to a given criterion (by default, the Akaike information criterion, AIC). There are different ways to control this process:</p>
 <section id="changing-the-selection-functional">
 <h3>Changing the selection functional<a class="headerlink" href="#changing-the-selection-functional" title="Link to this heading">#</a></h3>
-<p>The regularization functional can be changed from the AIC to any built-in functionals via the <span class="math">regparam</span> keyword argument. Changing it to another functional will only change how the regularization parameter is selected, but it still will be optimized. For example, to switch the selection functional from the AIC to generalized cross-validation (GCV)</p>
+<p>The regularization functional can be changed from the AIC to any built-in functionals via the <img class="math" src="_images/math/43e847293a04eb1bd90bec393f433291bae5d9db.svg" alt="regparam"/> keyword argument. Changing it to another functional will only change how the regularization parameter is selected, but it still will be optimized. For example, to switch the selection functional from the AIC to generalized cross-validation (GCV)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data, using the GCV criterion</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;gcv&#39;</span><span class="p">)</span>
 </pre></div>
@@ -577,8 +577,8 @@ information on the abscissa values of the data, these must be specified separate
 <p>The results summary shown above contains several key quantities to quickly assess whether the model estimate obtained by the <code class="docutils literal notranslate"><span class="pre">fit</span></code>
 function is a proper descriptor of the data. For each dataset analyzed, several quantities are returned. The <code class="docutils literal notranslate"><span class="pre">Noise</span> <span class="pre">level</span></code> value shows
 either the estimated noise level of that dataset or the one specified by the user. The <code class="docutils literal notranslate"><span class="pre">Reduced</span> <span class="pre">𝛘2</span></code> value indicates how good the model fit
-describes the data. Values close to one indicate a good fit of the data. The <code class="docutils literal notranslate"><span class="pre">Residual</span> <span class="pre">autocorr.</span></code> value (computed as <span class="math">\vert 2 - d_\mathrm{DW} \vert</span>,
-where <span class="math">d_\mathrm{DW}</span> is the Durbin–Watson statistic) indicates the degree of (first-order) autocorrelation in the fit residual. Values larger than 0.5
+describes the data. Values close to one indicate a good fit of the data. The <code class="docutils literal notranslate"><span class="pre">Residual</span> <span class="pre">autocorr.</span></code> value (computed as <img class="math" src="_images/math/4d6d8a8fe6969d7e297583a5068a16c088398107.svg" alt="\vert 2 - d_\mathrm{DW} \vert"/>,
+where <img class="math" src="_images/math/c70cc9d6a79993a2b4c3377a432ed76837161d1d.svg" alt="d_\mathrm{DW}"/> is the Durbin–Watson statistic) indicates the degree of (first-order) autocorrelation in the fit residual. Values larger than 0.5
 indicate a significant amount of autocorrelation, meaning that either the noise if not independent or that the model might not have fully captured all
 features in the data. The <code class="docutils literal notranslate"><span class="pre">RMSD</span></code> value does not provide any insight by itself, however, it can be used to compare the goodness-of-fit between different models.</p>
 <p>To facilitate the inspection of the goodness-of-fit, DeerLab will highlight with colors those values that indicate a potential failure of the analysis.

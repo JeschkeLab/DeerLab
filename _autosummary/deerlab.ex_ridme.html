@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.dd_gauss" href="deerlab.dd_gauss.html" /><link rel="prev" title="deerlab.ex_dqc" href="deerlab.ex_dqc.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>deerlab.ex_ridme - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -359,10 +359,10 @@
 <span class="sig-name descname"><span class="pre">ex_ridme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathways</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulselength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.016</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarmodel.html#ex_ridme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.ex_ridme" title="Link to this definition">#</a></dt>
 <dd><p>Generate a 5-pulse RIDME dipolar experiment model.</p>
 <p>The figure below shows the dipolar pathways in 5-pulse RIDME. The pulses and their interpulse delays are shown on the top.
-The middle table summarizes all detectable modulated dipolar pathways <span class="math">p</span> along their dipolar phase accumulation factors <span class="math">\mathbf{s}_p</span>,
-harmonics <span class="math">\delta_p</span> and refocusing times <span class="math">t_{\mathrm{ref},p}</span>. The most commonly encountered pathways are highlighted in color. 
+The middle table summarizes all detectable modulated dipolar pathways <img class="math" src="../_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/> along their dipolar phase accumulation factors <img class="math" src="../_images/math/dd08ffa6e3f58b7aaedd207b0da50ebc1cc2c557.svg" alt="\mathbf{s}_p"/>,
+harmonics <img class="math" src="../_images/math/281f2ba662db828f004921a53bb8806c2eab4a55.svg" alt="\delta_p"/> and refocusing times <img class="math" src="../_images/math/23a9fd87389b79aea3f1248a2b7c1b0086e9edb2.svg" alt="t_{\mathrm{ref},p}"/>. The most commonly encountered pathways are highlighted in color. 
 The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).</p>
-<p>The dipolar time axis is defined such that <span class="math">t=0</span> right after the second pulse.</p>
+<p>The dipolar time axis is defined such that <img class="math" src="../_images/math/2a13f4adb339f1b85dba334e065045af643d7551.svg" alt="t=0"/> right after the second pulse.</p>
 <p>(Note that the model does not account for any relaxation-induced effects)</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="../_images/ex_ridme_pathways.png"><img alt="../_images/ex_ridme_pathways.png" src="../_images/ex_ridme_pathways.png" style="width: 350px;" /></a>
@@ -370,11 +370,11 @@ The bottom panel shows a decomposition of the dipolar signal into the individual
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>tau1</strong><span class="classifier">float scalar</span></dt><dd><p>1st static interpulse delay <span class="math">\tau_1</span>.</p>
+<dt><strong>tau1</strong><span class="classifier">float scalar</span></dt><dd><p>1st static interpulse delay <img class="math" src="../_images/math/a1a503d6d647127702a687fbf69c4f1fe95530c6.svg" alt="\tau_1"/>.</p>
 </dd>
-<dt><strong>tau2</strong><span class="classifier">float scalar</span></dt><dd><p>2nd static interpulse delay <span class="math">\tau_2</span>.</p>
+<dt><strong>tau2</strong><span class="classifier">float scalar</span></dt><dd><p>2nd static interpulse delay <img class="math" src="../_images/math/1bf2289fb4b8481efba4fb276c5f67404b7c1f7f.svg" alt="\tau_2"/>.</p>
 </dd>
-<dt><strong>pathways</strong><span class="classifier">array_like, optional</span></dt><dd><p>Pathways to include in the model. The pathways are specified as a list of pathways labels <span class="math">p</span>. 
+<dt><strong>pathways</strong><span class="classifier">array_like, optional</span></dt><dd><p>Pathways to include in the model. The pathways are specified as a list of pathways labels <img class="math" src="../_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/>. 
 By default, pathways 1-4 are included as shown in the table above.</p>
 </dd>
 <dt><strong>pulselength</strong><span class="classifier">float scalar, optional</span></dt><dd><p>Length of the longest microwave pulse in the sequence, in microseconds. Used to determine

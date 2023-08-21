@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Fitting Guide" href="fitting_guide.html" /><link rel="prev" title="Advanced" href="advanced_guide.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>Modeling Guide - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -430,9 +430,9 @@ Note that freezing does not prevent the model to be <a class="reference internal
 <p>DeerLab’s <code class="docutils literal notranslate"><span class="pre">Model</span></code> object implements a concrete yet completely general mathematical structure for the models. The <code class="docutils literal notranslate"><span class="pre">Model</span></code> object assumes that the model function is defined in the following form:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">y = A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}</span></p>
+<p><img src="_images/math/20e52772015b3655bdbef8d6e58df6929d90788a.svg" alt="y = A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}"/></p>
 </div></div>
-<p>where <span class="math">A(\theta_\mathrm{nonlin})</span> is a non-linear function which takes the model’s non-linear parameters <span class="math">\theta_\mathrm{nonlin}</span>, and returns a vector/matrix that is multiplied by the model’s linear parameters <span class="math">\theta_\mathrm{lin}</span> to generate the model’s response <span class="math">y</span>. If a model has no linear parameters, DeerLab will assume <span class="math">\theta_\mathrm{lin}=1</span>.</p>
+<p>where <img class="math" src="_images/math/9fa5636af77a9ff7c61943c7cddf370d0c09b274.svg" alt="A(\theta_\mathrm{nonlin})"/> is a non-linear function which takes the model’s non-linear parameters <img class="math" src="_images/math/8e9f8e664891f997469cb4ad9e5439e81d0660dc.svg" alt="\theta_\mathrm{nonlin}"/>, and returns a vector/matrix that is multiplied by the model’s linear parameters <img class="math" src="_images/math/68a93297867e31caa33516d8d3534ab818c7e905.svg" alt="\theta_\mathrm{lin}"/> to generate the model’s response <img class="math" src="_images/math/3d38b29b7b200dff01b841880f82bd279ac2ba06.svg" alt="y"/>. If a model has no linear parameters, DeerLab will assume <img class="math" src="_images/math/daebc8f87662235b6dc2651f86e49a95c8473bc8.svg" alt="\theta_\mathrm{lin}=1"/>.</p>
 <p>Before constructing any <code class="docutils literal notranslate"><span class="pre">Model</span></code> object, the underlying model function must be brought to this form to identify the terms listed above.</p>
 </section>
 </section>
@@ -441,7 +441,7 @@ Note that freezing does not prevent the model to be <a class="reference internal
 <p>In this section, we will look at how to construct custom <code class="docutils literal notranslate"><span class="pre">Model</span></code> objects from scratch. DeerLab provides a large selection of pre-defined models and model generators for dipolar EPR spectroscopy-specific applications.</p>
 <section id="models-without-linear-parameters">
 <h3>Models without linear parameters<a class="headerlink" href="#models-without-linear-parameters" title="Link to this heading">#</a></h3>
-<p>If the model consists of just non-linear parameters and no linear parameters, we first need to define the non-linear function <span class="math">A(\theta_\mathrm{nonlin})</span>. The function must take each non-linear parameter as a separate input argument. Then the model constructor <code class="docutils literal notranslate"><span class="pre">Model()</span></code> can be called to generate the model from the defined function.</p>
+<p>If the model consists of just non-linear parameters and no linear parameters, we first need to define the non-linear function <img class="math" src="_images/math/9fa5636af77a9ff7c61943c7cddf370d0c09b274.svg" alt="A(\theta_\mathrm{nonlin})"/>. The function must take each non-linear parameter as a separate input argument. Then the model constructor <code class="docutils literal notranslate"><span class="pre">Model()</span></code> can be called to generate the model from the defined function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definition of the non-linear function of the model</span>
 <span class="k">def</span> <span class="nf">nonlinear_fcn</span><span class="p">(</span><span class="n">nonlinparam1</span><span class="p">,</span><span class="n">nonlinparam2</span><span class="p">,</span><span class="o">*</span><span class="n">nonlinparamN</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="o">...</span>
@@ -466,9 +466,9 @@ Note that freezing does not prevent the model to be <a class="reference internal
 <p>For example, let’s consider a Gaussian function given by:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">y(\langle x \rangle,\sigma) = \exp\left(-\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)</span></p>
+<p><img src="_images/math/8d1c0308c311880ea9e4c6647224607dc3d75620.svg" alt="y(\langle x \rangle,\sigma) = \exp\left(-\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)"/></p>
 </div></div>
-<p>centered about <span class="math">\langle x \rangle</span>, and with a width given by <span class="math">\sigma</span>. The function has two non-linear parameters (<span class="math">\langle x \rangle</span> and <span class="math">\sigma</span>), and no linear parameters. Therefore, we could define the following function:</p>
+<p>centered about <img class="math" src="_images/math/25d9789ff54c2260eeed92b9d70af80a7e7c9a9c.svg" alt="\langle x \rangle"/>, and with a width given by <img class="math" src="_images/math/503f728986c7765b711583ae8d27fc42398e310f.svg" alt="\sigma"/>. The function has two non-linear parameters (<img class="math" src="_images/math/25d9789ff54c2260eeed92b9d70af80a7e7c9a9c.svg" alt="\langle x \rangle"/> and <img class="math" src="_images/math/503f728986c7765b711583ae8d27fc42398e310f.svg" alt="\sigma"/>), and no linear parameters. Therefore, we could define the following function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">500</span><span class="p">)</span>
 <span class="c1"># Define the non-linear function</span>
 <span class="k">def</span> <span class="nf">gaussian_fcn</span><span class="p">(</span><span class="n">center</span><span class="p">,</span><span class="n">std</span><span class="p">):</span>
@@ -527,18 +527,18 @@ It is important to note that the order in which the parameters are introduced mu
 <p>For example, let’s consider a bimodal Gaussian function given by:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">y = w_1\exp\left(-\frac{(x - \langle x \rangle_1)^2}{2\sigma_1^2} \right) + w_2\exp\left(-\frac{(x - \langle x \rangle_2)^2}{2\sigma_2^2} \right)</span></p>
+<p><img src="_images/math/f5bbe49b1f4de0207eb645beb75e8c8b87f5eca6.svg" alt="y = w_1\exp\left(-\frac{(x - \langle x \rangle_1)^2}{2\sigma_1^2} \right) + w_2\exp\left(-\frac{(x - \langle x \rangle_2)^2}{2\sigma_2^2} \right)"/></p>
 </div></div>
-<p>where <span class="math">\langle x \rangle_n</span> are the centers, <span class="math">\sigma_n</span> the width, and <span class="math">w_n</span> the amplitudes of the Gaussian components. First, we need to bring this in the form <span class="math">y = A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}</span>, we can write the model function above in a linear algebra form</p>
+<p>where <img class="math" src="_images/math/e85c368f17abf92ef3c7c0baeb0951764a19386d.svg" alt="\langle x \rangle_n"/> are the centers, <img class="math" src="_images/math/67c10bf667be9dab5716796cc2e5dda586668ddd.svg" alt="\sigma_n"/> the width, and <img class="math" src="_images/math/ad82ca3e305396002404e1a1c74fd46142980b14.svg" alt="w_n"/> the amplitudes of the Gaussian components. First, we need to bring this in the form <img class="math" src="_images/math/611d619ea90f9efe1b97675ba73022f3a326f67b.svg" alt="y = A(\theta_\mathrm{nonlin})\theta_\mathrm{lin}"/>, we can write the model function above in a linear algebra form</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">y = \begin{bmatrix}
+<p><img src="_images/math/32ccbeaa63c6deb56051293f60723ab6800cf48d.svg" alt="y = \begin{bmatrix}
         \exp\left(-\frac{(x - \langle x \rangle_1)^2}{2\sigma_1^2} \right) \\
         \exp\left(-\frac{(x - \langle x \rangle_2)^2}{2\sigma_2^2} \right)
     \end{bmatrix}
-\begin{bmatrix} w_1 \\ w_2   \end{bmatrix}</span></p>
+\begin{bmatrix} w_1 \\ w_2   \end{bmatrix}"/></p>
 </div></div>
-<p>We can identify that the function has four non-linear parameters (<span class="math">\langle x \rangle_n</span> and <span class="math">\sigma_n</span> ), and two linear parameters (<span class="math">w_n</span> ).</p>
+<p>We can identify that the function has four non-linear parameters (<img class="math" src="_images/math/e85c368f17abf92ef3c7c0baeb0951764a19386d.svg" alt="\langle x \rangle_n"/> and <img class="math" src="_images/math/67c10bf667be9dab5716796cc2e5dda586668ddd.svg" alt="\sigma_n"/> ), and two linear parameters (<img class="math" src="_images/math/ad82ca3e305396002404e1a1c74fd46142980b14.svg" alt="w_n"/> ).</p>
 <p>Therefore, we could define the following function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">500</span><span class="p">)</span>
 <span class="c1"># Define the non-linear function</span>
@@ -583,7 +583,7 @@ and with two linear parameters (<code class="docutils literal notranslate"><span
 </section>
 <section id="adding-linear-parameters-in-vector-form">
 <h4>Adding linear parameters in vector form<a class="headerlink" href="#adding-linear-parameters-in-vector-form" title="Link to this heading">#</a></h4>
-<p>In some cases (for example, in semi-parametric modeling), a vector of values might describe a linear parameter more appropriately than a single value. In DeerLab, we can add a linear parameter as a vector with <span class="math">N</span>-elements to a model using the <code class="docutils literal notranslate"><span class="pre">addlinear</span></code> method with the <code class="docutils literal notranslate"><span class="pre">vec=N</span></code> keyword argument.</p>
+<p>In some cases (for example, in semi-parametric modeling), a vector of values might describe a linear parameter more appropriately than a single value. In DeerLab, we can add a linear parameter as a vector with <img class="math" src="_images/math/3c01db19d2bea9adb52e8e0b68b2983f852ba49a.svg" alt="N"/>-elements to a model using the <code class="docutils literal notranslate"><span class="pre">addlinear</span></code> method with the <code class="docutils literal notranslate"><span class="pre">vec=N</span></code> keyword argument.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definition of the non-linear function of the model</span>
 <span class="k">def</span> <span class="nf">nonlinear_fcn</span><span class="p">(</span><span class="n">nonlinparam1</span><span class="p">,</span><span class="n">nonlinparam2</span><span class="p">,</span><span class="o">*</span><span class="n">nonlinparamN</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="o">...</span>
@@ -595,21 +595,21 @@ and with two linear parameters (<code class="docutils literal notranslate"><span
 <span class="n">mymodel</span><span class="o">.</span><span class="n">addlinear</span><span class="p">(</span><span class="s1">&#39;linparam1&#39;</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The new parameter <code class="docutils literal notranslate"><span class="pre">linparam1</span></code> will now refer to the whole <span class="math">N</span>-element vector of values.</p>
+<p>The new parameter <code class="docutils literal notranslate"><span class="pre">linparam1</span></code> will now refer to the whole <img class="math" src="_images/math/3c01db19d2bea9adb52e8e0b68b2983f852ba49a.svg" alt="N"/>-element vector of values.</p>
 </section>
 <section id="example-gaussian-convolution-of-a-non-parametric-distribution">
 <span id="modeling-example3"></span><h4>Example: Gaussian convolution of a non-parametric distribution<a class="headerlink" href="#example-gaussian-convolution-of-a-non-parametric-distribution" title="Link to this heading">#</a></h4>
 <p>For example, let us construct a model describing the Gaussian convolution of a non-parametric distribution, which we can write as:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">y(x,\sigma) = \int dz \exp\left(-\frac{(x-z)^2}{2\sigma^2} \right) P(z) = \int dz K(x,z) P(z)</span></p>
+<p><img src="_images/math/4eabe72b8236a22aeffa6c56cb0152517ff892db.svg" alt="y(x,\sigma) = \int dz \exp\left(-\frac{(x-z)^2}{2\sigma^2} \right) P(z) = \int dz K(x,z) P(z)"/></p>
 </div></div>
-<p>where <span class="math">K(x,z,\sigma)</span> is the Gaussian kernel, and <span class="math">P(z)</span> is the non-parametric distribution. Such an integral equation can be quickly be brought into matrix form</p>
+<p>where <img class="math" src="_images/math/1a57e128bc380d9aec5ae26abc3a10ae82775fa0.svg" alt="K(x,z,\sigma)"/> is the Gaussian kernel, and <img class="math" src="_images/math/6e6e52a82b57e86abdd78e7e2986bd4f0ca0c62e.svg" alt="P(z)"/> is the non-parametric distribution. Such an integral equation can be quickly be brought into matrix form</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">\mathbf{y} = \mathbf{K}(\sigma) \mathbf{P}</span></p>
+<p><img src="_images/math/286b50164e7b11e8eb4e6720921bbe0db3e65296.svg" alt="\mathbf{y} = \mathbf{K}(\sigma) \mathbf{P}"/></p>
 </div></div>
-<p>where we recognize <span class="math">\mathbf{K}(\sigma)</span> as the non-linear term, depending on a single non-linear parameter (<span class="math">\sigma</span>) and a linear parameter vector <span class="math">\mathbf{P}</span>.</p>
+<p>where we recognize <img class="math" src="_images/math/23dd3330e81073e18b2b0628019f47ea16a20528.svg" alt="\mathbf{K}(\sigma)"/> as the non-linear term, depending on a single non-linear parameter (<img class="math" src="_images/math/503f728986c7765b711583ae8d27fc42398e310f.svg" alt="\sigma"/>) and a linear parameter vector <img class="math" src="_images/math/b48245c202f3bdb7be43963c45e2cd7ee540902a.svg" alt="\mathbf{P}"/>.</p>
 <p>The model can be constructed as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
@@ -677,9 +677,9 @@ during the model construction using the <code class="docutils literal notranslat
 <p>For example, let’s model a Gaussian function defined on an arbitrary axis:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">y(x,\langle x \rangle,\sigma) = \exp\left(-\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)</span></p>
+<p><img src="_images/math/e2e96804325e7a6b136831d4ed9e154ae8c6337d.svg" alt="y(x,\langle x \rangle,\sigma) = \exp\left(-\frac{(x - \langle x \rangle)^2}{2\sigma^2} \right)"/></p>
 </div></div>
-<p>centered about <span class="math">\langle x \rangle</span>, with a width given by <span class="math">\sigma</span>. The function has two non-linear parameters (<span class="math">\langle x \rangle</span> and <span class="math">\sigma</span>), and no linear parameters. The axis <span class="math">x</span> should be modifiable but not a parameter. Therefore, we could define the following function with the axis set as a constant:</p>
+<p>centered about <img class="math" src="_images/math/25d9789ff54c2260eeed92b9d70af80a7e7c9a9c.svg" alt="\langle x \rangle"/>, with a width given by <img class="math" src="_images/math/503f728986c7765b711583ae8d27fc42398e310f.svg" alt="\sigma"/>. The function has two non-linear parameters (<img class="math" src="_images/math/25d9789ff54c2260eeed92b9d70af80a7e7c9a9c.svg" alt="\langle x \rangle"/> and <img class="math" src="_images/math/503f728986c7765b711583ae8d27fc42398e310f.svg" alt="\sigma"/>), and no linear parameters. The axis <img class="math" src="_images/math/bf097d265e84239cf06c239fa88c0345d37ca03d.svg" alt="x"/> should be modifiable but not a parameter. Therefore, we could define the following function with the axis set as a constant:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the non-linear function</span>
 <span class="k">def</span> <span class="nf">gaussian_fcn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">center</span><span class="p">,</span><span class="n">std</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">center</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">std</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
@@ -1008,16 +1008,16 @@ To enforce equality of widths for the two Gaussians in the <code class="docutils
 <section id="example-two-gaussians-with-functionalized-amplitudes">
 <h4>Example: Two Gaussians with functionalized amplitudes<a class="headerlink" href="#example-two-gaussians-with-functionalized-amplitudes" title="Link to this heading">#</a></h4>
 <p>For this example, we will model a bimodal Gaussian function where the amplitudes of the two Gaussian components can be modeled via some function. We will use the <code class="docutils literal notranslate"><span class="pre">bigauss</span></code> from <a class="reference internal" href="#modeling-example2"><span class="std std-ref">a previous example</span></a> as the basis model.</p>
-<p>Let us assume that the amplitudes <span class="math">a_1</span> and <span class="math">a_2</span> of the two Gaussians can be modeled as follows:</p>
+<p>Let us assume that the amplitudes <img class="math" src="_images/math/a2eb069e091c3b1d2a5262e1eec64c7a2d112384.svg" alt="a_1"/> and <img class="math" src="_images/math/8a01a88ce503cf160babfcd5955943ede0be2203.svg" alt="a_2"/> of the two Gaussians can be modeled as follows:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">a_1 = k(1-k)</span></p>
+<p><img src="_images/math/620a9bb38c33813091ae5bda91bfe63240ecc169.svg" alt="a_1 = k(1-k)"/></p>
 </div></div>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">a_2 = 1 - a_1</span></p>
+<p><img src="_images/math/240ed7334eb6f242316f778195832a824ccdf998.svg" alt="a_2 = 1 - a_1"/></p>
 </div></div>
-<p>where <span class="math">k</span> is some constant that parametrizes the amplitudes. We can now implement the functionalization of <code class="docutils literal notranslate"><span class="pre">amplitude1</span></code> and <code class="docutils literal notranslate"><span class="pre">amplitude2</span></code>. Since the constant <span class="math">k</span> is not part of the model, we need to add the non-linear parameter using the <code class="docutils literal notranslate"><span class="pre">addnonlinear</span></code> method, and then define the functional relationships via the <code class="docutils literal notranslate"><span class="pre">relate</span></code> function</p>
+<p>where <img class="math" src="_images/math/89e7851913ac36818e505ddc5794fcc6781f3963.svg" alt="k"/> is some constant that parametrizes the amplitudes. We can now implement the functionalization of <code class="docutils literal notranslate"><span class="pre">amplitude1</span></code> and <code class="docutils literal notranslate"><span class="pre">amplitude2</span></code>. Since the constant <img class="math" src="_images/math/89e7851913ac36818e505ddc5794fcc6781f3963.svg" alt="k"/> is not part of the model, we need to add the non-linear parameter using the <code class="docutils literal notranslate"><span class="pre">addnonlinear</span></code> method, and then define the functional relationships via the <code class="docutils literal notranslate"><span class="pre">relate</span></code> function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add the constant that parametrizes the amplitudes (defined in range 0-1)</span>
 <span class="n">bigauss</span><span class="o">.</span><span class="n">addnonlinear</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="c1"># Define the functional relationships</span>

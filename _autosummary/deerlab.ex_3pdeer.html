@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.ex_4pdeer" href="deerlab.ex_4pdeer.html" /><link rel="prev" title="Models" href="../modelsref.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>deerlab.ex_3pdeer - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -359,8 +359,8 @@
 <span class="sig-name descname"><span class="pre">ex_3pdeer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathways</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">2]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulselength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.016</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/dipolarmodel.html#ex_3pdeer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.ex_3pdeer" title="Link to this definition">#</a></dt>
 <dd><p>Generate a 3-pulse DEER dipolar experiment model.</p>
 <p>The figure below shows the dipolar pathways in 3-pulse DEER. The observer (black) and pump (grey) pulses and their interpulse delays are shown on the top.
-The middle table summarizes all detectable modulated dipolar pathways <span class="math">p</span> along their dipolar phase accumulation factors <span class="math">\mathbf{s}_p</span>,
-harmonics <span class="math">\delta_p</span> and refocusing times <span class="math">t_{\mathrm{ref},p}</span>. The most commonly encountered pathways are highlighted in color. 
+The middle table summarizes all detectable modulated dipolar pathways <img class="math" src="../_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/> along their dipolar phase accumulation factors <img class="math" src="../_images/math/dd08ffa6e3f58b7aaedd207b0da50ebc1cc2c557.svg" alt="\mathbf{s}_p"/>,
+harmonics <img class="math" src="../_images/math/281f2ba662db828f004921a53bb8806c2eab4a55.svg" alt="\delta_p"/> and refocusing times <img class="math" src="../_images/math/23a9fd87389b79aea3f1248a2b7c1b0086e9edb2.svg" alt="t_{\mathrm{ref},p}"/>. The most commonly encountered pathways are highlighted in color. 
 The bottom panel shows a decomposition of the dipolar signal into the individual intramolecular contributions (shown as colored lines).</p>
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../_images/ex_3pdeer_pathways.png"><img alt="../_images/ex_3pdeer_pathways.png" src="../_images/ex_3pdeer_pathways.png" style="width: 350px;" /></a>
@@ -371,9 +371,9 @@ The bottom panel shows a decomposition of the dipolar signal into the individual
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float scalar</span></dt><dd><p>Static interpulse delay <span class="math">\tau</span>.</p>
+<dt><strong>tau</strong><span class="classifier">float scalar</span></dt><dd><p>Static interpulse delay <img class="math" src="../_images/math/7e9afb6178255499d8e3d7e3dd1b368b95e6b183.svg" alt="\tau"/>.</p>
 </dd>
-<dt><strong>pathways</strong><span class="classifier">array_like, optional</span></dt><dd><p>Pathways to include in the model. The pathways are specified as a list of pathways labels <span class="math">p</span>. 
+<dt><strong>pathways</strong><span class="classifier">array_like, optional</span></dt><dd><p>Pathways to include in the model. The pathways are specified as a list of pathways labels <img class="math" src="../_images/math/f34dbc6d5a7967f7cd44c892e8334bf194639367.svg" alt="p"/>. 
 By default, both pathways are included as shown in the table above.</p>
 </dd>
 <dt><strong>pulselength</strong><span class="classifier">float scalar, optional</span></dt><dd><p>Length of the longest microwave pulse in the sequence in microseconds. Used to determine the uncertainty in the 

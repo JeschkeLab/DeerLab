@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.cvxnnls" href="deerlab.cvxnnls.html" /><link rel="prev" title="deerlab.snlls" href="deerlab.snlls.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>deerlab.fnnls - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -361,16 +361,16 @@
 <p>Solves the problem</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">\min \Vert b - Ax \Vert^2</span></p>
+<p><img src="../_images/math/d900fa5d3d1f4b41c5ec69a31b8d277ecb2819aa.svg" alt="\min \Vert b - Ax \Vert^2"/></p>
 </div></div>
-<p>where <code class="docutils literal notranslate"><span class="pre">AtA</span></code> <span class="math">= A^TA</span> and <code class="docutils literal notranslate"><span class="pre">Atb</span></code> <span class="math">= A^Tb</span> using the fast 
+<p>where <code class="docutils literal notranslate"><span class="pre">AtA</span></code> <img class="math" src="../_images/math/b175854c01c131a81b2ccf6eae5b97b0bce19e4a.svg" alt="= A^TA"/> and <code class="docutils literal notranslate"><span class="pre">Atb</span></code> <img class="math" src="../_images/math/cb64edda6a3b90f67dac5a8224f2808ccfd01b5a.svg" alt="= A^Tb"/> using the fast 
 non-negative least-squares (FNNLS) algorithm <a class="reference internal" href="#r3571351fdf9d-1" id="id1">[1]</a>, <a class="reference internal" href="#r3571351fdf9d-2" id="id2">[2]</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>AtA</strong><span class="classifier">matrix_like</span></dt><dd><p>Matrix <span class="math">A^TA</span></p>
+<dt><strong>AtA</strong><span class="classifier">matrix_like</span></dt><dd><p>Matrix <img class="math" src="../_images/math/15e3703b2a5a4824e5dcad8f7709cd335d0c4676.svg" alt="A^TA"/></p>
 </dd>
-<dt><strong>Atb</strong><span class="classifier">array_like</span></dt><dd><p>Vector <span class="math">A^Tb</span></p>
+<dt><strong>Atb</strong><span class="classifier">array_like</span></dt><dd><p>Vector <img class="math" src="../_images/math/62ef9d3db356e06b69fb9509b09765d91557498e.svg" alt="A^Tb"/></p>
 </dd>
 <dt><strong>tol</strong><span class="classifier">float scalar</span></dt><dd><p>Tolerance  used for deciding when elements of x are less than zero.
 The default is <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">=</span> <span class="pre">max(shape(AtA))*norm(AtA,1)*eps</span></code>.</p>

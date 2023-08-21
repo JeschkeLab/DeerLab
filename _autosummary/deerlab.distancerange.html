@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.store_pickle" href="deerlab.store_pickle.html" /><link rel="prev" title="deerlab.fftspec" href="deerlab.fftspec.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>deerlab.distancerange - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -384,19 +384,19 @@ Either an ndarray <code class="docutils literal notranslate"><span class="pre">r
 <p class="rubric">Notes</p>
 <p>The minimal and maximal distances, <code class="docutils literal notranslate"><span class="pre">rmin</span></code> and <code class="docutils literal notranslate"><span class="pre">rmax</span></code>, are empirical values that determine the
 minimal and maximal distance for which the given time trace can provide reliable information.</p>
-<p>The minimum distance is determined by the time step <span class="math">\Delta t</span> and the Nyquist criterion:</p>
+<p>The minimum distance is determined by the time step <img class="math" src="../_images/math/5d0ab7038ed451d42b8c416750e16ae95d01727c.svg" alt="\Delta t"/> and the Nyquist criterion:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">r_\text{min} = \left( \frac{4\Delta t \nu_0}{0.85} \right)^{1/3}</span></p>
+<p><img src="../_images/math/75dc2de164418f85db78bfb5757d6acb01e0d45f.svg" alt="r_\text{min} = \left( \frac{4\Delta t \nu_0}{0.85} \right)^{1/3}"/></p>
 </div></div>
 <p>The maximum distance is determined by the requirement that at least half an oscillation
-should be observable over the measured time window from <span class="math">t_\text{min}</span>
-to <span class="math">t_\text{max}</span>.</p>
+should be observable over the measured time window from <img class="math" src="../_images/math/95b9cd46c8785d1929273b04ab0fee6b540a6e52.svg" alt="t_\text{min}"/>
+to <img class="math" src="../_images/math/69b83fa5570a572c084ef674808cd64365951120.svg" alt="t_\text{max}"/>.</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">r_\text{max} = 6\left( \frac{t_\text{max}-t_\text{min}}{2} \right)^{1/3}</span></p>
+<p><img src="../_images/math/de02b0c8e5ec5b8cf79c889f1783d038752d6cb8.svg" alt="r_\text{max} = 6\left( \frac{t_\text{max}-t_\text{min}}{2} \right)^{1/3}"/></p>
 </div></div>
-<p>where <span class="math">\nu_0</span> = 52.04 MHz nm^3.</p>
+<p>where <img class="math" src="../_images/math/f5486aae772023fd9227e1b9cbfebdb50cba2044.svg" alt="\nu_0"/> = 52.04 MHz nm^3.</p>
 <p>See Jeschke et al, Appl. Magn. Reson. 30, 473-498 (2006), <a class="reference external" href="https://doi.org/10.1007/BF03166213">https://doi.org/10.1007/BF03166213</a></p>
 </dd></dl>
 

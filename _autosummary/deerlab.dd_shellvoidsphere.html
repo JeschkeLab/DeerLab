@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.dd_circle" href="deerlab.dd_circle.html" /><link rel="prev" title="deerlab.dd_shellvoidshell" href="deerlab.dd_shellvoidshell.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>deerlab.dd_shellvoidsphere - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -422,14 +422,14 @@
 </div>
 <p><strong>Model</strong></p>
 <img src="../_images/model_scheme_dd_shellvoidsphere.png", style="width: 50%">
-<br><br><br>    <p><span class="math">P(r) = ((R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - (R_2^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_2) )/(R_3^3 - R_2^3)</span></p>
+<br><br><br>    <p><img class="math" src="../_images/math/57777b36a1911022ca0a7ab16bb53872fd1c310e.svg" alt="P(r) = ((R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - (R_2^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_2) )/(R_3^3 - R_2^3)"/></p>
 <p>with</p>
-<p><span class="math">P_\mathrm{BS}(r|R_i,R_j) = \frac{3}{16R_i^3(R_j^3 - R_i^3)}\begin{cases} 12r^3R_i^2 - r^5  \quad \text{for} \quad 0\leq r &lt; \min(2R_i,R_j - R_i) \\ 8r^2(R_j^3 - R_i^3) - 3r(R_j^2 - R_i^2)^2 - 6r^3(R_j - R_i)(R_j + R_i) \quad \text{for} \quad R_j-R_i \leq r &lt; 2R_i \\ 16r^2R_i^3 \quad \text{for} \quad 2R_i\leq r &lt; R_j - R_i  \\  r^5 - 6r^3(R_j^2 + R_i^2) + 8r^2(R_j^3 + R_i^3) - 3r(R_j^2 - R1_2)^2 \quad \text{for} \quad \max(R_j-R_i,2R_i) \leq r &lt; R_i+R_j \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}</span></p>
+<p><img class="math" src="../_images/math/0273b9ab358458f79817da0eb0840899bfa824fb.svg" alt="P_\mathrm{BS}(r|R_i,R_j) = \frac{3}{16R_i^3(R_j^3 - R_i^3)}\begin{cases} 12r^3R_i^2 - r^5  \quad \text{for} \quad 0\leq r &lt; \min(2R_i,R_j - R_i) \\ 8r^2(R_j^3 - R_i^3) - 3r(R_j^2 - R_i^2)^2 - 6r^3(R_j - R_i)(R_j + R_i) \quad \text{for} \quad R_j-R_i \leq r &lt; 2R_i \\ 16r^2R_i^3 \quad \text{for} \quad 2R_i\leq r &lt; R_j - R_i  \\  r^5 - 6r^3(R_j^2 + R_i^2) + 8r^2(R_j^3 + R_i^3) - 3r(R_j^2 - R1_2)^2 \quad \text{for} \quad \max(R_j-R_i,2R_i) \leq r &lt; R_i+R_j \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}"/></p>
 <p>and</p>
-<p><span class="math">R_1 = R</span></p>
-<p><span class="math">R_2 = R + d</span></p>
-<p><span class="math">R_3 = R + d + w</span></p>
-<p>where <span class="math">R</span> is the inner sphere’s radius, <span class="math">w</span> is the thickness of the outer shell, and <span class="math">d</span> is the shell-sphere separation.</p>
+<p><img class="math" src="../_images/math/f0b67bd2da02adb42edd059432073ddc0e1f311a.svg" alt="R_1 = R"/></p>
+<p><img class="math" src="../_images/math/be34f80e0a17451600c9214153ea2b71110e1f3f.svg" alt="R_2 = R + d"/></p>
+<p><img class="math" src="../_images/math/ecd14cd7f1393c6ce2bf9946de91b38502cbfa2b.svg" alt="R_3 = R + d + w"/></p>
+<p>where <img class="math" src="../_images/math/04d2325fffa56c70ed7ef25845d117f2daf8f3af.svg" alt="R"/> is the inner sphere’s radius, <img class="math" src="../_images/math/fdc2f25b1e8ca13ca951a7f87456f3f4c5261f84.svg" alt="w"/> is the thickness of the outer shell, and <img class="math" src="../_images/math/a8d1db96d00389e60930b93d60a004ffe4c75b39.svg" alt="d"/> is the shell-sphere separation.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="refde6f189332-1" role="doc-biblioentry">

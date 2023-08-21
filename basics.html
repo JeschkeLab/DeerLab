@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Getting Started" href="getting_started.html" /><link rel="prev" title="User Guide" href="user_guide.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>Basics - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -358,10 +358,10 @@
 <p>All functions in DeerLab use the same units: all distances are in units of <strong>nanometers</strong>, and all times in units of <strong>microseconds</strong>.</p>
 <section id="distance-distributions">
 <h2>Distance distributions<a class="headerlink" href="#distance-distributions" title="Link to this heading">#</a></h2>
-<p>A distance distribution <span class="math">P(r)</span> between two spins is represented by a pair of vectors: a distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> (in nanometers) and a vector of densities <code class="docutils literal notranslate"><span class="pre">P</span></code> (in inverse nanometers). The distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> can have linearly or non-linearly increasing values, but must have positive non-zero values. The elements <code class="docutils literal notranslate"><span class="pre">P[i]</span></code> are the distance distribution values at <code class="docutils literal notranslate"><span class="pre">r[i]</span></code> and are positive or zero. Outside of the range defined by <code class="docutils literal notranslate"><span class="pre">r</span></code>, the distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> is assumed to be zero, i.e. the distribution is truncated to the range <code class="docutils literal notranslate"><span class="pre">r</span></code>. The distance distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> is normalized such that the integral over the range of the provided <code class="docutils literal notranslate"><span class="pre">r</span></code> equals one:</p>
+<p>A distance distribution <img class="math" src="_images/math/865be106fc6ff8e698763f3b1bfb8777c311e175.svg" alt="P(r)"/> between two spins is represented by a pair of vectors: a distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> (in nanometers) and a vector of densities <code class="docutils literal notranslate"><span class="pre">P</span></code> (in inverse nanometers). The distance vector <code class="docutils literal notranslate"><span class="pre">r</span></code> can have linearly or non-linearly increasing values, but must have positive non-zero values. The elements <code class="docutils literal notranslate"><span class="pre">P[i]</span></code> are the distance distribution values at <code class="docutils literal notranslate"><span class="pre">r[i]</span></code> and are positive or zero. Outside of the range defined by <code class="docutils literal notranslate"><span class="pre">r</span></code>, the distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> is assumed to be zero, i.e. the distribution is truncated to the range <code class="docutils literal notranslate"><span class="pre">r</span></code>. The distance distribution <code class="docutils literal notranslate"><span class="pre">P</span></code> is normalized such that the integral over the range of the provided <code class="docutils literal notranslate"><span class="pre">r</span></code> equals one:</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">\int_{r_\mathrm{min}}^{r_\mathrm{max}} P(r) \mathrm{d}r = 1</span></p>
+<p><img src="_images/math/40d7709134fc915404f6e8db4c8228b788d0c999.svg" alt="\int_{r_\mathrm{min}}^{r_\mathrm{max}} P(r) \mathrm{d}r = 1"/></p>
 </div></div>
 <p>DeerLab distinguishes between <em>non-parametric</em> and <em>parametric</em> distance distributions.</p>
 <dl>
@@ -441,7 +441,7 @@ For example, you can generate <code class="docutils literal notranslate"><span c
 <p>One of the core functions of DeerLab’s dipolar EPR applications is <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code>. It constructs the kernel that provides the connection between the distance distribution and the time-domain dipolar signal via</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">V(t) = \int K(t,r)P(r) \mathrm{d}r</span></p>
+<p><img src="_images/math/d782fd11836a84cd933640472d4e60e61d91cf41.svg" alt="V(t) = \int K(t,r)P(r) \mathrm{d}r"/></p>
 </div></div>
 <p>The simplest dipolar kernel just requires the time-vector <code class="docutils literal notranslate"><span class="pre">t</span></code> and distance-vector <code class="docutils literal notranslate"><span class="pre">r</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>        <span class="c1"># time axis, in µs</span>

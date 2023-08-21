@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.nearest_psd" href="deerlab.nearest_psd.html" /><link rel="prev" title="deerlab.hccm" href="deerlab.hccm.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>deerlab.Jacobian - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -358,19 +358,19 @@
 <dt class="sig sig-object py" id="deerlab.Jacobian">
 <span class="sig-name descname"><span class="pre">Jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fcn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ub</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/utils.html#Jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.Jacobian" title="Link to this definition">#</a></dt>
 <dd><p>Finite difference Jacobian estimation</p>
-<p>Estimates the Jacobian matrix of a vector-valued function <span class="math">f(x)</span> at the 
-point <span class="math">x_0</span> taking into consideration box-constraints of the vector-valued 
+<p>Estimates the Jacobian matrix of a vector-valued function <img class="math" src="../_images/math/d5641c2355ad686bdaadb15ca2f97887cee6781d.svg" alt="f(x)"/> at the 
+point <img class="math" src="../_images/math/d31f6f7c697904193985c86764042d0bfc600d9f.svg" alt="x_0"/> taking into consideration box-constraints of the vector-valued 
 variable <code class="docutils literal notranslate"><span class="pre">x</span></code> defined by its lower and upper bounds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>fcn</strong><span class="classifier">callable</span></dt><dd><p>Function <span class="math">f(x)</span> to be differentiated.</p>
+<dt><strong>fcn</strong><span class="classifier">callable</span></dt><dd><p>Function <img class="math" src="../_images/math/d5641c2355ad686bdaadb15ca2f97887cee6781d.svg" alt="f(x)"/> to be differentiated.</p>
 </dd>
-<dt><strong>x0</strong><span class="classifier">ndarray</span></dt><dd><p>Point <span class="math">x_0</span> at which to differentiate.</p>
+<dt><strong>x0</strong><span class="classifier">ndarray</span></dt><dd><p>Point <img class="math" src="../_images/math/d31f6f7c697904193985c86764042d0bfc600d9f.svg" alt="x_0"/> at which to differentiate.</p>
 </dd>
-<dt><strong>lb</strong><span class="classifier">ndarray</span></dt><dd><p>Lower bounds of <span class="math">x</span>.</p>
+<dt><strong>lb</strong><span class="classifier">ndarray</span></dt><dd><p>Lower bounds of <img class="math" src="../_images/math/bf097d265e84239cf06c239fa88c0345d37ca03d.svg" alt="x"/>.</p>
 </dd>
-<dt><strong>ub</strong><span class="classifier">ndarray</span></dt><dd><p>Upper bounds of <span class="math">x</span>.</p>
+<dt><strong>ub</strong><span class="classifier">ndarray</span></dt><dd><p>Upper bounds of <img class="math" src="../_images/math/bf097d265e84239cf06c239fa88c0345d37ca03d.svg" alt="x"/>.</p>
 </dd>
 </dl>
 </dd>

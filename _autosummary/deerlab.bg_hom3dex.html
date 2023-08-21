@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.bg_homfractal" href="deerlab.bg_homfractal.html" /><link rel="prev" title="deerlab.bg_hom3d" href="deerlab.bg_hom3d.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.17 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
         <title>deerlab.bg_hom3dex - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -422,21 +422,21 @@
 </div>
 <p><strong>Model</strong></p>
 <a class="reference internal image-reference" href="../_images/model_scheme_bg_hom3dex.png"><img alt="../_images/model_scheme_bg_hom3dex.png" src="../_images/model_scheme_bg_hom3dex.png" style="width: 350px;" /></a>
-<p>This implements a hard-shell excluded-volume model, with spin concentration <span class="math">c_s</span> (in μM) and the radius of the spherical excluded volume <span class="math">R_\mathrm{ex}</span> (in nm).</p>
+<p>This implements a hard-shell excluded-volume model, with spin concentration <img class="math" src="../_images/math/c7a55140214e6acd7a545d8de078eb6d8fa6e77e.svg" alt="c_s"/> (in μM) and the radius of the spherical excluded volume <img class="math" src="../_images/math/52249c8c9ad583f050df4d899e958a7b83b09dde.svg" alt="R_\mathrm{ex}"/> (in nm).</p>
 <p>The expression for this model is</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">B(t) = \exp \Bigg(- c_\mathrm{s}\lambda_k \bigg( V_\mathrm{ex} K_0(t, R_\mathrm{ex}) + \mathcal{I}_\mathrm{S}(t) \bigg)</span></p>
+<p><img src="../_images/math/06e0f12d894acebbb8df24bf7fc68e7b40d24b40.svg" alt="B(t) = \exp \Bigg(- c_\mathrm{s}\lambda_k \bigg( V_\mathrm{ex} K_0(t, R_\mathrm{ex}) + \mathcal{I}_\mathrm{S}(t) \bigg)"/></p>
 </div></div>
-<p>where <span class="math">\mathcal{I}_\mathrm{S}(t)</span> is an integral without analytical form given by</p>
+<p>where <img class="math" src="../_images/math/e6c2fc827e27ddffc346cf7f03343a95553e5236.svg" alt="\mathcal{I}_\mathrm{S}(t)"/> is an integral without analytical form given by</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">\mathcal{I}_\mathrm{S}(t) = \frac{4\pi}{3} D\,t \int_0^1 \mathrm{d}z~(1 - 3z^2) ~ \mathrm{S_i}\left( \frac{D\,t (1 - 3z^2)}{R_\mathrm{ex}^3 } \right)</span></p>
+<p><img src="../_images/math/37b507ec232ea367d3d56b2c22c03aee868ac070.svg" alt="\mathcal{I}_\mathrm{S}(t) = \frac{4\pi}{3} D\,t \int_0^1 \mathrm{d}z~(1 - 3z^2) ~ \mathrm{S_i}\left( \frac{D\,t (1 - 3z^2)}{R_\mathrm{ex}^3 } \right)"/></p>
 </div></div>
-<p>where <span class="math">\mathrm{S_i}</span> is the sine integral function and <span class="math">D</span> is the dipolar constant</p>
+<p>where <img class="math" src="../_images/math/25dbd40cd20ce0dc2941b2a6bc71e1ed0755a92c.svg" alt="\mathrm{S_i}"/> is the sine integral function and <img class="math" src="../_images/math/91ed96946f7dc4c45632cfe10ffc6499ceb0f9a0.svg" alt="D"/> is the dipolar constant</p>
 <div class="math-wrapper docutils container">
 <div class="math">
-<p><span class="math">D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}</span></p>
+<p><img src="../_images/math/08ef6d8c7a6fd54a52b5e7fa4d2fcc00fdb3e2b9.svg" alt="D = \frac{\mu_0}{4\pi}\frac{(g_\mathrm{e}\mu_\mathrm{B})^2}{\hbar}"/></p>
 </div></div>
 </dd></dl>
 
