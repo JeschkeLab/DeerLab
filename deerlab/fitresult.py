@@ -146,10 +146,9 @@ class FitResult(dict):
         fitparam_idx = self._param_idx
         
         # Get the parameter values from the fit object
-        fitparams = {param : self.param[i] for i,param in enumerate(self.paramlist)}
+        fitparams = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key, fitvalue in zip(self.paramlist,[self.param[idx] for idx in fitparam_idx])}
         params = {param : fitparams[param] for param in modelparam}
         params_idx = [fitparam_idx[self.paramlist.index(param)] for param in modelparam]
-        # fitparams = {key : fitvalue if len(fitvalue)>1 else fitvalue[0] for key, fitvalue in zip(modelparam,[self.param[idx] for idx in fitparam_idx])}
 
         
     
