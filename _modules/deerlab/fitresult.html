@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
         <title>deerlab.fitresult - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
@@ -501,10 +501,9 @@
         <span class="n">fitparam_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_idx</span>
         
         <span class="c1"># Get the parameter values from the fit object</span>
-        <span class="n">fitparams</span> <span class="o">=</span> <span class="p">{</span><span class="n">param</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paramlist</span><span class="p">)}</span>
+        <span class="n">fitparams</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span> <span class="p">:</span> <span class="n">fitvalue</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fitvalue</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span> <span class="n">fitvalue</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">fitvalue</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paramlist</span><span class="p">,[</span><span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">fitparam_idx</span><span class="p">])}</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="n">param</span> <span class="p">:</span> <span class="n">fitparams</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">modelparam</span><span class="p">}</span>
         <span class="n">params_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">fitparam_idx</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">paramlist</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">param</span><span class="p">)]</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">modelparam</span><span class="p">]</span>
-        <span class="c1"># fitparams = {key : fitvalue if len(fitvalue)&gt;1 else fitvalue[0] for key, fitvalue in zip(modelparam,[self.param[idx] for idx in fitparam_idx])}</span>
 
         
     
