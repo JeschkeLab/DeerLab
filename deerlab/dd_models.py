@@ -125,7 +125,7 @@ def _multirice3dfun(r,nu,sig):
     r = r.T
     s2 = sig**2
     I_scaled = spc.ive(n/2-1, nu*r/s2)
-    P = nu**(n/2-1)/s2*r**(n/2)*np.exp(-(r**2+nu**2)/(2*s2)+nu*r/s2)*I_scaled
+    P = nu**(1-n/2)/s2*r**(n/2)*np.exp(-(r**2+nu**2)/(2*s2)+nu*r/s2)*I_scaled
     P[P<0] = 0
     
     # Normalization
