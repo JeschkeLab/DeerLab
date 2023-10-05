@@ -833,7 +833,7 @@ def sophegrid(octants,maxphi,size):
         weights = np.zeros(nOrientations)
         
         sindth2 = np.sin(dtheta/2)
-        w1 = 0.5
+        w1 = 1.0
         
         # North pole (z orientation)
         phi[0] = 0
@@ -841,7 +841,7 @@ def sophegrid(octants,maxphi,size):
         weights[0] = maxphi*(1 - np.cos(dtheta/2))
         
         # All but equatorial slice
-        Start = 2
+        Start = 1
         for iSlice in np.arange(2,size):
             nPhi = nOct*(iSlice-1) + 1
             dPhi = maxphi/(nPhi - 1)
@@ -854,13 +854,13 @@ def sophegrid(octants,maxphi,size):
         # Equatorial slice
         nPhi = nOct*(size - 1) + 1
         dPhi = maxphi/(nPhi - 1)
-        idx = Start + (np.arange(0,nPhi) - 1)
+        idx = Start + np.arange(0,nPhi)
         phi[idx] = np.linspace(0,maxphi,nPhi)
         theta[idx] = np.pi/2
         weights[idx] = sindth2*dPhi*np.concatenate([[w1], np.ones(nPhi-2), [0.5]])
         
         # Border removal
-        rmv = np.cumsum(nOct*np.arange(1,size-1)+1)+1 
+        rmv = np.cumsum(nOct*np.arange(1,size)+1)
         phi = np.delete(phi,rmv)
         theta = np.delete(theta,rmv)
         weights = np.delete(weights,rmv)
