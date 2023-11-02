@@ -24,8 +24,9 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
-Release ``v1.1.2`` - September 2023
+Release ``v1.1.2`` - November 2023
 ------------------------------------------
+- |fix| : Fixes an issue with sophgrid (:pr:`463`).
 - |fix| : Fixes an error in the normalisation of the rice models (:pr:`459`).
 - |fix| : Removes the broken three spin example (:pr:`427`).
 - |fix| : Fixes an error in the linear solver for linearly constrained not non-negative problems.
