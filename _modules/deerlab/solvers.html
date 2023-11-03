@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>deerlab.solvers - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
@@ -206,7 +206,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
@@ -781,6 +780,11 @@
 <span class="sd">            * ``0`` : Work silently (default).</span>
 <span class="sd">            * ``1`` : Display progress including the non-linear least-squares&#39; solver termination report.</span>
 <span class="sd">            * ``2`` : Display progress including the non-linear least-squares&#39; solver iteration details.</span>
+<span class="sd">        </span>
+<span class="sd">        .. caution::</span>
+
+<span class="sd">            The verbose output from the non-linear least-squares solver uses a different definition of the cost function than DeerLab.</span>
+<span class="sd">            DeerLab uses the sum of squares of the residuals divided by the number of data points, whereas the non-linear least-squares solver uses the sum of squares of the residuals divided by 2.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -949,7 +953,8 @@
         
 
         <span class="k">if</span> <span class="n">optimize_alpha</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">selregparam</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">yfrozen</span><span class="p">)[</span><span class="n">mask</span><span class="p">],</span> <span class="n">Ared</span><span class="p">[</span><span class="n">mask</span><span class="p">,:],</span> <span class="n">linSolver</span><span class="p">,</span> <span class="n">regparam</span><span class="p">,</span> 
+            <span class="n">linsolver_result</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">:</span> <span class="n">parseResult</span><span class="p">(</span><span class="n">linSolver</span><span class="p">(</span><span class="n">AtA</span><span class="p">,</span> <span class="n">Aty</span><span class="p">))</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">selregparam</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">yfrozen</span><span class="p">)[</span><span class="n">mask</span><span class="p">],</span> <span class="n">Ared</span><span class="p">[</span><span class="n">mask</span><span class="p">,:],</span> <span class="n">linsolver_result</span><span class="p">,</span> <span class="n">regparam</span><span class="p">,</span> 
                                         <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">regop</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">candidates</span><span class="o">=</span><span class="n">regparamrange</span><span class="p">,</span> 
                                         <span class="n">noiselvl</span><span class="o">=</span><span class="n">noiselvl</span><span class="p">,</span><span class="n">searchrange</span><span class="o">=</span><span class="n">regparamrange</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">alpha</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>

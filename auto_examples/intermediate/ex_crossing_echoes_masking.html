@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="&lt;no title&gt;" href="../advanced/index.html" /><link rel="prev" title="Analysing the selection of regularisation parameter" href="ex_selregparam.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>Analyzing data with crossing echoes robustly - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
@@ -207,7 +207,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../advanced/ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
@@ -474,27 +473,27 @@ Once such a mask is constructed, the analysis can be executed as usual without a
 ========= ============= ============= ===================== =======
  Dataset   Noise level   Reduced 𝛘2    Residual autocorr.    RMSD
 ========= ============= ============= ===================== =======
-   #1         0.006         0.922             0.036          0.005
+   #1         0.006         0.922             0.034          0.005
 ========= ============= ============= ===================== =======
 Model hyperparameters:
 ==========================
  Regularization parameter
 ==========================
-          0.279
+          0.275
 ==========================
 Model parameters:
 =========== ========== ========================= ====== ======================================
  Parameter   Value      95%-Confidence interval   Unit   Description
 =========== ========== ========================= ====== ======================================
- lam1        0.435      (0.383,0.486)                    Amplitude of pathway #1
- reftime1    0.496      (0.483,0.510)              μs    Refocusing time of pathway #1
+ lam1        0.429      (0.380,0.479)                    Amplitude of pathway #1
+ reftime1    0.496      (0.481,0.512)              μs    Refocusing time of pathway #1
  lam2        0.021      (0.013,0.028)                    Amplitude of pathway #2
- reftime2    5.022      (4.952,5.048)              μs    Refocusing time of pathway #2
- lam3        2.40e-04   (0.00e+00,0.131)                 Amplitude of pathway #3
- reftime3    -0.047     (-0.048,0.048)             μs    Refocusing time of pathway #3
- conc        49.670     (36.727,62.613)            μM    Spin concentration
+ reftime2    5.024      (4.952,5.048)              μs    Refocusing time of pathway #2
+ lam3        5.52e-04   (0.00e+00,0.127)                 Amplitude of pathway #3
+ reftime3    -0.033     (-0.048,0.048)             μs    Refocusing time of pathway #3
+ conc        50.413     (37.171,63.656)            μM    Spin concentration
  P           ...        (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     1.031      (1.030,1.032)             None   Normalization factor of P
+ P_scale     1.022      (1.021,1.023)             None   Normalization factor of P
 =========== ========== ========================= ====== ======================================
 </pre></div>
 </div>
@@ -538,7 +537,7 @@ Model parameters:
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_ex_crossing_echoes_masking_004.png" srcset="../../_images/sphx_glr_ex_crossing_echoes_masking_004.png" alt="ex crossing echoes masking" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 6.358 seconds)</p>
+<img src="../../_images/sphx_glr_ex_crossing_echoes_masking_004.png" srcset="../../_images/sphx_glr_ex_crossing_echoes_masking_004.png" alt="ex crossing echoes masking" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 10.808 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-intermediate-ex-crossing-echoes-masking-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/dcd4a2691e25cb79a15634e61be7822f/ex_crossing_echoes_masking.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_crossing_echoes_masking.py</span></code></a></p>

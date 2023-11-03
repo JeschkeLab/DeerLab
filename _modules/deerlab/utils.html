@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>deerlab.utils - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
@@ -206,7 +206,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../auto_examples/advanced/ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
@@ -1218,7 +1217,7 @@
         <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
         
         <span class="n">sindth2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dtheta</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">w1</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">w1</span> <span class="o">=</span> <span class="mf">1.0</span>
         
         <span class="c1"># North pole (z orientation)</span>
         <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1226,7 +1225,7 @@
         <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">dtheta</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
         
         <span class="c1"># All but equatorial slice</span>
-        <span class="n">Start</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">Start</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">for</span> <span class="n">iSlice</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
             <span class="n">nPhi</span> <span class="o">=</span> <span class="n">nOct</span><span class="o">*</span><span class="p">(</span><span class="n">iSlice</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">dPhi</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">/</span><span class="p">(</span><span class="n">nPhi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
@@ -1239,13 +1238,13 @@
         <span class="c1"># Equatorial slice</span>
         <span class="n">nPhi</span> <span class="o">=</span> <span class="n">nOct</span><span class="o">*</span><span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">dPhi</span> <span class="o">=</span> <span class="n">maxphi</span><span class="o">/</span><span class="p">(</span><span class="n">nPhi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">Start</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nPhi</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">Start</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nPhi</span><span class="p">)</span>
         <span class="n">phi</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">maxphi</span><span class="p">,</span><span class="n">nPhi</span><span class="p">)</span>
         <span class="n">theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
         <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">sindth2</span><span class="o">*</span><span class="n">dPhi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">w1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nPhi</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]])</span>
         
         <span class="c1"># Border removal</span>
-        <span class="n">rmv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">nOct</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span> 
+        <span class="n">rmv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">nOct</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Analysis of a 4-pulse DEER signal with multiple dipolar pathways" href="ex_fitting_4pdeer_pathways.html" /><link rel="prev" title="&lt;no title&gt;" href="index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>Validating multi-pathway models based on the data - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
@@ -207,7 +207,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../advanced/ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
@@ -429,13 +428,13 @@ Goodness-of-fit:
 ========= ============= ============= ===================== =======
  Dataset   Noise level   Reduced 𝛘2    Residual autocorr.    RMSD
 ========= ============= ============= ===================== =======
-   #1         0.005         1.869             1.056          0.007
+   #1         0.005         1.868             1.056          0.007
 ========= ============= ============= ===================== =======
 Model hyperparameters:
 ========================== ===================
  Regularization parameter   Penalty weight #1
 ========================== ===================
-          0.002                   0.056
+          0.002                   0.059
 ========================== ===================
 Model parameters:
 =========== ========= ========================= ====== ======================================
@@ -443,7 +442,7 @@ Model parameters:
 =========== ========= ========================= ====== ======================================
  mod         0.189     (0.186,0.192)                    Modulation depth
  reftime     0.390     (0.387,0.394)              μs    Refocusing time
- conc        113.704   (105.910,121.499)          μM    Spin concentration
+ conc        113.705   (105.902,121.508)          μM    Spin concentration
  P           ...       (...,...)                 nm⁻¹   Non-parametric distance distribution
  P_scale     0.989     (0.988,0.989)             None   Normalization factor of P
 =========== ========= ========================= ====== ======================================
@@ -453,13 +452,13 @@ Goodness-of-fit:
 ========= ============= ============= ===================== =======
  Dataset   Noise level   Reduced 𝛘2    Residual autocorr.    RMSD
 ========= ============= ============= ===================== =======
-   #1         0.005         1.433             0.765          0.006
+   #1         0.005         1.433             0.766          0.006
 ========= ============= ============= ===================== =======
 Model hyperparameters:
 ========================== ===================
  Regularization parameter   Penalty weight #1
 ========================== ===================
-          0.006                   0.004
+          0.006                   0.008
 ========================== ===================
 Model parameters:
 =========== ========= ========================= ====== ======================================
@@ -468,8 +467,8 @@ Model parameters:
  lam1        0.182     (0.179,0.184)                    Amplitude of pathway #1
  reftime1    0.385     (0.382,0.389)              μs    Refocusing time of pathway #1
  lam2        0.036     (0.031,0.042)                    Amplitude of pathway #2
- reftime2    3.352     (3.352,3.391)              μs    Refocusing time of pathway #2
- conc        173.360   (160.670,186.049)          μM    Spin concentration
+ reftime2    3.352     (3.352,3.390)              μs    Refocusing time of pathway #2
+ conc        173.512   (160.834,186.190)          μM    Spin concentration
  P           ...       (...,...)                 nm⁻¹   Non-parametric distance distribution
  P_scale     1.048     (1.047,1.049)             None   Normalization factor of P
 =========== ========= ========================= ====== ======================================
@@ -497,7 +496,7 @@ Model parameters:
  reftime2    3.358     (3.352,3.401)              μs    Refocusing time of pathway #2
  lam3        0.038     (0.032,0.045)                    Amplitude of pathway #3
  reftime3    -0.031    (-0.048,0.048)             μs    Refocusing time of pathway #3
- conc        128.847   (116.624,141.070)          μM    Spin concentration
+ conc        128.848   (116.625,141.070)          μM    Spin concentration
  P           ...       (...,...)                 nm⁻¹   Non-parametric distance distribution
  P_scale     1.088     (1.088,1.089)             None   Normalization factor of P
 =========== ========= ========================= ====== ======================================
@@ -510,7 +509,7 @@ as the residuals are now better distributed. However, there appears to be some a
 left and the chi-squared value still presents too large values.
 Adding the third pathway results in the best description of the data,
 with normally distributed residuals and no significant autocorrelations.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 51.945 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 26.339 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-intermediate-ex-multipathway-validation-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/1178cc0b2434c2b6a706774c8f898940/ex_multipathway_validation.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_multipathway_validation.py</span></code></a></p>

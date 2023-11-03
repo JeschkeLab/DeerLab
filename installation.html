@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="User Guide" href="user_guide.html" /><link rel="prev" title="DeerLab" href="index.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>Installation - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -207,7 +207,6 @@
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
@@ -390,7 +389,7 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.8</s
 <li><p><a class="reference external" href="https://joblib.readthedocs.io/en/latest/">joblib</a> - Library lightweight pipelining and parallelization.</p></li>
 <li><p><a class="reference external" href="https://github.com/tqdm/tqdm">tqdm</a> - A lightweight package for smart progress meters.</p></li>
 <li><p><a class="reference external" href="https://github.com/uqfoundation/dill">dill</a> - An extension of Python’s pickle module for serializing and de-serializing python objects.</p></li>
-<li><p><a class="reference external" href="https://pypi.org/project/quadprog/">quadprog</a> - A quadratic programming solver</p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/quadprog/">quadprog</a> - A quadratic programming solver (Only for Python versions &lt; 3.11)</p></li>
 </ul>
 </section>
 </section>
@@ -417,8 +416,6 @@ one of the Python versions compatible with DeerLab, either <strong>Python 3.8</s
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">deerlab</span><span class="o">==</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
 </pre></div>
 </div>
-<p>DeerLab version prior to 0.10 are written in MATLAB and are still available from an <a class="reference external" href="https://github.com/JeschkeLab/DeerLab-Matlab">archived repository</a>.
-Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.</p>
 </section>
 <section id="installing-from-source">
 <h3>Installing from source<a class="headerlink" href="#installing-from-source" title="Link to this heading">#</a></h3>
@@ -464,10 +461,15 @@ This is a selection of some of the known issues that may arise during installati
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ImportError: DLL load failed: The specified module could not be found.
 </pre></div>
 </div>
-<p>This happens when the MKL libraries have not been properly linked in <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">scipy</span></code> or <code class="docutils literal notranslate"><span class="pre">cvxopt</span></code>
-installations (typically <code class="docutils literal notranslate"><span class="pre">numpy</span></code>). This can happen due to firewall restrictions,
-user rights, or internet connection issues during the DeerLab installation. To solve this, the
-best solution is to manually install as follows.</p>
+<p>This issue can occur when a specific python package is not installled properly. This typicaly happens when installing the MKL linked libaries but can
+occur when installing packages normaly from PyPI. This can happen due to firewall restrictions,
+user rights, or internet connection issues during the DeerLab installation.</p>
+<p>If your where installing packages from PyPI (i.e. via pip) then please uninstall the package and reinstall it.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>python -m pip uninstall &lt;package_name&gt;
+python -m pip install &lt;package_name&gt;
+</pre></div>
+</div>
+<p>If you were trying to install the MKL linked libraries then please follow the instructions below.</p>
 <ol class="arabic simple">
 <li><p>Go to <a class="reference external" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy">https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy</a></p></li>
 <li><p>Download the appropriate <code class="docutils literal notranslate"><span class="pre">numpy</span></code> wheels file according to your installed Python version and Windows system:</p></li>

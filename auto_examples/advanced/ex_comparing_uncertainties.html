@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Simulating orientation selection effects in dipolar signals" href="ex_simulating_orisel.html" /><link rel="prev" title="Identifiability analysis of a 4-pulse DEER signal via the profile analysis method" href="ex_identifiability_analysis.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>Comparing confidence intervals for regularization results - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
@@ -207,7 +207,6 @@
 <li class="toctree-l2"><a class="reference internal" href="ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Comparing confidence intervals for regularization results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ex_simulating_orisel.html">Simulating orientation selection effects in dipolar signals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ex_long_threespin_analysis.html">Analyzing 4-pulse DEER data acquired on three-spin systems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ex_extracting_gauss_constraints.html">Fitting Gaussians to a non-parametric distance distribution fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ex_profileanalysis.html">Profile analysis in routine analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ex_multigauss_fitting_4pdeer.html">Multi-Gaussian analysis of a dipolar signal</a></li>
@@ -413,18 +412,18 @@ account, whereas the curvature matrix CIs do not.</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Bootstrap analysis with 1 cores:
 
   0%|          | 0/10 [00:00&lt;?, ?it/s]
- 10%|█         | 1/10 [00:01&lt;00:15,  1.78s/it]
- 20%|██        | 2/10 [00:03&lt;00:14,  1.76s/it]
- 30%|███       | 3/10 [00:04&lt;00:11,  1.66s/it]
- 40%|████      | 4/10 [00:06&lt;00:09,  1.64s/it]
- 50%|█████     | 5/10 [00:07&lt;00:07,  1.53s/it]
- 60%|██████    | 6/10 [00:08&lt;00:05,  1.48s/it]
- 70%|███████   | 7/10 [00:10&lt;00:04,  1.50s/it]
- 80%|████████  | 8/10 [00:11&lt;00:02,  1.47s/it]
- 90%|█████████ | 9/10 [00:13&lt;00:01,  1.50s/it]
-100%|██████████| 10/10 [00:14&lt;00:00,  1.49s/it]
-100%|██████████| 10/10 [00:14&lt;00:00,  1.49s/it]
-100%|██████████| 10/10 [00:14&lt;00:00,  1.49s/it]
+ 10%|█         | 1/10 [00:03&lt;00:30,  3.34s/it]
+ 20%|██        | 2/10 [00:05&lt;00:20,  2.51s/it]
+ 30%|███       | 3/10 [00:07&lt;00:17,  2.56s/it]
+ 40%|████      | 4/10 [00:11&lt;00:16,  2.77s/it]
+ 50%|█████     | 5/10 [00:13&lt;00:13,  2.69s/it]
+ 60%|██████    | 6/10 [00:17&lt;00:11,  2.87s/it]
+ 70%|███████   | 7/10 [00:20&lt;00:08,  2.89s/it]
+ 80%|████████  | 8/10 [00:23&lt;00:05,  2.99s/it]
+ 90%|█████████ | 9/10 [00:27&lt;00:03,  3.05s/it]
+100%|██████████| 10/10 [00:31&lt;00:00,  3.14s/it]
+100%|██████████| 10/10 [00:31&lt;00:00,  3.14s/it]
+100%|██████████| 10/10 [00:31&lt;00:00,  3.14s/it]
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the results</span>
@@ -453,7 +452,7 @@ account, whereas the curvature matrix CIs do not.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_ex_comparing_uncertainties_001.png" srcset="../../_images/sphx_glr_ex_comparing_uncertainties_001.png" alt="Curvature Matrix CI, Bootstrapped CI" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 40.220 seconds)</p>
+<img src="../../_images/sphx_glr_ex_comparing_uncertainties_001.png" srcset="../../_images/sphx_glr_ex_comparing_uncertainties_001.png" alt="Curvature Matrix CI, Bootstrapped CI" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 54.512 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-advanced-ex-comparing-uncertainties-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/e04b33a8d6d1d863ed3cdac484a15429/ex_comparing_uncertainties.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">ex_comparing_uncertainties.py</span></code></a></p>
