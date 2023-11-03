@@ -45,7 +45,7 @@ DeerLab installs the following packages:
 * `joblib <https://joblib.readthedocs.io/en/latest/>`_ - Library lightweight pipelining and parallelization.
 * `tqdm <https://github.com/tqdm/tqdm>`_ - A lightweight package for smart progress meters.
 * `dill <https://github.com/uqfoundation/dill>`_ - An extension of Python's pickle module for serializing and de-serializing python objects.
-* `quadprog <https://pypi.org/project/quadprog/>`_ - A quadratic programming solver
+* `quadprog <https://pypi.org/project/quadprog/>`_ - A quadratic programming solver (Only for Python versions < 3.11)
 
 Importing DeerLab
 ------------------
@@ -74,9 +74,6 @@ Any DeerLab version released after v0.10.0 can be installed via ``pip`` using th
 
 		python -m pip install deerlab==x.y.z
         
-DeerLab version prior to 0.10 are written in MATLAB and are still available from an `archived repository <https://github.com/JeschkeLab/DeerLab-Matlab>`_. 
-Download and installation instruction for the MATLAB environment are provided in the released documentation. MATLAB releases have been deprecated and no further support is provided.
-
 
 Installing from source
 *****************************
@@ -130,10 +127,18 @@ On a **Windows** computer, if you are trying to run a DeerLab function, you migh
 
     ImportError: DLL load failed: The specified module could not be found.
 
-This happens when the MKL libraries have not been properly linked in ``numpy``, ``scipy`` or ``cvxopt`` 
-installations (typically ``numpy``). This can happen due to firewall restrictions,
-user rights, or internet connection issues during the DeerLab installation. To solve this, the
-best solution is to manually install as follows. 
+This issue can occur when a specific python package is not installled properly. This typicaly happens when installing the MKL linked libaries but can 
+occur when installing packages normaly from PyPI. This can happen due to firewall restrictions,
+user rights, or internet connection issues during the DeerLab installation.
+
+If your where installing packages from PyPI (i.e. via pip) then please uninstall the package and reinstall it.
+
+.. code-block:: text
+
+    python -m pip uninstall <package_name>
+    python -m pip install <package_name>
+
+If you were trying to install the MKL linked libraries then please follow the instructions below.
 
 1) Go to https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 
@@ -167,7 +172,7 @@ During installation on certain systems (e.g. some computation clusters) using on
 the following error might be raised during the installation:
 
 .. code-block:: text
-
+    
     Error while finding module specification for 'setup.py'
     (ModuleNotFoundError: __path__ attribute not found on 'setup' while trying to find 'setup.py')
 

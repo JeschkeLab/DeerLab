@@ -24,6 +24,18 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
+Release ``v1.1.2`` - November 2023
+------------------------------------------
+- |fix| : Fixes an issue with sophgrid (:pr:`463`).
+- |fix| : Fixes an error in the normalisation of the rice models (:pr:`459`).
+- |fix| : Removes the broken three spin example (:pr:`427`).
+- |fix| : Fixes an error in the linear solver for linearly constrained not non-negative problems.
+
+Release ``v1.1.1`` - August 2023
+------------------------------------------
+- |fix| : Fixes an error in the `FitResult.evaluate` function. (:pr:`454`)
+
+
 Release ``v1.1.0`` - August 2023
 ------------------------------------------
 - |api| : The definition of the dipolar time axis for RIDME has changed to match the one for 4-pulse DEER (:pr:`436`).

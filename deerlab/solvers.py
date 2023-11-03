@@ -426,6 +426,11 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
             * ``0`` : Work silently (default).
             * ``1`` : Display progress including the non-linear least-squares' solver termination report.
             * ``2`` : Display progress including the non-linear least-squares' solver iteration details.
+        
+        .. caution::
+
+            The verbose output from the non-linear least-squares solver uses a different definition of the cost function than DeerLab.
+            DeerLab uses the sum of squares of the residuals divided by the number of data points, whereas the non-linear least-squares solver uses the sum of squares of the residuals divided by 2.
 
     Returns
     -------
@@ -594,7 +599,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         
 
         if optimize_alpha:
-            output = dl.selregparam((y-yfrozen)[mask], Ared[mask,:], linSolver, regparam, 
+            linsolver_result = lambda AtA, Aty: parseResult(linSolver(AtA, Aty))
+            output = dl.selregparam((y-yfrozen)[mask], Ared[mask,:], linsolver_result, regparam, 
                                         weights=weights[mask], regop=L, candidates=regparamrange, 
                                         noiselvl=noiselvl,searchrange=regparamrange,full_output=True)
             alpha = output[0]
