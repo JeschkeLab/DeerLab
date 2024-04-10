@@ -24,6 +24,11 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
+Release ``v1.1.3`` - Ongoing
+------------------------------------------
+- |fix| : Removes unnecessary files from the docs
+
+
 Release ``v1.1.2`` - September 2023
 ------------------------------------------
 - |fix| : Fixes an error in the normalisation of the rice models (:pr:`459`).
