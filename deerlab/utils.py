@@ -282,6 +282,7 @@ def goodness_of_fit(x,xfit,Ndof,noiselvl):
             stats['aic'] - Akaike information criterion
             stats['aicc'] - Corrected Akaike information criterion
             stats['bic'] - Bayesian information criterion
+            stats['autocorr'] - Autocorrelation based on Durbin–Watson statistic
     """
     sigma = noiselvl
     Ndof = np.maximum(Ndof,1)
