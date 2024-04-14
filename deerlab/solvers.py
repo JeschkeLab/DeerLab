@@ -462,6 +462,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         * ``stats['aic']`` - Akaike information criterion
         * ``stats['aicc']`` - Corrected Akaike information criterion
         * ``stats['bic']`` - Bayesian information criterion
+        * ``stats['autocorr']`` - Autocorrelation based on Durbin–Watson statistic
     success : bool
         Whether or not the optimizer exited successfully.
     cost : float
