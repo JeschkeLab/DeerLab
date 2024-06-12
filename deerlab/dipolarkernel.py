@@ -367,7 +367,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     if tinterp is not None:
         # Construct interpolator, this way elementarykernel_twospin is executed only once independently of how many pathways there are
-        Kinterpolator = [interp1d(tinterp,elementarykernel_twospin(tinterp,r_q,method,excbandwidth,gridsize,g,orisel,complex),axis=0,kind='cubic') for r_q in r]
+        Kinterpolator = _elementarykernel_twospin_interp(tinterp,r,method,excbandwidth,gridsize,g,orisel,complex)
         withinInterpolation = lambda tdip: np.all((np.max(tinterp) >= np.max(tdip)) & (np.min(tinterp) <= np.min(tdip)))
 
     # Define kernel matrix auxiliary functions
@@ -435,8 +435,14 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     
     return K
 #==============================================================================
-
-
+@cached(max_size=100)
+def _elementarykernel_twospin_interp(tinterp,r,method,excbandwidth,gridsize,g,orisel,complex):
+    """
+    Construct interpolator, this way elementarykernel_twospin is executed only once independently of how many pathways there are
+    Cached for performance reasons, interpolation is slow.
+    """
+    Kinterpolator = [interp1d(tinterp,elementarykernel_twospin(tinterp,r_q,method,excbandwidth,gridsize,g,orisel,complex),axis=0,kind='cubic') for r_q in r]
+    return Kinterpolator
 
 #==============================================================================
 #   TWO-SPIN ELEMENTARY DIPOLAR KERNEL
