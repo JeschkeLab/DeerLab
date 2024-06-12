@@ -367,7 +367,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
 
     if tinterp is not None:
         # Construct interpolator, this way elementarykernel_twospin is executed only once independently of how many pathways there are
-        Kinterpolator = [interp1d(tinterp,elementarykernel_twospin(tinterp,r_q,method,excbandwidth,gridsize,g,orisel,complex),axis=0,kind='cubic') for r_q in r]
+        Kinterpolator = _elementarykernel_twospin_interp(tinterp,r,method,excbandwidth,gridsize,g,orisel,complex)
         withinInterpolation = lambda tdip: np.all((np.max(tinterp) >= np.max(tdip)) & (np.min(tinterp) <= np.min(tdip)))
 
     # Define kernel matrix auxiliary functions
@@ -435,8 +435,14 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
     
     return K
 #==============================================================================
-
-
+@cached(max_size=100)
+def _elementarykernel_twospin_interp(tinterp,r,method,excbandwidth,gridsize,g,orisel,complex):
+    """
+    Construct interpolator, this way elementarykernel_twospin is executed only once independently of how many pathways there are
+    Cached for performance reasons, interpolation is slow.
+    """
+    Kinterpolator = [interp1d(tinterp,elementarykernel_twospin(tinterp,r_q,method,excbandwidth,gridsize,g,orisel,complex),axis=0,kind='cubic') for r_q in r]
+    return Kinterpolator
 
 #==============================================================================
 #   TWO-SPIN ELEMENTARY DIPOLAR KERNEL
@@ -468,14 +474,15 @@ def elementarykernel_twospin(tdip,r,method,ωex,gridsize,g,Pθ,complex):
     ωr = (μ0/2)*μB**2*g[0]*g[1]/h*1e21/(r**3)  # rad μs^-1
 
     # Orientation selection
-    orientationselection = Pθ is not None 
-    if orientationselection:
-        # Ensure zero-derivatives at [0,π/2]
-        θ = np.linspace(0,π/2,50) # rad
-        Pθ_ = make_interp_spline(θ, Pθ(θ),bc_type="clamped")
-        # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
-        Pθnorm,_ = quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
-        Pθ = lambda θ: Pθ_(θ)/Pθnorm
+    if method != 'fresnel':
+        orientationselection = Pθ is not None 
+        if orientationselection:
+            # Ensure zero-derivatives at [0,π/2]
+            θ = np.linspace(0,π/2,50) # rad
+            Pθ_ = make_interp_spline(θ, Pθ(θ),bc_type="clamped")
+            # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
+            Pθnorm,_ = quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
+            Pθ = lambda θ: Pθ_(θ)/Pθnorm
 
     def elementarykernel_fresnel(tdip):
     #------------------------------------------------------------------------
