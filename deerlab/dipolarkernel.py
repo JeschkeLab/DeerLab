@@ -474,14 +474,15 @@ def elementarykernel_twospin(tdip,r,method,ωex,gridsize,g,Pθ,complex):
     ωr = (μ0/2)*μB**2*g[0]*g[1]/h*1e21/(r**3)  # rad μs^-1
 
     # Orientation selection
-    orientationselection = Pθ is not None 
-    if orientationselection:
-        # Ensure zero-derivatives at [0,π/2]
-        θ = np.linspace(0,π/2,50) # rad
-        Pθ_ = make_interp_spline(θ, Pθ(θ),bc_type="clamped")
-        # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
-        Pθnorm,_ = quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
-        Pθ = lambda θ: Pθ_(θ)/Pθnorm
+    if method != 'fresnel':
+        orientationselection = Pθ is not None 
+        if orientationselection:
+            # Ensure zero-derivatives at [0,π/2]
+            θ = np.linspace(0,π/2,50) # rad
+            Pθ_ = make_interp_spline(θ, Pθ(θ),bc_type="clamped")
+            # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
+            Pθnorm,_ = quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
+            Pθ = lambda θ: Pθ_(θ)/Pθnorm
 
     def elementarykernel_fresnel(tdip):
     #------------------------------------------------------------------------
