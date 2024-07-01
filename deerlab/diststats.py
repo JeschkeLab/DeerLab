@@ -7,7 +7,7 @@ import numpy as np
 import warnings
 import copy
 from scipy.signal import find_peaks
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumulative_trapezoid as cumtrapz
 
 def diststats(r, P, Puq=None, verbose=False, threshold=None):
     r""" 
