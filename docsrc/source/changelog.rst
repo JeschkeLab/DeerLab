@@ -31,6 +31,7 @@ Release ``v1.1.3`` - Ongoing
 - |fix| : Add support for Python 3.12
 - |fix| : Adds support for Numpy 2.0
 
+
 Release ``v1.1.2`` - November 2023
 ------------------------------------------
 - |fix| : Fixes an issue with sophgrid (:pr:`463`).
