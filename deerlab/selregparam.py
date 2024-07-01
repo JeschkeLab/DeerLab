@@ -131,6 +131,8 @@ def selregparam(y, A, solver, method='aic', algorithm='auto', noiselvl=None,
     if algorithm == 'brent':    
 
         # Search boundaries
+        if len(searchrange) != 2:
+            raise ValueError("Search range must have two elements for the 'brent' algorithm.")
         lga_min = m.log10(searchrange[0])
         lga_max = m.log10(searchrange[1])
 
@@ -183,6 +185,10 @@ def selregparam(y, A, solver, method='aic', algorithm='auto', noiselvl=None,
 
         # Find minimum of the selection functional              
         alphaOpt = alphaCandidates[np.argmin(functional)]
+        functional = np.array(functional)
+        residuals = np.array(residuals)
+        penalties = np.array(penalties)
+        alphas_evaled = np.array(alphas_evaled)
     else: 
         raise KeyError("Search method not found. Must be either 'brent' or 'grid'.")
 
