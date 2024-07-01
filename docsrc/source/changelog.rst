@@ -24,7 +24,7 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
-Release ``v1.1.3`` - Ongoing
+Release ``v1.1.3`` - July 2024
 ------------------------------------------
 - |fix| : Removes unnecessary files from the docs
 - |efficiency| : Improves the performance of the ``dipolarkernel`` function by 10-30% (:pr:`473`), by caching the interpolation of he effective dipolar evolution time vector.
