@@ -381,7 +381,7 @@ class UQResult:
             cdf = np.cumsum(pdf)
             cdf /= max(cdf)
             # Eliminate duplicates
-            cdf, index = np.lib.arraysetops.unique(cdf,return_index=True)
+            cdf, index = np.unique(cdf,return_index=True)
             # Interpolate requested percentile
             x[n] = np.interp(p/100,cdf,values[index])
 
