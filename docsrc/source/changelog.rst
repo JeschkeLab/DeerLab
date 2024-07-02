@@ -28,7 +28,9 @@ Release ``v1.1.3`` - Ongoing
 ------------------------------------------
 - |fix| : Removes unnecessary files from the docs
 - |efficiency| : Improves the performance of the ``dipolarkernel`` function by 10-30% (:pr:`473`), by caching the interpolation of he effective dipolar evolution time vector.
-- |fix| : add support for Python 3.12
+- |fix| : Add support for Python 3.12
+- |fix| : Adds support for Numpy 2.0
+
 
 Release ``v1.1.2`` - November 2023
 ------------------------------------------
