@@ -109,7 +109,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     # Percentile function
     def pctile(r,P,p):
         cdf = cumtrapz(normalize(P),r,initial=0)
-        cdf, index = np.lib.arraysetops.unique(cdf,return_index=True)
+        cdf, index = np.unique(cdf,return_index=True)
         rpctile = np.interp(p/100,cdf,r[index])
         return rpctile
     # Expectation operator function
