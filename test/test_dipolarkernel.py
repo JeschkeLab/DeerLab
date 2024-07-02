@@ -1,6 +1,6 @@
 
 import numpy as np
-from numpy import pi, inf, NaN
+from numpy import pi, inf
 from deerlab.bg_models import bg_hom3d,bg_exp
 from deerlab.dd_models import dd_gauss
 from deerlab.dipolarkernel import dipolarkernel,elementarykernel_twospin

@@ -28,8 +28,10 @@ Release ``v1.1.3`` - July 2024
 ------------------------------------------
 - |fix| : Removes unnecessary files from the docs
 - |efficiency| : Improves the performance of the ``dipolarkernel`` function by 10-30% (:pr:`473`), by caching the interpolation of he effective dipolar evolution time vector.
-- |fix| : add support for Python 3.12
 - |api| : Removes the `candidates` input from `selregparam` and integrates its function into `regparamrange`.
+- |fix| : Adds support for Numpy 2.0
+- |fix| : Add support for Python 3.12
+
 
 Release ``v1.1.2`` - November 2023
 ------------------------------------------
