@@ -8,8 +8,8 @@ import scipy.optimize as opt
 import math as m
 import deerlab as dl
 
-def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
-                searchrange=[1e-8,1e2],regop=None, weights=None, full_output=False, candidates=None):
+def selregparam(y, A, solver, method='aic', algorithm='auto', noiselvl=None,
+                searchrange=[1e-8,1e2],regop=None, weights=None, full_output=False):
     r"""
     Selection of optimal regularization parameter based on a selection criterion.
 
@@ -52,6 +52,8 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
         * ``'ncp'`` - Normalized Cumulative Periodogram (NCP)
         * ``'gml'`` - Generalized Maximum Likelihood (GML)
         * ``'mcl'`` - Mallows' C_L (MCL)
+
+        If  ``'lr'`` or ``'lc'`` is specified, the search algorithm is automatically set to ``'grid'``.
     
     weights : array_like, optional
         Array of weighting coefficients for the individual datasets in global fitting.
@@ -60,18 +62,16 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     algorithm : string, optional
         Search algorithm: 
         
+        * ``'auto'`` - Automatically, selects algrothium based on the searchrange. If the searchrange has two elements its set to ``'brent'`` otherwise to ``'grid'``.
         * ``'grid'`` - Grid-search, slow.
         * ``'brent'`` - Brent-algorithm, fast.
         
-        The default is ``'brent'``.
+        The default is ``'auto'``.
 
-    searchrange : two-element list, optional 
-        Search range for the optimization of the regularization parameter with the ``'brent'`` algorithm.
-        If not specified the default search range defaults to ``[1e-8,1e2]``.
-
-    candidates : list, optional
-        List or array of candidate regularization parameter values to be evaluated with the ``'grid'`` algorithm. 
-        If not specified, these are automatically computed from a grid within ``searchrange``.
+    searchrange : list, optional 
+        Either the search range for the optimization of the regularization parameter with the ``'brent'`` algorithm.
+        Or if more than two values are specified, then it is interpreted as candidates for the ``'grid'`` algorithm.
+        If not specified the default search range defaults to ``[1e-8,1e2]`` and the ``'brent'`` algorithm.
 
     regop : 2D array_like, optional
         Regularization operator matrix, the default is the second-order differential operator.
@@ -108,6 +108,13 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     # If multiple datasets are passed, concatenate the datasets and kernels
     y, A, weights,_,__, noiselvl = dl.utils.parse_multidatasets(y, A, weights, noiselvl)
 
+    if algorithm == 'auto' and len(searchrange) == 2:
+        algorithm = 'brent'
+    elif algorithm == 'auto' and len(searchrange) > 2:
+        algorithm = 'grid'
+    elif algorithm  == 'auto' and len(searchrange) < 2:
+        raise ValueError("`searchrange` must have at least two elements if `algorithm` is set to `'auto'")
+    
     # The L-curve criteria require a grid-evaluation
     if method == 'lr' or method == 'lc':
         algorithm = 'grid'
@@ -121,9 +128,11 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     evalalpha = lambda alpha: _evalalpha(alpha, y, A, L, solver, method, noiselvl, weights)
 
     # Evaluate functional over search range, using specified search method
-    if algorithm == 'brent':
-                    
+    if algorithm == 'brent':    
+
         # Search boundaries
+        if len(searchrange) != 2:
+            raise ValueError("Search range must have two elements for the 'brent' algorithm.")
         lga_min = m.log10(searchrange[0])
         lga_max = m.log10(searchrange[1])
 
@@ -148,10 +157,10 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
     elif algorithm=='grid':
         
         # Get range of potential alpha values candidates
-        if candidates is None:
+        if len(searchrange) == 2:
             alphaCandidates = 10**np.linspace(np.log10(searchrange[0]),np.log10(searchrange[1]),60)
         else: 
-            alphaCandidates = np.atleast_1d(candidates)
+            alphaCandidates = np.atleast_1d(searchrange)
 
         # Evaluate the full grid of alpha-candidates 
         functional,residuals,penalties,alphas_evaled = tuple(zip(*[evalalpha(alpha) for alpha in alphaCandidates]))
@@ -176,6 +185,10 @@ def selregparam(y, A, solver, method='aic', algorithm='brent', noiselvl=None,
 
         # Find minimum of the selection functional              
         alphaOpt = alphaCandidates[np.argmin(functional)]
+        functional = np.array(functional)
+        residuals = np.array(residuals)
+        penalties = np.array(penalties)
+        alphas_evaled = np.array(alphas_evaled)
     else: 
         raise KeyError("Search method not found. Must be either 'brent' or 'grid'.")
 
