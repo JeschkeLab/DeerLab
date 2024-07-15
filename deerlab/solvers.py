@@ -602,8 +602,8 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         if optimize_alpha:
             linsolver_result = lambda AtA, Aty: parseResult(linSolver(AtA, Aty))
             output = dl.selregparam((y-yfrozen)[mask], Ared[mask,:], linsolver_result, regparam, 
-                                        weights=weights[mask], regop=L, candidates=regparamrange, 
-                                        noiselvl=noiselvl,searchrange=regparamrange,full_output=True)
+                                        weights=weights[mask], regop=L, noiselvl=noiselvl,
+                                        searchrange=regparamrange,full_output=True)
             alpha = output[0]
             alpha_stats['alphas_evaled'] = output[1]
             alpha_stats['functional'] = output[2]

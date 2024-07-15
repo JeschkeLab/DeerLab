@@ -102,10 +102,11 @@ def test_unconstrained(dataset,design_matrix,regularization_matrix):
 #=======================================================================
 def test_manual_candidates(dataset,design_matrix,regularization_matrix):
     "Check that the alpha-search range can be manually passed"
-    alphas = np.linspace(-8,2,60)
-    alpha_manual = np.log10(selregparam(dataset,design_matrix,cvxnnls,method='aic',candidates=alphas,regop=regularization_matrix))
-    alpha_auto = np.log10(selregparam(dataset,design_matrix,cvxnnls,method='aic',regop=regularization_matrix))
-    assert abs(alpha_manual-alpha_auto)<1e-4
+    alphas = np.logspace(-8,3,60,base=10)
+    alpha_manual = np.log10(selregparam(dataset,design_matrix,cvxnnls,method='aic',searchrange=alphas,regop=regularization_matrix))
+    alpha_auto = np.log10(selregparam(dataset,design_matrix,cvxnnls,method='aic',searchrange=(1e-8,1e-3), regop=regularization_matrix))
+
+    assert abs(alpha_manual-alpha_auto)<1
 #=======================================================================
 
 #=======================================================================
