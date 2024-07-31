@@ -5,18 +5,18 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="License" href="license.html" /><link rel="prev" title="Contributing" href="contributing.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.07.18 -->
         <title>Release Notes - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
     
 
@@ -75,7 +75,7 @@
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -90,22 +90,63 @@
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
 </svg>
@@ -118,6 +159,8 @@
 <label class="overlay toc-overlay" for="__toc">
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
 
 
@@ -136,7 +179,8 @@
       <div class="theme-toggle-container theme-toggle-header">
         <button class="theme-toggle">
           <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
@@ -200,9 +244,8 @@
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_fitting_sparse_4pdeer.html">Basic analysis of a sparsely sampled 4-pulse DEER signal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_compactness_with_without.html">Comparing the analysis with and without compactness criterion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_global_different_deer.html">Global fitting of multiple different DEER signals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_selregparam.html">Analysing the selection of regularisation parameter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_selregparam.html#over-and-under-selection-of-the-regularisation-parameter">Over and Under selection of the regularisation parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_crossing_echoes_masking.html">Analyzing data with crossing echoes robustly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_selregparam.html">Analysing the selection of regularisation parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_simulating_oop.html">Simulating polarization effects on low-temperature DEER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
@@ -337,10 +380,12 @@
         </a>
         <div class="content-icon-container">
           
+
 <div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
@@ -350,9 +395,9 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <span class="target" id="changelog"></span><section id="release-notes">
-<h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">#</a></h1>
+<h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">¶</a></h1>
 <p class="rubric">Legend</p>
 <ul class="simple">
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> : Features something new which could not be done before</p></li>
@@ -361,8 +406,18 @@
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> : Something which was not working as expected or leading to errors has been fixed.</p></li>
 <li><p><img alt="api" src="https://img.shields.io/badge/Api-C79502" /> : This will require changes in your scripts or code.</p></li>
 </ul>
+<section id="release-v1-1-3-july-2024">
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.1.3</span></code> - July 2024<a class="headerlink" href="#release-v1-1-3-july-2024" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> : Removes unnecessary files from the docs</p></li>
+<li><p><img alt="efficiency" src="https://img.shields.io/badge/Efficiency-15A2B8" /> : Improves the performance of the <code class="docutils literal notranslate"><span class="pre">dipolarkernel</span></code> function by 10-30% (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/473">#473</a>), by caching the interpolation of he effective dipolar evolution time vector.</p></li>
+<li><p><img alt="api" src="https://img.shields.io/badge/Api-C79502" /> : Removes the <img class="math" src="_images/math/27f05b5ed3e357efea1e4475ad5e871836c1975a.svg" alt="candidates"/> input from <img class="math" src="_images/math/40e95c5727d86ddddfac60217d523644df068d8a.svg" alt="selregparam"/> and integrates its function into <img class="math" src="_images/math/8ee7d2f71c3cbf2ff226178ad84e7a9f1e0b3c0f.svg" alt="regparamrange"/>.</p></li>
+<li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> : Adds support for Numpy 2.0</p></li>
+<li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> : Add support for Python 3.12</p></li>
+</ul>
+</section>
 <section id="release-v1-1-2-november-2023">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.1.2</span></code> - November 2023<a class="headerlink" href="#release-v1-1-2-november-2023" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.1.2</span></code> - November 2023<a class="headerlink" href="#release-v1-1-2-november-2023" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> : Fixes an issue with sophgrid (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/463">#463</a>).</p></li>
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> : Fixes an error in the normalisation of the rice models (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/459">#459</a>).</p></li>
@@ -371,13 +426,13 @@
 </ul>
 </section>
 <section id="release-v1-1-1-august-2023">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.1.1</span></code> - August 2023<a class="headerlink" href="#release-v1-1-1-august-2023" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.1.1</span></code> - August 2023<a class="headerlink" href="#release-v1-1-1-august-2023" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> : Fixes an error in the <img class="math" src="_images/math/0f073ca9c1606d72a89b784c3fd6de1694649194.svg" alt="FitResult.evaluate"/> function. (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/454">#454</a>)</p></li>
 </ul>
 </section>
 <section id="release-v1-1-0-august-2023">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.1.0</span></code> - August 2023<a class="headerlink" href="#release-v1-1-0-august-2023" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.1.0</span></code> - August 2023<a class="headerlink" href="#release-v1-1-0-august-2023" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="api" src="https://img.shields.io/badge/Api-C79502" /> : The definition of the dipolar time axis for RIDME has changed to match the one for 4-pulse DEER (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/436">#436</a>).</p></li>
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> : The doc theme has moved to furo (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/432">#432</a>).</p></li>
@@ -407,7 +462,7 @@
 </ul>
 </section>
 <section id="release-v1-0-1-march-2023">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code> - March 2023<a class="headerlink" href="#release-v1-0-1-march-2023" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code> - March 2023<a class="headerlink" href="#release-v1-0-1-march-2023" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> : Fixes some minor bugs in the documentation.</p>
 <ul>
@@ -426,7 +481,7 @@
 </ul>
 </section>
 <section id="release-v1-0-0-december-2022">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> - December 2022<a class="headerlink" href="#release-v1-0-0-december-2022" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> - December 2022<a class="headerlink" href="#release-v1-0-0-december-2022" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> Introduces multi-spin dipolar EPR spectroscopy models (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/385">#385</a>).</p>
 <ul>
@@ -501,7 +556,7 @@
 </ul>
 </section>
 <section id="release-v0-14-5-december-2022">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.5</span></code> - December 2022<a class="headerlink" href="#release-v0-14-5-december-2022" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.5</span></code> - December 2022<a class="headerlink" href="#release-v0-14-5-december-2022" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> The distribution of DeerLab through Anaconda and its <code class="docutils literal notranslate"><span class="pre">conda</span></code> manager has been deprecated as of this release (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/400">#400</a>).</p></li>
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> Fix errors in the background function plots used in the examples showing 4-pulse DEER analyses.</p></li>
@@ -517,7 +572,7 @@
 </ul>
 </section>
 <section id="release-v0-14-4-august-2022">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.4</span></code> - August 2022<a class="headerlink" href="#release-v0-14-4-august-2022" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.4</span></code> - August 2022<a class="headerlink" href="#release-v0-14-4-august-2022" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> The experiment model functions such as <code class="docutils literal notranslate"><span class="pre">ex_4pdeer</span></code> now take an additional optional keyword argument <code class="docutils literal notranslate"><span class="pre">pulselength</span></code> to specify the longest durations of a pulse during an experiment. The value is then used to more accurately set the boundaries of refocusing time parameters in dipolar models (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/368">#368</a>).</p></li>
 <li><p><img alt="enhancement" src="https://img.shields.io/badge/Enhancement-5356E1" /> The parameter table displayed when printing DeerLab models has been expanded to show the start values and the frozen values, if present (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/369">#369</a>).</p></li>
@@ -535,7 +590,7 @@
 </ul>
 </section>
 <section id="release-v0-14-3-july-2022">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.3</span></code> - July 2022<a class="headerlink" href="#release-v0-14-3-july-2022" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.3</span></code> - July 2022<a class="headerlink" href="#release-v0-14-3-july-2022" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="api" src="https://img.shields.io/badge/Api-C79502" /> Deprecated support for Python 3.6 and 3.7 (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/353">#353</a>).</p></li>
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> Added multiple quality of life improvements to the modelling system (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/354">#354</a>).</p>
@@ -552,7 +607,7 @@
 </ul>
 </section>
 <section id="release-v0-14-2-june-2022">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.2</span></code> - June 2022<a class="headerlink" href="#release-v0-14-2-june-2022" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.2</span></code> - June 2022<a class="headerlink" href="#release-v0-14-2-june-2022" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> <img alt="efficiency" src="https://img.shields.io/badge/Efficiency-15A2B8" /> (Windows-systems only) Removed the unorthodox default installation procedure of DeerLab based on the installation of Numpy and related packages linked against MKL via the Gohlke repository (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/322">#322</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/330">#330</a>).</p>
 <ul>
@@ -571,7 +626,7 @@
 </ul>
 </section>
 <section id="release-v0-14-1-june-2022">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.1</span></code> - June 2022<a class="headerlink" href="#release-v0-14-1-june-2022" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.1</span></code> - June 2022<a class="headerlink" href="#release-v0-14-1-june-2022" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> Use Scipy’s <code class="docutils literal notranslate"><span class="pre">eigh</span></code> instead of Numpy’s to avoid convergence error <code class="docutils literal notranslate"><span class="pre">numpy.linalg.LinAlgError:</span> <span class="pre">Eigenvalues</span> <span class="pre">did</span> <span class="pre">not</span> <span class="pre">converge</span></code> during model uncertainty propagation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/310">#310</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/311">#311</a>).</p></li>
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> Refactored the code to avoid the use of <code class="docutils literal notranslate"><span class="pre">lambda</span></code> and nested functions. This enables pickling DeerLab’s objects with Python’s <code class="docutils literal notranslate"><span class="pre">pickle</span></code> module without errors (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/312">#312</a>).</p></li>
@@ -582,7 +637,7 @@
 </ul>
 </section>
 <section id="release-v0-14-0-april-2022">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.0</span></code> - April 2022<a class="headerlink" href="#release-v0-14-0-april-2022" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.14.0</span></code> - April 2022<a class="headerlink" href="#release-v0-14-0-april-2022" title="Link to this heading">¶</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> <img alt="api" src="https://img.shields.io/badge/Api-C79502" /> Complete overhaul of the DeerLab modeling and fitting interface. Check the new documentation for help and details. (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/218">#218</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/223">#223</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/228">#228</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/237">#237</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/225">#225</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/243">#243</a>).</p>
@@ -717,7 +772,7 @@
 </ul>
 </section>
 <section id="release-v0-13-2-july-2021">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.13.2</span></code> - July 2021<a class="headerlink" href="#release-v0-13-2-july-2021" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.13.2</span></code> - July 2021<a class="headerlink" href="#release-v0-13-2-july-2021" title="Link to this heading">¶</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> Fixed an error appearing during installation in Windows systems. If during installation a  <code class="docutils literal notranslate"><span class="pre">python</span></code> executable alias was not created, the call to the <code class="docutils literal notranslate"><span class="pre">pipwin</span></code> manager returned an error and the installation failed to download and install Numpy, SciPy and CVXOpt (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/187">#187</a>).</p></li>
@@ -727,7 +782,7 @@
 </ul>
 </section>
 <section id="release-v0-13-1-may-2021">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.13.1</span></code> - May 2021<a class="headerlink" href="#release-v0-13-1-may-2021" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.13.1</span></code> - May 2021<a class="headerlink" href="#release-v0-13-1-may-2021" title="Link to this heading">¶</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> Fixed the behavior of global weights throughout DeerLab fit functions. The keyword argument <code class="docutils literal notranslate"><span class="pre">weights</span></code> was not having any or the expected effect in the results in some fit functions. Also fixes the behavior of built-in plots for global fits (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/168">#168</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/171">#171</a>).</p></li>
@@ -753,7 +808,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-13-0-april-2021">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.13.0</span></code> - April 2021<a class="headerlink" href="#release-v0-13-0-april-2021" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.13.0</span></code> - April 2021<a class="headerlink" href="#release-v0-13-0-april-2021" title="Link to this heading">¶</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> DeerLab is now distributed via the Anaconda repository and can be installed with the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/issues/12">#12</a>, <a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/157">#157</a>). The installation instructions have been expanded to describe the Anaconda installation (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/155">#155</a>).</p></li>
@@ -848,7 +903,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-12-2-october-2020">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.12.2</span></code> - October 2020<a class="headerlink" href="#release-v0-12-2-october-2020" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.12.2</span></code> - October 2020<a class="headerlink" href="#release-v0-12-2-october-2020" title="Link to this heading">¶</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><img alt="fix" src="https://img.shields.io/badge/Fix-DC3545" /> Fit functions using the <code class="docutils literal notranslate"><span class="pre">multistart</span></code> option are now fully deterministic. The functions was using now a random generator to define the different start points, this is now deterministic.</p></li>
@@ -869,7 +924,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-12-1-october-2020">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.12.1</span></code> - October 2020<a class="headerlink" href="#release-v0-12-1-october-2020" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.12.1</span></code> - October 2020<a class="headerlink" href="#release-v0-12-1-october-2020" title="Link to this heading">¶</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><img alt="efficiency" src="https://img.shields.io/badge/Efficiency-15A2B8" /> The calculation of the Jacobian for covariance-based uncertainty analysis has been simplified providing a significant boost in performance for all fit functions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/55">#55</a>).</p></li>
@@ -888,7 +943,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-12-0-october-2020">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.12.0</span></code> - October 2020<a class="headerlink" href="#release-v0-12-0-october-2020" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.12.0</span></code> - October 2020<a class="headerlink" href="#release-v0-12-0-october-2020" title="Link to this heading">¶</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><img alt="feature" src="https://img.shields.io/badge/Feature-28A744" /> Added new function <code class="docutils literal notranslate"><span class="pre">diststats</span></code> to calculate different statistical quantities of the distance distribution and their corresponding uncertainties (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/37">#37</a>).</p></li>
@@ -926,7 +981,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-11-0-september-2020">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.11.0</span></code> - September 2020<a class="headerlink" href="#release-v0-11-0-september-2020" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.11.0</span></code> - September 2020<a class="headerlink" href="#release-v0-11-0-september-2020" title="Link to this heading">¶</a></h2>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
 <li><p><img alt="enhancement" src="https://img.shields.io/badge/Enhancement-5356E1" /> All Gauss models (<code class="docutils literal notranslate"><span class="pre">dd_gauss</span></code>,etc.) now use the standard deviation <code class="docutils literal notranslate"><span class="pre">sigma</span></code> instead of the FWHM as the width parameter for consistency with other method such as Rice distributions (<a class="reference external" href="https://github.com/JeschkeLab/deerlab/pull/19">#19</a>).</p></li>
@@ -972,7 +1027,7 @@
 </section>
 <hr class="docutils" />
 <section id="release-v0-10-0-august-2020">
-<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.10.0</span></code> - August 2020<a class="headerlink" href="#release-v0-10-0-august-2020" title="Link to this heading">#</a></h2>
+<h2>Release <code class="docutils literal notranslate"><span class="pre">v0.10.0</span></code> - August 2020<a class="headerlink" href="#release-v0-10-0-august-2020" title="Link to this heading">¶</a></h2>
 <p>As of this version, DeerLab is based on Python in contrast to older versions based on MATLAB found [here](<a class="reference external" href="https://github.com/JeschkeLab/DeerLab-Matlab">https://github.com/JeschkeLab/DeerLab-Matlab</a>).</p>
 <p class="rubric">Overall changes</p>
 <ul class="simple">
@@ -1069,6 +1124,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
+<li><a class="reference internal" href="#release-v1-1-3-july-2024">Release <code class="docutils literal notranslate"><span class="pre">v1.1.3</span></code> - July 2024</a></li>
 <li><a class="reference internal" href="#release-v1-1-2-november-2023">Release <code class="docutils literal notranslate"><span class="pre">v1.1.2</span></code> - November 2023</a></li>
 <li><a class="reference internal" href="#release-v1-1-1-august-2023">Release <code class="docutils literal notranslate"><span class="pre">v1.1.1</span></code> - August 2023</a></li>
 <li><a class="reference internal" href="#release-v1-1-0-august-2023">Release <code class="docutils literal notranslate"><span class="pre">v1.1.0</span></code> - August 2023</a></li>
@@ -1100,11 +1156,11 @@
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=7f41d439"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=4ea706d9"></script>
-    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     </body>
 </html>

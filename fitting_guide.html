@@ -5,18 +5,18 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Uncertainty Guide" href="uncertainty_guide.html" /><link rel="prev" title="Modeling Guide" href="modeling_guide.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.07.18 -->
         <title>Fitting Guide - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
     
 
@@ -75,7 +75,7 @@
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -90,22 +90,63 @@
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
 </svg>
@@ -118,6 +159,8 @@
 <label class="overlay toc-overlay" for="__toc">
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
 
 
@@ -136,7 +179,8 @@
       <div class="theme-toggle-container theme-toggle-header">
         <button class="theme-toggle">
           <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
@@ -200,9 +244,8 @@
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_fitting_sparse_4pdeer.html">Basic analysis of a sparsely sampled 4-pulse DEER signal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_compactness_with_without.html">Comparing the analysis with and without compactness criterion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_global_different_deer.html">Global fitting of multiple different DEER signals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_selregparam.html">Analysing the selection of regularisation parameter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_selregparam.html#over-and-under-selection-of-the-regularisation-parameter">Over and Under selection of the regularisation parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_crossing_echoes_masking.html">Analyzing data with crossing echoes robustly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/intermediate/ex_selregparam.html">Analysing the selection of regularisation parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_simulating_oop.html">Simulating polarization effects on low-temperature DEER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_identifiability_analysis.html">Identifiability analysis of a 4-pulse DEER signal via the profile analysis method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_examples/advanced/ex_comparing_uncertainties.html">Comparing confidence intervals for regularization results</a></li>
@@ -337,10 +380,12 @@
         </a>
         <div class="content-icon-container">
           
+
 <div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
@@ -350,9 +395,9 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="fitting-guide">
-<span id="id1"></span><h1>Fitting Guide<a class="headerlink" href="#fitting-guide" title="Link to this heading">#</a></h1>
+<span id="id1"></span><h1>Fitting Guide<a class="headerlink" href="#fitting-guide" title="Link to this heading">¶</a></h1>
 <p>This guide will focus on the last step of the DeerLab workflow, i.e., the fitting. Due to the separation of non-linear parameters <img class="math" src="_images/math/8e9f8e664891f997469cb4ad9e5439e81d0660dc.svg" alt="\theta_\mathrm{nonlin}"/> and linear parameters <img class="math" src="_images/math/68a93297867e31caa33516d8d3534ab818c7e905.svg" alt="\theta_\mathrm{lin}"/> in the model structure of DeerLab, the program can use penalized separable non-linear least-squares to fit the model to the data. The fitting procedure aims to find the following optimization problem with the objective function</p>
 <div class="math-wrapper docutils container">
 <div class="math">
@@ -370,7 +415,7 @@
 </div></div>
 <p>The term <img class="math" src="_images/math/9fa5636af77a9ff7c61943c7cddf370d0c09b274.svg" alt="A(\theta_\mathrm{nonlin})"/> is the non-linear function of the model. A regularization penalty <img class="math" src="_images/math/a2ea4e28b134adf895ee4d079b65868e160eb647.svg" alt="\mathcal{R}(\theta_\mathrm{lin})"/> weighted by a regularization weight or parameter <img class="math" src="_images/math/f36a3f8dbda6bea20079ecea63562c7932d00b1b.svg" alt="\alpha"/>, and multiple additional arbitrary penalty terms <img class="math" src="_images/math/c46422b33964608af7cf63390b465616f54031e9.svg" alt="\mathcal{P}_i(\theta_\mathrm{nonlin},\theta_\mathrm{lin})"/> each weighted by its own penalty weight <img class="math" src="_images/math/1befffcd1b819f2e5057daadfdb4d960e52b5f49.svg" alt="\gamma_i"/>, can be added to this objective function if wanted</p>
 <section id="the-fit-function">
-<h2>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> function<a class="headerlink" href="#the-fit-function" title="Link to this heading">#</a></h2>
+<h2>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> function<a class="headerlink" href="#the-fit-function" title="Link to this heading">¶</a></h2>
 <p>DeerLab provides a centralized fitting function called <code class="docutils literal notranslate"><span class="pre">fit</span></code>. Its syntax is generally straightforward, taking a dataset and a model to be fitted to it. The function will always return a <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object containing all of the fitted quantities, including uncertainty estimates, as well as other quantities of interest. Assume that we have some dataset <code class="docutils literal notranslate"><span class="pre">y</span></code> described by some model called <code class="docutils literal notranslate"><span class="pre">model</span></code>. The fit can be executed as follows</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -383,7 +428,7 @@
 </div>
 <p>However, the list must be ordered according to the model parameter ordering. Therefore, we recommend specifying the start values on the model (as shown <a class="reference internal" href="modeling_guide.html#modeling-modifying-parameters"><span class="std std-ref">here</span></a>).</p>
 <section id="specifying-the-noise-level-s">
-<h3>Specifying the noise level(s)<a class="headerlink" href="#specifying-the-noise-level-s" title="Link to this heading">#</a></h3>
+<h3>Specifying the noise level(s)<a class="headerlink" href="#specifying-the-noise-level-s" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> function (and other functions in the pipeline) employ the noise level of the dataset(s), i.e. the standard deviation of the white Gaussian noise superimposed on the data, at various stages of the model optimization and uncertainty estimation. Therefore, the analysis profits strongly from accurate estimates of the noise level(s). These can be specified via the <code class="docutils literal notranslate"><span class="pre">noiselvl</span></code> keyword argument of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">yclean</span> <span class="o">+</span> <span class="n">dl</span><span class="o">.</span><span class="n">whitegaussnoise</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
 <span class="c1"># Fit the model (with two constants) to the data</span>
@@ -393,7 +438,7 @@
 <p>IF not specified, the program will estimate it from the dataset(s) directly using the <a class="reference internal" href="_autosummary/deerlab.noiselevel.html#noiselevel"><span class="std std-ref">deerlab.noiselevel</span></a> function. While, these estimates can be relatively accurate, it is better to specify the noise level if a trusted estimate is known.</p>
 </section>
 <section id="fitting-models-with-constants">
-<h3>Fitting models with constants<a class="headerlink" href="#fitting-models-with-constants" title="Link to this heading">#</a></h3>
+<h3>Fitting models with constants<a class="headerlink" href="#fitting-models-with-constants" title="Link to this heading">¶</a></h3>
 <p>Models with constants (see <a class="reference internal" href="modeling_guide.html#modeling-constants"><span class="std std-ref">here</span></a> for details) can be fitted as shown above, with the added requirement that the constants must be specified as well when calling <code class="docutils literal notranslate"><span class="pre">fit</span></code>. Constants can be specified after the data as positional arguments</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model (with two constants) to the data</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">constant1</span><span class="p">,</span> <span class="n">constant2</span><span class="p">)</span>
@@ -401,7 +446,7 @@
 </div>
 </section>
 <section id="fitting-multi-dataset-models">
-<h3>Fitting multi-dataset models<a class="headerlink" href="#fitting-multi-dataset-models" title="Link to this heading">#</a></h3>
+<h3>Fitting multi-dataset models<a class="headerlink" href="#fitting-multi-dataset-models" title="Link to this heading">¶</a></h3>
 <p>Models merged using the <code class="docutils literal notranslate"><span class="pre">merge</span></code> function (see <a class="reference internal" href="modeling_guide.html#modeling-merging"><span class="std std-ref">here</span></a> for details) can describe multiple datasets with a single model object and a common parameter set. To fit such a merged model to multiple datasets, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function can be used as above by passing a list of datasets <code class="docutils literal notranslate"><span class="pre">[y1,y2,...,yN]</span></code> instead of a single dataset</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to multiple datasets</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="n">y1</span><span class="p">,</span><span class="n">y2</span><span class="p">,</span><span class="n">y3</span><span class="p">])</span>
@@ -411,7 +456,7 @@
 </section>
 </section>
 <section id="adding-regularization">
-<h2>Adding regularization<a class="headerlink" href="#adding-regularization" title="Link to this heading">#</a></h2>
+<h2>Adding regularization<a class="headerlink" href="#adding-regularization" title="Link to this heading">¶</a></h2>
 <p>DeerLab includes the possibility to impose (Tikhonov) regularization based on the smoothness of the linear parameters in the model. By default, DeerLab will automatically check the condition number of the matrix returned by the non-linear part of the model and determine whether it is well-conditioned or not. If the matrix is ill-conditioned, the program will automatically enforce regularization upon the linear parameters.
 Regularization can be manually be switched on/off via the <code class="docutils literal notranslate"><span class="pre">reg</span></code> param</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enforce regularization</span>
@@ -422,7 +467,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </div>
 <p>The regularization penalty weight (a.k.a regularization parameter) is optimally selected according to a given criterion (by default, the Akaike information criterion, AIC). There are different ways to control this process:</p>
 <section id="changing-the-selection-functional">
-<h3>Changing the selection functional<a class="headerlink" href="#changing-the-selection-functional" title="Link to this heading">#</a></h3>
+<h3>Changing the selection functional<a class="headerlink" href="#changing-the-selection-functional" title="Link to this heading">¶</a></h3>
 <p>The regularization functional can be changed from the AIC to any built-in functionals via the <img class="math" src="_images/math/43e847293a04eb1bd90bec393f433291bae5d9db.svg" alt="regparam"/> keyword argument. Changing it to another functional will only change how the regularization parameter is selected, but it still will be optimized. For example, to switch the selection functional from the AIC to generalized cross-validation (GCV)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data, using the GCV criterion</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="s1">&#39;gcv&#39;</span><span class="p">)</span>
@@ -431,7 +476,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 <p>A list of the available selection functionals and their string names are given in the reference for <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 </section>
 <section id="changing-the-optimization-range">
-<h3>Changing the optimization range<a class="headerlink" href="#changing-the-optimization-range" title="Link to this heading">#</a></h3>
+<h3>Changing the optimization range<a class="headerlink" href="#changing-the-optimization-range" title="Link to this heading">¶</a></h3>
 <p>When using selection functionals to optimize the regularization weights, a Brent-like algorithm searches the value that minimizes the given selection functional within a specific range. This range can be manually specified via the <code class="docutils literal notranslate"><span class="pre">regparamrange</span></code> keyword argument. It must be passed as a two-element list <code class="docutils literal notranslate"><span class="pre">[regparam_lb,</span> <span class="pre">regparam_ub]</span></code> with the search boundaries</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data, with a constrained regparam search range</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">regparamrange</span><span class="o">=</span><span class="p">[</span><span class="mf">1e-5</span><span class="p">,</span><span class="mf">1e-1</span><span class="p">])</span>
@@ -440,7 +485,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 <p>This can be useful for avoiding unwanted local minima of the selection functional causing potential under- or oversmoothing.</p>
 </section>
 <section id="manual-specification">
-<h3>Manual specification<a class="headerlink" href="#manual-specification" title="Link to this heading">#</a></h3>
+<h3>Manual specification<a class="headerlink" href="#manual-specification" title="Link to this heading">¶</a></h3>
 <p>The value of the regularization penalty weight can also be manually specified and fixed to a value for the whole optimization. This can be done via the aforementioned <code class="docutils literal notranslate"><span class="pre">regparam</span></code> keyword argument by specifying a value instead of a selection functional</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data, using a fixed regularization weight</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">regparam</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
@@ -449,7 +494,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </section>
 </section>
 <section id="adding-penalties">
-<h2>Adding penalties<a class="headerlink" href="#adding-penalties" title="Link to this heading">#</a></h2>
+<h2>Adding penalties<a class="headerlink" href="#adding-penalties" title="Link to this heading">¶</a></h2>
 <p>DeerLab provides a flexible system for defining and adding penalties to the objective function of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function in the form of the <code class="docutils literal notranslate"><span class="pre">Penalty</span></code> objects, which can be passed to the <code class="docutils literal notranslate"><span class="pre">penalties</span></code> keyword argument of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit the model to the data with an additional penalty</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">y</span> <span class="n">penalties</span><span class="o">=</span><span class="n">penalty</span><span class="p">)</span>
@@ -466,7 +511,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </dd>
 </dl>
 <section id="constructing-a-penalty">
-<h3>Constructing a penalty<a class="headerlink" href="#constructing-a-penalty" title="Link to this heading">#</a></h3>
+<h3>Constructing a penalty<a class="headerlink" href="#constructing-a-penalty" title="Link to this heading">¶</a></h3>
 <p>Penalties can be constructed in a similar way to <a class="reference internal" href="modeling_guide.html#modeling-construction"><span class="std std-ref">how models are constructed</span></a>. Since penalties depend on a model’s parameters, and by extension, are specific for a given model, it is recommended to construct penalties after the model has been entirely constructed.</p>
 <p>The first step is to construct the penalty function. First, it must be a callable function taking a series of positional arguments. The names of the arguments must match the names of the model parameters that the penalty depends on. Second, the function must return a vector, taking the following into account:</p>
 <ul class="simple">
@@ -498,7 +543,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </div>
 </section>
 <section id="example-gaussian-smoothness-penalty">
-<h3>Example: Gaussian smoothness penalty<a class="headerlink" href="#example-gaussian-smoothness-penalty" title="Link to this heading">#</a></h3>
+<h3>Example: Gaussian smoothness penalty<a class="headerlink" href="#example-gaussian-smoothness-penalty" title="Link to this heading">¶</a></h3>
 <p>In this example, let us construct a penalty that imposes the smoothness of a Gaussian function. As a model, we will take the <code class="docutils literal notranslate"><span class="pre">gauss</span></code> model defined in <a class="reference internal" href="modeling_guide.html#modeling-example1"><span class="std std-ref">another example</span></a>. The function has to penalize roughness for imposing smoothness, which can be quantified by a discrete differential operator of second order (which we can generate using DeerLab’s <code class="docutils literal notranslate"><span class="pre">regoperator</span></code>). As a selection criterion, we will use the AIC functional.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Differential operator of second order</span>
 <span class="n">L</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">regoperator</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
@@ -516,7 +561,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </div>
 </section>
 <section id="manually-setting-the-penalty-weight">
-<h3>Manually setting the penalty weight<a class="headerlink" href="#manually-setting-the-penalty-weight" title="Link to this heading">#</a></h3>
+<h3>Manually setting the penalty weight<a class="headerlink" href="#manually-setting-the-penalty-weight" title="Link to this heading">¶</a></h3>
 <p>By default, the program will use the specified selection functional to optimize the value of the penalty weights in an outer optimization approach. The search range of this optimization routine is given by the boundaries <code class="docutils literal notranslate"><span class="pre">[weight.lb,</span> <span class="pre">weight.ub]</span></code> of the penalty weight. However, the penalty weight can be fixed to a specific value using the <code class="docutils literal notranslate"><span class="pre">freeze</span></code> method of the <code class="docutils literal notranslate"><span class="pre">weight</span></code> attribute</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use a fixed penalty weight</span>
 <span class="n">penaltyobj</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
@@ -528,7 +573,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </section>
 </section>
 <section id="examining-the-results">
-<span id="fitting-fitresult"></span><h2>Examining the results<a class="headerlink" href="#examining-the-results" title="Link to this heading">#</a></h2>
+<span id="fitting-fitresult"></span><h2>Examining the results<a class="headerlink" href="#examining-the-results" title="Link to this heading">¶</a></h2>
 <p>A summary of the fit can be accessed by printing the <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object as returned by the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;print(result)</span>
 <span class="go">Goodness-of-fit:</span>
@@ -549,7 +594,7 @@ Regularization can be manually be switched on/off via the <code class="docutils 
 </pre></div>
 </div>
 <section id="the-fitresult-object">
-<h3>The <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object<a class="headerlink" href="#the-fitresult-object" title="Link to this heading">#</a></h3>
+<h3>The <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object<a class="headerlink" href="#the-fitresult-object" title="Link to this heading">¶</a></h3>
 <p>Once the fitting routine is finished, the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function will return a <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object containing multiple quantities of interest.</p>
 <dl class="simple">
 <dt>Estimated parameters (<code class="docutils literal notranslate"><span class="pre">FitResult.&lt;param&gt;</span></code>)</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> will contain an attribute <code class="docutils literal notranslate"><span class="pre">&lt;param&gt;</span></code> of the same name as each parameter in the model. This will be the estimated maximum likelihood estimator of the model parameter for the given data and penalties.</p>
@@ -569,10 +614,11 @@ information on the abscissa values of the data, these must be specified separate
 <span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/advanced_guide1.png"><img alt="_images/advanced_guide1.png" src="_images/advanced_guide1.png" style="width: 450px;" /></a>
+<a class="reference internal image-reference" href="_images/advanced_guide1.png"><img alt="_images/advanced_guide1.png" src="_images/advanced_guide1.png" style="width: 450px;" />
+</a>
 </section>
 <section id="assessing-the-goodness-of-fit">
-<span id="fitting-goodnessoffit"></span><h3>Assessing the goodness-of-fit<a class="headerlink" href="#assessing-the-goodness-of-fit" title="Link to this heading">#</a></h3>
+<span id="fitting-goodnessoffit"></span><h3>Assessing the goodness-of-fit<a class="headerlink" href="#assessing-the-goodness-of-fit" title="Link to this heading">¶</a></h3>
 <p>The results summary shown above contains several key quantities to quickly assess whether the model estimate obtained by the <code class="docutils literal notranslate"><span class="pre">fit</span></code>
 function is a proper descriptor of the data. For each dataset analyzed, several quantities are returned. The <code class="docutils literal notranslate"><span class="pre">Noise</span> <span class="pre">level</span></code> value shows
 either the estimated noise level of that dataset or the one specified by the user. The <code class="docutils literal notranslate"><span class="pre">Reduced</span> <span class="pre">𝛘2</span></code> value indicates how good the model fit
@@ -594,11 +640,12 @@ that the model does not properly describe the data. If these values are shown in
 <span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">gof</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/advanced_guide2.png"><img alt="_images/advanced_guide2.png" src="_images/advanced_guide2.png" style="width: 900px;" /></a>
+<a class="reference internal image-reference" href="_images/advanced_guide2.png"><img alt="_images/advanced_guide2.png" src="_images/advanced_guide2.png" style="width: 900px;" />
+</a>
 <p>By doing so, several plots will be added to the previous figure. The first plot shows the data and the model fit (along its 95% confidence intervals). The second panel shows the residual values of the model fit. These values should resemble white noise, i.e. have constant variance and mean zero. The mean value of the residual is shown as a solid line. The estimated noise level (standard deviation) of the residual is shown as dashed lines. The third panel shows an histogram of the residual values. The residuals should be normally distributed. To assess this, the standard normal distribution is shown as a shaded grey area. Ideally, both the histogram and shaded distributed should overlap nicely, indicating normally distributed residuals. The last panel shows an autocorrelogram of the residuals and the grey shaded area represents the confidence region that would be expected of a purely random vector. Ideally, all autocorrelations at lags larger than 1 should be withing the shaded grey area. Any autocorrelations outside the grey shaded area can be considered as a potential autocorrelation in the data.</p>
 </section>
 <section id="evaluating-and-propagating-from-the-results">
-<h3>Evaluating and propagating from the results<a class="headerlink" href="#evaluating-and-propagating-from-the-results" title="Link to this heading">#</a></h3>
+<h3>Evaluating and propagating from the results<a class="headerlink" href="#evaluating-and-propagating-from-the-results" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">FitResult</span></code> object provides commodity methods <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> and <code class="docutils literal notranslate"><span class="pre">propagate</span></code> to quickly evaluate other models that might depend on the fitted parameters and propagate the uncertainty in the parameter estimates to those models. To evaluate a model <code class="docutils literal notranslate"><span class="pre">modelB</span></code> that shares parameters with <code class="docutils literal notranslate"><span class="pre">modelA</span></code> (which has been fitted), we can use the <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> method</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit modelA to the data</span>
 <span class="n">fitresult</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">modelA</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
@@ -719,11 +766,11 @@ that the model does not properly describe the data. If these values are shown in
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=7f41d439"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=4ea706d9"></script>
-    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     </body>
 </html>
