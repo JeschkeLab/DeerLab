@@ -785,7 +785,7 @@ def read_pickle(filename):
 
 
 # --------------------------------------------------------------------------------------
-def sophegrid(octants,maxphi,size):
+def sophegrid(octants,maxphi,size,closed_phi=False):
     """
     Construct spherical grid over spherical angles based on input parameters. 
     The grid implemented in this function is often called the SOPHE grid [1]_. 
@@ -799,6 +799,9 @@ def sophegrid(octants,maxphi,size):
         Largest value of angle phi (radians).
     size : integer  
         Number of orientations between theta=0 and theta=pi/2. 
+    closed_phi : bool
+        Set to true if grid point at maxPhi should be included, false otherwise. Default is false.
+
 
     Returns
     -------
@@ -834,7 +837,10 @@ def sophegrid(octants,maxphi,size):
         weights = np.zeros(nOrientations)
         
         sindth2 = np.sin(dtheta/2)
-        w1 = 1.0
+        if closed_phi:
+            w1=0.5
+        else:
+            w1 = 1.0
         
         # North pole (z orientation)
         phi[0] = 0
@@ -861,10 +867,11 @@ def sophegrid(octants,maxphi,size):
         weights[idx] = sindth2*dPhi*np.concatenate([[w1], np.ones(nPhi-2), [0.5]])
         
         # Border removal
-        rmv = np.cumsum(nOct*np.arange(1,size)+1)
-        phi = np.delete(phi,rmv)
-        theta = np.delete(theta,rmv)
-        weights = np.delete(weights,rmv)
+        if not closed_phi:
+            rmv = np.cumsum(nOct*np.arange(1,size)+1)
+            phi = np.delete(phi,rmv)
+            theta = np.delete(theta,rmv)
+            weights = np.delete(weights,rmv)
 
         # For C1, add lower hemisphere
         if octants==8:

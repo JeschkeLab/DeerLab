@@ -24,6 +24,10 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
+Release ``v1.1.4`` - tba
+------------------------------------------
+- |enhancement| : Expanded sophgrid to allow for closed phi integral. (:pr:`482`)
+
 Release ``v1.1.3`` - July 2024
 ------------------------------------------
 - |fix| : Removes unnecessary files from the docs
