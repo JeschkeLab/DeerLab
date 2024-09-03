@@ -5,17 +5,17 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="deerlab.choleskycovmat" href="deerlab.choleskycovmat.html" /><link rel="prev" title="deerlab.read_pickle" href="deerlab.read_pickle.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.07.18 -->
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 8.0.2 and Furo 2024.08.06 -->
         <title>deerlab.sophegrid - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=613ab9ff" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -400,7 +400,7 @@
 <span id="sophegrid"></span><h1>deerlab.sophegrid<a class="headerlink" href="#deerlab-sophegrid" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="deerlab.sophegrid">
-<span class="sig-name descname"><span class="pre">sophegrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">octants</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxphi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/utils.html#sophegrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.sophegrid" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sophegrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">octants</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxphi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed_phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deerlab/utils.html#sophegrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deerlab.sophegrid" title="Link to this definition">¶</a></dt>
 <dd><p>Construct spherical grid over spherical angles based on input parameters. 
 The grid implemented in this function is often called the SOPHE grid <a class="reference internal" href="#r237aec4415af-1" id="id1">[1]</a>. 
 Adapted from Easyspin <a class="reference internal" href="#r237aec4415af-2" id="id2">[2]</a> <code class="docutils literal notranslate"><span class="pre">sphgrid_</span></code> source code.</p>
@@ -412,6 +412,8 @@ Adapted from Easyspin <a class="reference internal" href="#r237aec4415af-2" id="
 <dt><strong>maxphi</strong><span class="classifier">float</span></dt><dd><p>Largest value of angle phi (radians).</p>
 </dd>
 <dt><strong>size</strong><span class="classifier">integer</span></dt><dd><p>Number of orientations between theta=0 and theta=pi/2.</p>
+</dd>
+<dt><strong>closed_phi</strong><span class="classifier">bool</span></dt><dd><p>Set to true if grid point at maxPhi should be included, false otherwise. Default is false.</p>
 </dd>
 </dl>
 </dd>

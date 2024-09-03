@@ -4,17 +4,17 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.07.18 -->
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 8.0.2 and Furo 2024.08.06 -->
         <title>deerlab.utils - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=613ab9ff" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -1213,7 +1213,7 @@
 <span class="c1"># --------------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="sophegrid">
 <a class="viewcode-back" href="../../_autosummary/deerlab.sophegrid.html#deerlab.sophegrid">[docs]</a>
-<span class="k">def</span> <span class="nf">sophegrid</span><span class="p">(</span><span class="n">octants</span><span class="p">,</span><span class="n">maxphi</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">sophegrid</span><span class="p">(</span><span class="n">octants</span><span class="p">,</span><span class="n">maxphi</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">closed_phi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct spherical grid over spherical angles based on input parameters. </span>
 <span class="sd">    The grid implemented in this function is often called the SOPHE grid [1]_. </span>
@@ -1227,6 +1227,9 @@
 <span class="sd">        Largest value of angle phi (radians).</span>
 <span class="sd">    size : integer  </span>
 <span class="sd">        Number of orientations between theta=0 and theta=pi/2. </span>
+<span class="sd">    closed_phi : bool</span>
+<span class="sd">        Set to true if grid point at maxPhi should be included, false otherwise. Default is false.</span>
+
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1262,7 +1265,10 @@
         <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nOrientations</span><span class="p">)</span>
         
         <span class="n">sindth2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dtheta</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">w1</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">closed_phi</span><span class="p">:</span>
+            <span class="n">w1</span><span class="o">=</span><span class="mf">0.5</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">w1</span> <span class="o">=</span> <span class="mf">1.0</span>
         
         <span class="c1"># North pole (z orientation)</span>
         <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1289,10 +1295,11 @@
         <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">sindth2</span><span class="o">*</span><span class="n">dPhi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">w1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nPhi</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]])</span>
         
         <span class="c1"># Border removal</span>
-        <span class="n">rmv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">nOct</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">closed_phi</span><span class="p">:</span>
+            <span class="n">rmv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">nOct</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span><span class="n">rmv</span><span class="p">)</span>
 
         <span class="c1"># For C1, add lower hemisphere</span>
         <span class="k">if</span> <span class="n">octants</span><span class="o">==</span><span class="mi">8</span><span class="p">:</span>

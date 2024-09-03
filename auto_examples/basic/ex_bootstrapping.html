@@ -5,17 +5,17 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Basic analysis of a 4-pulse DEER signal with a bimodal Gaussian model" href="ex_fitting_4pdeer_gauss.html" /><link rel="prev" title="Analysis of a 4-pulse DEER signal with a compactness penalty" href="ex_fitting_4pdeer_compactness.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.07.18 -->
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/><!-- Generated with Sphinx 8.0.2 and Furo 2024.08.06 -->
         <title>Bootstrapped confidence intervals in routine analysis - DeerLab</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=613ab9ff" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -453,28 +453,28 @@ the confidence intervals but the longer the analysis will be. The standard for p
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Bootstrap analysis with 1 cores:
 
   0%|          | 0/20 [00:00&lt;?, ?it/s]
-  5%|▌         | 1/20 [00:08&lt;02:35,  8.20s/it]
- 10%|█         | 2/20 [00:15&lt;02:15,  7.53s/it]
- 15%|█▌        | 3/20 [00:25&lt;02:26,  8.63s/it]
- 20%|██        | 4/20 [00:34&lt;02:19,  8.71s/it]
- 25%|██▌       | 5/20 [00:43&lt;02:10,  8.67s/it]
- 30%|███       | 6/20 [00:50&lt;01:57,  8.39s/it]
- 35%|███▌      | 7/20 [00:59&lt;01:49,  8.45s/it]
- 40%|████      | 8/20 [01:09&lt;01:43,  8.64s/it]
- 45%|████▌     | 9/20 [01:17&lt;01:35,  8.65s/it]
- 50%|█████     | 10/20 [01:25&lt;01:25,  8.53s/it]
- 55%|█████▌    | 11/20 [01:32&lt;01:15,  8.42s/it]
- 60%|██████    | 12/20 [01:41&lt;01:07,  8.43s/it]
- 65%|██████▌   | 13/20 [01:50&lt;00:59,  8.49s/it]
- 70%|███████   | 14/20 [01:59&lt;00:51,  8.56s/it]
- 75%|███████▌  | 15/20 [02:08&lt;00:42,  8.55s/it]
- 80%|████████  | 16/20 [02:16&lt;00:34,  8.55s/it]
- 85%|████████▌ | 17/20 [02:25&lt;00:25,  8.57s/it]
- 90%|█████████ | 18/20 [02:38&lt;00:17,  8.79s/it]
- 95%|█████████▌| 19/20 [02:47&lt;00:08,  8.81s/it]
-100%|██████████| 20/20 [02:55&lt;00:00,  8.80s/it]
-100%|██████████| 20/20 [02:55&lt;00:00,  8.80s/it]
-100%|██████████| 20/20 [02:55&lt;00:00,  8.80s/it]
+  5%|▌         | 1/20 [00:09&lt;02:55,  9.23s/it]
+ 10%|█         | 2/20 [00:18&lt;02:43,  9.06s/it]
+ 15%|█▌        | 3/20 [00:27&lt;02:35,  9.12s/it]
+ 20%|██        | 4/20 [00:36&lt;02:26,  9.14s/it]
+ 25%|██▌       | 5/20 [00:43&lt;02:11,  8.75s/it]
+ 30%|███       | 6/20 [00:50&lt;01:58,  8.49s/it]
+ 35%|███▌      | 7/20 [00:59&lt;01:50,  8.52s/it]
+ 40%|████      | 8/20 [01:08&lt;01:42,  8.53s/it]
+ 45%|████▌     | 9/20 [01:17&lt;01:34,  8.59s/it]
+ 50%|█████     | 10/20 [01:24&lt;01:24,  8.49s/it]
+ 55%|█████▌    | 11/20 [01:34&lt;01:16,  8.55s/it]
+ 60%|██████    | 12/20 [01:43&lt;01:08,  8.61s/it]
+ 65%|██████▌   | 13/20 [01:51&lt;01:00,  8.57s/it]
+ 70%|███████   | 14/20 [02:00&lt;00:51,  8.64s/it]
+ 75%|███████▌  | 15/20 [02:10&lt;00:43,  8.68s/it]
+ 80%|████████  | 16/20 [02:19&lt;00:34,  8.71s/it]
+ 85%|████████▌ | 17/20 [02:29&lt;00:26,  8.80s/it]
+ 90%|█████████ | 18/20 [02:36&lt;00:17,  8.71s/it]
+ 95%|█████████▌| 19/20 [02:45&lt;00:08,  8.73s/it]
+100%|██████████| 20/20 [02:56&lt;00:00,  8.80s/it]
+100%|██████████| 20/20 [02:56&lt;00:00,  8.80s/it]
+100%|██████████| 20/20 [02:56&lt;00:00,  8.80s/it]
 Goodness-of-fit:
 ========= ============= ============= ===================== =======
  Dataset   Noise level   Reduced 𝛘2    Residual autocorr.    RMSD
@@ -491,11 +491,11 @@ Model parameters:
 =========== ========= ========================= ====== ======================================
  Parameter   Value     95%-Confidence interval   Unit   Description
 =========== ========= ========================= ====== ======================================
- mod         0.303     (0.300,0.306)                    Modulation depth
+ mod         0.304     (0.300,0.307)                    Modulation depth
  reftime     0.299     (0.298,0.301)              μs    Refocusing time
- conc        147.109   (144.015,150.611)          μM    Spin concentration
+ conc        147.220   (142.578,152.158)          μM    Spin concentration
  P           ...       (...,...)                 nm⁻¹   Non-parametric distance distribution
- P_scale     1.005     (0.985,1.042)             None   Normalization factor of P
+ P_scale     1.006     (0.988,1.046)             None   Normalization factor of P
 =========== ========= ========================= ====== ======================================
 </pre></div>
 </div>
@@ -537,7 +537,7 @@ Model parameters:
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_ex_bootstrapping_001.png" srcset="../../_images/sphx_glr_ex_bootstrapping_001.png" alt="ex bootstrapping" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 3.033 seconds)</p>
+<img src="../../_images/sphx_glr_ex_bootstrapping_001.png" srcset="../../_images/sphx_glr_ex_bootstrapping_001.png" alt="ex bootstrapping" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 1.554 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-basic-ex-bootstrapping-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/aa226ad7de61eccab17d5dee2eb8d898/ex_bootstrapping.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">ex_bootstrapping.ipynb</span></code></a></p>
