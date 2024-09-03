@@ -16,7 +16,7 @@ The early versions of DeerLab (up to version 0.9.2) are written in MATLAB. The o
 
 ## Requirements
 
-DeerLab is available for Windows, Mac and Linux systems and requires **Python 3.8**, **3.9**, **3.10**, or  **3.11**.
+DeerLab is available for Windows, Mac and Linux systems and requires **Python 3.9**, **3.10**, **3.11**, or  **3.12**.
 
 All additional dependencies are automatically downloaded and installed during the setup.
  
@@ -58,4 +58,4 @@ Here is the citation in bibtex format:
 
 DeerLab is licensed under the [MIT License](LICENSE).
 
-Copyright © 2019-2023: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
+Copyright © 2019-2024: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
