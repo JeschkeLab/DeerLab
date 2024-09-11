@@ -491,14 +491,19 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         else:
             bootstrap_verbose = False
             
-        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores, verbose=bootstrap_verbose)
+        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores, verbose=bootstrap_verbose, full_output=True)
         # Include information on the boundaries for better uncertainty estimates
         paramlb = model._vecsort(model._getvector('lb'))[np.concatenate(param_idx)] 
         paramub = model._vecsort(model._getvector('ub'))[np.concatenate(param_idx)] 
         fitresults.paramUncert = UQResult('bootstrap',data=param_uq[0].samples,lb=paramlb,ub=paramub)
         fitresults.param = fitresults.paramUncert.median
+
         # Get the uncertainty estimates for the model response
+        modellb = np.min(param_uq[1].samples,axis=0)
+        modelub = np.max(param_uq[1].samples,axis=0)
+            
         fitresults.model = [param_uq[n].median for n in range(1,len(param_uq))]
+        fitresults.modelUncert = UQResult('bootstrap',data=param_uq[1].samples,lb=modellb,ub=modelub)
         if len(fitresults.model)==1: 
             fitresults.model = fitresults.model[0]
     # Get some basic information on the parameter vector
@@ -509,7 +514,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['y','mask','param','paramUncert','model','cost','plot','residuals','stats','regparam','regparam_stats','__plot_inputs']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['y','mask','param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam','regparam_stats','__plot_inputs']}
     _paramlist = model._parameter_list('vector')
 
     param_idx = [[] for _ in _paramlist]
