@@ -491,7 +491,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         else:
             bootstrap_verbose = False
             
-        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores, verbose=bootstrap_verbose, full_output=True)
+        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores, verbose=bootstrap_verbose)
         # Include information on the boundaries for better uncertainty estimates
         paramlb = model._vecsort(model._getvector('lb'))[np.concatenate(param_idx)] 
         paramub = model._vecsort(model._getvector('ub'))[np.concatenate(param_idx)] 
