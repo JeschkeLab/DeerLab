@@ -199,7 +199,7 @@ class FitResult(dict):
         response = model(*constants,**parameters)
         return response
     
-    def propagate(self, model, *constants, lb=None, ub=None):
+    def propagate(self, model, *constants, lb=None, ub=None,samples=None):
         """
         Propagate the uncertainty in the fit results to a model's response.
 
@@ -223,7 +223,10 @@ class FitResult(dict):
         lb : array_like, optional 
             Lower bounds of the model response.
         ub : array_like, optional 
-            Upper bounds of the model response.   
+            Upper bounds of the model response. 
+        samples : int, optional
+            Number of samples to use when propagating a bootstraped uncertainty. If not provided, default value is 1000.
+
 
         Returns
         -------
@@ -241,7 +244,7 @@ class FitResult(dict):
 
 
         # Propagate the uncertainty from that subset to the model
-        modeluq = self.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in fitparam_idx]),lb,ub)
+        modeluq = self.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in fitparam_idx]),lb,ub,samples)
         return modeluq
     
 
