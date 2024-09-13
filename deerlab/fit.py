@@ -361,7 +361,9 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     paramlist : list
         List of the fitted parameter names ordered according to the model parameter indices.
     model : ndarray
-        Fitted model response.     
+        Fitted model response.   
+    modelUncert : :ref:`UQResult`
+        Uncertainty quantification of the fitted model response.
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
     penweights : scalar or list thereof 
@@ -470,7 +472,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl, mask=mask, weights=weights, 
                                                 subsets=ysubsets, lin_frozen=linfrozen, nonlin_frozen=nonlinfrozen,
                                                 regparam=regparam, reg=reg, regparamrange=regparamrange, noiselvl=noiselvl,
-                                                extrapenalty=extrapenalties(penweights), **kwargs)        
+                                                extrapenalty=extrapenalties(penweights), modeluq=True, **kwargs)        
 
     # Prepare outer optimization of the penalty weights, if necessary
     fitfcn = _outerOptimization(fitfcn,penalties,sigmas)
