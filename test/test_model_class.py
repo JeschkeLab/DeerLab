@@ -546,6 +546,23 @@ def test_fit_evaluate_model(mock_data,mock_x,model_type):
         response *= results.scale
     
     assert np.allclose(response,mock_data)
+
+# ================================================================
+@pytest.mark.parametrize('method', ['bootstrap','moment'])
+@pytest.mark.parametrize('model_type', model_types)
+def test_fit_modelUncert(mock_data,mock_x,model_type,method): 
+    model = _generate_model(model_type, fixed_axis=False)
+    
+    if method=='bootstrap':
+        results = fit(model,mock_data,mock_x, bootstrap=3)
+    else: 
+        results = fit(model,mock_data,mock_x)
+
+    assert hasattr(results,'modelUncert')
+    ci_lower = results.modelUncert.ci(95)[:,0]
+    ci_upper = results.modelUncert.ci(95)[:,1]
+    assert np.less_equal(ci_lower,ci_upper).all()
+
 # ================================================================
 
 # ================================================================
