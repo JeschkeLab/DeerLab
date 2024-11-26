@@ -24,9 +24,10 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
-Release ``v1.1.4`` - tba
+Release ``v1.1.4`` - September 2024
 ------------------------------------------
 - |enhancement| : Expanded sophgrid to allow for closed phi integral. (:pr:`482`)
+- |api| : Removed Python 3.8 support and requires Numpy 2.0
 
 Release ``v1.1.3`` - July 2024
 ------------------------------------------
