@@ -236,9 +236,10 @@ class FitResult(dict):
         responseUncert : :ref:`UQResult`
             Uncertainty quantification of the model's response.
         """
-        model = model.copy()
+        
 
         try:
+            model = model.copy()
             modelparam = model._parameter_list('vector')
             modelparam, fitparams, fitparam_idx = self._extarct_params_from_model(model)
 
