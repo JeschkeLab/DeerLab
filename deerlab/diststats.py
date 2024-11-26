@@ -103,7 +103,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
 
     # Auxiliary functions
     # -------------------
-    int = np.trapz(P,r) if not np.all(P==0) else 1
+    int = np.trapezoid(P,r) if not np.all(P==0) else 1
     def normalize(P): 
         return P/int
     # Percentile function
@@ -114,7 +114,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
         return rpctile
     # Expectation operator function
     def E(x,P,r):
-        return np.trapz(x*normalize(P),r)
+        return np.trapezoid(x*normalize(P),r)
 
     # Location estimators
     # -------------------
@@ -125,7 +125,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     # Interquartile mean
     def iqmfcn(P):
         IQrange = (r>pctile(r,P,25)) & (r<pctile(r,P,75))
-        return E(r[IQrange],P[IQrange]/np.trapz(normalize(P)[IQrange],r[IQrange]),r[IQrange]) 
+        return E(r[IQrange],P[IQrange]/np.trapezoid(normalize(P)[IQrange],r[IQrange]),r[IQrange]) 
     # Mode
     modefcn = lambda P: r[np.argmax(P)]
     # Modes
@@ -156,7 +156,7 @@ def diststats(r, P, Puq=None, verbose=False, threshold=None):
     exkurtosisfcn = lambda P: 3 - E(((r - meanfcn(P))/stdfcn(P))**4,P,r)
         
     # 0th moment  - Integral 
-    intfcn = lambda P: np.trapz(P,r)
+    intfcn = lambda P: np.trapezoid(P,r)
 
     # Calculate distribution estimators
     estimators = {

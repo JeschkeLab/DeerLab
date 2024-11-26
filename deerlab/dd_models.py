@@ -99,7 +99,7 @@ Example of the model evaluated at the start values of the parameters:
 # =================================================================
 def _normalize(r,P):
     if not all(P==0):
-        P = P/np.trapz(P,r)
+        P = P/np.trapezoid(P,r)
     return P
 # =================================================================
 
@@ -129,7 +129,7 @@ def _multirice3dfun(r,nu,sig):
     P[P<0] = 0
     
     # Normalization
-    P = np.squeeze(P)/np.sum([np.trapz(c,np.squeeze(r)) for c in P.T])
+    P = np.squeeze(P)/np.sum([np.trapezoid(c,np.squeeze(r)) for c in P.T])
     return P
 # =================================================================
 
