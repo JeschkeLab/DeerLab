@@ -43,6 +43,11 @@ def mock_x():
 @pytest.fixture(scope='module')
 def mock_data(mock_x):
     data = bigauss(mock_x,mean1=3,mean2=4,std1=0.5,std2=0.2,amp1=0.5,amp2=0.6)
+    return data
+
+@pytest.fixture(scope='module')
+def mock_data_noise(mock_x):
+    data = bigauss(mock_x,mean1=3,mean2=4,std1=0.5,std2=0.2,amp1=0.5,amp2=0.6)
     data += whitegaussnoise(mock_x,0.01,seed=1)
     return data
 
@@ -552,14 +557,14 @@ def test_fit_evaluate_model(mock_data,mock_x,model_type):
 # ================================================================
 @pytest.mark.parametrize('method', ['bootstrap','moment'])
 @pytest.mark.parametrize('model_type', model_types)
-def test_fit_modelUncert(mock_data,mock_x,model_type,method): 
+def test_fit_modelUncert(mock_data_noise,mock_x,model_type,method): 
     "Check that the uncertainty of fit results can be calculated and is the uncertainty of the model is non zero for all but nonparametric models"
     model = _generate_model(model_type, fixed_axis=False)
     
     if method=='bootstrap':
-        results = fit(model,mock_data,mock_x, bootstrap=3)
+        results = fit(model,mock_data_noise,mock_x, bootstrap=3)
     else: 
-        results = fit(model,mock_data,mock_x)
+        results = fit(model,mock_data_noise,mock_x)
 
     assert hasattr(results,'modelUncert')
     ci_lower = results.modelUncert.ci(95)[:,0]
