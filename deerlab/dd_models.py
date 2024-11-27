@@ -50,16 +50,17 @@ def _dd_docstring(model,notes):
     string += '\n'
     string += '\n'
     table = []
-    table.append(['Name','Lower','Upper','Type','Frozen','Unit','Description'])  
+    table.append(['Name','Lower','Upper','par0','Type','Frozen','Unit','Description'])  
     for n,paramname in enumerate(model._parameter_list(order='vector')): 
         param_str = f'``{paramname}``'
         lb_str = f'{np.atleast_1d(getattr(model,paramname).lb)[0]:5.3g}'
         ub_str = f'{np.atleast_1d(getattr(model,paramname).ub)[0]:5.3g}'
+        par0_str = f'{np.atleast_1d(getattr(model,paramname).par0)[0]:5.3g}'
         linear_str = "linear" if np.all(getattr(model,paramname).linear) else "nonlin"
         frozen_str = "Yes" if np.all(getattr(model,paramname).frozen) else "No"
         unit_str = str(getattr(model,paramname).unit)
         desc_str = str(getattr(model,paramname).description)
-        table.append([param_str,lb_str,ub_str,linear_str,frozen_str,unit_str,desc_str])
+        table.append([param_str,lb_str,ub_str,par0_str,linear_str,frozen_str,unit_str,desc_str])
     string += formatted_table(table)
     string += f'\n{notes}'
 
