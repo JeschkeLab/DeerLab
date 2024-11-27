@@ -16,7 +16,7 @@ The early versions of DeerLab (up to version 0.9.2) are written in MATLAB. The o
 
 ## Requirements
 
-DeerLab is available for Windows, Mac and Linux systems and requires **Python 3.9**, **3.10**, **3.11**, or  **3.12**.
+DeerLab is available for Windows, Mac and Linux systems and requires **Python 3.9** to **3.13**
 
 All additional dependencies are automatically downloaded and installed during the setup.
  
