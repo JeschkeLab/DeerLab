@@ -493,7 +493,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         else:
             bootstrap_verbose = False
             
-        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores, verbose=bootstrap_verbose)
+        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap-1,noiselvl=noiselvl,cores=bootcores, verbose=bootstrap_verbose)
         # Include information on the boundaries for better uncertainty estimates
         paramlb = model._vecsort(model._getvector('lb'))[np.concatenate(param_idx)] 
         paramub = model._vecsort(model._getvector('ub'))[np.concatenate(param_idx)] 
@@ -543,8 +543,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                     FitResult_param_[f'{key}_scale'] = _scale(FitResult_param_[key]) # Normalization factor
                     FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
 
-                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(_scale,samples=bootstrap+1)
-                    FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub,samples=bootstrap+1) # Normalization of the uncertainty
+                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(_scale,samples=bootstrap)
+                    FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub,samples=bootstrap) # Normalization of the uncertainty
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
     
