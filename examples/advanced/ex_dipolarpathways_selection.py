@@ -11,7 +11,6 @@ based on the Akaike information criterion.
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes, InsetPosition
 import deerlab as dl
 
 
@@ -79,9 +78,7 @@ for n in range(Nmax):
     Pfit = fits[n].P
     Pci = fits[n].PUncert.ci(95)
     # Setup the inset plot
-    axins = inset_axes(ax1,width="30%", height="30%", loc='upper left')
-    ip = InsetPosition(ax1,[0.35, 0.17+0.24*n, 0.6, 0.1])
-    axins.set_axes_locator(ip)
+    axins = ax1.inset_axes([0.35, 0.17+0.24*n, 0.6, 0.1])
     axins.yaxis.set_ticklabels([])
     axins.yaxis.set_visible(False)
     # Plot the distance distributions and their confidence bands
