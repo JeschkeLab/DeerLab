@@ -25,7 +25,7 @@ setup(
                         'joblib>=1.0.0',
                         'dill>=0.3.0',
                         'tqdm>=4.51.0',
-                        'matplotlib>=3.3.4',
+                        'matplotlib>=3.6.0',
                         'memoization>=0.3.1',
                         'pytest>=6.2.2',
                         'setuptools>=53.0.0',
