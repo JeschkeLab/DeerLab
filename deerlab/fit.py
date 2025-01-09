@@ -361,7 +361,9 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     paramlist : list
         List of the fitted parameter names ordered according to the model parameter indices.
     model : ndarray
-        Fitted model response.     
+        Fitted model response.   
+    modelUncert : :ref:`UQResult`
+        Uncertainty quantification of the fitted model response.
     regparam : scalar
         Regularization parameter value used for the regularization of the linear parameters.
     penweights : scalar or list thereof 
@@ -470,7 +472,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     fitfcn = lambda y,penweights: snlls(y, Amodel_fcn, par0, lb=lb, ub=ub, lbl=lbl, ubl=ubl, mask=mask, weights=weights, 
                                                 subsets=ysubsets, lin_frozen=linfrozen, nonlin_frozen=nonlinfrozen,
                                                 regparam=regparam, reg=reg, regparamrange=regparamrange, noiselvl=noiselvl,
-                                                extrapenalty=extrapenalties(penweights), **kwargs)        
+                                                extrapenalty=extrapenalties(penweights), modeluq=True, **kwargs)        
 
     # Prepare outer optimization of the penalty weights, if necessary
     fitfcn = _outerOptimization(fitfcn,penalties,sigmas)
@@ -491,14 +493,19 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
         else:
             bootstrap_verbose = False
             
-        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap,noiselvl=noiselvl,cores=bootcores, verbose=bootstrap_verbose)
+        param_uq = bootstrap_analysis(bootstrap_fcn,ysplit,fitresults.model,samples=bootstrap-1,noiselvl=noiselvl,cores=bootcores, verbose=bootstrap_verbose)
         # Include information on the boundaries for better uncertainty estimates
         paramlb = model._vecsort(model._getvector('lb'))[np.concatenate(param_idx)] 
         paramub = model._vecsort(model._getvector('ub'))[np.concatenate(param_idx)] 
         fitresults.paramUncert = UQResult('bootstrap',data=param_uq[0].samples,lb=paramlb,ub=paramub)
         fitresults.param = fitresults.paramUncert.median
+
         # Get the uncertainty estimates for the model response
+        modellb = np.min(param_uq[1].samples,axis=0)
+        modelub = np.max(param_uq[1].samples,axis=0)
+            
         fitresults.model = [param_uq[n].median for n in range(1,len(param_uq))]
+        fitresults.modelUncert = UQResult('bootstrap',data=param_uq[1].samples,lb=modellb,ub=modelub)
         if len(fitresults.model)==1: 
             fitresults.model = fitresults.model[0]
     # Get some basic information on the parameter vector
@@ -509,7 +516,7 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     # Dictionary of parameter names and fit uncertainties
     FitResult_paramuq = {f'{key}Uncert': model._getparamuq(fitresults.paramUncert,idx) for key,idx in zip(keys,param_idx)}
     # Dictionary of other fit quantities of interest
-    FitResult_dict = {key: getattr(fitresults,key) for key in ['y','mask','param','paramUncert','model','cost','plot','residuals','stats','regparam','regparam_stats','__plot_inputs']}
+    FitResult_dict = {key: getattr(fitresults,key) for key in ['y','mask','param','paramUncert','model','modelUncert','cost','plot','residuals','stats','regparam','regparam_stats','__plot_inputs']}
     _paramlist = model._parameter_list('vector')
 
     param_idx = [[] for _ in _paramlist]
@@ -536,8 +543,8 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
                     FitResult_param_[f'{key}_scale'] = _scale(FitResult_param_[key]) # Normalization factor
                     FitResult_param_[key] = param.normalization(FitResult_param_[key]) # Normalized value
 
-                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(_scale)
-                    FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub) # Normalization of the uncertainty
+                    FitResult_paramuq_[f'{key}_scaleUncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(_scale,samples=bootstrap)
+                    FitResult_paramuq_[f'{key}Uncert'] = FitResult_paramuq_[f'{key}Uncert'].propagate(lambda x: x/FitResult_param_[f'{key}_scale'], lb=param.lb, ub=param.ub,samples=bootstrap) # Normalization of the uncertainty
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
     

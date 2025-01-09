@@ -522,7 +522,7 @@ class UQResult:
         ubm : ndarray
             Upper bounds of the values returned by ``model``, by default assumed unconstrained.
         samples : int, optional
-            Number of samples to use when propagating uncertainty. If not provided, default value is 1000.
+            Number of samples to use when propagating a bootstraped uncertainty. If not provided, default value is 1000.
         
         Returns
         -------
@@ -583,7 +583,7 @@ class UQResult:
                 # Get the parameter uncertainty distribution
                 values,pdf = self.pardist(n)
                 # Random sampling form the uncertainty distribution
-                sampled_parameters[n] =  [np.random.choice(values, p=pdf/sum(pdf)) for _ in range(Nsamples)]
+                sampled_parameters[n] = np.random.choice(values, p=pdf/sum(pdf),size=Nsamples)
             # Convert to matrix
             sampled_parameters = np.atleast_2d(sampled_parameters)
 

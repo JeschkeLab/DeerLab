@@ -97,20 +97,21 @@ class FitResult(dict):
         if not hasattr(self,'param'):
             raise ValueError('The fit object does not contain any fitted parameters.')
 
-        # # Enforce model normalization
-        # normfactor_keys = []
-        # for key in modelparam:
-        #     param = getattr(model,key)
-        #     if np.all(param.linear):
-        #         if param.normalization is not None:
-        #             normfactor_key = f'{key}_scale'
-        #             normfactor_keys.append(normfactor_key)
-        #             try:
-        #                 model.addnonlinear(normfactor_key,lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
-        #                 getattr(model,normfactor_key).freeze(1)
-        #             except KeyError:
-        #                 pass
-                    
+        # Enforce model normalization
+        normfactor_keys = []
+        for key in modelparam:
+            param = getattr(model,key)
+            if np.all(param.linear):
+                if param.normalization is not None:
+                    normfactor_key = f'{key}_scale'
+                    normfactor_keys.append(normfactor_key)
+                    try:
+                        model.addnonlinear(normfactor_key,lb=-np.inf,ub=np.inf,par0=1,description=f'Normalization factor of {key}')
+                        getattr(model,normfactor_key).freeze(1)
+                    except KeyError:
+                        pass
+        modelparam += normfactor_keys
+        
 
         # # Get some basic information on the parameter vector
         # modelparam = model._parameter_list(order='vector')
@@ -187,6 +188,7 @@ class FitResult(dict):
             Model response at the fitted parameter values. 
         """
         try:
+            model = model.copy()
             modelparam = model._parameter_list('vector')
             modelparam, fitparams, fitparam_idx = self._extarct_params_from_model(model)
         except AttributeError:
@@ -199,7 +201,7 @@ class FitResult(dict):
         response = model(*constants,**parameters)
         return response
     
-    def propagate(self, model, *constants, lb=None, ub=None):
+    def propagate(self, model, *constants, lb=None, ub=None,samples=None):
         """
         Propagate the uncertainty in the fit results to a model's response.
 
@@ -223,7 +225,10 @@ class FitResult(dict):
         lb : array_like, optional 
             Lower bounds of the model response.
         ub : array_like, optional 
-            Upper bounds of the model response.   
+            Upper bounds of the model response. 
+        samples : int, optional
+            Number of samples to use when propagating a bootstraped uncertainty. If not provided, default value is 1000.
+
 
         Returns
         -------
@@ -231,8 +236,10 @@ class FitResult(dict):
         responseUncert : :ref:`UQResult`
             Uncertainty quantification of the model's response.
         """
+        
 
         try:
+            model = model.copy()
             modelparam = model._parameter_list('vector')
             modelparam, fitparams, fitparam_idx = self._extarct_params_from_model(model)
 
@@ -241,7 +248,7 @@ class FitResult(dict):
 
 
         # Propagate the uncertainty from that subset to the model
-        modeluq = self.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in fitparam_idx]),lb,ub)
+        modeluq = self.paramUncert.propagate(lambda param: model(*constants,*[param[s] for s in fitparam_idx]),lb,ub,samples)
         return modeluq
     
 

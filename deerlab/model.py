@@ -218,6 +218,13 @@ class Parameter():
             self.frozen = False
             self.value = None
     #---------------------------------------------------------------------------------------
+    def copy(self):
+        """
+        Return a deep copy of the parameter
+        """
+
+        return deepcopy(self)
+
 #===================================================================================
 
 
@@ -867,7 +874,7 @@ class Model():
 
         # Check that all parameters have been passed
         if len(θ)!=self.Nparam:
-            raise SyntaxError(f'The model requires {self.Nparam} parameters, but {len(args_list)} were specified.')   
+            raise SyntaxError(f'The model requires {self.Nparam} parameters, but {len(θ)} were specified.')   
 
         # Determine which parameters are linear and which nonlinear
         θlin, θnonlin = self._split_linear(θ)
@@ -973,6 +980,13 @@ class Model():
         """
         return self._parameter_table()      
     #---------------------------------------------------------------------------------------
+    def copy(self):
+        """
+        Return a deep copy of the model
+        """
+
+        return deepcopy(self)
+
 #===================================================================================
 
 #==============================================================================
