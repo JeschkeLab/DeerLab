@@ -99,7 +99,7 @@ Example of the model evaluated at the start values of the parameters:
 # =================================================================
 def _normalize(r,P):
     if not all(P==0):
-        P = P/np.trapz(P,r)
+        P = P/np.trapezoid(P,r)
     return P
 # =================================================================
 
@@ -110,7 +110,7 @@ def _multigaussfun(r,r0,sig):
     P = np.sqrt(1/(2*np.pi))*1/sig*np.exp(-0.5*((r.T-r0)/sig)**2)
     if not np.all(P==0):
         # Normalization
-        P = np.squeeze(P)/np.sum([np.trapezoid(c,r) for c in P.T])
+        P = np.squeeze(P)/np.array([np.trapezoid(c,r) for c in P.T]).sum()
     else: 
         P = np.squeeze(P)
     return P
