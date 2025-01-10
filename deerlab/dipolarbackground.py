@@ -1,7 +1,7 @@
 # dipolarbackground.py - Multipathway background generator
 # --------------------------------------------------------
 # This file is a part of DeerLab. License is MIT (see LICENSE.md).
-# Copyright(c) 2019-2023: Luis Fabregas, Stefan Stoll and other contributors.
+# Copyright(c) 2019-2025: Luis Fabregas, Stefan Stoll, Hugo Karas and other contributors.
 
 import numpy as np
 import inspect
@@ -206,3 +206,105 @@ def dipolarbackground(t, pathways, basis):
                 B *= basis(tdip)
 
     return B
+
+def dipolarbackgroundmodel(experiment,basis=None,parametrization='reftimes'):
+    """
+    
+    Parameters
+    ----------
+    experiment : :ref:`ExperimentInfo`
+        The Experimental information obtained from experiment models (ex_).
+    
+    basis : :ref:`Model`, optional
+        The basis model for the intermolecular (background) contribution. If not specified, a background arising from a homogenous 3D distribution of spins is used.
+
+    parametrization : string, optional
+        Parametrization strategy of the dipolar pathway refocusing times. Must be one of the following:
+            
+            * ``'reftimes'`` - Each refocusing time is represented individually as a parameter.
+            * ``'delays'`` - The pulse delays are introduced as parameters from which the refocusing times are computed. Requires ``experiment`` to be specified.
+            * ``'shift'`` - A time shift is introduced as a parameter to represent the variability of the refocusing times from their theoretical values. Requires ``experiment`` to be specified.
+
+        The default is ``'reftimes'``. 
+
+    Returns
+    -------
+
+    BModel : :ref:`Model`
+
+    Examples
+    --------
+
+    """
+    from deerlab.dipolarmodel import _populate_dipolar_pathways_parameters
+
+    if basis is None:
+        from deerlab.bg_models import bg_hom3d
+        basis = bg_hom3d
+    npathways = experiment.npathways
+
+    signature = []
+    basis_signature = basis.signature.copy()
+    lam_in_basis = 'lam' in basis_signature
+    if lam_in_basis:
+        basis_signature.remove('lam')
+    signature.extend(basis_signature)
+
+    if parametrization=='reftimes':
+        if npathways==1:
+            signature.extend(['mod','reftime'])
+        else:
+            signature.extend(['lam'+str(i) for i in experiment.labels])
+            signature.extend(['reftime'+str(i) for i in experiment.labels])
+
+    elif parametrization=='delays':
+        signature.extend(['delay'+str(i+1) for i in range(len(experiment.delays))])
+        signature.extend(['lam'+str(i) for i in experiment.labels])
+
+    elif parametrization=='shift':
+        signature.extend(['shift'])
+        signature.extend(['lam'+str(i+1) for i in experiment.labels])
+    
+
+    # Construct the dipolar background model
+    def bckgrnd_fun(*param:tuple):
+        basis_constants = list(param[0:len(basis_signature)])
+        t = basis_constants[0] # t is always the first basis parameter
+        pathway_params = np.array(param[len(basis_signature):])
+        if parametrization=='reftimes':
+            λs = pathway_params[np.arange(0, len(pathway_params)//2, 1,)]
+            trefs = pathway_params[np.arange(len(pathway_params)//2,len(pathway_params),1)]
+        elif parametrization=='delays':
+            delays = pathway_params[0:len(experiment.delays)]
+            λs = pathway_params[len(delays):]
+            trefs = experiment.reftimes(*delays)
+        elif parametrization=='shift':
+            shift = pathway_params[0]
+            λs = pathway_params[1:]
+            delays = np.array(experiment.delays) + shift
+            trefs = experiment.reftimes(*delays)
+
+        if lam_in_basis:
+                basis_constants.append(λs[0])
+        
+        prod = np.ones_like(t)
+        scale = 1
+
+        for i in range(npathways):
+            scale -= λs[i]
+            if lam_in_basis:
+                basis_constants[-1] = λs[i]
+            prod *= basis(t-trefs[i],*basis_constants[1:])
+        return scale*prod
+
+    # Define the dipolar background model
+    bckgrnd_model = Model(bckgrnd_fun, signature=signature,constants=['t'])
+    bckgrnd_model = _populate_dipolar_pathways_parameters(bckgrnd_model,npathways,experiment=experiment,parametrization=parametrization)
+    
+    # Copy the basis parameters to the background model
+    for param in basis_signature:
+        if param =='t':
+            continue
+        getattr(bckgrnd_model,param).setas(getattr(basis,param))
+    
+    return bckgrnd_model
