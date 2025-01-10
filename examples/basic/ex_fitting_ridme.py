@@ -56,7 +56,7 @@ Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = dl.dipolarbackgroundmodel(experimentInfo)
+Bfcn = dl.dipolarbackgroundmodel(experimentInfo,dl.bg_strexp)
 Bfit = results.P_scale*results.evaluate(Bfcn,t)
 Bci = results.P_scale*results.propagate(Bfcn,t).ci(95)
 
