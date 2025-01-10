@@ -56,7 +56,7 @@ plt.figure(figsize=[8,5])
 
 # Plot the full detectable range
 tfull = np.arange(-2*tau1,2*tau2-4*tau3,0.008)
-Vmodelext =  dl.dipolarmodel(tfull,r,experiment=experiment)
+Vmodelext =  dl.dipolarmodel(tfull,r,experiment=experimentInfo)
 Vmodelext = dl.link(Vmodelext,lam23=['lam2','lam3'])
 
 # Extract results
