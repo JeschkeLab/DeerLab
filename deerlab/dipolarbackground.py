@@ -209,7 +209,9 @@ def dipolarbackground(t, pathways, basis):
 
 def dipolarbackgroundmodel(experiment,basis=None,parametrization='reftimes'):
     """
-    
+    Construct a dipolar background model for a given dipolar experiment. Currently limited to two-spin systems.
+    This model can be used for evaluating and extrapolating the fitted parameters of the dipolar background.
+
     Parameters
     ----------
     experiment : :ref:`ExperimentInfo`
@@ -234,10 +236,14 @@ def dipolarbackgroundmodel(experiment,basis=None,parametrization='reftimes'):
 
     Examples
     --------
-
+    To construct a dipolar background model from the fit results using the specified :ref:`ExperimentInfo`::
+            
+            Bfcn = dl.dipolarbackgroundmodel(experimentInfo)
+            Bfit = results.P_scale*results.evaluate(Bfcn,t)
+            Bci = results.P_scale*results.propagate(Bfcn,t).ci(95)
     """
     from deerlab.dipolarmodel import _populate_dipolar_pathways_parameters
-
+    from deerlab.model import Model
     if basis is None:
         from deerlab.bg_models import bg_hom3d
         basis = bg_hom3d
