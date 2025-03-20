@@ -885,15 +885,15 @@ def sophegrid(octants,maxphi,size,closed_phi=False):
 
     elif octants==0: # Dinfh symmetry (quarter of meridian in xz plane)
 
-        phi = np.zeros(1,size)
+        phi = np.zeros(size)
         theta = np.linspace(0,np.pi/2,size)
         weights = -2*(2*np.pi)*np.diff(np.cos(np.concatenate([[0], np.arange(dtheta/2,np.pi/2,dtheta), [np.pi/2]]))); # sum = 4*pi
 
     elif octants==-1: # O3 symmetry (z orientation only)
         
-        phi = 0
-        theta = 0
-        weights = 4*np.pi
+        phi = np.array([0])
+        theta = np.array([0])
+        weights = np.array([4*np.pi])
 
     else:    
         raise ValueError('Unsupported value #d for octants.',octants)
