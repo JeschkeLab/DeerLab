@@ -36,8 +36,8 @@ t = t + tmin
 r = np.linspace(1.5,6,50) # nm
 
 # Construct the model
-experimentmodel = dl.ex_ridme(tau1,tau2, pathways=[1])
-Vmodel = dl.dipolarmodel(t,r,Bmodel=dl.bg_strexp, experiment =experimentmodel)
+experimentInfo = dl.ex_ridme(tau1,tau2, pathways=[1])
+Vmodel = dl.dipolarmodel(t,r,Bmodel=dl.bg_strexp, experiment =experimentInfo)
 
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp)
@@ -56,9 +56,9 @@ Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,decay,stretch,reftime: results.P_scale*(1-mod)*dl.bg_strexp(t-reftime,decay,stretch)
-Bfit = results.evaluate(Bfcn)
-Bci = results.propagate(Bfcn).ci(95)
+Bfcn = dl.dipolarbackgroundmodel(experimentInfo,dl.bg_strexp)
+Bfit = results.P_scale*results.evaluate(Bfcn,t)
+Bci = results.P_scale*results.propagate(Bfcn,t).ci(95)
 
 plt.figure(figsize=[6,7])
 violet = '#4550e6'

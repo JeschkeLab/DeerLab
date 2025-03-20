@@ -4,7 +4,8 @@
 # Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.dipolarkernel import dipolarkernel, dipolarbackground
+from deerlab.dipolarkernel import dipolarkernel
+from deerlab.dipolarbackground import dipolarbackground
 from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
 from deerlab.model import Model,Penalty, link
@@ -16,7 +17,97 @@ from itertools import permutations
 import inspect
 from scipy.stats import multivariate_normal
 
+
 #===============================================================================
+def _populate_dipolar_pathways_parameters(model,npathways,spins=2,samespins=True,experiment=None,parametrization='reftimes',Q=None):
+    """
+    A private function to populate the dipolar pathways parameters in the model.
+
+    Parameters
+    ----------
+    model : :ref:`Model`
+        Model object to be populated with the dipolar pathways parameters.
+    npathways : int
+        Number of dipolar pathways.
+    spins : int
+        Number of spins in the system.
+    samespins : bool    
+        Enables the assumption of spectral permutability.
+    experiment : :ref:`ExperimentInfo`
+        Experimental information obtained from experiment models (``ex_``).
+    parametrization : str
+        Parametrization strategy of the dipolar pathway refocusing times.
+    Q : int
+        Number of interactions in the spins system.
+
+    Returns
+    -------
+    model : :ref:`Model`
+        Model object populated with the dipolar pathways parameters.
+    """
+
+    # Populate the basic information on the dipolar pathways parameters
+    if experiment is not None:
+        labels = experiment.labels
+        pulsedelay_names = inspect.signature(experiment.reftimes).parameters.keys()
+    else:
+        # Otherwise, just label them in order
+        labels = np.arange(1,npathways+1)
+    
+    if spins>2:
+        if Q is None:
+            raise ValueError('If spins>2, the number of interactions Q must be specified.')
+        
+    
+    for n in range(npathways):
+        if spins==2 and npathways==1:
+            # Special case: use modulation depth notation instead of general pathway amplitude
+            getattr(model,f'mod').set(lb=0,ub=1,par0=0.01,description=f'Modulation depth',unit='')
+        else:
+            pairwise = ''
+            if spins>2: 
+                pairwise = ' pairwise'   
+            if spins==2 or samespins:
+                getattr(model,f'lam{labels[n]}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{labels[n]}',unit='')
+            else:
+                for q in range(Q):
+                    getattr(model,f'lam{labels[n]}_{q+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{labels[n]} on interaction #{q+1}',unit='')
+        if parametrization=='reftimes':
+            if experiment is None:
+                theoretical_reftime = 0
+                reftime_variability = 20
+            else:
+                theoretical_reftime = experiment.reftimes(*experiment.delays)[n]
+                reftime_variability = 3*experiment.pulselength
+            if spins==2 and npathways==1:
+                # Special case: use reftime notation
+                getattr(model,f'reftime').set(description=f'Refocusing time',unit='μs',
+                    par0 = theoretical_reftime,  
+                    lb   = theoretical_reftime - reftime_variability,
+                    ub   = theoretical_reftime + reftime_variability)
+            else: 
+                # Special case: use reftime notation
+                getattr(model,f'reftime{labels[n]}').set(description=f'Refocusing time of{pairwise} pathway #{labels[n]}',unit='μs',
+                    par0 = theoretical_reftime,
+                    lb   = theoretical_reftime - reftime_variability,
+                    ub   = theoretical_reftime + reftime_variability)
+    if parametrization=='delays': 
+        experimental_delays = experiment.delays
+        delay_variability = 5*experiment.pulselength
+        for n,delay in enumerate(pulsedelay_names):
+            getattr(model,delay).set(description=f'Pulse delay {delay} of the experiment',unit='μs',
+                par0 = experimental_delays[n],
+                lb   = experimental_delays[n] - delay_variability,
+                ub   = experimental_delays[n] + delay_variability)
+    elif parametrization=='shift':
+        variability = 5*experiment.pulselength
+        getattr(model,'tshift').set(par0=0,lb=-variability,ub=variability,description=f'Variability of experimental pulse delays',unit='μs')
+    if spins>2: 
+        getattr(model,f'lamu').set(lb=0,ub=1,par0=0.5,description='Amplitude of unmodulated pairwise pathway',unit='')
+    
+    return model
+
+
 def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, parametrization='reftimes', npathways=1,  spins=2, harmonics=None,
                     excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, samespins=True, triangles=None, interp=True,):
     """
@@ -342,53 +433,9 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
             [getattr(Pmodel,f'chol{j+1}{q+1}').set(lb=-1,ub=1,par0=0.0,unit='nm',description=f'Cholesky factor ℓ{j+1}{q+1}') for j in np.arange(q+1,Q)]
     Nconstants = len(Pmodel._constantsInfo)
 
-    # Populate the basic information on the dipolar pathways parameters
-    for n in range(npathways):
-        if spins==2 and npathways==1:
-            # Special case: use modulation depth notation instead of general pathway amplitude
-            getattr(PathsModel,f'mod').set(lb=0,ub=1,par0=0.01,description=f'Modulation depth',unit='')
-        else:
-            pairwise = ''
-            if spins>2: 
-                pairwise = ' pairwise'   
-            if spins==2 or samespins:
-                getattr(PathsModel,f'lam{labels[n]}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{labels[n]}',unit='')
-            else:
-                for q in range(Q):
-                    getattr(PathsModel,f'lam{labels[n]}_{q+1}').set(lb=0,ub=1,par0=0.01,description=f'Amplitude of{pairwise} pathway #{labels[n]} on interaction #{q+1}',unit='')
-        if parametrization=='reftimes':
-            if experiment is None:
-                theoretical_reftime = 0
-                reftime_variability = 20
-            else:
-                theoretical_reftime = experiment.reftimes(*experiment.delays)[n]
-                reftime_variability = 3*experiment.pulselength
-            if spins==2 and npathways==1:
-                # Special case: use reftime notation
-                getattr(PathsModel,f'reftime').set(description=f'Refocusing time',unit='μs',
-                    par0 = theoretical_reftime,  
-                    lb   = theoretical_reftime - reftime_variability,
-                    ub   = theoretical_reftime + reftime_variability)
-            else: 
-                # Special case: use reftime notation
-                getattr(PathsModel,f'reftime{labels[n]}').set(description=f'Refocusing time of{pairwise} pathway #{labels[n]}',unit='μs',
-                    par0 = theoretical_reftime,
-                    lb   = theoretical_reftime - reftime_variability,
-                    ub   = theoretical_reftime + reftime_variability)
-    if parametrization=='delays': 
-        experimental_delays = experiment.delays
-        delay_variability = 5*experiment.pulselength
-        for n,delay in enumerate(pulsedelay_names):
-            getattr(PathsModel,delay).set(description=f'Pulse delay {delay} of the experiment',unit='μs',
-                par0 = experimental_delays[n],
-                lb   = experimental_delays[n] - delay_variability,
-                ub   = experimental_delays[n] + delay_variability)
-    elif parametrization=='shift':
-        variability = 5*experiment.pulselength
-        getattr(PathsModel,'tshift').set(par0=0,lb=-variability,ub=variability,description=f'Variability of experimental pulse delays',unit='μs')
-    if spins>2: 
-        getattr(PathsModel,f'lamu').set(lb=0,ub=1,par0=0.5,description='Amplitude of unmodulated pairwise pathway',unit='')
-        
+    PathsModel = _populate_dipolar_pathways_parameters(
+        PathsModel,npathways,spins=spins,samespins=samespins,experiment=experiment,parametrization=parametrization,Q=Q)
+            
     # Construct the signature of the dipolar signal model function
     signature = []
     parameters,linearparam = [],[]
