@@ -24,8 +24,8 @@ def mock_data():
 def penalty_fcn(): 
     def _penalty_fcn(mean,std): 
         P = dd_gauss(x,mean,std)
-        P = P/np.trapz(P,x)
-        return np.sqrt(P*(x - np.trapz(P*x,x))**2*np.mean(np.diff(x)))
+        P = P/np.trapezoid(P,x)
+        return np.sqrt(P*(x - np.trapezoid(P*x,x))**2*np.mean(np.diff(x)))
     return _penalty_fcn
 # -----------------------------------------------------------------------
 

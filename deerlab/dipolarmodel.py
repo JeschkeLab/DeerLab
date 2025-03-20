@@ -642,8 +642,8 @@ def dipolarpenalty(Pmodel, r, type, selection=None):
         def compactness_penalty(*args): 
             P = Pmodel(*[r]*Nconstants,*args)
             if not np.all(P==0):
-                P = P/np.trapz(P,r)
-            return np.sqrt(P*(r - np.trapz(P*r,r))**2*np.mean(np.diff(r)))
+                P = P/np.trapezoid(P,r)
+            return np.sqrt(P*(r - np.trapezoid(P*r,r))**2*np.mean(np.diff(r)))
         # Add the penalty to the Pmodel
         penalty = Penalty(compactness_penalty,selection,
                     signature = Pmodel._parameter_list(),

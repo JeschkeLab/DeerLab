@@ -188,7 +188,7 @@ def _hom3dex(t,conc,rex,lam):
     # Averaging integral
     z = np.linspace(0,1,1000)[np.newaxis,:]
     Dt = D*t[:,np.newaxis]*1e-6
-    Is =  4*np.pi/3*np.trapz(Dt*(1-3*z**2)*sici((Dt*(1-3*z**2))/((rex*1e-9)**3))[0],z,axis=1)
+    Is =  4*np.pi/3*np.trapezoid(Dt*(1-3*z**2)*sici((Dt*(1-3*z**2))/((rex*1e-9)**3))[0],z,axis=1)
     
     # Background function
     C_k = -Vex + Is + np.squeeze(Vex*(dipolarkernel(t,rex,integralop=False)))
@@ -242,7 +242,7 @@ def _hom3dex_phase(t,conc,rex,lam):
     ξ = 8*pi**2/9/np.sqrt(3)*(np.sqrt(3)+np.log(2-np.sqrt(3)))/np.pi*D
     z = np.linspace(0,1,1000)[np.newaxis,:]
     Dt = D*t[:,np.newaxis]*1e-6
-    Ic =  -ξ*(t*1e-6) + 4*np.pi/3*np.trapz(Dt*(1-3*z**2)*sici((Dt*np.abs(1-3*z**2))/((rex*1e-9)**3))[1],z,axis=1)
+    Ic =  -ξ*(t*1e-6) + 4*np.pi/3*np.trapezoid(Dt*(1-3*z**2)*sici((Dt*np.abs(1-3*z**2))/((rex*1e-9)**3))[1],z,axis=1)
     
     # Background function
     C_k = - Ic - np.squeeze(Vex*(dipolarkernel(t,rex,integralop=False,complex=True)).imag)

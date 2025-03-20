@@ -50,16 +50,17 @@ def _dd_docstring(model,notes):
     string += '\n'
     string += '\n'
     table = []
-    table.append(['Name','Lower','Upper','Type','Frozen','Unit','Description'])  
+    table.append(['Name','Lower','Upper','par0','Type','Frozen','Unit','Description'])  
     for n,paramname in enumerate(model._parameter_list(order='vector')): 
         param_str = f'``{paramname}``'
         lb_str = f'{np.atleast_1d(getattr(model,paramname).lb)[0]:5.3g}'
         ub_str = f'{np.atleast_1d(getattr(model,paramname).ub)[0]:5.3g}'
+        par0_str = f'{np.atleast_1d(getattr(model,paramname).par0)[0]:5.3g}'
         linear_str = "linear" if np.all(getattr(model,paramname).linear) else "nonlin"
         frozen_str = "Yes" if np.all(getattr(model,paramname).frozen) else "No"
         unit_str = str(getattr(model,paramname).unit)
         desc_str = str(getattr(model,paramname).description)
-        table.append([param_str,lb_str,ub_str,linear_str,frozen_str,unit_str,desc_str])
+        table.append([param_str,lb_str,ub_str,par0_str,linear_str,frozen_str,unit_str,desc_str])
     string += formatted_table(table)
     string += f'\n{notes}'
 
@@ -129,7 +130,7 @@ def _multirice3dfun(r,nu,sig):
     P[P<0] = 0
     
     # Normalization
-    P = np.squeeze(P)/np.sum([np.trapz(c,np.squeeze(r)) for c in P.T])
+    P = np.squeeze(P)/np.sum([np.trapezoid(c,np.squeeze(r)) for c in P.T])
     return P
 # =================================================================
 
@@ -197,7 +198,7 @@ dd_gauss2.__doc__ = _dd_docstring(dd_gauss2,notes) + docstr_example('dd_gauss2')
 #=======================================================================================
 #                                     dd_gauss3
 #=======================================================================================
-ntoes = r"""
+notes = r"""
 **Model**
 
 :math:`P(r) = a_1\frac{1}{\sigma_1\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_1\right>)^2}{2\sigma_1^2}\right) + a_2\frac{1}{\sigma_2\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_2\right>)^2}{2\sigma_2^2}\right) + a_3\frac{1}{\sigma_3\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r_3\right>)^2}{2\sigma_3^2}\right)`

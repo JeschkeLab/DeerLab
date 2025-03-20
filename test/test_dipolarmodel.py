@@ -320,7 +320,7 @@ def test_fit_Pnonparametric_normalization(V1path):
     
     result = fit(Vmodel,V1path,ftol=1e-5)
 
-    assert np.isclose(np.trapz(result.P,r),1)
+    assert np.isclose(np.trapezoid(result.P,r),1)
 # ======================================================================
 
 # Fixtures

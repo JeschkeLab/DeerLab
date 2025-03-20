@@ -30,7 +30,7 @@ def assert_ddmodel(model):
     assert all(P1 >= 0)
     assert all(P1 >= 0) and all(P2 >= 0)
     assert all(~np.isnan(P1)) and all(~np.isnan(P2)) and all(~np.isnan(P3)) and all(~np.isnan(P4))
-    assert np.round(np.trapz(P5,rnus),2) == 1
+    assert np.round(np.trapezoid(P5,rnus),2) == 1
     assert len(lower)==nParam
     assert len(upper)==nParam
     assert len(meta['names'])==nParam
