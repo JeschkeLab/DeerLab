@@ -21,3 +21,23 @@ def test_sophegrid():
     assert np.allclose(phi, np.array([0, 0, 1.5708, 0, 0.7854, 1.5708, 0, 0.5236, 1.0472, 1.5708, 0, 0.3927, 0.7854, 1.1781, 1.5708]),rtol=1e-4)
     assert np.allclose(theta, np.array([0, 0.3927, 0.3927, 0.7854, 0.7854, 0.7854, 1.1781, 1.1781, 1.1781, 1.1781, 1.5708, 1.5708, 1.5708, 1.5708, 1.5708]),rtol=1e-4)
     assert np.allclose(weights*4*np.pi, np.array([0.24146, 0.93818, 0.93818, 0.86676, 1.7335, 0.86676, 0.75499, 1.51, 1.51, 0.75499, 0.30645, 0.61289, 0.61289, 0.61289, 0.30645]),rtol=1e-4)
+
+def test_config():
+    show_config()   
+    
+    assert 'LAPACK' in config_dict['scipy']
+    assert 'operating_system' in config_dict
+
+    assert 'LAPACK' in config_dict['numpy']
+    assert 'version' in config_dict['scipy']
+    assert 'BLAS' in config_dict['scipy']
+    assert 'version' in config_dict['numpy']
+    assert 'BLAS' in config_dict['numpy']
+    assert 'operating_system_version' in config_dict
+    from deerlab.utils import show_config
+    config_dict = show_config(mode='dicts')
+
+    assert 'python_version' in config_dict
+
+    assert 'deerlab_version' in config_dict
+    assert 'cpu_cores' in config_dict
