@@ -22,28 +22,20 @@ def test_sophegrid():
     assert np.allclose(theta, np.array([0, 0.3927, 0.3927, 0.7854, 0.7854, 0.7854, 1.1781, 1.1781, 1.1781, 1.1781, 1.5708, 1.5708, 1.5708, 1.5708, 1.5708]),rtol=1e-4)
     assert np.allclose(weights*4*np.pi, np.array([0.24146, 0.93818, 0.93818, 0.86676, 1.7335, 0.86676, 0.75499, 1.51, 1.51, 0.75499, 0.30645, 0.61289, 0.61289, 0.61289, 0.30645]),rtol=1e-4)
 
-def test_config():
-    show_config()   
-    
-    assert 'LAPACK' in config_dict['scipy']
-    assert 'operating_system' in config_dict
+    phi, theta, weights = sophegrid(0,0,6)    
+    assert np.allclose(weights.sum(),1)
+    assert np.allclose(phi, np.array([0,	0,	0,	0,	0,	0]),rtol=1e-3)
+    assert np.allclose(theta, np.array([0,	0.3142,	0.6283,	0.9425,	1.2566,	1.5708]),rtol=1e-3)
+    assert np.allclose(weights*4*np.pi, np.array([0.1547,	1.2149,	2.3110,	3.1808,	3.7392,	1.9658]),rtol=1e-3)
 
-    assert 'LAPACK' in config_dict['numpy']
-    assert 'version' in config_dict['scipy']
-    assert 'BLAS' in config_dict['scipy']
-    assert 'version' in config_dict['numpy']
-    assert 'BLAS' in config_dict['numpy']
-    assert 'operating_system_version' in config_dict
-    from deerlab.utils import show_config
-    config_dict = show_config(mode='dicts')
-
-    assert 'python_version' in config_dict
-
+    phi, theta, weights = sophegrid(-1,0,6)    
     assert np.allclose(weights.sum(),1)
     assert np.allclose(phi, np.array([0]),rtol=1e-4)
     assert np.allclose(theta, np.array([0]),rtol=1e-4)
     assert np.allclose(weights*4*np.pi, np.array([12.5664]),rtol=1e-4)
 
+# ======================================================================
+# Test show_config function
 def test_config():
     from deerlab.utils import show_config
 
