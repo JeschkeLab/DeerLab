@@ -35,3 +35,23 @@ def test_sophegrid():
     assert np.allclose(phi, np.array([0]),rtol=1e-4)
     assert np.allclose(theta, np.array([0]),rtol=1e-4)
     assert np.allclose(weights*4*np.pi, np.array([12.5664]),rtol=1e-4)
+
+def test_config():
+    from deerlab.utils import show_config
+
+    config_dict = show_config(mode='dicts')
+
+    assert 'python_version' in config_dict
+    assert 'deerlab_version' in config_dict
+    assert 'cpu_cores' in config_dict
+    assert 'operating_system' in config_dict
+    assert 'operating_system_version' in config_dict
+
+    assert 'version' in config_dict['numpy']
+    assert 'BLAS' in config_dict['numpy']
+    assert 'LAPACK' in config_dict['numpy']
+    assert 'version' in config_dict['scipy']
+    assert 'BLAS' in config_dict['scipy']
+    assert 'LAPACK' in config_dict['scipy']
+    
+    show_config()   
