@@ -38,7 +38,7 @@ def forcefield_P(c0,c1,c2,c3):
     # Boltzmann distribution
     Pr = np.exp(-energy/thermal)
     # Ensure a probability density distribution
-    Pr /= np.trapz(Pr,r)
+    Pr /= np.trapezoid(Pr,r)
     return Pr
 
 # File location
