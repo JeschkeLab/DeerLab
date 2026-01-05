@@ -240,7 +240,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
         for idx in range(npathways):
             # Construct all the permutations of the two-spin interaction pathways (without repetitions)
             for perm in set(set(permutations([0]+[None]*(Q-1)))):
-                q = int(np.where(np.array(perm)==0)[0])
+                q = int(np.where(np.array(perm)==0)[0][0])
                 # Compute amplitude of the two-spin interaction pathway 
                 λp = λs[q][idx]
                 λ2k = factorial(Q-1)*λp*λu**(Q-1)

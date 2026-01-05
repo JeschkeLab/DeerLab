@@ -1412,7 +1412,7 @@ def link(model,**links):
                 else: 
                     model.Nnonlin -= Nremoved
                     # Update the parameter vector map
-                    mapping[unlinked_nonlinear_idx[n]] = link_indices
+                    mapping[unlinked_nonlinear_idx[n]] = link_indices[0]
                 # Delete the linked parameter from the model
                 delattr(model,param)
 
