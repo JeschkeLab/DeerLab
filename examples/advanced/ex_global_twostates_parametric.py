@@ -56,7 +56,7 @@ def Ptwostates(meanA, meanB, stdA, stdB, fracA):
     PA = fracA * dl.dd_gauss(r, meanA, stdA)
     PB = (1 - fracA) * dl.dd_gauss(r, meanB, stdB)
     P = PA + PB
-    P /= np.trapz(P)
+    P /= np.trapezoid(P)
     return P
 
 

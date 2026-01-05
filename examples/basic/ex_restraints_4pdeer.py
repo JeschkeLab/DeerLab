@@ -70,9 +70,9 @@ print(f'Standard deviation: {r_std:.3f} ({r_std_ci[0]:.3f}-{r_std_ci[1]:.3f}) nm
 
 # Plot distribution and confidence bands
 violet = '#4550e6'
-Pci95 = fit.PUncert.ci(95)/np.trapz(fit.P,r)
-Pci50 = fit.PUncert.ci(50)/np.trapz(fit.P,r)
-plt.plot(r,fit.P/np.trapz(fit.P,r),linewidth=2,color=violet,label='Distance distribution fit')
+Pci95 = fit.PUncert.ci(95)/np.trapezoid(fit.P,r)
+Pci50 = fit.PUncert.ci(50)/np.trapezoid(fit.P,r)
+plt.plot(r,fit.P/np.trapezoid(fit.P,r),linewidth=2,color=violet,label='Distance distribution fit')
 plt.fill_between(r,Pci95[:,0],Pci95[:,1],color=violet,alpha=0.3)
 plt.fill_between(r,Pci50[:,0],Pci50[:,1],color=violet,alpha=0.4)
 

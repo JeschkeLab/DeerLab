@@ -52,7 +52,7 @@ Vfit = results.model
 
 # Extract fitted distance distribution
 Pfit = results.evaluate(Pmodel,r)
-scale = np.trapz(Pfit,r)
+scale = np.trapezoid(Pfit,r)
 Puncert = results.propagate(Pmodel,r,lb=np.zeros_like(r))
 Pfit = Pfit/scale
 Pci95 = Puncert.ci(95)/scale
