@@ -969,7 +969,8 @@ def _config():
     module = importlib.import_module('deerlab')
     version = getattr(module,'__version__', 'unknown')
     config['deerlab_version'] = version
-    cpu_cores = os.process_cpu_count()
+    
+    cpu_cores = os.process_cpu_count() if hasattr(os, 'process_cpu_count') else os.cpu_count()
     operating_system = sys.platform
 
     config['cpu_cores'] = cpu_cores
@@ -1011,10 +1012,15 @@ def show_config(mode='stdout'):
     """
     Shows the current configuration of DeerLab, including the current machine infomation and the libaries that DeerLab is built upon.
 
+    Notes
+    -----
+    On Python < 3.13, the CPU core count is estimated using `os.cpu_count()`, which may not always be accurate. On Python >= 3.13, `os.process_cpu_count()` is used for a more accurate count.
+
     Parameters
     ----------
     mode : str, optional
         Indicates how to display the config information. ‘stdout’ prints to console, ‘dicts’ returns a dictionary of the configuration.
+    
     Returns
     -------
     config : dict, optional
