@@ -33,6 +33,10 @@ Release ``v1.2`` - December 2024
 - |enhancement| : Support Python 3.13
 - |fix| : All gaussian models now normalise to 1
 
+Release ``v1.1.5`` - January 2025
+------------------------------------------
+- |fix|: Moves to numpy 2.0 as a mimum requirement, and removes all `np.trapz` calls to `np.trapezoid`.
+
 Release ``v1.1.4`` - September 2024
 ------------------------------------------
 - |enhancement| : Expanded sophgrid to allow for closed phi integral. (:pr:`482`)
