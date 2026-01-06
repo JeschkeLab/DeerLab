@@ -975,7 +975,7 @@ def _config():
 
     config['cpu_cores'] = cpu_cores
     config['operating_system'] = operating_system
-    config['operating_system_version'] = os.uname().release
+    config['operating_system_version'] = platform.release()
     config['platform'] = platform.machine()
 
     # NNLS backendss
