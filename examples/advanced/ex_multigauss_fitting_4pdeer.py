@@ -81,8 +81,8 @@ for n in range(Nmax):
     # Calculate the 95%-confidence intervals
     Pci = Puq.ci(95)
     # Normalize the probability density functions
-    Pci /= np.trapz(Pfit, r)
-    Pfit /= np.trapz(Pfit, r)
+    Pci /= np.trapezoid(Pfit, r)
+    Pfit /= np.trapezoid(Pfit, r)
     # Plot the optimal fit with a thicker line
     if n == np.argmin(aic):
         lw = 4

@@ -151,8 +151,8 @@ class UQResult:
         elif uqtype == 'profile':
             xs = [self.pardist(n)[0] for n in range(nParam)]
             pardists = [self.pardist(n)[1] for n in range(nParam)]
-            means = [np.trapz(pardist*x,x) for x,pardist in zip(xs,pardists)]
-            std = [np.sqrt(np.trapz(pardist*(x-mean)**2,x)) for x,pardist,mean in zip(xs,pardists,means)]
+            means = [np.trapezoid(pardist*x,x) for x,pardist in zip(xs,pardists)]
+            std = [np.sqrt(np.trapezoid(pardist*(x-mean)**2,x)) for x,pardist,mean in zip(xs,pardists,means)]
             self.mean = means
             self.median = self.percentile(50)
             self.std = std
@@ -342,8 +342,8 @@ class UQResult:
 
         # Ensure normalization of the probability density function (if not a Dirac delta function)
         if not isdelta:
-            if np.trapz(pdf, x)!=0:
-                pdf = pdf/np.trapz(pdf, x)
+            if np.trapezoid(pdf, x)!=0:
+                pdf = pdf/np.trapezoid(pdf, x)
         
         return x, pdf
     #--------------------------------------------------------------------------------
