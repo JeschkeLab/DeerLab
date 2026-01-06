@@ -25,7 +25,16 @@ Release Notes
 - |api| : This will require changes in your scripts or code.
 
 
+Release ``v1.2`` - December 2024
+------------------------------------------
+- |feature| : `modelUncert` is now returned in the `FitResult` object
+- |fix| : Fixes issues with bootrstrap uncertainties
+- |api| : N bootstrap samples no longer produces N+1 samples
+- |enhancement| : Support Python 3.13
+- |fix| : All gaussian models now normalise to 1
+
 Release ``v1.1.5`` - January 2025
+------------------------------------------
 - |fix|: Moves to numpy 2.0 as a mimum requirement, and removes all `np.trapz` calls to `np.trapezoid`.
 
 Release ``v1.1.4`` - September 2024
