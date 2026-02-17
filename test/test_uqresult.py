@@ -97,4 +97,22 @@ def test_uncertainty_quantitification_attributes(uncertainty_quantification_simu
         pdfs_ref = [dd_gauss(x,mean,sigma) for x,mean,sigma in zip(xs,references['mean'],references['std'])]
         assert ovl(pdfs[0],pdfs_ref[0])>0.99
         assert ovl(pdfs[1],pdfs_ref[1])>0.99
+
+@pytest.mark.parametrize('method', ['moment', 'bootstrap', 'profile'])
+def test_to_and_from_dict(uncertainty_quantification_simulation, method):
+    """Test the to_dict and from_dict methods of the UQResult class"""
+
+    # Retrieve the results of the mock simulation
+    uq_objects, _ = uncertainty_quantification_simulation
+    
+    uq = uq_objects[method]
+    dct = uq.to_dict()
+    uq_reconstructed = UQResult.from_dict(dct)
+    assert type(uq_reconstructed) == UQResult
+    assert np.allclose(uq.mean,uq_reconstructed.mean,rtol=1e-2)
+    assert np.allclose(uq.std,uq_reconstructed.std,rtol=1e-2)
+    assert np.allclose(uq.median,uq_reconstructed.median,rtol=1e-2)
+    assert np.allclose(uq.ci(95),uq_reconstructed.ci(95),rtol=1e-2)
+    assert np.allclose(uq.ci(90),uq_reconstructed.ci(90),rtol=1e-2)
+    assert np.allclose(uq.ci(50),uq_reconstructed.ci(50),rtol=1e-2)
 # =================================================================================================

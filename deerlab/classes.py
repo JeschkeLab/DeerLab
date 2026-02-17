@@ -615,4 +615,109 @@ class UQResult:
  
     #--------------------------------------------------------------------------------
 
+    def to_dict(self):
+        """
+        Convert the UQResult object to a dictionary.
+
+        This method converts the UQResult object to a dictionary format, which can be useful for serialization or for easier access to the attributes of the object. 
+        The keys of the dictionary correspond to the attributes of the UQResult object, and the values are the corresponding attribute values.
+
+        Returns
+        -------
+        uq_dict : dict
+            A dictionary representation of the UQResult object, containing all its attributes and their corresponding values.
+        """
+        if self.type == 'moment':
+            uq_dict = {
+                'type': self.type,
+                'mean': self.mean,
+                'median': self.median,
+                'std': self.std,
+                'covmat': self.covmat,
+                'nparam': self.nparam,
+                'lb': self.__lb,
+                'ub': self.__ub
+            }
+        elif self.type == 'profile':
+            if self.__threshold_inputs is None:
+                raise ValueError('The threshold function was supplied directly, so the inputs to compute the threshold are not available. The to_dict method cannot be used in this case.')
+            uq_dict = {
+                'type': self.type,
+                'mean': self.mean,
+                'median': self.median,
+                'std': self.std,
+                'covmat': self.covmat,
+                'nparam': self.nparam,
+                'profile': self.profile,
+                'threshold_inputs': self.__threshold_inputs,
+                'data': self.__parfit,
+                'noiselvl': self.__noiselvl
+            }
+        elif self.type == 'bootstrap':
+            uq_dict = {
+                'type': self.type,
+                'mean': self.mean,
+                'median': self.median,
+                'std': self.std,
+                'covmat': self.covmat,
+                'nparam': self.nparam,
+                'samples': getattr(self, 'samples', None),
+                'data': getattr(self, '__parfit', None),
+                'noiselvl': getattr(self, '__noiselvl', None)
+            }
+        return uq_dict
+    
+    @classmethod
+    def from_dict(self, uq_dict):
+        """
+        Create a UQResult object from a dictionary.
+
+        This method creates a UQResult object from a dictionary representation, which can be useful for deserialization or for creating a UQResult object from a set of attributes stored in a dictionary. 
+        The keys of the input dictionary should correspond to the attributes of the UQResult object, and the values should be the corresponding attribute values.
+
+        Parameters
+        ----------
+        uq_dict : dict
+            A dictionary containing the attributes and their corresponding values to create a UQResult object.
+
+        Returns
+        -------
+        uq_result : :ref:`UQResult`
+            A UQResult object created from the input dictionary, with its attributes set according to the values in the dictionary.
+        """
+
+        if 'type' not in uq_dict:
+            raise KeyError("The input dictionary must contain the key 'type' to specify the type of UQResult to be created.")
+        
+        elif uq_dict['type'] == 'profile':
+            return UQResult(
+                uqtype='profile',
+                data=uq_dict.get('data', None),
+                covmat=None,
+                lb=None,
+                ub=None,
+                threshold_inputs=uq_dict.get('threshold_inputs'),
+                profiles=uq_dict.get('profile'),
+                noiselvl=uq_dict.get('noiselvl')
+            )
+        elif uq_dict['type'] == 'bootstrap':
+            return UQResult(
+                uqtype=uq_dict.get('type', 'void'),
+                data=uq_dict.get('samples', None),
+                covmat=None,
+                lb=None,
+                ub=None
+            )
+        elif uq_dict['type'] == 'moment':
+
+            return UQResult(
+                uqtype=uq_dict.get('type', 'void'),
+                data=uq_dict.get('mean', None) ,
+                covmat=uq_dict.get('covmat', None),
+                lb=None,
+                ub=None,
+                threshold=uq_dict.get('threshold', None),
+                profiles=uq_dict.get('profile', None)
+            )
+
 # =========================================================================
