@@ -119,7 +119,7 @@ plt.subplot(122)
 for n,(xA,xB) in enumerate(zip(xAfit,xBfit)): 
 
     Pfit = Pmodel(P_1=results.P_1,P_2=results.P_2,weight_1=xA,weight_2=xB)
-    Pfit /= np.trapz(Pfit,r)
+    Pfit /= np.trapezoid(Pfit,r)
     if n>1: label=None
     plt.plot(r,2*n + Pfit,'k',label='Total contribution' if n<1 else None)
     plt.fill(r,2*n + xA*results.P_1,color=green,alpha=0.5,label='State A (natural)' if n<1 else None)

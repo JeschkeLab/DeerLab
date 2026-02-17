@@ -207,7 +207,7 @@ def test_SNLLS_cost_value(mock_data,mock_Amodel):
 def test_SNLLS_fit_with_extra_penalty(mock_data,mock_Amodel):
     "Check that an additional penalty can be passed correctly to the SNLLS functional"
     beta = 0.05
-    compactness_penalty = lambda _,plin: beta*np.sqrt(plin*(r - np.trapz(plin*r,r))**2*dr)
+    compactness_penalty = lambda _,plin: beta*np.sqrt(plin*(r - np.trapezoid(plin*r,r))**2*dr)
     fit = snlls(mock_data,mock_Amodel,nlpar0,lb,ub,lbl,extrapenalty=compactness_penalty)
     assert np.all(abs(lin_param - fit.lin) < 1e-1) and np.all(abs(nonlin_param - fit.nonlin[0]) < 1e-1)
 # ======================================================================
@@ -216,7 +216,7 @@ def test_SNLLS_fit_with_multiple_extra_penalties(mock_data,mock_Amodel):
 # ======================================================================
     "Check that multiple additional penaltyies can be passed correctly to the SNLLS functional"
     beta = 0.05
-    compactness_penalty = lambda _,plin: beta*np.sqrt(plin*(r - np.trapz(plin*r,r))**2*dr)
+    compactness_penalty = lambda _,plin: beta*np.sqrt(plin*(r - np.trapezoid(plin*r,r))**2*dr)
     fit = snlls(mock_data,mock_Amodel,nlpar0,lb,ub,lbl,extrapenalty=[compactness_penalty])
     R = 0.5
     radial_penalty = lambda pnonlin,_: 1/R**2*(np.linalg.norm((pnonlin-nonlin_param)/nonlin_param-R))**2

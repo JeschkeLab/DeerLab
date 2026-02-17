@@ -240,7 +240,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
         for idx in range(npathways):
             # Construct all the permutations of the two-spin interaction pathways (without repetitions)
             for perm in set(set(permutations([0]+[None]*(Q-1)))):
-                q = int(np.where(np.array(perm)==0)[0])
+                q = int(np.where(np.array(perm)==0)[0][0])
                 # Compute amplitude of the two-spin interaction pathway 
                 λp = λs[q][idx]
                 λ2k = factorial(Q-1)*λp*λu**(Q-1)
@@ -642,8 +642,8 @@ def dipolarpenalty(Pmodel, r, type, selection=None):
         def compactness_penalty(*args): 
             P = Pmodel(*[r]*Nconstants,*args)
             if not np.all(P==0):
-                P = P/np.trapz(P,r)
-            return np.sqrt(P*(r - np.trapz(P*r,r))**2*np.mean(np.diff(r)))
+                P = P/np.trapezoid(P,r)
+            return np.sqrt(P*(r - np.trapezoid(P*r,r))**2*np.mean(np.diff(r)))
         # Add the penalty to the Pmodel
         penalty = Penalty(compactness_penalty,selection,
                     signature = Pmodel._parameter_list(),
