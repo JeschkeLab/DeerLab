@@ -3,7 +3,7 @@
 
 import numpy as np
 from deerlab.utils import Jacobian, nearest_psd
-from scipy.stats import norm
+from scipy.stats import norm, chi2
 from scipy.signal import fftconvolve
 from scipy.linalg import block_diag
 from scipy.optimize import brentq
@@ -51,14 +51,15 @@ class UQResult:
     profile : ndarray 
         Likelihood profile of the parameters. Only available for ``type='profile'``.
 
-    threshold : scalar
-        Treshold value used for the profile method. Only available for ``type='profile'``.  
+    threshold : function
+        Treshold function used for the profile method. Only available for ``type='profile'``.  
 
     
 
     """
 
-    def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None,threshold=None,profiles=None,noiselvl=None):
+    def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None,
+                 threshold_inputs=None,threshold=None,profiles=None,noiselvl=None):
         r"""
         Initializes the UQResult object.
 
@@ -85,9 +86,15 @@ class UQResult:
         ub : ndarray
             Upper bounds of the parameter estimates. Only applicable if ``uqtype='moment'``.
         
-        threshold : float
-            Threshold value used for the likelihood profile method. Only applicable if ``uqtype='profile'``.
         
+        threshold_inputs : dict, optional
+                Dictionary containing the inputs to compute the threshold value for the likelihood profile method. Required for ``uqtype='profile'``, unless ``threshold`` supplied. The dictionary should contain the following keys and values: 
+                - 'Npoints': Number of points in the fit
+                - 'cost': The cost of the fit
+        
+        threshold : function
+            Function that takes the coverage (confidence level) as input and returns the corresponding threshold value for the likelihood profile method. Only applicable if ``uqtype='profile'``. If not provided, the threshold value is computed based on the inputs provided in ``threshold_inputs``.
+
         profiles : list
             List of likelihood profiles for each parameter. Each element of the list should be a tuple of arrays
             ``(x, y)``, where ``x`` represents the values of the parameter and ``y`` represents the corresponding likelihoods.
@@ -111,7 +118,15 @@ class UQResult:
             self.__parfit = data
             self.__noiselvl = noiselvl
             self.profile = profiles
-            self.threshold = threshold
+            if callable(threshold):
+                self.__threshold_inputs=None
+                self.threshold = threshold
+            elif isinstance(threshold_inputs,dict):
+                self.__threshold_inputs = threshold_inputs
+                self.threshold = lambda coverage: noiselvl**2*chi2.ppf(coverage, df=1)/threshold_inputs['Npoints'] + threshold_inputs['cost']
+            else:
+                raise ValueError('For uqtype ''profile'', either a threshold function or a dictionary with the inputs to compute the threshold must be provided.')
+            
             nParam = len(np.atleast_1d(data))
 
         elif uqtype == 'bootstrap':

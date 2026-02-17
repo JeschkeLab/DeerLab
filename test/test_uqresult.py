@@ -41,17 +41,17 @@ def uncertainty_quantification_simulation():
     pdf2 = dd_gauss(x,means[1],std[1])
     pdf1 /= max(pdf1)
     pdf2 /= max(pdf2)
-    σ = 0.01
+    σ = 0.01 # Noise Level
     obj2likelihood = lambda f: 1/np.sqrt(σ*2*np.pi)*np.exp(-1/2*f/σ**2)
     likelihood2obj = lambda L: -2*np.log(L*np.sqrt(σ*2*np.pi))*σ**2
-    threshold = lambda coverage: σ**2*chi2.ppf(coverage, df=1) + likelihood2obj(max(pdf1))
+    threshold_inputs = {'Npoints': 1, 'cost': likelihood2obj(max(pdf1))}
     profile1 = {'y': likelihood2obj(pdf1), 'x':x}
     profile2 = {'y': likelihood2obj(pdf2), 'x':x}
 
     # Construct uncertainty quantification objects
     uq_moment = UQResult('moment',data=np.array(means),covmat=covmat)
     uq_bootstrap = UQResult('bootstrap',data=np.vstack(samples).T)
-    uq_profile = UQResult('profile',data=np.array(means),profiles=[profile1,profile2],threshold=threshold,noiselvl=σ)
+    uq_profile = UQResult('profile',data=np.array(means),profiles=[profile1,profile2],threshold_inputs=threshold_inputs,noiselvl=σ)
 
     mock_objects = {'moment': uq_moment, 'bootstrap': uq_bootstrap, 'profile': uq_profile}
     references = {'mean': means, 'std': std, 'median': p50, 'ci':[ci50,ci90,ci95], 'percentile': [p5,p50,p95]}
