@@ -232,7 +232,7 @@ notes =  r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_gengauss.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_gengauss.png", style="width: 50%">
     <br><br><br>    
 
 :math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{|r-\left<r\right>|}{\sigma}\right)^\beta \right)`
@@ -262,7 +262,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_skewgauss.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_skewgauss.png", style="width: 50%">
     <br><br><br>  
 
 :math:`P(r) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{2\sigma^2}\right)\left(1 + \mathrm{erf}\left(\alpha\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
@@ -379,7 +379,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_randcoil.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_randcoil.png", style="width: 50%">
     <br><br><br>
 
 :math:`P(r) = \frac{3}{(2\pi\nu_0)^{3/2}}4\pi r^2\exp(-\frac{3 r^2}{\nu_0})`
@@ -502,7 +502,7 @@ notes = r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_shell.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_shell.png", style="width: 50%">
     <br><br><br>
 
 :math:`P(r) = \left(R_2^6 P_\mathrm{B}(r|R_2) - R_1^6 P_\mathrm{B}(r|R_1) - 2(r_2^3 - r_1^3)P_\mathrm{BS}(r|R_1,R_2)\right)/(R_2^3 - R_1^3)^2`
@@ -555,7 +555,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_spherepoint.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_spherepoint.png", style="width: 50%">
     <br><br><br>
 
 :math:`P(r) = \begin{cases} \frac{3r(R^2-(d-r)^2)}{4dR^3} \quad \text{for} \quad d-R \leq r < d+R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
@@ -595,7 +595,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_spheresurf.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_spheresurf.png", style="width: 50%">
     <br><br><br>
 
 :math:`P(r) = \begin{cases} \frac{r}{2R^2} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
@@ -632,7 +632,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_shellshell.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_shellshell.png", style="width: 50%">
     <br><br><br>    
 
 :math:`P(r) = (R_1^3(R_2^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_2) - R_1^3(R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - R_2^3(R_3^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_3))/((R_3^3 - R_2^3)(R_2^3 - R_1^3))`
@@ -691,7 +691,7 @@ notes = r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_sphereshell.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_sphereshell.png", style="width: 50%">
     <br><br><br>     
 
 :math:`P(r) = \frac{3}{16R_1^3(R_2^3 - R_1^3)}\begin{cases} 12r^3R_1^2 - r^5  \quad \text{for} \quad 0\leq r < \min(2R_1,R_2 - R_1) \\ 8r^2(R_2^3 - R_1^3) - 3r(R_2^2 - R_1^2)^2 - 6r^3(R_2 - R_1)(R_2 + R_1) \quad \text{for} \quad R_2-R_1 \leq r < 2R_1 \\ 16r^2R_1^3 \quad \text{for} \quad 2R_1\leq r < R_2 - R_1  \\  r^5 - 6r^3(R_2^2 + R_1^2) + 8r^2(R_2^3 + R_1^3) - 3r(R_2^2 - R1_2)^2 \quad \text{for} \quad \max(R_2-R_1,2R_1) \leq r < R_1+R_2 \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
@@ -735,7 +735,7 @@ notes = r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_shellvoidshell.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_shellvoidshell.png", style="width: 50%">
     <br><br><br>    
 
 :math:`P(r) = \left(R_1^3((R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - (R_4^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_4)) + R_2^3((R_4^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_4) - (R_3^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_3)) \right)/((R_4^3 - R_3^3)(R_2^3 - R_1^3))`
@@ -806,7 +806,7 @@ notes = r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_shellvoidsphere.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_shellvoidsphere.png", style="width: 50%">
     <br><br><br>    
 
 
@@ -871,7 +871,7 @@ notes =  r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_sphere.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_sphere.png", style="width: 50%">
     <br><br><br>    
 
 :math:`P(r) = \begin{cases} \frac{3r^5}{16R^6} - \frac{9r^3}{4R^4} + \frac{3r^2}{R^3} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
