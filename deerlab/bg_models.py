@@ -110,6 +110,7 @@ def _hom3d(t,conc,lam):
     return B
 # Create model
 bg_hom3d = Model(_hom3d,constants='t')
+bg_hom3d.name = 'bg_hom3d'
 bg_hom3d.description = 'Background from a homogeneous distribution of spins in a 3D medium'
 # Add parameters
 bg_hom3d.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, unit='μM')
@@ -147,6 +148,7 @@ def _hom3dphase(t,conc,lam):
     return B
 # Create model
 bg_hom3d_phase = Model(_hom3dphase,constants='t')
+bg_hom3d_phase.name = 'bg_hom3d_phase'
 bg_hom3d_phase.description = 'Phase shift from a homogeneous distribution of spins in a 3D medium'
 # Add parameters
 bg_hom3d_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, unit='μM')
@@ -197,6 +199,7 @@ def _hom3dex(t,conc,rex,lam):
     return B
 # Create model
 bg_hom3dex = Model(_hom3dex,constants='t')
+bg_hom3dex.name = 'bg_hom3dex'
 bg_hom3dex.description = 'Background from a homogeneous distribution of spins with excluded volume'
 # Add parameters
 bg_hom3dex.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, unit='μM')
@@ -251,6 +254,7 @@ def _hom3dex_phase(t,conc,rex,lam):
     return B
 # Create model
 bg_hom3dex_phase = Model(_hom3dex_phase,constants='t')
+bg_hom3dex_phase.name = 'bg_hom3dex_phase'
 bg_hom3dex_phase.description = 'Phase shift from a homogeneous distribution of spins with excluded volume'
 # Add parameters
 bg_hom3dex_phase.conc.set(description='Spin concentration', lb=0.01, ub=5000, par0=50, unit='μM')
@@ -296,6 +300,7 @@ def _homfractal(t,fconc,fdim,lam):
 # ======================================================================
 # Create model
 bg_homfractal = Model(_homfractal, constants='t')
+bg_homfractal.name = 'bg_homfractal'
 bg_homfractal.description = 'Background from homogeneous spin distribution in a space of fractal dimension'
 # Add parameters
 bg_homfractal.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, unit='μmol/dmᵈ')
@@ -341,6 +346,7 @@ def _homfractal_phase(t,fconc,fdim,lam):
 # ======================================================================
 # Create model
 bg_homfractal_phase = Model(_homfractal_phase,constants='t')
+bg_homfractal_phase.name = 'bg_homfractal_phase'
 bg_homfractal_phase.description = 'Phase shift from a homogeneous distribution of spins in a fractal medium'
 # Add parameters
 bg_homfractal_phase.fconc.set(description='Fractal concentration of spins', lb=1e-20, ub=1e20, par0=1.0e-6, unit='μmol/dmᵈ')
@@ -367,6 +373,7 @@ def _exp(t,decay):
     return np.exp(-decay*np.abs(t))
 # Create model
 bg_exp = Model(_exp,constants='t')
+bg_exp.name = 'bg_exp'
 bg_exp.description = 'Exponential background model'
 # Add parameters
 bg_exp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.35, unit='μs⁻¹')
@@ -392,6 +399,7 @@ def _strexp(t,decay,stretch):
     return np.exp(-decay*abs(t)**stretch)
 # Create model
 bg_strexp = Model(_strexp,constants='t')
+bg_strexp.name = 'bg_strexp'
 bg_strexp.description = 'Stretched exponential background model'
 # Add parameters
 bg_strexp.decay.set(description='Decay rate', lb=0, ub=200, par0=0.25, unit='μs⁻¹')
@@ -415,6 +423,7 @@ def _prodstrexp(t,decay1,stretch1,decay2,stretch2):
     return strexp1*strexp2
 # Create model
 bg_prodstrexp = Model(_prodstrexp,constants='t')
+bg_prodstrexp.name = 'bg_prodstrexp'
 bg_prodstrexp.description = 'Product of two stretched exponentials background model'
 # Add parameters
 bg_prodstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, unit='μs⁻¹')
@@ -440,6 +449,7 @@ def _sumstrexp(t,decay1,stretch1,weight1,decay2,stretch2):
     return weight1*strexp1 + (1-weight1)*strexp2
 # Create model
 bg_sumstrexp = Model(_sumstrexp,constants='t')
+bg_sumstrexp.name = 'bg_sumstrexp'
 bg_sumstrexp.description = 'Sum of two stretched exponentials background model'
 # Add parameters
 bg_sumstrexp.decay1.set(description='Decay rate of 1st component', lb=0, ub=200, par0=0.25, unit='μs⁻¹')
@@ -463,6 +473,7 @@ def _poly1(t,p0,p1):
     return np.polyval([p1,p0],abs(t))
 # Create model
 bg_poly1 = Model(_poly1,constants='t')
+bg_poly1.name = 'bg_poly1'
 bg_poly1.description = 'Polynomial 1st-order background model'
 # Add parameters
 bg_poly1.p0.set(description='Intercept', lb=0, ub=200, par0=1, unit='')
@@ -484,6 +495,7 @@ def _poly2(t,p0,p1,p2):
     return np.polyval([p2,p1,p0],abs(t))
 # Create model
 bg_poly2 = Model(_poly2,constants='t')
+bg_poly2.name = 'bg_poly2'
 bg_poly2.description = 'Polynomial 2nd-order background model'
 # Add parameters
 bg_poly2.p0.set(description='Intercept', lb=0, ub=200, par0=1, unit='')
@@ -505,6 +517,7 @@ def _poly3(t,p0,p1,p2,p3):
     return np.polyval([p3,p2,p1,p0],abs(t))
 # Create model
 bg_poly3 = Model(_poly3,constants='t')
+bg_poly3.name = 'bg_poly3'
 bg_poly3.description = 'Polynomial 3rd-order background model'
 # Add parameters
 bg_poly3.p0.set(description='Intercept', lb=0, ub=200, par0=1, unit='')

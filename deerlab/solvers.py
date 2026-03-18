@@ -794,7 +794,7 @@ def snlls(y, Amodel, par0=None, lb=None, ub=None, lbl=None, ubl=None, nnlsSolver
         # Jacobian (non-linear part)
         Jnonlin = Jacobian(_ResidualsFcn,nonlinfit,lb,ub)
         # Jacobian (linear part)
-        scale = np.trapz(linfit,np.arange(Nlin))
+        scale = np.trapezoid(linfit,np.arange(Nlin))
         Jlin = (weights[:,np.newaxis]*Amodel(nonlinfit))[mask,:]
         if includeExtrapenalty:
             for penalty in extrapenalty:

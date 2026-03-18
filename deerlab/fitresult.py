@@ -3,6 +3,7 @@ from deerlab.dd_models import dd_gauss
 import inspect 
 import matplotlib.pyplot as plt
 import difflib
+from deerlab.classes import UQResult
 
 
 
@@ -16,7 +17,7 @@ class FitResult(dict):
     ----------
     model : ndarray
         The fitted model response.
-    modelUncert : 
+    modelUncert : :ref:`UQResult`
         Uncertainty quantification of the fitted model response.
     param : ndarray
         Fitted parameter vector ordered according to the model parameter indices.
@@ -397,4 +398,68 @@ class FitResult(dict):
                     label.set_fontsize(fontsize)
 
             return fig
+    
+    def to_dict(self):
+        """
+        Converts the FitResult object to a dictionary. 
+        This is used internally when saving the results to a file, but it can also be used by the user to convert the results to a dictionary format.
+        
+        Returns
+        -------
+        fit_dict : dict
+            Dictionary containing the results of the fit. The keys of the dictionary are the same as the attributes of the FitResult object.
+        """
+
+        fit_dict = {
+            'model': self.model,
+            'modelUncert': self.modelUncert.to_dict() if self.modelUncert is not None else None,
+            'param': self.param,
+            'paramUncert': self.paramUncert.to_dict() if self.paramUncert is not None else None,
+            'regparam': getattr(self,'regparam', None),
+            'noiselvl': getattr(self,'noiselvl', None),
+            'success': getattr(self,'success', None),
+            'cost': getattr(self,'cost', None),
+            'residuals': getattr(self,'residuals', None),
+            'stats': getattr(self,'stats', None),
+            'nonlin': getattr(self,'nonlin', None),
+            'nonlinUncert': self.nonlinUncert.to_dict() if self.nonlinUncert is not None else None,
+            'lin': getattr(self,'lin', None),
+            'linUncert': self.linUncert.to_dict() if self.linUncert is not None else None
+        }
+        return fit_dict
+
+    @classmethod
+    def from_dict(cls, fit_dict):
+        """
+        Creates a FitResult object from a dictionary. This is used internally when loading the results from a file, but it can also be used by the user to create a FitResult object from a dictionary format.
+
+        Parameters
+        ----------
+        fit_dict : dict
+            Dictionary containing the results of the fit. The keys of the dictionary are the same as the attributes of the FitResult object.
+
+        Returns
+        -------
+        fit_result : FitResult
+            FitResult object created from the input dictionary.
+        
+        """
+
+        fit_result = cls()
+        fit_result.model = fit_dict.get('model', None)
+        fit_result.modelUncert = UQResult.from_dict(fit_dict['modelUncert']) if fit_dict.get('modelUncert', None) is not None else None
+        fit_result.param = fit_dict.get('param', None)
+        fit_result.paramUncert = UQResult.from_dict(fit_dict['paramUncert']) if fit_dict.get('paramUncert', None) is not None else None
+        fit_result.regparam = fit_dict.get('regparam', None)
+        fit_result.noiselvl = fit_dict.get('noiselvl', None)
+        fit_result.success = fit_dict.get('success', None)
+        fit_result.cost = fit_dict.get('cost', None)
+        fit_result.residuals = fit_dict.get('residuals', None)
+        fit_result.stats = fit_dict.get('stats', None)
+        fit_result.nonlin = fit_dict.get('nonlin', None)
+        fit_result.nonlinUncert = UQResult.from_dict(fit_dict['nonlinUncert']) if fit_dict.get('nonlinUncert', None) is not None else None
+        fit_result.lin = fit_dict.get('lin', None)
+        fit_result.linUncert = UQResult.from_dict(fit_dict['linUncert']) if fit_dict.get('linUncert', None) is not None else None
+
+        return fit_result
 # ===========================================================================================
