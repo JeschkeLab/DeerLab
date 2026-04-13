@@ -54,6 +54,12 @@ class UQResult:
     threshold : function
         Treshold function used for the profile method. Only available for ``type='profile'``.  
 
+    lb : ndarray
+        Lower bounds of the parameters.
+    
+    ub : ndarray
+        Upper bounds of the parameters.
+
     
 
     """
@@ -144,15 +150,19 @@ class UQResult:
         else:
             raise NameError('uqtype not found. Must be: ''moment'', ''bootstrap'' or ''void''.')
 
+        # Set default bounds if not provided
         if lb is None:
             lb = np.full(nParam, -np.inf)
         
         if ub is None:
             ub = np.full(nParam, np.inf)
+
+        lb = np.array([(-np.inf if v is None else v) for v in lb])
+        ub = np.array([(np.inf if v is None else v) for v in ub])
             
         # Set private variables
-        self.__lb = lb
-        self.__ub = ub
+        self.lb = lb
+        self.ub = ub
         self.nparam = nParam
 
         # Create confidence intervals structure
@@ -234,8 +244,8 @@ class UQResult:
             # Original metadata
             newargs.append(self.mean)
             newargs.append(self.covmat)
-            newargs.append(self.__lb)
-            newargs.append(self.__ub)
+            newargs.append(self.lb)
+            newargs.append(self.ub)
         elif self.type=='bootstrap':
             newargs.append(self.samples)
             
@@ -349,8 +359,8 @@ class UQResult:
             pdf = fftconvolve(pdf, kernel, mode='same')
 
         # Clip the distributions outside the boundaries
-        pdf[x < self.__lb[n]] = 0
-        pdf[x > self.__ub[n]] = 0
+        pdf[x < self.lb[n]] = 0
+        pdf[x > self.ub[n]] = 0
 
         # Enforce non-negativity (takes care of negative round-off errors)
         pdf = np.maximum(pdf,0)
@@ -469,11 +479,11 @@ class UQResult:
             # Compute moment-based confidence intervals
             # Clip at specified box boundaries
             standardError = norm.ppf(p)*np.sqrt(np.diag(self.covmat))
-            confint[:,0] = np.maximum(self.__lb, self.mean.real - standardError)
-            confint[:,1] = np.minimum(self.__ub, self.mean.real + standardError)
+            confint[:,0] = np.maximum(self.lb, self.mean.real - standardError)
+            confint[:,1] = np.minimum(self.ub, self.mean.real + standardError)
             if iscomplex:
-                confint[:,0] = confint[:,0] + 1j*np.maximum(self.__lb, self.mean.imag - standardError)
-                confint[:,1] = confint[:,1] + 1j*np.minimum(self.__ub, self.mean.imag + standardError)
+                confint[:,0] = confint[:,0] + 1j*np.maximum(self.lb, self.mean.imag - standardError)
+                confint[:,1] = confint[:,1] + 1j*np.minimum(self.ub, self.mean.imag + standardError)
 
         elif self.type=='bootstrap':
             # Compute bootstrap-based confidence intervals
@@ -573,7 +583,7 @@ class UQResult:
                 model = lambda p: np.concatenate([model_(p).real,model_(p).imag])
 
             # Get jacobian of model to be propagated with respect to parameters
-            J = Jacobian(model,parfit,self.__lb,self.__ub)
+            J = Jacobian(model,parfit,self.lb,self.ub)
 
             # Clip at boundaries
             modelfit = np.maximum(modelfit,lb)
@@ -635,8 +645,8 @@ class UQResult:
                 'std': self.std,
                 'covmat': self.covmat,
                 'nparam': self.nparam,
-                'lb': self.__lb,
-                'ub': self.__ub
+                'lb': self.lb,
+                'ub': self.ub
             }
         elif self.type == 'profile':
             if self.__threshold_inputs is None:
