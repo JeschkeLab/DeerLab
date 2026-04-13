@@ -6,6 +6,8 @@ import scipy.optimize as opt
 from types import FunctionType
 from functools import wraps
 import pickle
+from tqdm.auto import tqdm
+from joblib import Parallel
 
 def parse_multidatasets(y_, A, weights, noiselvl, precondition=False, masks=None, subsets=None):
 #===============================================================================
@@ -282,7 +284,6 @@ def goodness_of_fit(x,xfit,Ndof,noiselvl):
             stats['aic'] - Akaike information criterion
             stats['aicc'] - Corrected Akaike information criterion
             stats['bic'] - Bayesian information criterion
-            stats['autocorr'] - Autocorrelation based on Durbin–Watson statistic
     """
     sigma = noiselvl
     Ndof = np.maximum(Ndof,1)
@@ -955,3 +956,25 @@ def choleskycovmat(Q,cholfactors):
 
     return Σ 
 # ----------------------------------------------------------------------------------
+
+class _ProgressParallel(Parallel):
+    """
+    Patch for joblib.Parallel
+
+    Overrides the print_progress() method to enable the synchronous use of the TQDM bar
+    even for parallel processing.  
+    """
+    def __init__(self, use_tqdm=True, total=None, *args, **kwargs):
+        self._use_tqdm = use_tqdm
+        self._total = total
+        super().__init__(*args, **kwargs)
+
+    def __call__(self, *args, **kwargs):
+        with tqdm(disable=not self._use_tqdm, total=self._total) as self._pbar:
+            return Parallel.__call__(self, *args, **kwargs)
+
+    def print_progress(self):
+        if self._total is None:
+            self._pbar.total = self.n_dispatched_tasks
+        self._pbar.n = self.n_completed_tasks
+        self._pbar.refresh()
