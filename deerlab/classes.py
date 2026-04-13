@@ -694,8 +694,8 @@ class UQResult:
                 uqtype='profile',
                 data=uq_dict.get('data', None),
                 covmat=None,
-                lb=None,
-                ub=None,
+                lb=uq_dict.get('lb', None),
+                ub=uq_dict.get('ub', None),
                 threshold_inputs=uq_dict.get('threshold_inputs'),
                 profiles=uq_dict.get('profile'),
                 noiselvl=uq_dict.get('noiselvl')
@@ -705,8 +705,8 @@ class UQResult:
                 uqtype=uq_dict.get('type', 'void'),
                 data=uq_dict.get('samples', None),
                 covmat=None,
-                lb=None,
-                ub=None
+                lb=uq_dict.get('lb', None),
+                ub=uq_dict.get('ub', None),
             )
         elif uq_dict['type'] == 'moment':
 
