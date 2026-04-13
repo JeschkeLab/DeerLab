@@ -8,7 +8,7 @@ import tomllib
 import re
 
 supported_formats = ['hdf5', 'json', 'toml']
-supported_types = ['FitResult', 'UQResult', 'Model']
+supported_types = ['FitResult', 'UQResult', ]
 
 
 #=======================================================================================

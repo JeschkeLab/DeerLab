@@ -11,6 +11,8 @@ from matplotlib.figure import Figure
 import h5py
 import io
 
+from test_uqresult import uncertainty_quantification_simulation
+
 # Shared test data
 t = np.linspace(-0.5, 5, 100)
 r = np.linspace(2, 5, 50)
@@ -134,3 +136,22 @@ def test_fitresult_save_load_toml(fitresult):
 
 
 # ======================================================================
+
+@pytest.mark.parametrize('method', ['moment', 'bootstrap', 'profile'])
+def test_UQResult_saving(uncertainty_quantification_simulation, method):
+    "Check that UQResult can be saved and loaded from a JSON string"
+
+    # Retrieve the results of the mock simulation
+    uq_objects, references = uncertainty_quantification_simulation
+    uq = uq_objects[method]
+
+    json_str = json_dumps(uq)
+    assert isinstance(json_str, str)
+    assert len(json_str) > 0
+    UQresult_loaded = json_loads(json_str)
+    assert isinstance(UQresult_loaded, dl.UQResult)
+    assert np.allclose(UQresult_loaded.mean, uq.mean)
+    assert UQresult_loaded.type == uq.type
+    assert np.allclose(UQresult_loaded.std, uq.std)
+    assert np.allclose(UQresult_loaded.lb, uq.lb)
+    assert np.allclose(UQresult_loaded.ub, uq.ub)
