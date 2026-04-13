@@ -105,3 +105,16 @@ def test_dd_wormchain():
 
 def test_dd_wormgauss():
     assert_ddmodel(dl.dd_wormgauss)
+
+
+def test_freezing_model():
+    "Check that freezing parameters of a model works as expected"
+
+    # Create model and freeze parameters
+    model = dl.dd_gauss
+    model.mean.freeze(3)
+    model.std.freeze(0.2)
+
+    # Check that the frozen parameters are correctly set
+    assert model.mean.frozen and model.mean.value == 3
+    assert model.std.frozen and model.std.value == 0.2
