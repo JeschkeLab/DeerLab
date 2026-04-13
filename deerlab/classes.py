@@ -714,8 +714,8 @@ class UQResult:
                 uqtype=uq_dict.get('type', 'void'),
                 data=uq_dict.get('mean', None) ,
                 covmat=uq_dict.get('covmat', None),
-                lb=None,
-                ub=None,
+                lb=uq_dict.get('lb', None),
+                ub=uq_dict.get('ub', None),
                 threshold=uq_dict.get('threshold', None),
                 profiles=uq_dict.get('profile', None)
             )

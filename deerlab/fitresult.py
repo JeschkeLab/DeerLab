@@ -4,6 +4,7 @@ import inspect
 import matplotlib.pyplot as plt
 import difflib
 from deerlab.classes import UQResult
+from deerlab.model import Model
 
 
 
@@ -409,24 +410,47 @@ class FitResult(dict):
         fit_dict : dict
             Dictionary containing the results of the fit. The keys of the dictionary are the same as the attributes of the FitResult object.
         """
+        def _prepare_value(obj):
+            if isinstance(obj, UQResult):
+                d = obj.to_dict()
+                d['__type__'] = 'UQResult'
+                return d
+            elif isinstance(obj, list):
+                return [_prepare_value(item) for item in obj]
+            elif isinstance(obj, dict):
+                return {str(k): _prepare_value(v) for k, v in obj.items()}
+            return obj
 
-        fit_dict = {
-            'model': self.model,
-            'modelUncert': self.modelUncert.to_dict() if self.modelUncert is not None else None,
-            'param': self.param,
-            'paramUncert': self.paramUncert.to_dict() if self.paramUncert is not None else None,
-            'regparam': getattr(self,'regparam', None),
-            'noiselvl': getattr(self,'noiselvl', None),
-            'success': getattr(self,'success', None),
-            'cost': getattr(self,'cost', None),
-            'residuals': getattr(self,'residuals', None),
-            'stats': getattr(self,'stats', None),
-            'nonlin': getattr(self,'nonlin', None),
-            'nonlinUncert': self.nonlinUncert.to_dict() if self.nonlinUncert is not None else None,
-            'lin': getattr(self,'lin', None),
-            'linUncert': self.linUncert.to_dict() if self.linUncert is not None else None
-        }
-        return fit_dict
+        output_dict = {}
+
+        for key in self.keys():
+            obj = self[key]
+            if isinstance(obj, (int, float, np.ndarray, list, str)):
+                output_dict[str(key)] = _prepare_value(obj)
+            elif isinstance(obj, dict):
+                output_dict[str(key)] = _prepare_value(obj)
+            elif isinstance(obj, FitResult):
+                print('Warning: Skipping fitresult object for key:', key)
+            elif isinstance(obj, Model):
+                print('Warning: Skipping model object for key:', key)
+            elif isinstance(obj, UQResult):
+                output_dict[str(key)] = _prepare_value(obj)
+            elif obj is None:
+                output_dict[str(key)] = None
+            elif callable(obj):
+                continue
+            else:
+                print(f"Skipping key '{key}' of type {type(obj)}")
+
+        # conver paramlist to list of str
+        if 'paramlist' in output_dict:
+            output_dict['paramlist'] = [str(item) for item in output_dict['paramlist']]
+
+        # conert _param_idx to list of list of int
+        if '_param_idx' in output_dict:
+            output_dict['_param_idx'] = [list(item) for item in output_dict['_param_idx']]
+
+        return output_dict
 
     @classmethod
     def from_dict(cls, fit_dict):
@@ -445,21 +469,19 @@ class FitResult(dict):
         
         """
 
+        def _resolve_deerlab_types(obj):
+            if isinstance(obj, dict):
+                if obj.get('__type__') == 'UQResult':
+                    resolved = {k: _resolve_deerlab_types(v) for k, v in obj.items() if k != '__type__'}
+                    return UQResult.from_dict(resolved)
+                return {k: _resolve_deerlab_types(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [_resolve_deerlab_types(item) for item in obj]
+            return obj
+
+
         fit_result = cls()
-        fit_result.model = fit_dict.get('model', None)
-        fit_result.modelUncert = UQResult.from_dict(fit_dict['modelUncert']) if fit_dict.get('modelUncert', None) is not None else None
-        fit_result.param = fit_dict.get('param', None)
-        fit_result.paramUncert = UQResult.from_dict(fit_dict['paramUncert']) if fit_dict.get('paramUncert', None) is not None else None
-        fit_result.regparam = fit_dict.get('regparam', None)
-        fit_result.noiselvl = fit_dict.get('noiselvl', None)
-        fit_result.success = fit_dict.get('success', None)
-        fit_result.cost = fit_dict.get('cost', None)
-        fit_result.residuals = fit_dict.get('residuals', None)
-        fit_result.stats = fit_dict.get('stats', None)
-        fit_result.nonlin = fit_dict.get('nonlin', None)
-        fit_result.nonlinUncert = UQResult.from_dict(fit_dict['nonlinUncert']) if fit_dict.get('nonlinUncert', None) is not None else None
-        fit_result.lin = fit_dict.get('lin', None)
-        fit_result.linUncert = UQResult.from_dict(fit_dict['linUncert']) if fit_dict.get('linUncert', None) is not None else None
+        fit_result.update(_resolve_deerlab_types(fit_dict))
 
         return fit_result
 # ===========================================================================================
