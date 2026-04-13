@@ -978,3 +978,91 @@ class _ProgressParallel(Parallel):
             self._pbar.total = self.n_dispatched_tasks
         self._pbar.n = self.n_completed_tasks
         self._pbar.refresh()
+        
+# ----------------------------------------------------------------------------------
+
+def _config():
+    import importlib 
+    import sys
+    import os
+    import platform
+    config = {}
+
+    # Versions
+    config['python_version'] = sys.version.split()[0]
+    module = importlib.import_module('deerlab')
+    version = getattr(module,'__version__', 'unknown')
+    config['deerlab_version'] = version
+    
+    cpu_cores = os.process_cpu_count() if hasattr(os, 'process_cpu_count') else os.cpu_count()
+    operating_system = sys.platform
+
+    config['cpu_cores'] = cpu_cores
+    config['operating_system'] = operating_system
+    config['operating_system_version'] = platform.release()
+    config['platform'] = platform.machine()
+
+    # NNLS backendss
+    nnls_backends ={}
+    for nnls_backend in ['numpy','scipy','cvxopt','quadprog']:
+        print(f'Testing backend: {nnls_backend}')
+        state = importlib.util.find_spec(nnls_backend) is not None
+        if state:
+            module = importlib.import_module(nnls_backend)
+            version = getattr(module,'__version__', 'unknown')
+            nnls_backends[nnls_backend] = (True, version)
+        else:
+            nnls_backends[nnls_backend] = (False, None)
+    config['nnls_backends'] = nnls_backends
+
+    ## BLAS linking
+    import numpy as np
+    config['numpy'] = {'version': np.__version__}
+    blas_info = np.__config__.CONFIG['Build Dependencies']['blas']
+    lapack_info = np.__config__.CONFIG['Build Dependencies']['lapack']
+    config['numpy']['BLAS'] = blas_info['name']
+    config['numpy']['LAPACK'] = lapack_info['name']
+
+    import scipy
+    config['scipy'] = {'version': scipy.__version__}
+    scipy_blas_info = scipy.__config__.CONFIG['Build Dependencies']['blas']
+    scipy_lapack_info = scipy.__config__.CONFIG['Build Dependencies']['lapack']
+    config['scipy']['BLAS'] = scipy_blas_info['name']
+    config['scipy']['LAPACK'] = scipy_lapack_info['name']
+
+    return config
+
+def show_config(mode='stdout'):
+    """
+    Shows the current configuration of DeerLab, including the current machine infomation and the libaries that DeerLab is built upon.
+
+    Notes
+    -----
+    On Python < 3.13, the CPU core count is estimated using `os.cpu_count()`, which may not always be accurate. On Python >= 3.13, `os.process_cpu_count()` is used for a more accurate count.
+
+    Parameters
+    ----------
+    mode : str, optional
+        Indicates how to display the config information. ‘stdout’ prints to console, ‘dicts’ returns a dictionary of the configuration.
+    
+    Returns
+    -------
+    config : dict, optional
+        If `mode` is set to 'dicts', returns a dictionary containing the configuration information.
+    """
+    CONFIG = _config()
+    if mode == 'stdout':
+        try:  # Non-standard library, check import
+            import yaml
+
+            print(yaml.dump(CONFIG))
+        except ModuleNotFoundError:
+            import warnings
+            import json
+
+            warnings.warn("Install `pyyaml` for better output", stacklevel=1)
+            print(json.dumps(CONFIG, indent=2))
+    elif mode == 'dicts':
+        return CONFIG
+    else:
+        raise ValueError("Invalid mode. Use 'stdout' or 'dicts'.")
