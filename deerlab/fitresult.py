@@ -360,7 +360,7 @@ class FitResult(dict):
                         bins = np.linspace(-4,4,300)
                         N0 = dd_gauss(bins,0,1)
                         axs[n].get_yaxis().set_visible(False)
-                        axs[n].fill(bins,N0,'k',alpha=0.4, label='$\mathcal{N}(0,1)$')
+                        axs[n].fill(bins,N0,'k',alpha=0.4, label=r'$\mathcal{N}(0,1)$')
                         axs[n].set_xlabel('Normalized residuals',size=fontsize)       
                         axs[n].set_yticks([])
                         axs[n].spines.right.set_visible(False)
