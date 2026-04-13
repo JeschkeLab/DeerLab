@@ -123,7 +123,7 @@ def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, n
             getattr(model, parameter).unfreeze()
 
         profile = {'x':np.squeeze(grid),'y':profile}
-        uqresults[parameter] = UQResult('profile', data=getattr(fitresult,parameter), profiles=profile, threshold=threshold_inputs, noiselvl=noiselvl)
+        uqresults[parameter] = UQResult('profile', data=getattr(fitresult,parameter), profiles=profile, threshold_inputs=threshold_inputs, noiselvl=noiselvl)
         uqresults[parameter].profile = uqresults[parameter].profile[0]
         
     return uqresults
