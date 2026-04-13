@@ -47,10 +47,10 @@ t = t + tmin
 r = np.linspace(2,5,100) # nm
 
 # Construct the model
-Vmodel = dl.dipolarmodel(t,r, experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1]),bootcores=4)
+Vmodel = dl.dipolarmodel(t,r, experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1]))
 
 # Fit the model to the data
-results = dl.fit(Vmodel,Vexp,bootstrap=20)
+results = dl.fit(Vmodel,Vexp,bootstrap=20,bootcores=4)
 
 # In this example, just for the sake of time, we will just use 20 bootstrap samples.  
 
