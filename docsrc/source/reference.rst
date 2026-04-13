@@ -83,3 +83,4 @@ Reference Index
     ovl
     der_snr
     formatted_table
+    show_config
