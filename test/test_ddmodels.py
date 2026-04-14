@@ -111,7 +111,7 @@ def test_freezing_model():
     "Check that freezing parameters of a model works as expected"
 
     # Create model and freeze parameters
-    model = dl.dd_gauss
+    model = dl.dd_gauss.copy()
     model.mean.freeze(3)
     model.std.freeze(0.2)
 
