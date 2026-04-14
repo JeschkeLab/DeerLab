@@ -7,10 +7,12 @@ import numpy as np
 from scipy.stats import chi2 
 from deerlab import fit
 from deerlab import noiselevel,UQResult
+from deerlab.utils import _ProgressParallel
 import warnings 
 from tqdm import tqdm
+from joblib import delayed
 
-def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, noiselvl=None, verbose=False,**kargs):
+def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, noiselvl=None, verbose=False, cores=1, **kargs):
     r""" 
     Profile likelihood analysis for uncertainty quantification
 
@@ -48,6 +50,11 @@ def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, n
     verbose : boolean, optional
         Specifies whether to print the progress of the bootstrap analysis on the 
         command window, the default is false.
+
+    cores : scalar, optional
+        Number of CPU cores/processes for parallel computing. If ``cores=1`` no parallel 
+        computing is used. If ``cores=-1`` all available CPUs are used. The default is 
+        one core (no parallelization).
 
     kargs : keyword-argument pairs
         Any other keyword-argument pairs to be passed to the ``fit`` function. See the 
@@ -106,9 +113,7 @@ def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, n
             tqdm.write(f"Profiling model parameter '{parameter}':",end='')
 
         # Calculate the profile objective function for the parameter
-        profile = np.zeros(len(grid))
-        for n,value in enumerate(tqdm(grid, disable=not verbose)): 
-
+        def profile_sample(value):
             # Freeze the model parameter at current value
             getattr(model, parameter).freeze(value)
 
@@ -116,12 +121,12 @@ def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, n
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 fitresult_ = fit(model, y, *args, **kargs)
-
-            # Extract the objective function value
-            profile[n] = fitresult_.cost
-
+            cost = fitresult_.cost
             # Unfreeze the parameter
             getattr(model, parameter).unfreeze()
+            return cost
+        
+        profile = _ProgressParallel(n_jobs=cores,total=len(grid),use_tqdm=verbose)(delayed(profile_sample)(value) for value in grid)
 
         profile = {'x':np.squeeze(grid),'y':profile}
         uqresults[parameter] = UQResult('profile', data=getattr(fitresult,parameter), profiles=profile, threshold=threshold, noiselvl=noiselvl)
