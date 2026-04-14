@@ -7,6 +7,7 @@
 import inspect
 import numpy as np
 import scipy.special as spc
+from copy import deepcopy as _deepcopy
 from deerlab.model import Model
 from deerlab.utils import formatted_table
 
@@ -1042,3 +1043,19 @@ dd_wormgauss.persistence.set(description='Persistence length', lb=2, ub=100, par
 dd_wormgauss.std.set(description='Gaussian standard deviation', lb=0.01, ub=5, par0=0.2, unit='nm')
 # Add documentation
 dd_wormgauss.__doc__ = _dd_docstring(dd_wormgauss,notes) +  docstr_example('dd_wormgauss')
+
+
+# ---------------------------------------------------------------------------
+# Return a fresh deepcopy on every attribute access so that modifications
+# to a retrieved model never affect the global template.
+# ---------------------------------------------------------------------------
+_templates = {name: obj for name, obj in list(globals().items()) if name.startswith('dd_')}
+for _name in list(_templates):
+    del globals()[_name]
+
+__all__ = list(_templates.keys())
+
+def __getattr__(name):
+    if name in _templates:
+        return _deepcopy(_templates[name])
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
