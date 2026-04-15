@@ -207,27 +207,39 @@ def dipolarbackground(t, pathways, basis):
 
     return B
 
-def dipolarbackgroundmodel(experiment,basis=None,parametrization='reftimes'):
+def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftimes', spins=2, samespins=True):
     """
-    Construct a dipolar background model for a given dipolar experiment. Currently limited to two-spin systems.
+    Construct a dipolar background model for a given dipolar experiment.
     This model can be used for evaluating and extrapolating the fitted parameters of the dipolar background.
+    Supports both two-spin and multi-spin systems.
 
     Parameters
     ----------
-    experiment : :ref:`ExperimentInfo`
-        The Experimental information obtained from experiment models (ex_).
-    
+    experiment : :ref:`ExperimentInfo` or None, optional
+        The Experimental information obtained from experiment models (ex_). If the experiment is not specified, a single-pathway background model is constructed with a refocusing time of 0.
+
     basis : :ref:`Model`, optional
         The basis model for the intermolecular (background) contribution. If not specified, a background arising from a homogenous 3D distribution of spins is used.
 
     parametrization : string, optional
         Parametrization strategy of the dipolar pathway refocusing times. Must be one of the following:
-            
+
             * ``'reftimes'`` - Each refocusing time is represented individually as a parameter.
             * ``'delays'`` - The pulse delays are introduced as parameters from which the refocusing times are computed. Requires ``experiment`` to be specified.
             * ``'shift'`` - A time shift is introduced as a parameter to represent the variability of the refocusing times from their theoretical values. Requires ``experiment`` to be specified.
 
-        The default is ``'reftimes'``. 
+        The default is ``'reftimes'``.
+
+    spins : integer, optional
+        Number of spins in the system. If not specified, defaults to two-spin systems. For multi-spin
+        systems (``spins>2``), three-spin interaction contributions are accounted for in the background.
+        The default is ``2``.
+
+    samespins : boolean, optional
+        Only relevant when ``spins>2``. Enables the assumption of spectral permutability, i.e., the
+        assumption that all pairwise interactions have the same amplitude. If enabled, one amplitude
+        parameter ``lam{n}`` is used per pathway. If disabled, individual amplitudes ``lam{n}_{q}``
+        are used for each pathway-interaction combination. Enabled by default.
 
     Returns
     -------
@@ -237,17 +249,36 @@ def dipolarbackgroundmodel(experiment,basis=None,parametrization='reftimes'):
     Examples
     --------
     To construct a dipolar background model from the fit results using the specified :ref:`ExperimentInfo`::
-            
+
             Bfcn = dl.dipolarbackgroundmodel(experimentInfo)
             Bfit = results.P_scale*results.evaluate(Bfcn,t)
             Bci = results.P_scale*results.propagate(Bfcn,t).ci(95)
+
+    To construct a dipolar background model for a three-spin system::
+
+            Bfcn = dl.dipolarbackgroundmodel(experimentInfo, spins=3)
+            Bfit = results.P_scale*results.evaluate(Bfcn, t)
     """
     from deerlab.dipolarmodel import _populate_dipolar_pathways_parameters
     from deerlab.model import Model
+    from itertools import permutations
+    from math import factorial
+
     if basis is None:
         from deerlab.bg_models import bg_hom3d
         basis = bg_hom3d
-    npathways = experiment.npathways
+
+    if experiment is None:
+        npathways = 1
+        harmonics = [1]
+        pulsedelay_names = ['reftime']
+    else:
+        npathways = experiment.npathways
+        harmonics = np.array(experiment.harmonics)[:npathways]
+        pulsedelay_names = list(inspect.signature(experiment.reftimes).parameters.keys())
+
+    Q = spins*(spins-1)//2
+    
 
     signature = []
     basis_signature = basis.signature.copy()
@@ -256,61 +287,154 @@ def dipolarbackgroundmodel(experiment,basis=None,parametrization='reftimes'):
         basis_signature.remove('lam')
     signature.extend(basis_signature)
 
-    if parametrization=='reftimes':
-        if npathways==1:
-            signature.extend(['mod','reftime'])
-        else:
+    if spins == 2:
+        if parametrization=='reftimes':
+            if npathways==1:
+                signature.extend(['mod','reftime'])
+            else:
+                signature.extend(['lam'+str(i) for i in experiment.labels])
+                signature.extend(['reftime'+str(i) for i in experiment.labels])
+        elif parametrization=='delays':
+            signature.extend(pulsedelay_names)
             signature.extend(['lam'+str(i) for i in experiment.labels])
+        elif parametrization=='shift':
+            signature.extend(['tshift'])
+            signature.extend(['lam'+str(i+1) for i in experiment.labels])
+    else:
+        if parametrization=='reftimes':
+            if samespins:
+                signature.extend(['lam'+str(i) for i in experiment.labels])
+            else:
+                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in experiment.labels for q in range(Q)])
             signature.extend(['reftime'+str(i) for i in experiment.labels])
-
-    elif parametrization=='delays':
-        signature.extend(['delay'+str(i+1) for i in range(len(experiment.delays))])
-        signature.extend(['lam'+str(i) for i in experiment.labels])
-
-    elif parametrization=='shift':
-        signature.extend(['shift'])
-        signature.extend(['lam'+str(i+1) for i in experiment.labels])
-    
+            signature.append('lamu')
+        elif parametrization=='delays':
+            signature.extend(pulsedelay_names)
+            if samespins:
+                signature.extend(['lam'+str(i) for i in experiment.labels])
+            else:
+                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in experiment.labels for q in range(Q)])
+            signature.append('lamu')
+        elif parametrization=='shift':
+            signature.extend(['tshift'])
+            if samespins:
+                signature.extend(['lam'+str(i) for i in experiment.labels])
+            else:
+                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in experiment.labels for q in range(Q)])
+            signature.append('lamu')
 
     # Construct the dipolar background model
     def bckgrnd_fun(*param:tuple):
         basis_constants = list(param[0:len(basis_signature)])
         t = basis_constants[0] # t is always the first basis parameter
         pathway_params = np.array(param[len(basis_signature):])
-        if parametrization=='reftimes':
-            λs = pathway_params[np.arange(0, len(pathway_params)//2, 1,)]
-            trefs = pathway_params[np.arange(len(pathway_params)//2,len(pathway_params),1)]
-        elif parametrization=='delays':
-            delays = pathway_params[0:len(experiment.delays)]
-            λs = pathway_params[len(delays):]
-            trefs = experiment.reftimes(*delays)
-        elif parametrization=='shift':
-            shift = pathway_params[0]
-            λs = pathway_params[1:]
-            delays = np.array(experiment.delays) + shift
-            trefs = experiment.reftimes(*delays)
 
-        if lam_in_basis:
-                basis_constants.append(λs[0])
-        
-        prod = np.ones_like(t)
-        scale = 1
+        if spins == 2:
+            if parametrization=='reftimes':
+                λs = pathway_params[np.arange(0, len(pathway_params)//2, 1,)]
+                trefs = pathway_params[np.arange(len(pathway_params)//2,len(pathway_params),1)]
+            elif parametrization=='delays':
+                delays = pathway_params[0:len(experiment.delays)]
+                λs = pathway_params[len(delays):]
+                trefs = experiment.reftimes(*delays)
+            elif parametrization=='shift':
+                shift = pathway_params[0]
+                λs = pathway_params[1:]
+                delays = np.array(experiment.delays) + shift
+                trefs = experiment.reftimes(*delays)
 
-        for i in range(npathways):
-            scale -= λs[i]
             if lam_in_basis:
-                basis_constants[-1] = λs[i]
-            prod *= basis(t-trefs[i],*basis_constants[1:])
-        return scale*prod
+                basis_constants.append(λs[0])
+
+            prod = np.ones_like(t)
+            scale = 1
+            for i in range(npathways):
+                scale -= λs[i]
+                if lam_in_basis:
+                    basis_constants[-1] = λs[i]
+                prod *= basis(t-trefs[i],*basis_constants[1:])
+            return scale*prod
+
+        else:
+            # Multi-spin: parse parameters
+            if parametrization=='reftimes':
+                n_lam = npathways if samespins else npathways*Q
+                λs_flat = pathway_params[:n_lam]
+                trefs = pathway_params[n_lam:n_lam+npathways]
+                lamu = pathway_params[-1]
+            elif parametrization=='delays':
+                delays = pathway_params[0:len(experiment.delays)]
+                remaining = pathway_params[len(experiment.delays):]
+                trefs = experiment.reftimes(*delays)
+                λs_flat = remaining[:-1]
+                lamu = remaining[-1]
+            elif parametrization=='shift':
+                shift = pathway_params[0]
+                remaining = pathway_params[1:]
+                delays = np.array(experiment.delays) + shift
+                trefs = experiment.reftimes(*delays)
+                λs_flat = remaining[:-1]
+                lamu = remaining[-1]
+
+            # Build λs as [Q x npathways] array: λs_matrix[q, idx]
+            if samespins:
+                λs_matrix = np.tile(λs_flat, (Q, 1))
+            else:
+                λs_matrix = np.array(λs_flat).reshape(npathways, Q).T
+
+            # Wrap basis into a callable for dipolarbackground
+            if lam_in_basis:
+                def basis_fcn(tdip, lam):
+                    bc = basis_constants.copy()
+                    bc.append(lam)
+                    return basis(tdip, *bc[1:])
+            else:
+                def basis_fcn(tdip):
+                    return basis(tdip, *basis_constants[1:])
+
+            # Construct all multi-spin dipolar pathways
+            paths, threespin_paths = [], []
+            Λ0 = 1.0
+
+            for idx in range(npathways):
+                tref_idx = trefs[idx]
+                δ_idx = harmonics[idx]
+
+                for perm in set(permutations([0]+[None]*(Q-1))):
+                    q = int(np.where(np.array(perm)==0)[0][0])
+                    λp = λs_matrix[q, idx]
+                    λ2k = factorial(Q-1)*λp*lamu**(Q-1)
+                    tref_path = tuple([tref_idx if n==0 else None for n in perm])
+                    δs_path = tuple([δ_idx if n==0 else 0 for n in perm])
+                    paths.append({'amp': λ2k, 'reftime': tref_path, 'harmonic': δs_path})
+                    Λ0 -= λ2k
+
+                    for idx2 in range(idx+1, npathways):
+                        tref_idx2 = trefs[idx2]
+                        δ_idx2 = harmonics[idx2]
+                        for perm2 in set(permutations([0,1]+[None]*(Q-2))):
+                            perm2_arr = np.array(perm2)
+                            q2 = int(np.where(perm2_arr==1)[0][0])
+                            λm = λs_matrix[q2, idx]
+                            λ3k = 2*factorial(Q-2)*λp*λm*lamu**(Q-2)
+                            tref_path2 = tuple([tref_idx if n==0 else tref_idx2 if n==1 else None for n in perm2])
+                            δs_path2 = tuple([δ_idx if n==0 else δ_idx2 if n==1 else 0 for n in perm2])
+                            threespin_paths.append({'amp': λ3k, 'reftime': tref_path2, 'harmonic': δs_path2})
+                            Λ0 -= λ3k
+
+            paths.append({'amp': Λ0})
+            return dipolarbackground(t, paths+threespin_paths, basis_fcn)
 
     # Define the dipolar background model
     bckgrnd_model = Model(bckgrnd_fun, signature=signature,constants=['t'])
-    bckgrnd_model = _populate_dipolar_pathways_parameters(bckgrnd_model,npathways,experiment=experiment,parametrization=parametrization)
-    
+    bckgrnd_model = _populate_dipolar_pathways_parameters(bckgrnd_model, npathways, spins=spins, samespins=samespins,
+                                                          experiment=experiment, parametrization=parametrization,
+                                                          Q=Q if spins>2 else None)
+
     # Copy the basis parameters to the background model
     for param in basis_signature:
         if param =='t':
             continue
         getattr(bckgrnd_model,param).setas(getattr(basis,param))
-    
+
     return bckgrnd_model
