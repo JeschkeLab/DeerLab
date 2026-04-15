@@ -4,7 +4,7 @@ import numpy as np
 from deerlab.model import Model
 from deerlab.fit import fit
 from deerlab.dipolarmodel import ExperimentInfo,dipolarpenalty, dipolarmodel, ex_4pdeer, ex_3pdeer,ex_fwd5pdeer, ex_rev5pdeer, ex_sifter, ex_ridme, ex_dqc
-from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp
+from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp,UQResult
 from deerlab.utils import assert_docstring
 from pytest import fixture 
 
@@ -153,6 +153,7 @@ def test_phenomenological_Bmodel(V1path_phenoB):
     Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,std=0.2,decay=0.1,scale=1e5)
 
     assert np.allclose(Vsim,V1path_phenoB)
+   
 # ======================================================================
 
 # ======================================================================
@@ -164,6 +165,7 @@ def test_no_Bmodel(V1path_noB):
     Vsim = Vmodel(mod=0.3,reftime=0.0,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path_noB)
+    assert not hasattr(Vmodel,'Bmodel')
 # ======================================================================
 
 # ======================================================================
@@ -175,6 +177,19 @@ def test_model_1pathways(V1path):
     Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,std=0.2,scale=1e5)
 
     assert np.allclose(Vsim,V1path)
+# ======================================================================
+
+# ======================================================================
+def test_model_1pathways_background(V1path): 
+    "Check that the model with one dipolar pathway is correct"
+
+    Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
+    
+    Vsim = Vmodel(mod=0.3,reftime=0.0,conc=50,mean=3,std=0.2,scale=1e5)
+
+    assert np.allclose(Vsim,V1path)
+    assert hasattr(Vmodel,'Bmodel') and Vmodel.Bmodel is not None
+    assert isinstance(Vmodel.Bmodel,Model)
 # ======================================================================
 
 # ======================================================================
@@ -212,6 +227,8 @@ def test_fit_1pathways(V1path):
     result = fit(Vmodel,V1path,ftol=1e-4)
 
     assert np.allclose(result.model,V1path)
+    assert hasattr(result,'bg') and result.bg is not None and isinstance(result.bg,np.ndarray)
+    assert hasattr(result,'bgUncert') and result.bgUncert is not None and isinstance(result.bgUncert,UQResult)
 # ======================================================================
 
 # ======================================================================
@@ -449,7 +466,8 @@ def test_ex_fwd5pdeer_fit(Vfwd5pdeer,Pr):
     result = fit(Vmodel,Vfwd5pdeer,ftol=1e-4)
 
     assert np.allclose(Vfwd5pdeer,result.model,rtol=1e-3) and ovl(result.P/1e5,Pr)>0.975
-# ======================================================================
+# ========
+# ==============================================================
 
 # ======================================================================
 def test_ex_fwd5pdeer_pulselength(): 
