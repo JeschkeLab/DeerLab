@@ -207,7 +207,7 @@ def dipolarbackground(t, pathways, basis):
 
     return B
 
-def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftimes', spins=2, samespins=True):
+def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftimes', spins=2, samespins=True, **kwargs):
     """
     Construct a dipolar background model for a given dipolar experiment.
     This model can be used for evaluating and extrapolating the fitted parameters of the dipolar background.
@@ -241,6 +241,9 @@ def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftime
         parameter ``lam{n}`` is used per pathway. If disabled, individual amplitudes ``lam{n}_{q}``
         are used for each pathway-interaction combination. Enabled by default.
 
+    **kwargs:
+        Additional keyword arguments. If ``experiment`` is not specified, the number of pathways can be specified with the keyword argument ``npathways`` (default is 1).
+
     Returns
     -------
 
@@ -269,13 +272,18 @@ def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftime
         basis = bg_hom3d
 
     if experiment is None:
-        npathways = 1
+        npathways = kwargs.get('npathways', 1)
         harmonics = [1]
-        pulsedelay_names = ['reftime']
+        if npathways>1:
+            pulsedelay_names = ['reftime'+str(i+1) for i in range(npathways)]
+        else:
+            pulsedelay_names = ['reftime']
+        exp_labels = list(np.arange(1,npathways+1,dtype=int))
     else:
         npathways = experiment.npathways
         harmonics = np.array(experiment.harmonics)[:npathways]
         pulsedelay_names = list(inspect.signature(experiment.reftimes).parameters.keys())
+        exp_labels = experiment.labels
 
     Q = spins*(spins-1)//2
     
@@ -292,35 +300,35 @@ def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftime
             if npathways==1:
                 signature.extend(['mod','reftime'])
             else:
-                signature.extend(['lam'+str(i) for i in experiment.labels])
-                signature.extend(['reftime'+str(i) for i in experiment.labels])
+                signature.extend(['lam'+str(i) for i in exp_labels])
+                signature.extend(['reftime'+str(i) for i in exp_labels])
         elif parametrization=='delays':
             signature.extend(pulsedelay_names)
-            signature.extend(['lam'+str(i) for i in experiment.labels])
+            signature.extend(['lam'+str(i) for i in exp_labels])
         elif parametrization=='shift':
             signature.extend(['tshift'])
-            signature.extend(['lam'+str(i+1) for i in experiment.labels])
+            signature.extend(['lam'+str(i) for i in exp_labels])
     else:
         if parametrization=='reftimes':
             if samespins:
-                signature.extend(['lam'+str(i) for i in experiment.labels])
+                signature.extend(['lam'+str(i) for i in exp_labels])
             else:
-                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in experiment.labels for q in range(Q)])
-            signature.extend(['reftime'+str(i) for i in experiment.labels])
+                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in exp_labels for q in range(Q)])
+            signature.extend(['reftime'+str(i) for i in exp_labels])
             signature.append('lamu')
         elif parametrization=='delays':
             signature.extend(pulsedelay_names)
             if samespins:
-                signature.extend(['lam'+str(i) for i in experiment.labels])
+                signature.extend(['lam'+str(i) for i in exp_labels])
             else:
-                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in experiment.labels for q in range(Q)])
+                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in exp_labels for q in range(Q)])
             signature.append('lamu')
         elif parametrization=='shift':
             signature.extend(['tshift'])
             if samespins:
-                signature.extend(['lam'+str(i) for i in experiment.labels])
+                signature.extend(['lam'+str(i) for i in exp_labels])
             else:
-                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in experiment.labels for q in range(Q)])
+                signature.extend(['lam'+str(i)+'_'+str(q+1) for i in exp_labels for q in range(Q)])
             signature.append('lamu')
 
     # Construct the dipolar background model

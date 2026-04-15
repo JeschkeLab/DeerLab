@@ -637,7 +637,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
 
     # 
     if Bmodel is not None:
-        DipolarSignal.Bmodel = dipolarbackgroundmodel(experiment=experiment, basis=Bmodel, parametrization=parametrization, spins=spins, samespins=samespins)
+        DipolarSignal.Bmodel = dipolarbackgroundmodel(experiment=experiment, basis=Bmodel, parametrization=parametrization, spins=spins, samespins=samespins, npathways=npathways)
     
     if Pmodel is not None:
         DipolarSignal.Pmodel = Pmodel
