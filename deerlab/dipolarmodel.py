@@ -5,7 +5,7 @@
 
 import numpy as np
 from deerlab.dipolarkernel import dipolarkernel
-from deerlab.dipolarbackground import dipolarbackground
+from deerlab.dipolarbackground import dipolarbackground, dipolarbackgroundmodel
 from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
 from deerlab.model import Model,Penalty, link
@@ -212,7 +212,13 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
     Returns
     -------
     Vmodel : :ref:`Model`
-        Dipolar signal model object.
+        Dipolar signal model object. With these additional attributes:
+            * ``t`` - The time axis of the model.
+            * ``r`` - The distance axis of the model, only for two-spin systems.
+            * ``Bmodel`` - The multi-pathway background model object used in the construction of the dipolar signal model.
+            * ``Pmodel`` - The distance distribution model object used in the construction of the dipolar signal model.
+            
+
     """
 
     # If distance axis not specified default to a long range one
@@ -628,6 +634,16 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
                     min(t)-max(reftimes) - 3*experiment.pulselength - dt,
                     max(t)+max(reftimes) + 3*experiment.pulselength + dt,
                     dt)
+
+    # 
+    if Bmodel is not None:
+        DipolarSignal.Bmodel = dipolarbackgroundmodel(experiment=experiment, basis=Bmodel, parametrization=parametrization, spins=spins, samespins=samespins)
+    
+    if Pmodel is not None:
+        DipolarSignal.Pmodel = Pmodel
+    DipolarSignal.t = t
+    if spins==2:
+        DipolarSignal.r = r
 
     return DipolarSignal
 #===============================================================================
