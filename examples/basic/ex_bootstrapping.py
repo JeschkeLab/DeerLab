@@ -13,7 +13,9 @@ However, for publication-level analysis, these confidence intervals might be ina
 confidence intervals to get accurate estimates of the uncertainty. 
 Conviniently, ``fit`` integrates bootstrapping to make it accessible via the keyword argument ``bootstrap`` which specifies the
 number of samples to analyze to estimate the uncertainty. The larger this number, the more accurate 
-the confidence intervals but the longer the analysis will be. The standard for publication is typically 1000 samples. 
+the confidence intervals but the longer the analysis will be. The standard for publication is typically 250 samples. 
+
+To keep the analysis time reasonable, bootstrapping can be parallelized by specifying the number of CPU cores to use via the ``bootcores`` keyword.
 """ 
 
 import numpy as np
@@ -48,7 +50,7 @@ r = np.linspace(2,5,100) # nm
 Vmodel = dl.dipolarmodel(t,r, experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1]))
 
 # Fit the model to the data
-results = dl.fit(Vmodel,Vexp,bootstrap=20)
+results = dl.fit(Vmodel,Vexp,bootstrap=20,bootcores=4)
 
 # In this example, just for the sake of time, we will just use 20 bootstrap samples.  
 

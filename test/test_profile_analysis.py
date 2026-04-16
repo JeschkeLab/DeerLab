@@ -77,6 +77,25 @@ def test_grids(model, mock_data):
 # ======================================================================
 
 # ======================================================================
+def test_ncores(model, mock_data):
+    "Check that the number of cores can be specified"
+    from unittest.mock import patch
+    from deerlab.utils import _ProgressParallel
+
+    n_jobs_used = []
+
+    class TrackingParallel(_ProgressParallel):
+        def __init__(self, *args, **kwargs):
+            n_jobs_used.append(kwargs.get('n_jobs'))
+            super().__init__(*args, **kwargs)
+
+    with patch('deerlab.profile_analysis._ProgressParallel', TrackingParallel):
+        profile_analysis(model, mock_data, samples=5, noiselvl=noiselvl, cores=4)
+
+    assert any(n == 4 for n in n_jobs_used)
+# ======================================================================
+
+# ======================================================================
 def test_docstring():
     "Check that the docstring includes all variables and keywords."
     assert_docstring(profile_analysis)
