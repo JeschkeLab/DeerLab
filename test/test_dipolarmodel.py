@@ -258,6 +258,21 @@ def test_fit_3pathways(V3path):
     assert np.allclose(result.model,V3path)
 # ======================================================================
 
+# ======================================================================
+def test_freeze_fit_linear(V1path): 
+    "Check that the model can be correctly fitted with a frozen linear parameter"
+    
+    dd_model = dd_gauss
+    dd_model.std.freeze(0.25)
+
+    assert dd_model.std.frozen and dd_model.std.value == 0.25
+    Vmodel = dipolarmodel(t,r,dd_gauss,bg_hom3d,npathways=1)
+    assert Vmodel.std.frozen and Vmodel.std.value == 0.25
+    
+    result = fit(Vmodel,V1path,ftol=1e-4)
+
+    assert np.allclose(result.std,0.25)
+# ======================================================================
 # Fixtures
 # ----------------------------------------------------------------------
 @fixture(scope='module')

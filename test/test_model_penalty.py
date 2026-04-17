@@ -66,6 +66,7 @@ def test_weight_freeze(penalty_fcn):
     penaltyobj = Penalty(penalty_fcn,'icc')
     penaltyobj.weight.freeze(0.5)
     assert penaltyobj.weight.frozen==True and penaltyobj.weight.value==0.5
+    penaltyobj.weight.unfreeze()
 # ======================================================================
 
 # ======================================================================
@@ -74,6 +75,7 @@ def test_fit(penalty_fcn, model, mock_data, selection):
     "Check fitting with a penalty with ICC-selected weight"
     penaltyobj = Penalty(penalty_fcn, selection)
     penaltyobj.weight.set(lb=1e-6,ub=1e1)
+    assert not penaltyobj.weight.frozen
     result = fit(model,mock_data,x,penalties=penaltyobj)
     assert ovl(result.model,mock_data)>0.975
 # ======================================================================
@@ -89,6 +91,7 @@ def test_fit_with_penalty_weight(penalty_fcn, model, mock_data, case):
         penaltyobj.weight.freeze(0.00001)
     result = fit(model,mock_data,x,penalties=penaltyobj)
     assert ovl(result.model,mock_data)>0.975
+    penaltyobj.weight.unfreeze()
 # ======================================================================
 
 # ======================================================================

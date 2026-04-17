@@ -254,7 +254,9 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
             'par0' : parameter.par0,
             'description' : parameter.description,
             'unit' : parameter.unit,
-            'linear' : parameter.linear
+            'linear' : parameter.linear,
+            'frozen' : parameter.frozen,
+            'value' : parameter.value
         }
     #------------------------------------------------------------------------
 
