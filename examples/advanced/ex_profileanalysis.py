@@ -4,6 +4,12 @@ Profile analysis in routine analysis
 -------------------------------------------------------------------
 
 How to obtain objective function profiles for the non-linear parameters of a model. 
+
+Profile analysis works by running the fitting routine multiple times while freezing the parameter of interest at different values. 
+This way, the profile of the objective function for this parameter can be obtained. 
+The confidence interval can then be estimated by comparing the profile to a statistical threshold. 
+To keep analysis time resonable, the number of samples for the profile can be specified via the ``samples`` keyword. 
+Additionally, the number of CPU cores for parallelization can be specified via the ``cores`` keyword.
 """ 
 
 import numpy as np
@@ -43,7 +49,7 @@ results = dl.fit(Vmodel,Vexp)
 print(results)
 
 # Compute uncertainty with the likelihood profile method for the spin concentration and modulation depth parameters
-profile_uq = dl.profile_analysis(Vmodel,Vexp,samples=20, parameters=['conc','mod']) 
+profile_uq = dl.profile_analysis(Vmodel,Vexp,samples=20, parameters=['conc','mod'], cores=4) 
 
 #%%
 # Extract fitted dipolar signal

@@ -88,4 +88,4 @@ Reference Index
     read_pickle
     dump_jsons
     load_jsons
-
+    show_config

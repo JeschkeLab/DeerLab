@@ -7,6 +7,7 @@ import numpy as np
 import math as m
 from numpy import pi
 import inspect
+from copy import deepcopy as _deepcopy
 from deerlab.dipolarkernel import dipolarkernel
 from deerlab.utils import formatted_table
 from deerlab.model import Model
@@ -526,3 +527,19 @@ bg_poly3.p2.set(description='2nd order weight', lb=-200, ub=200, par0=-1, unit=r
 bg_poly3.p3.set(description='3rd order weight', lb=-200, ub=200, par0=-1, unit=r'μs\ :sup:`-3`')
 # Add documentation
 bg_poly3.__doc__ = _docstring(bg_poly3,notes)
+
+
+# ---------------------------------------------------------------------------
+# Return a fresh deepcopy on every attribute access so that modifications
+# to a retrieved model never affect the global template.
+# ---------------------------------------------------------------------------
+_templates = {name: obj for name, obj in list(globals().items()) if name.startswith('bg_')}
+for _name in list(_templates):
+    del globals()[_name]
+
+__all__ = list(_templates.keys())
+
+def __getattr__(name):
+    if name in _templates:
+        return _deepcopy(_templates[name])
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

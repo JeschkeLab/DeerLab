@@ -8,6 +8,18 @@ except Exception:
 
 from .dd_models import *
 from .bg_models import *
+from . import dd_models as _dd_models_mod
+from . import bg_models as _bg_models_mod
+
+# Define __getattr__ early so submodules that do `from deerlab import bg_*`
+# during their own import (e.g. dipolarmodel) can resolve names via this hook.
+def __getattr__(name):
+    if name in _dd_models_mod.__all__:
+        return _dd_models_mod.__getattr__(name)
+    if name in _bg_models_mod.__all__:
+        return _bg_models_mod.__getattr__(name)
+    raise AttributeError(f"module 'deerlab' has no attribute {name!r}")
+
 from .model import Model, Penalty, Parameter, link, lincombine, merge, relate
 from .deerload import deerload
 from .selregparam import selregparam
