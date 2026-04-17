@@ -34,8 +34,8 @@ t = t + tmin
 r = np.arange(2.5,5.5,0.025) # nm
 
 # Construct the model
-experiment = dl.ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2,3,5])
-Vmodel = dl.dipolarmodel(t,r,experiment=experiment)
+experimentInfo = dl.ex_rev5pdeer(tau1,tau2,tau3, pathways=[1,2,3,5])
+Vmodel = dl.dipolarmodel(t,r,experiment=experimentInfo)
 
 # Fit the model to the data
 results = dl.fit(Vmodel,Vexp)
@@ -72,7 +72,7 @@ labels = [1,2,3,5]
 lams = [results.lam1, results.lam2, results.lam3, results.lam5]
 reftimes = [results.reftime1, results.reftime2, results.reftime3, results.reftime5]
 colors= ['tab:blue','tab:orange', red, green] 
-Vinter = results.P_scale*(1-np.sum(lams))*np.prod([dl.bg_hom3d(t-reftime,results.conc,lam) for lam,reftime in zip(lams,reftimes)],axis=0)
+Vinter = results.P_scale*results.evaluate(dl.dipolarbackgroundmodel(experimentInfo),t)
 for (lam,reftime,color,label) in zip(lams,reftimes,colors,labels):
     Vpath = (1-np.sum(lams) + lam*dl.dipolarkernel(t-reftime,r)@Pfit)*Vinter
     plt.plot(t,Vpath,linewidth=3,label=f'Pathway #{label}',color=color)

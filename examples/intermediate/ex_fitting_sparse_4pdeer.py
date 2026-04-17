@@ -41,7 +41,8 @@ t = t + tmin
 r = np.arange(2,10,0.05) # nm
 
 # Construct the model with the sparse sampled time vector
-Vmodel = dl.dipolarmodel(t,r, experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1]))
+experimentInfo = dl.ex_4pdeer(tau1,tau2, pathways=[1])
+Vmodel = dl.dipolarmodel(t,r, experiment = experimentInfo)
 compactness = dl.dipolarpenalty(Pmodel=None, r=r, type='compactness')
 
 # Fit the model to the data
@@ -65,9 +66,10 @@ Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,conc,reftime: results.P_scale*(1-mod)*dl.bg_hom3d(tuniform-reftime,conc,mod)
-Bfit = results.evaluate(Bfcn)
-Bci = results.propagate(Bfcn).ci(95)
+Bfcn = dl.dipolarbackgroundmodel(experimentInfo)
+Bfit = results.P_scale*results.evaluate(Bfcn,t)
+Bci = results.P_scale*results.propagate(Bfcn,t).ci(95)
+
 
 plt.figure(figsize=[6,7])
 violet = '#4550e6'

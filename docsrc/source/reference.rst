@@ -60,6 +60,7 @@ Reference Index
     deerload
     dipolarkernel 
     dipolarbackground
+    dipolarbackgroundmodel
     fftspec
     distancerange
 

@@ -40,7 +40,8 @@ t = t[t<=3]
 r = np.arange(1.5,7,0.05) # nm
 
 # Construct the model
-Vmodel = dl.dipolarmodel(t,r, experiment=dl.ex_4pdeer(tau1,tau2, pathways=[1]))
+experimentInfo = dl.ex_4pdeer(tau1,tau2, pathways=[1])
+Vmodel = dl.dipolarmodel(t,r, experiment=experimentInfo)
 compactness = dl.dipolarpenalty(Pmodel=None,r=r,type='compactness')
 
 # Fit the model to the data with compactness criterion
@@ -69,9 +70,10 @@ for n,results in enumerate([results_with, results_without]):
     Pci50 = results.PUncert.ci(50)
 
     # Extract the unmodulated contribution
-    Bfcn = lambda mod,conc,reftime: results.P_scale*(1-mod)*dl.bg_hom3d(t-reftime,conc,mod)
-    Bfit = results.evaluate(Bfcn)
-    Bci = results.propagate(Bfcn).ci(95)
+    Bfcn = dl.dipolarbackgroundmodel(experimentInfo)
+    Bfit = results.P_scale*results.evaluate(Bfcn,t)
+    Bci = results.P_scale*results.propagate(Bfcn,t).ci(95)
+
 
     plt.subplot(2,2,n+1)
     # Plot experimental and fitted data

@@ -37,8 +37,8 @@ Vexp = Vexp/max(Vexp[mask])
 
 # Construct the model
 r = np.arange(2.5,4,0.01) # nm
-experiment = dl.ex_dqc(tau1,tau2,tau3,pathways=[1,2,3])
-Vmodel =  dl.dipolarmodel(t,r,experiment=experiment)
+experimentInfo = dl.ex_dqc(tau1,tau2,tau3,pathways=[1,2,3])
+Vmodel =  dl.dipolarmodel(t,r,experiment=experimentInfo)
 
 # The amplitudes of the second and third pathways must be equal
 Vmodel = dl.link(Vmodel,lam23=['lam2','lam3'])
@@ -56,7 +56,7 @@ plt.figure(figsize=[8,5])
 
 # Plot the full detectable range
 tfull = np.arange(-2*tau1,2*tau2-4*tau3,0.008)
-Vmodelext =  dl.dipolarmodel(tfull,r,experiment=experiment)
+Vmodelext =  dl.dipolarmodel(tfull,r,experiment=experimentInfo)
 Vmodelext = dl.link(Vmodelext,lam23=['lam2','lam3'])
 
 # Extract results
@@ -76,7 +76,7 @@ plt.ylabel('$V(t)$ (arb.u.)')
 
 # Plot the individual pathway contributions
 plt.subplot(223)
-Vinter = results.P_scale*(1-np.sum(lams))*np.prod([dl.bg_hom3d(tfull-reftime,results.conc,lam) for lam,reftime in zip(lams,reftimes)],axis=0)
+Vinter = results.P_scale*results.evaluate(dl.dipolarbackgroundmodel(experimentInfo),t)
 for n,(lam,reftime,color) in enumerate(zip(lams,reftimes,colors)):
     Vpath = (1-np.sum(lams) + lam*dl.dipolarkernel(tfull-reftime,r)@Pfit)*Vinter
     plt.plot(tfull,Vpath,label=f'Pathway #{n+1}',color=color)
