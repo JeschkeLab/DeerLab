@@ -77,8 +77,7 @@ def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, n
     fitresult = fit(model, y, *args, **kargs)
 
     # Prepare the statistical threshold function
-    threshold = lambda coverage: noiselvl**2*chi2.ppf(coverage, df=1)/len(fitresult.residuals) + fitresult.cost
-
+    threshold_inputs = {'Npoints': len(fitresult.residuals), 'cost': fitresult.cost}
 
     if parameters=='all':
         parameters = model._parameter_list()
@@ -129,7 +128,7 @@ def profile_analysis(model,y, *args, parameters='all', grids=None, samples=50, n
         profile = _ProgressParallel(n_jobs=cores,total=len(grid),use_tqdm=verbose)(delayed(profile_sample)(value) for value in grid)
 
         profile = {'x':np.squeeze(grid),'y':profile}
-        uqresults[parameter] = UQResult('profile', data=getattr(fitresult,parameter), profiles=profile, threshold=threshold, noiselvl=noiselvl)
+        uqresults[parameter] = UQResult('profile', data=getattr(fitresult,parameter), profiles=profile, threshold_inputs=threshold_inputs, noiselvl=noiselvl)
         uqresults[parameter].profile = uqresults[parameter].profile[0]
         
     return uqresults

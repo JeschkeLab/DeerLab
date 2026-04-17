@@ -30,6 +30,7 @@ def assert_bgmodel_behavior(model):
     B_ub = model(t, *ub)
 
     # Assert
+    assert model.name is not None
     assert all(B_par0 == B_par0_T)
     assert all(~np.isnan(B_par0))
     assert all(~np.isnan(B_lb))

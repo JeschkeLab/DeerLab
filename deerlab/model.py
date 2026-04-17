@@ -224,6 +224,42 @@ class Parameter():
         """
 
         return deepcopy(self)
+    
+    #---------------------------------------------------------------------------------------
+
+    def todict(self):
+        """
+        Return a dictionary with the parameter attributes
+        """
+        return {
+            'name': self.name,
+            'description': self.description,
+            'unit': self.unit,
+            'par0': self.par0,
+            'lb': self.lb,
+            'ub': self.ub,
+            'frozen': self.frozen,
+            'value': self.value,
+            'linear': self.linear
+        }
+    #---------------------------------------------------------------------------------------
+
+    @classmethod
+    def fromdict(cls, param_dict):
+        """
+        Create a Parameter object from a dictionary of attributes
+
+        Parameters
+        ----------
+        param_dict : dict
+            Dictionary containing the parameter attributes. The keys of the dictionary must be the same as the attributes of the Parameter class.
+
+        Returns
+        -------
+        parameter : Parameter object
+            Parameter object created from the input dictionary.
+        """
+        return cls(**param_dict)
 
 #===================================================================================
 
@@ -243,6 +279,8 @@ class Model():
     <parameter_name> : :ref:`Parameter` 
         Model parameter. One :ref:`Parameter` instance is assigned for each
         parameter (with name ``<parameter_name>``) in the model.  
+    name : string
+        Name of the model, useful for rebuilding the model from a dictionary.
     description : string 
         Description of the model.
     signature : string 
@@ -343,6 +381,7 @@ class Model():
             nonlinfcn = lambda *_: Amatrix 
         self.nonlinmodel = nonlinfcn
         self.description = None
+        self.name = None
         self._constantsInfo = []
         self.parents = None
 
@@ -987,6 +1026,70 @@ class Model():
 
         return deepcopy(self)
 
+    #--------------------------------------------------------------------------------
+
+    def to_dict(self):
+        """
+        Convert the model to a dictionary representation. 
+
+        Returns
+        -------
+        model_dict : dict
+            Dictionary representation of the model, containing all the information about the model's parameters and their values.
+        """
+        # Get the model's metadata in vector form
+        metadata = self.getmetadata()
+        # Create a dictionary with the model's metadata
+        model_dict = {
+            'description': self.description,
+            'signature': self.signature,
+            'constants': [entry['argkey'] for entry in self._constantsInfo],
+            'parameters': []
+        }
+        # Add each parameter's information to the dictionary
+        for name, lb, par0, ub, linear, frozen, unit in zip(metadata['names'], metadata['lb'], metadata['par0'], metadata['ub'], metadata['linear'], metadata['frozen'], metadata['units']):
+            param_dict = {
+                'name': name,
+                'lb': lb,
+                'par0': par0,
+                'ub': ub,
+                'linear': linear,
+                'frozen': frozen,
+                'unit': unit
+            }
+            model_dict['parameters'].append(param_dict)
+        return model_dict
+    
+    @classmethod
+    def from_dict(self, model_dict):
+        """
+        Update the model's parameters and their values from a dictionary representation. 
+
+        Parameters
+        ----------
+        model_dict : dict
+            Dictionary representation of the model, containing all the information about the model's parameters and their values.
+        """
+        # Update the model's description and signature
+        self.description = model_dict['description']
+        self.signature = model_dict['signature']
+        # Update the model's constants
+        self._constantsInfo = [{'argkey': argkey, 'argidx': idx} for idx, argkey in enumerate(model_dict['constants'])]
+        # Update the model's parameters
+        for param_dict in model_dict['parameters']:
+            name = param_dict['name']
+            lb = param_dict['lb']
+            par0 = param_dict['par0']
+            ub = param_dict['ub']
+            linear = param_dict['linear']
+            frozen = param_dict['frozen']
+            unit = param_dict['unit']
+            if linear:
+                self.addlinear(name=name, lb=lb, ub=ub, par0=par0, unit=unit)
+            else:
+                self.addnonlinear(key=name, lb=lb, ub=ub, par0=par0, unit=unit)
+            if frozen:
+                getattr(self,name).freeze(par0)
 #===================================================================================
 
 #==============================================================================

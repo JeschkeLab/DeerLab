@@ -1,4 +1,13 @@
 # __init__.py
+from importlib.metadata import version as get_version
+
+try:
+    __VERSION__ = get_version('DeerLab')
+except Exception:
+    __VERSION__ = 'unknown'
+
+from .dd_models import *
+from .bg_models import *
 from . import dd_models as _dd_models_mod
 from . import bg_models as _bg_models_mod
 
@@ -32,3 +41,4 @@ from .fitresult import FitResult
 from .diststats import diststats
 from .profile_analysis import profile_analysis
 from .utils import *
+from .io import save, load, json_dumps, json_loads

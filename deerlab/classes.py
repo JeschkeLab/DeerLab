@@ -3,7 +3,7 @@
 
 import numpy as np
 from deerlab.utils import Jacobian, nearest_psd
-from scipy.stats import norm
+from scipy.stats import norm, chi2
 from scipy.signal import fftconvolve
 from scipy.linalg import block_diag
 from scipy.optimize import brentq
@@ -51,14 +51,21 @@ class UQResult:
     profile : ndarray 
         Likelihood profile of the parameters. Only available for ``type='profile'``.
 
-    threshold : scalar
-        Treshold value used for the profile method. Only available for ``type='profile'``.  
+    threshold : function
+        Treshold function used for the profile method. Only available for ``type='profile'``.  
+
+    lb : ndarray
+        Lower bounds of the parameters.
+    
+    ub : ndarray
+        Upper bounds of the parameters.
 
     
 
     """
 
-    def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None,threshold=None,profiles=None,noiselvl=None):
+    def __init__(self,uqtype,data=None,covmat=None,lb=None,ub=None,
+                 threshold_inputs=None,threshold=None,profiles=None,noiselvl=None):
         r"""
         Initializes the UQResult object.
 
@@ -85,9 +92,15 @@ class UQResult:
         ub : ndarray
             Upper bounds of the parameter estimates. Only applicable if ``uqtype='moment'``.
         
-        threshold : float
-            Threshold value used for the likelihood profile method. Only applicable if ``uqtype='profile'``.
         
+        threshold_inputs : dict, optional
+                Dictionary containing the inputs to compute the threshold value for the likelihood profile method. Required for ``uqtype='profile'``, unless ``threshold`` supplied. The dictionary should contain the following keys and values: 
+                - 'Npoints': Number of points in the fit
+                - 'cost': The cost of the fit
+        
+        threshold : function
+            Function that takes the coverage (confidence level) as input and returns the corresponding threshold value for the likelihood profile method. Only applicable if ``uqtype='profile'``. If not provided, the threshold value is computed based on the inputs provided in ``threshold_inputs``.
+
         profiles : list
             List of likelihood profiles for each parameter. Each element of the list should be a tuple of arrays
             ``(x, y)``, where ``x`` represents the values of the parameter and ``y`` represents the corresponding likelihoods.
@@ -111,7 +124,15 @@ class UQResult:
             self.__parfit = data
             self.__noiselvl = noiselvl
             self.profile = profiles
-            self.threshold = threshold
+            if callable(threshold):
+                self.__threshold_inputs=None
+                self.threshold = threshold
+            elif isinstance(threshold_inputs,dict):
+                self.__threshold_inputs = threshold_inputs
+                self.threshold = lambda coverage: noiselvl**2*chi2.ppf(coverage, df=1)/threshold_inputs['Npoints'] + threshold_inputs['cost']
+            else:
+                raise ValueError('For uqtype ''profile'', either a threshold function or a dictionary with the inputs to compute the threshold must be provided.')
+            
             nParam = len(np.atleast_1d(data))
 
         elif uqtype == 'bootstrap':
@@ -129,15 +150,19 @@ class UQResult:
         else:
             raise NameError('uqtype not found. Must be: ''moment'', ''bootstrap'' or ''void''.')
 
+        # Set default bounds if not provided
         if lb is None:
             lb = np.full(nParam, -np.inf)
         
         if ub is None:
             ub = np.full(nParam, np.inf)
+
+        lb = np.array([(-np.inf if v is None else v) for v in lb])
+        ub = np.array([(np.inf if v is None else v) for v in ub])
             
         # Set private variables
-        self.__lb = lb
-        self.__ub = ub
+        self.lb = lb
+        self.ub = ub
         self.nparam = nParam
 
         # Create confidence intervals structure
@@ -219,8 +244,8 @@ class UQResult:
             # Original metadata
             newargs.append(self.mean)
             newargs.append(self.covmat)
-            newargs.append(self.__lb)
-            newargs.append(self.__ub)
+            newargs.append(self.lb)
+            newargs.append(self.ub)
         elif self.type=='bootstrap':
             newargs.append(self.samples)
             
@@ -334,8 +359,8 @@ class UQResult:
             pdf = fftconvolve(pdf, kernel, mode='same')
 
         # Clip the distributions outside the boundaries
-        pdf[x < self.__lb[n]] = 0
-        pdf[x > self.__ub[n]] = 0
+        pdf[x < self.lb[n]] = 0
+        pdf[x > self.ub[n]] = 0
 
         # Enforce non-negativity (takes care of negative round-off errors)
         pdf = np.maximum(pdf,0)
@@ -454,11 +479,11 @@ class UQResult:
             # Compute moment-based confidence intervals
             # Clip at specified box boundaries
             standardError = norm.ppf(p)*np.sqrt(np.diag(self.covmat))
-            confint[:,0] = np.maximum(self.__lb, self.mean.real - standardError)
-            confint[:,1] = np.minimum(self.__ub, self.mean.real + standardError)
+            confint[:,0] = np.maximum(self.lb, self.mean.real - standardError)
+            confint[:,1] = np.minimum(self.ub, self.mean.real + standardError)
             if iscomplex:
-                confint[:,0] = confint[:,0] + 1j*np.maximum(self.__lb, self.mean.imag - standardError)
-                confint[:,1] = confint[:,1] + 1j*np.minimum(self.__ub, self.mean.imag + standardError)
+                confint[:,0] = confint[:,0] + 1j*np.maximum(self.lb, self.mean.imag - standardError)
+                confint[:,1] = confint[:,1] + 1j*np.minimum(self.ub, self.mean.imag + standardError)
 
         elif self.type=='bootstrap':
             # Compute bootstrap-based confidence intervals
@@ -558,7 +583,7 @@ class UQResult:
                 model = lambda p: np.concatenate([model_(p).real,model_(p).imag])
 
             # Get jacobian of model to be propagated with respect to parameters
-            J = Jacobian(model,parfit,self.__lb,self.__ub)
+            J = Jacobian(model,parfit,self.lb,self.ub)
 
             # Clip at boundaries
             modelfit = np.maximum(modelfit,lb)
@@ -599,5 +624,110 @@ class UQResult:
             return  UQResult('bootstrap',data=sampled_model,lb=lb,ub=ub)
  
     #--------------------------------------------------------------------------------
+
+    def to_dict(self):
+        """
+        Convert the UQResult object to a dictionary.
+
+        This method converts the UQResult object to a dictionary format, which can be useful for serialization or for easier access to the attributes of the object. 
+        The keys of the dictionary correspond to the attributes of the UQResult object, and the values are the corresponding attribute values.
+
+        Returns
+        -------
+        uq_dict : dict
+            A dictionary representation of the UQResult object, containing all its attributes and their corresponding values.
+        """
+        if self.type == 'moment':
+            uq_dict = {
+                'type': self.type,
+                'mean': self.mean,
+                'median': self.median,
+                'std': self.std,
+                'covmat': self.covmat,
+                'nparam': self.nparam,
+                'lb': self.lb,
+                'ub': self.ub
+            }
+        elif self.type == 'profile':
+            if self.__threshold_inputs is None:
+                raise ValueError('The threshold function was supplied directly, so the inputs to compute the threshold are not available. The to_dict method cannot be used in this case.')
+            uq_dict = {
+                'type': self.type,
+                'mean': self.mean,
+                'median': self.median,
+                'std': self.std,
+                'covmat': self.covmat,
+                'nparam': self.nparam,
+                'profile': self.profile,
+                'threshold_inputs': self.__threshold_inputs,
+                'data': self.__parfit,
+                'noiselvl': self.__noiselvl
+            }
+        elif self.type == 'bootstrap':
+            uq_dict = {
+                'type': self.type,
+                'mean': self.mean,
+                'median': self.median,
+                'std': self.std,
+                'covmat': self.covmat,
+                'nparam': self.nparam,
+                'samples': getattr(self, 'samples', None),
+                'data': getattr(self, '__parfit', None),
+                'noiselvl': getattr(self, '__noiselvl', None)
+            }
+        return uq_dict
+    
+    @classmethod
+    def from_dict(self, uq_dict):
+        """
+        Create a UQResult object from a dictionary.
+
+        This method creates a UQResult object from a dictionary representation, which can be useful for deserialization or for creating a UQResult object from a set of attributes stored in a dictionary. 
+        The keys of the input dictionary should correspond to the attributes of the UQResult object, and the values should be the corresponding attribute values.
+
+        Parameters
+        ----------
+        uq_dict : dict
+            A dictionary containing the attributes and their corresponding values to create a UQResult object.
+
+        Returns
+        -------
+        uq_result : :ref:`UQResult`
+            A UQResult object created from the input dictionary, with its attributes set according to the values in the dictionary.
+        """
+
+        if 'type' not in uq_dict:
+            raise KeyError("The input dictionary must contain the key 'type' to specify the type of UQResult to be created.")
+        
+        elif uq_dict['type'] == 'profile':
+            return UQResult(
+                uqtype='profile',
+                data=uq_dict.get('data', None),
+                covmat=None,
+                lb=uq_dict.get('lb', None),
+                ub=uq_dict.get('ub', None),
+                threshold_inputs=uq_dict.get('threshold_inputs'),
+                profiles=uq_dict.get('profile'),
+                noiselvl=uq_dict.get('noiselvl')
+            )
+        elif uq_dict['type'] == 'bootstrap':
+            return UQResult(
+                uqtype=uq_dict.get('type', 'void'),
+                data=uq_dict.get('samples', None),
+                covmat=None,
+                lb=uq_dict.get('lb', None),
+                ub=uq_dict.get('ub', None),
+            )
+        elif uq_dict['type'] == 'moment':
+
+            return UQResult(
+                uqtype=uq_dict.get('type', 'void'),
+                data=uq_dict.get('mean', None) ,
+                covmat=uq_dict.get('covmat', None),
+                lb=uq_dict.get('lb', None),
+                ub=uq_dict.get('ub', None),
+                threshold=uq_dict.get('threshold', None),
+                profiles=uq_dict.get('profile', None)
+            )
 
 # =========================================================================

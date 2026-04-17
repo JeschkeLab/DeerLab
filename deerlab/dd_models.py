@@ -159,6 +159,7 @@ def _gauss(r,mean,std):
     return _multigaussfun(r,mean,std)
 # Create model
 dd_gauss = Model(_gauss,constants='r')
+dd_gauss.name = 'dd_gauss'
 dd_gauss.description = 'Gaussian distribution model'
 # Parameters
 dd_gauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, unit='nm')
@@ -182,6 +183,7 @@ def _gauss2(r,mean1,std1,mean2,std2):
     return _multigaussfun(r,[mean1,mean2],[std1,std2])
 # Create model
 dd_gauss2 = Model(_gauss2,constants='r')
+dd_gauss2.name = 'dd_gauss2'
 dd_gauss2.description = 'Sum of two Gaussian distributions model'
 # Parameters
 dd_gauss2.mean1.set(description='1st Gaussian mean', lb=1.0, ub=20, par0=2.5, unit='nm')
@@ -209,6 +211,7 @@ def _gauss3(r,mean1,std1,mean2,std2,mean3,std3):
     return _multigaussfun(r,[mean1,mean2,mean3],[std1,std2,std3])
 # Create model
 dd_gauss3 = Model(_gauss3,constants='r')
+dd_gauss3.name = 'dd_gauss3'
 dd_gauss3.description = 'Sum of three Gaussian distributions model'
 # Parameters
 dd_gauss3.mean1.set(description='1st Gaussian mean', lb=1.0, ub=20, par0=2.5, unit='nm')
@@ -233,7 +236,7 @@ notes =  r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_gengauss.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_gengauss.png", style="width: 50%">
     <br><br><br>    
 
 :math:`P(r) = \frac{\beta}{2\sigma\Gamma(1/\beta)}\exp\left(-\left(\frac{|r-\left<r\right>|}{\sigma}\right)^\beta \right)`
@@ -245,6 +248,7 @@ def _gengauss(r,mean,std,beta):
     return _normalize(r,P) 
 # Create model
 dd_gengauss = Model(_gengauss,constants='r')
+dd_gengauss.name = 'dd_gengauss'
 dd_gengauss.description = 'Generalized Gaussian distribution model'
 # Parameters
 dd_gengauss.mean.set(description='Mean', lb=1.0, ub=20, par0=3.5, unit='nm')
@@ -263,7 +267,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_skewgauss.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_skewgauss.png", style="width: 50%">
     <br><br><br>  
 
 :math:`P(r) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{(r-\left<r\right>)^2}{2\sigma^2}\right)\left(1 + \mathrm{erf}\left(\alpha\frac{(r-\left<r\right>)}{\sqrt{2}\sigma}\right) \right)`
@@ -276,6 +280,7 @@ def _skewgauss(r,center,std,skew):
     return _normalize(r,P) 
 # Create model
 dd_skewgauss = Model(_skewgauss,constants='r')
+dd_skewgauss.name = 'dd_skewgauss'
 dd_skewgauss.description = 'Skew Gaussian distribution model'
 # Parameters
 dd_skewgauss.center.set(description='Center', lb=1.0, ub=20, par0=3.5, unit='nm')
@@ -300,6 +305,7 @@ def _rice(r,location,spread):
     return _multirice3dfun(r,[location],[spread])
 # Create model
 dd_rice = Model(_rice,constants='r')
+dd_rice.name = 'dd_rice'
 dd_rice.description = '3D-Rice distribution model'
 # Parameters
 dd_rice.location.set(description='Location', lb=1.0, ub=20, par0=3.5, unit='nm')
@@ -326,6 +332,7 @@ def _rice2(r,location1,spread1,location2,spread2):
     return _multirice3dfun(r,[location1,location2],[spread1,spread2])
 # Create model
 dd_rice2 = Model(_rice2,constants='r')
+dd_rice2.name = 'dd_rice2'
 dd_rice2.description = 'Sum of two 3D-Rice distributions model'
 # Parameters
 dd_rice2.location1.set(description='1st Rician location', lb=1.0, ub=20, par0=2.5, unit='nm')
@@ -356,6 +363,7 @@ def _rice3(r,location1,spread1,location2,spread2,location3,spread3):
     return _multirice3dfun(r,[location1,location2,location3],[spread1,spread2,spread3])
 # Create model
 dd_rice3 = Model(_rice3,constants='r')
+dd_rice3.name = 'dd_rice3'
 dd_rice3.description = 'Sum of two 3D-Rice distributions model'
 # Parameters
 dd_rice3.location1.set(description='1st Rician location', lb=1.0, ub=20, par0=2.5, unit='nm')
@@ -380,7 +388,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_randcoil.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_randcoil.png", style="width: 50%">
     <br><br><br>
 
 :math:`P(r) = \frac{3}{(2\pi\nu_0)^{3/2}}4\pi r^2\exp(-\frac{3 r^2}{\nu_0})`
@@ -398,6 +406,7 @@ def _randcoil(r,Nres,scaling,length):
     return P
 # Create model
 dd_randcoil = Model(_randcoil,constants='r')
+dd_randcoil.name = 'dd_randcoil'
 dd_randcoil.description = 'Random-coil model for an unfolded peptide/protein'
 # Parameters
 dd_randcoil.Nres.set(description='Number of residues', lb=2.0, ub=1000, par0=50, unit='')
@@ -428,6 +437,7 @@ def _circle(r,center,radius):
     return P
 # Create model
 dd_circle = Model(_circle,constants='r')
+dd_circle.name = 'dd_circle'
 dd_circle.description = 'Semicircle distribution model'
 # Parameters
 dd_circle.center.set(description='Center', lb=1, ub=20, par0=3, unit='nm')
@@ -456,6 +466,7 @@ def _rcos(r,center,fwhm):
     return P
 # Create model
 dd_cos = Model(_rcos,constants='r')
+dd_cos.name = 'dd_cos'
 dd_cos.description = 'Raised-cosine parametric model'
 # Parameters
 dd_cos.center.set(description='Center', lb=1, ub=20, par0=3, unit='nm')
@@ -503,7 +514,7 @@ notes = r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_shell.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_shell.png", style="width: 50%">
     <br><br><br>
 
 :math:`P(r) = \left(R_2^6 P_\mathrm{B}(r|R_2) - R_1^6 P_\mathrm{B}(r|R_1) - 2(r_2^3 - r_1^3)P_\mathrm{BS}(r|R_1,R_2)\right)/(R_2^3 - R_1^3)^2`
@@ -538,6 +549,7 @@ def _shell(r,radius,thickness):
     return P
 # Create model
 dd_shell = Model(_shell,constants='r')
+dd_shell.name = 'dd_shell'
 dd_shell.description = 'Uniform distribution of particles on a spherical shell'
 # Parameters
 dd_shell.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1.5, unit='nm')
@@ -556,7 +568,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_spherepoint.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_spherepoint.png", style="width: 50%">
     <br><br><br>
 
 :math:`P(r) = \begin{cases} \frac{3r(R^2-(d-r)^2)}{4dR^3} \quad \text{for} \quad d-R \leq r < d+R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
@@ -578,6 +590,7 @@ def _spherepoint(r,radius,dist):
     return P
 # Create model
 dd_spherepoint = Model(_spherepoint,constants='r')
+dd_spherepoint.name = 'dd_spherepoint'
 dd_spherepoint.description = 'One particle distanced from particles uniformly distributed on a sphere'
 # Parameters
 dd_spherepoint.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=1.5, unit='nm')
@@ -596,7 +609,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_spheresurf.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_spheresurf.png", style="width: 50%">
     <br><br><br>
 
 :math:`P(r) = \begin{cases} \frac{r}{2R^2} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
@@ -617,6 +630,7 @@ def _spheresurf(r,radius):
     return P
 # Create model
 dd_spheresurf = Model(_spheresurf,constants='r')
+dd_spheresurf.name = 'dd_spheresurf'
 dd_spheresurf.description = "Particles uniformly distributed on a sphere's surface."
 # Parameters
 dd_spheresurf.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=2.5, unit='nm')
@@ -633,7 +647,7 @@ notes = r"""
 
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_shellshell.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_shellshell.png", style="width: 50%">
     <br><br><br>    
 
 :math:`P(r) = (R_1^3(R_2^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_2) - R_1^3(R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - R_2^3(R_3^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_3))/((R_3^3 - R_2^3)(R_2^3 - R_1^3))`
@@ -675,6 +689,7 @@ def _shellshell(r,radius,thickness1,thickness2):
     return P
 # Create model
 dd_shellshell = Model(_shellshell,constants='r')
+dd_shellshell.name = 'dd_shellshell'
 dd_shellshell.description = 'Particles uniformly distributed on a spherical shell and on another concentric spherical shell.'
 # Parameters
 dd_shellshell.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1.5, unit='nm')
@@ -692,7 +707,7 @@ notes = r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_sphereshell.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_sphereshell.png", style="width: 50%">
     <br><br><br>     
 
 :math:`P(r) = \frac{3}{16R_1^3(R_2^3 - R_1^3)}\begin{cases} 12r^3R_1^2 - r^5  \quad \text{for} \quad 0\leq r < \min(2R_1,R_2 - R_1) \\ 8r^2(R_2^3 - R_1^3) - 3r(R_2^2 - R_1^2)^2 - 6r^3(R_2 - R_1)(R_2 + R_1) \quad \text{for} \quad R_2-R_1 \leq r < 2R_1 \\ 16r^2R_1^3 \quad \text{for} \quad 2R_1\leq r < R_2 - R_1  \\  r^5 - 6r^3(R_2^2 + R_1^2) + 8r^2(R_2^3 + R_1^3) - 3r(R_2^2 - R1_2)^2 \quad \text{for} \quad \max(R_2-R_1,2R_1) \leq r < R_1+R_2 \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
@@ -719,6 +734,7 @@ def _shellsphere(r,radius,thickness):
     return P
 # Create model
 dd_shellsphere = Model(_shellsphere,constants='r')
+dd_shellsphere.name = 'dd_shellsphere'
 dd_shellsphere.description = 'Particles uniformly distributed on a sphere and on an outer spherical shell.'
 # Parameters
 dd_shellsphere.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=1.5, unit='nm')
@@ -736,7 +752,7 @@ notes = r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_shellvoidshell.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_shellvoidshell.png", style="width: 50%">
     <br><br><br>    
 
 :math:`P(r) = \left(R_1^3((R_3^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_3) - (R_4^3 - R_1^3)P_\mathrm{BS}(r|R_1,R_4)) + R_2^3((R_4^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_4) - (R_3^3 - R_2^3)P_\mathrm{BS}(r|R_2,R_3)) \right)/((R_4^3 - R_3^3)(R_2^3 - R_1^3))`
@@ -787,6 +803,7 @@ def _shellvoidshell(r,radius,thickness1,thickness2,separation):
     return P
 # Create model
 dd_shellvoidshell = Model(_shellvoidshell,constants='r')
+dd_shellvoidshell.name = 'dd_shellvoidshell'
 dd_shellvoidshell.description = 'Particles uniformly distributed on a spherical shell and on another concentric spherical shell separated by a void.'
 # Parameters
 dd_shellvoidshell.radius.set(description='Inner shell radius', lb=0.1, ub=20, par0=0.75, unit='nm')
@@ -807,7 +824,7 @@ notes = r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_shellvoidsphere.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_shellvoidsphere.png", style="width: 50%">
     <br><br><br>    
 
 
@@ -852,6 +869,7 @@ def _shellvoidsphere(r,radius,thickness,separation):
     return P
 # Create model
 dd_shellvoidsphere = Model(_shellvoidsphere,constants='r')
+dd_shellvoidsphere.name = 'dd_shellvoidsphere'
 dd_shellvoidsphere.description = 'Particles uniformly distributed on a sphere and on a concentric outer spherical shell separated by a void.'
 # Parameters
 dd_shellvoidsphere.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=1.5, unit='nm')
@@ -872,7 +890,7 @@ notes =  r"""
     
 .. raw:: html 
     
-    <img src="../_images/model_scheme_dd_sphere.png", style="width: 50%">
+    <img src="../images/model_scheme_dd_sphere.png", style="width: 50%">
     <br><br><br>    
 
 :math:`P(r) = \begin{cases} \frac{3r^5}{16R^6} - \frac{9r^3}{4R^4} + \frac{3r^2}{R^3} \quad \text{for} \quad 0 \leq r < 2R \\ 0 \quad \text{for} \quad \text{otherwise}  \end{cases}`
@@ -890,6 +908,7 @@ def _sphere(r,radius):
     return P
 # Create model
 dd_sphere = Model(_sphere,constants='r')
+dd_sphere.name = 'dd_sphere'
 dd_sphere.description = 'Particles uniformly distributed on a sphere.'
 # Parameters
 dd_sphere.radius.set(description='Sphere radius', lb=0.1, ub=20, par0=2.5, unit='nm')
@@ -925,6 +944,7 @@ def _triangle(r,mode,left,right):
     return P
 # Create model
 dd_triangle = Model(_triangle,constants='r')
+dd_triangle.name = 'dd_triangle'
 dd_triangle.description = 'Triangular distribution model.'
 # Parameters
 dd_triangle.mode.set(description='Mode', lb=1, ub=20, par0=3.5, unit='nm')
@@ -953,6 +973,7 @@ def _uniform(r,left,right):
     return P
 # Create model
 dd_uniform = Model(_uniform,constants='r')
+dd_uniform.name = 'dd_uniform'
 dd_uniform.description = 'Uniform distribution model.'
 # Parameters
 dd_uniform.left.set(description='Left edge', lb=0.1, ub=6, par0=2.5, unit='nm')
@@ -1000,6 +1021,7 @@ def _wormchain(r,contour,persistence):
     return P
 # Create model
 dd_wormchain = Model(_wormchain,constants='r')
+dd_wormchain.name = 'dd_wormchain'
 dd_wormchain.description = 'Worm-like chain model near the rigid limit.'
 # Parameters
 dd_wormchain.contour.set(description='Contour length', lb=1.5, ub=10, par0=3.7, unit='nm')
@@ -1036,6 +1058,7 @@ def _wormgauss(r,contour,persistence,std):
     return P
 # Create model
 dd_wormgauss = Model(_wormgauss,constants='r')
+dd_wormgauss.name = 'dd_wormgauss'
 dd_wormgauss.description = 'Worm-like chain model near the rigid limit with Gaussian convolution.'
 # Parameters
 dd_wormgauss.contour.set(description='Contour length', lb=1.5, ub=10, par0=3.7, unit='nm')
