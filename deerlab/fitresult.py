@@ -415,10 +415,12 @@ class FitResult(dict):
                 d = obj.to_dict()
                 d['__type__'] = 'UQResult'
                 return d
+            elif isinstance(obj, Model):
+                return None
             elif isinstance(obj, list):
-                return [_prepare_value(item) for item in obj]
+                return [_prepare_value(item) for item in obj if not isinstance(item, Model)]
             elif isinstance(obj, dict):
-                return {str(k): _prepare_value(v) for k, v in obj.items()}
+                return {str(k): _prepare_value(v) for k, v in obj.items() if not isinstance(v, Model)}
             return obj
 
         output_dict = {}
