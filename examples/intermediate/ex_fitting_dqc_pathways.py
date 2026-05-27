@@ -76,7 +76,7 @@ plt.ylabel('$V(t)$ (arb.u.)')
 
 # Plot the individual pathway contributions
 plt.subplot(223)
-Vinter = results.P_scale*results.evaluate(dl.dipolarbackgroundmodel(experimentInfo),t)
+Vinter = results.P_scale*results.evaluate(Vmodel.Bmodel,tfull)
 for n,(lam,reftime,color) in enumerate(zip(lams,reftimes,colors)):
     Vpath = (1-np.sum(lams) + lam*dl.dipolarkernel(tfull-reftime,r)@Pfit)*Vinter
     plt.plot(tfull,Vpath,label=f'Pathway #{n+1}',color=color)
