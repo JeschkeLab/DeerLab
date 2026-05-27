@@ -6,8 +6,6 @@ try:
 except Exception:
     __VERSION__ = 'unknown'
 
-from .dd_models import *
-from .bg_models import *
 from . import dd_models as _dd_models_mod
 from . import bg_models as _bg_models_mod
 

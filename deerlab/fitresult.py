@@ -412,6 +412,8 @@ class FitResult(dict):
         """
         def _prepare_value(obj):
             if isinstance(obj, UQResult):
+                if obj.type == 'void':
+                    return None
                 d = obj.to_dict()
                 d['__type__'] = 'UQResult'
                 return d
