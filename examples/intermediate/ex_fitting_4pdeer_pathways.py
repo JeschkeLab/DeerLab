@@ -70,7 +70,7 @@ plt.subplot(222)
 lams = [results.lam1, results.lam2, results.lam3]
 reftimes = [results.reftime1, results.reftime2, results.reftime3]
 colors= ['tab:blue',green, red] 
-Vinter = results.P_scale*(1-np.sum(lams))*np.prod([dl.bg_hom3d(t-reftime,results.conc,lam) for lam,reftime in zip(lams,reftimes)],axis=0)
+Vinter = results.P_scale*np.prod([dl.bg_hom3d(t-reftime,results.conc,lam) for lam,reftime in zip(lams,reftimes)],axis=0)
 for n,(lam,reftime,color) in enumerate(zip(lams,reftimes,colors)):
     Vpath = (1-np.sum(lams) + lam*dl.dipolarkernel(t-reftime,r)@Pfit)*Vinter
     plt.plot(t,Vpath,linewidth=3,label=f'Pathway #{n+1}',color=color)
