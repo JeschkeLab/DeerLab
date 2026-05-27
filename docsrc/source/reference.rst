@@ -85,3 +85,4 @@ Reference Index
     der_snr
     formatted_table
     show_config
+    freedist

@@ -11,6 +11,7 @@ def __getattr__(name):
         return _bg_models_mod.__getattr__(name)
     raise AttributeError(f"module 'deerlab' has no attribute {name!r}")
 
+from .dd_models import freedist
 from .model import Model, Penalty, Parameter, link, lincombine, merge, relate
 from .deerload import deerload
 from .selregparam import selregparam
