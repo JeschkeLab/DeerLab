@@ -71,5 +71,5 @@ In DeerLab <1.2, the multi-pathway background model needs to be generated manual
 """
 
 bf_func = lambda lam1,lam2,lam3,reftime1,reftime2,reftime3,conc: results.P_scale*(1-lam1-lam2-lam3)*dl.bg_hom3d(t-reftime1,conc,lam1)*dl.bg_hom3d(t-reftime2,conc,lam2)*dl.bg_hom3d(t-reftime3,conc,lam3)
-bf = results.evaluate(bf_func, t)
-bfUncert = results.propagate(bf_func, t)
+bf = results.evaluate(bf_func)
+bfUncert = results.propagate(bf_func)

@@ -61,8 +61,8 @@ Pci50 = Puncert.ci(50)/scale
 
 # Extract the unmodulated contribution
 Bfcn = dl.dipolarbackgroundmodel(experimentInfo)
-Bfit = results.P_scale*results.bg
-Bci = results.P_scale*results.bgUncert.ci(95)
+Bfit = scale*results.bg
+Bci = scale*results.bgUncert.ci(95)
 
 plt.figure(figsize=[6,7])
 violet = '#4550e6'
