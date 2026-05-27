@@ -53,4 +53,18 @@ print('Model result is the same:', np.allclose(results.model, results2.model))
 # Built in methods of the FitResult object can be used as normal, e.g. plotting the results
 results2.plot();
 
+
+#%% [markdown]
+""" 
+Exporting to .txt or .csv
+-------------------------------------------------------------------------
+If you want to just export either the fit or the distance distribution to a .txt or .csv file,
+you can do so by using the `numpy.savetxt` function on the relevant arrays. 
+""" 
+# %%
+np.savetxt('fitted_signal.txt', np.column_stack((t, Vexp, results.model, results.bg)), header='Time (μs), Data, Fit, Background')
+
+Pfit = results.evaluate(dl.dd_gauss2, r)
+Puncert = results.propagate(dl.dd_gauss2, r).ci(95)
+np.savetxt('distance_distribution.txt', np.column_stack((r, Pfit, Puncert[:,0], Puncert[:,1])), header='Distance (nm), P(r), P(r) 95% CI lower, P(r) 95% CI upper')
 # %%
