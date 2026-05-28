@@ -116,26 +116,6 @@ def test_fitresult_save_load_json(fitresult):
         os.remove(fname)
 
 
-# ======================================================================
-def test_fitresult_save_load_toml(fitresult):
-    "Check that FitResult can be saved and loaded from a TOML file"
-
-    with tempfile.NamedTemporaryFile(suffix='.toml', delete=False) as f:
-        fname = f.name
-    try:
-        save(fname, fitresult)
-        loaded = load(fname)
-        assert isinstance(loaded, FitResult)
-        assert np.allclose(loaded.model, fitresult.model)
-        assert isinstance(loaded.modelUncert,dl.UQResult)
-        assert np.allclose(loaded.regparam, fitresult.regparam)
-        assert isinstance(loaded.plot(), Figure)
-
-    finally:
-        os.remove(fname)
-
-
-# ======================================================================
 
 @pytest.mark.parametrize('method', ['moment', 'bootstrap', 'profile'])
 def test_UQResult_saving(uncertainty_quantification_simulation, method):

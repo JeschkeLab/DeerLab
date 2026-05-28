@@ -7,7 +7,7 @@ import json
 import tomllib
 import re
 
-supported_formats = ['hdf5', 'json', 'toml']
+supported_formats = ['hdf5', 'json',]
 supported_types = ['FitResult', 'UQResult', ]
 
 
@@ -179,110 +179,6 @@ def _load_json(filename):
     return payload
 
 
-#=======================================================================================
-#                                         TOML
-#=======================================================================================
-
-def _toml_key(key):
-    """Return a valid TOML key, quoting if necessary."""
-    if re.match(r'^[A-Za-z0-9_-]+$', key):
-        return key
-    escaped = key.replace('\\', '\\\\').replace('"', '\\"')
-    return f'"{escaped}"'
-
-
-def _toml_value(val):
-    """Serialize a value to an inline TOML value string."""
-    if isinstance(val, bool):
-        return 'true' if val else 'false'
-    elif isinstance(val, int):
-        return str(val)
-    elif isinstance(val, float):
-        if val != val:
-            return 'nan'
-        elif val == float('inf'):
-            return 'inf'
-        elif val == float('-inf'):
-            return '-inf'
-        return repr(val)
-    elif isinstance(val, str):
-        result = []
-        for ch in val:
-            if ch == '\\':
-                result.append('\\\\')
-            elif ch == '"':
-                result.append('\\"')
-            elif ch == '\n':
-                result.append('\\n')
-            elif ch == '\r':
-                result.append('\\r')
-            elif ch == '\t':
-                result.append('\\t')
-            elif ord(ch) < 0x20 or ord(ch) == 0x7f:
-                result.append(f'\\u{ord(ch):04x}')
-            else:
-                result.append(ch)
-        return '"' + ''.join(result) + '"'
-    elif isinstance(val, (list, tuple)):
-        return '[' + ', '.join(_toml_value(i) for i in val) + ']'
-    elif isinstance(val, dict):
-        items = ', '.join(f'{_toml_key(k)} = {_toml_value(v)}' for k, v in val.items())
-        return '{' + items + '}'
-    else:
-        raise TypeError(f"Cannot serialize type {type(val).__name__} to TOML")
-
-
-def _dict_to_toml(d):
-    """Serialize a dict to a TOML string. Top-level dicts become [sections]."""
-    scalars = []
-    sections = {}
-    for key, val in d.items():
-        if isinstance(val, dict):
-            sections[key] = val
-        else:
-            scalars.append(f'{_toml_key(key)} = {_toml_value(val)}')
-
-    lines = scalars[:]
-    for key, val in sections.items():
-        lines.append(f'\n[{_toml_key(key)}]')
-        for subkey, subval in val.items():
-            lines.append(f'{_toml_key(subkey)} = {_toml_value(subval)}')
-
-    return '\n'.join(lines) + '\n'
-
-
-def _save_toml(filename, data_dict, object_class):
-    meta = {'__format__': 'deerlab', '__version__': __VERSION__, '__object_class__': object_class}
-    serializable = _to_serializable(data_dict)
-    payload = {**meta, **serializable}
-    content = _dict_to_toml(payload)
-    if isinstance(filename, (str, os.PathLike)):
-        with open(filename, 'w', encoding='utf-8') as f:
-            f.write(content)
-    else:
-        filename.write(content.encode('utf-8'))
-
-
-def _load_toml(filename):
-    if isinstance(filename, (str, os.PathLike)):
-        with open(filename, 'rb') as f:
-            payload = tomllib.load(f)
-    else:
-        content = filename.read()
-        if isinstance(content, str):
-            content = content.encode('utf-8')
-        payload = tomllib.loads(content.decode('utf-8'))
-    if payload.get('__format__') != 'deerlab':
-        raise ValueError("File does not appear to be a deerlab TOML file.")
-    object_class = payload.pop('__object_class__')
-    payload.pop('__format__', None)
-    payload.pop('__version__', None)
-    if object_class not in supported_types:
-        raise ValueError(f"Unsupported object type '{object_class}' in file.")
-    result = _from_serializable(payload)
-    result['object_class'] = object_class
-    return result
-
 
 #=======================================================================================
 #                                         Saving
@@ -329,8 +225,8 @@ def save(filename, object, format=None):
                 _create_h5_element(file, key, value)
     elif format == 'json':
         _save_json(filename, object.to_dict(), object_class)
-    elif format == 'toml':
-        _save_toml(filename, object.to_dict(), object_class)
+    else:
+        raise NotImplementedError(f"Saving in '{format}' format is not yet implemented.")
 
 
 def json_dumps(object):
@@ -382,8 +278,6 @@ def load(filename, format=None):
             file_format = 'hdf5'
         elif ext == '.json':
             file_format = 'json'
-        elif ext == '.toml':
-            file_format = 'toml'
         else:
             raise ValueError("Could not identify the file format. Please specify the format explicitly.")
     elif format is not None:
@@ -397,8 +291,7 @@ def load(filename, format=None):
         dict_output = _read_hdf5(filename)
     elif file_format == 'json':
         dict_output = _load_json(filename)
-    elif file_format == 'toml':
-        dict_output = _load_toml(filename)
+    
 
     if dict_output['object_class'] == 'FitResult':
         dict_output.pop('object_class')
