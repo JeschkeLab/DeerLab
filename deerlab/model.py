@@ -227,7 +227,7 @@ class Parameter():
     
     #---------------------------------------------------------------------------------------
 
-    def todict(self):
+    def to_dict(self):
         """
         Return a dictionary with the parameter attributes
         """
@@ -245,7 +245,7 @@ class Parameter():
     #---------------------------------------------------------------------------------------
 
     @classmethod
-    def fromdict(cls, param_dict):
+    def from_dict(cls, param_dict):
         """
         Create a Parameter object from a dictionary of attributes
 
