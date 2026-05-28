@@ -548,8 +548,14 @@ def fit(model_, y, *constants, par0=None, penalties=None, bootstrap=0, noiselvl=
     if len(noiselvl)==1: 
         noiselvl = noiselvl[0]
     
+
     # Generate FitResult object from all the dictionaries
     fitresult = FitResult({**FitResult_param_,**FitResult_paramuq_, **FitResult_dict,'penweights':penweights,'noiselvl':noiselvl,'paramlist':_paramlist, '_param_idx':param_idx}) 
+
+    # Add background if it is part of the model
+    if hasattr(model,'Bmodel'):
+        fitresult['bg'] = fitresult.evaluate(model.Bmodel,model.t)
+        fitresult['bgUncert'] = fitresult.propagate(model.Bmodel,model.t, samples=bootstrap)
 
     fitresult._summary = _print_fitresults(fitresult,model)
 

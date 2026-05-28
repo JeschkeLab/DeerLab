@@ -1290,6 +1290,7 @@ def _linked_model_with_constants(nonlinfcn,mapping,constantsInfo,linear_reduce_i
     # Make a matrix if model function returns a vector
     if len(A.shape)<2: A = np.expand_dims(A,1)
     # Sum the output matrix along the columns specified in the linear_reduce_idx array
+    if len(linear_reduce_idx)==0: return A
     Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
     return Amapped
 # ---------------------------------------------------------------------
@@ -1470,6 +1471,9 @@ def link(model,**links):
         for arg in links[key]:
             if arg in newmodel.signature: 
                 newmodel.signature.remove(arg)
+
+    if hasattr(model,'Bmodel') and model.Bmodel is not None:
+        newmodel.Bmodel = link(model.Bmodel,**links)
     return newmodel
 #==============================================================================================
 

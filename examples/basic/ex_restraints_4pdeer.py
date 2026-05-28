@@ -42,7 +42,8 @@ t = t + tmin                # Account for zerotime
 r = np.arange(2,6,0.05) # nm
 
 # Construct dipolar model
-Vmodel = dl.dipolarmodel(t,r, experiment=dl.ex_4pdeer(tau1,tau2, pathways=[1]))
+experimentInfo = dl.ex_4pdeer(tau1,tau2, pathways=[1])
+Vmodel = dl.dipolarmodel(t,r, experiment=experimentInfo)
 
 # Fit the model to the data
 fit = dl.fit(Vmodel,Vexp)

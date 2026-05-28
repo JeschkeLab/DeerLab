@@ -135,6 +135,19 @@ def _multirice3dfun(r,nu,sig):
 # =================================================================
 
 def freedist(r):
+    """General Non-parametric distribution model, seldom needed by the user.
+    Used when creating a model that is a linear combination of two parameter-free models 
+    
+    Parameters
+    ----------
+    r : array_like
+        Distance axis, in nanometers.
+    
+    Returns
+    -------
+    Model
+    
+    """
     def _nonparametric():
         return np.eye(len(r))
     # Create model
