@@ -18,11 +18,12 @@ def __getattr__(name):
         return _bg_models_mod.__getattr__(name)
     raise AttributeError(f"module 'deerlab' has no attribute {name!r}")
 
+from .dd_models import freedist
 from .model import Model, Penalty, Parameter, link, lincombine, merge, relate
 from .deerload import deerload
 from .selregparam import selregparam
 from .dipolarkernel import dipolarkernel
-from .dipolarbackground import dipolarbackground
+from .dipolarbackground import dipolarbackground,dipolarbackgroundmodel
 from .dipolarmodel import dipolarmodel,ExperimentInfo, dipolarpenalty, ex_4pdeer,ex_3pdeer,ex_rev5pdeer,ex_fwd5pdeer,ex_ridme,ex_sifter,ex_dqc
 from .solvers import snlls, fnnls, cvxnnls
 from .regoperator import regoperator

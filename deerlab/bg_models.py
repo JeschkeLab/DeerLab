@@ -7,12 +7,12 @@ import numpy as np
 import math as m
 from numpy import pi
 import inspect
+from scipy.special import gamma, hyp2f1, sici
+from deerlab.constants import *
 from copy import deepcopy as _deepcopy
 from deerlab.dipolarkernel import dipolarkernel
 from deerlab.utils import formatted_table
 from deerlab.model import Model
-from scipy.special import gamma, hyp2f1, sici
-from deerlab.constants import *
 
 #---------------------------------------------------------------------------------------
 def hyp2f1_repro(a,b,c,z): 

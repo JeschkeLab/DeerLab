@@ -110,8 +110,8 @@ plt.show()
 r = np.arange(2,6,0.05) # nm
 
 # Construct the dipolar signal model 
-experiment = dl.ex_4pdeer(tau1,tau2,pathways=[1,2,3])
-Vmodel = dl.dipolarmodel(t,r,experiment=experiment)
+experimentInfo = dl.ex_4pdeer(tau1,tau2,pathways=[1,2,3])
+Vmodel = dl.dipolarmodel(t,r,experiment=experimentInfo)
 
 # Analyze the data while ignoring the crossing echoes
 results = dl.fit(Vmodel,Vexp, mask=mask, noiselvl=noiselevel)
@@ -130,13 +130,8 @@ Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-def Vunmodfcn(lam1,lam2,lam3,reftime1,reftime2,reftime3,conc):
-    Lam0 = results.P_scale*(1-lam1-lam2-lam3)
-    Vunmod = Lam0*dl.bg_hom3d(t-reftime1,conc,lam1)
-    Vunmod *= dl.bg_hom3d(t-reftime2,conc,lam2)
-    Vunmod *= dl.bg_hom3d(t-reftime3,conc,lam3)
-    return Vunmod  
-Bfit = results.evaluate(Vunmodfcn)
+Bfcn = dl.dipolarbackgroundmodel(experimentInfo)
+Bfit = results.P_scale*results.evaluate(Bfcn,t)
 
 plt.figure(figsize=[6,7])
 violet = '#4550e6'

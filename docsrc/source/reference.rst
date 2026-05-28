@@ -63,6 +63,7 @@ Reference Index
     deerload
     dipolarkernel 
     dipolarbackground
+    dipolarbackgroundmodel
     fftspec
     distancerange
 
@@ -89,3 +90,4 @@ Reference Index
     dump_jsons
     load_jsons
     show_config
+    freedist
