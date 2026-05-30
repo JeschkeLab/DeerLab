@@ -31,6 +31,7 @@ setup(
                         'setuptools>=53.0.0',
                         'numexpr>=2.7.3',
                         'quadprog>=0.1.11; python_version <= "3.10"',
+                        'h5py>=3.16'
                         ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
