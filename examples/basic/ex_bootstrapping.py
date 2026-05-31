@@ -13,7 +13,9 @@ However, for publication-level analysis, these confidence intervals might be ina
 confidence intervals to get accurate estimates of the uncertainty. 
 Conviniently, ``fit`` integrates bootstrapping to make it accessible via the keyword argument ``bootstrap`` which specifies the
 number of samples to analyze to estimate the uncertainty. The larger this number, the more accurate 
-the confidence intervals but the longer the analysis will be. The standard for publication is typically 1000 samples. 
+the confidence intervals but the longer the analysis will be. The standard for publication is typically 250 samples. 
+
+To keep the analysis time reasonable, bootstrapping can be parallelized by specifying the number of CPU cores to use via the ``bootcores`` keyword.
 """ 
 
 import numpy as np
@@ -45,10 +47,11 @@ t = t + tmin
 r = np.linspace(2,5,100) # nm
 
 # Construct the model
-Vmodel = dl.dipolarmodel(t,r, experiment = dl.ex_4pdeer(tau1,tau2, pathways=[1]))
+experimentInfo = dl.ex_4pdeer(tau1,tau2, pathways=[1])
+Vmodel = dl.dipolarmodel(t,r, experiment = experimentInfo)
 
 # Fit the model to the data
-results = dl.fit(Vmodel,Vexp,bootstrap=20)
+results = dl.fit(Vmodel,Vexp,bootstrap=20,bootcores=4)
 
 # In this example, just for the sake of time, we will just use 20 bootstrap samples.  
 
@@ -59,7 +62,7 @@ print(results)
 
 # Extract fitted dipolar signal
 Vfit = results.model
-Vci = results.propagate(Vmodel).ci(95)
+Vci = results.modelUncert.ci(95)
 
 # Extract fitted distance distribution
 Pfit = results.P
@@ -67,9 +70,9 @@ Pci95 = results.PUncert.ci(95)
 Pci50 = results.PUncert.ci(50)
 
 # Extract the unmodulated contribution
-Bfcn = lambda mod,conc,reftime: results.P_scale*(1-mod)*dl.bg_hom3d(t-reftime,conc,mod)
-Bfit = results.evaluate(Bfcn)
-Bci = results.propagate(Bfcn).ci(95)
+Bfcn = dl.dipolarbackgroundmodel(experimentInfo)
+Bfit = results.P_scale*results.evaluate(Bfcn,t)
+Bci = results.P_scale*results.propagate(Bfcn,t).ci(95)
 
 plt.figure(figsize=[6,7])
 violet = '#4550e6'
@@ -78,6 +81,7 @@ plt.subplot(211)
 plt.plot(t,Vexp,'.',color='grey',label='Data')
 # Plot the fitted signal 
 plt.plot(t,Vfit,linewidth=3,label='Bootstrap median',color=violet)
+plt.fill_between(t,Vci[:,0],Vci[:,1],linewidth=0.1,label='Bootstrap median',color=violet,alpha=0.3)
 plt.plot(t,Bfit,'--',linewidth=3,color=violet,label='Unmodulated contribution')
 plt.legend(frameon=False,loc='best')
 plt.xlabel('Time $t$ (μs)')

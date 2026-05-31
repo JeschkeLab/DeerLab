@@ -41,17 +41,17 @@ def uncertainty_quantification_simulation():
     pdf2 = dd_gauss(x,means[1],std[1])
     pdf1 /= max(pdf1)
     pdf2 /= max(pdf2)
-    σ = 0.01
+    σ = 0.01 # Noise Level
     obj2likelihood = lambda f: 1/np.sqrt(σ*2*np.pi)*np.exp(-1/2*f/σ**2)
     likelihood2obj = lambda L: -2*np.log(L*np.sqrt(σ*2*np.pi))*σ**2
-    threshold = lambda coverage: σ**2*chi2.ppf(coverage, df=1) + likelihood2obj(max(pdf1))
+    threshold_inputs = {'Npoints': 1, 'cost': likelihood2obj(max(pdf1))}
     profile1 = {'y': likelihood2obj(pdf1), 'x':x}
     profile2 = {'y': likelihood2obj(pdf2), 'x':x}
 
     # Construct uncertainty quantification objects
     uq_moment = UQResult('moment',data=np.array(means),covmat=covmat)
     uq_bootstrap = UQResult('bootstrap',data=np.vstack(samples).T)
-    uq_profile = UQResult('profile',data=np.array(means),profiles=[profile1,profile2],threshold=threshold,noiselvl=σ)
+    uq_profile = UQResult('profile',data=np.array(means),profiles=[profile1,profile2],threshold_inputs=threshold_inputs,noiselvl=σ)
 
     mock_objects = {'moment': uq_moment, 'bootstrap': uq_bootstrap, 'profile': uq_profile}
     references = {'mean': means, 'std': std, 'median': p50, 'ci':[ci50,ci90,ci95], 'percentile': [p5,p50,p95]}
@@ -97,4 +97,22 @@ def test_uncertainty_quantitification_attributes(uncertainty_quantification_simu
         pdfs_ref = [dd_gauss(x,mean,sigma) for x,mean,sigma in zip(xs,references['mean'],references['std'])]
         assert ovl(pdfs[0],pdfs_ref[0])>0.99
         assert ovl(pdfs[1],pdfs_ref[1])>0.99
+
+@pytest.mark.parametrize('method', ['moment', 'bootstrap', 'profile'])
+def test_to_and_from_dict(uncertainty_quantification_simulation, method):
+    """Test the to_dict and from_dict methods of the UQResult class"""
+
+    # Retrieve the results of the mock simulation
+    uq_objects, _ = uncertainty_quantification_simulation
+    
+    uq = uq_objects[method]
+    dct = uq.to_dict()
+    uq_reconstructed = UQResult.from_dict(dct)
+    assert type(uq_reconstructed) == UQResult
+    assert np.allclose(uq.mean,uq_reconstructed.mean,rtol=1e-2)
+    assert np.allclose(uq.std,uq_reconstructed.std,rtol=1e-2)
+    assert np.allclose(uq.median,uq_reconstructed.median,rtol=1e-2)
+    assert np.allclose(uq.ci(95),uq_reconstructed.ci(95),rtol=1e-2)
+    assert np.allclose(uq.ci(90),uq_reconstructed.ci(90),rtol=1e-2)
+    assert np.allclose(uq.ci(50),uq_reconstructed.ci(50),rtol=1e-2)
 # =================================================================================================

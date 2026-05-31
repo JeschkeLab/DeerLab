@@ -47,6 +47,9 @@ Reference Index
     fnnls
     cvxnnls
     goodness_of_fit
+    save
+    load
+
     
 .. rubric:: Dipolar EPR functions
 
@@ -60,6 +63,7 @@ Reference Index
     deerload
     dipolarkernel 
     dipolarbackground
+    dipolarbackgroundmodel
     fftspec
     distancerange
 
@@ -72,8 +76,6 @@ Reference Index
     :template: custom_function_template.rst
     :nosignatures:
 
-    store_pickle
-    read_pickle
     sophegrid
     choleskycovmat
     hccm
@@ -83,3 +85,9 @@ Reference Index
     ovl
     der_snr
     formatted_table
+    store_pickle
+    read_pickle
+    dump_jsons
+    load_jsons
+    show_config
+    freedist

@@ -42,7 +42,14 @@ def mock_x():
 
 @pytest.fixture(scope='module')
 def mock_data(mock_x):
-    return bigauss(mock_x,mean1=3,mean2=4,std1=0.5,std2=0.2,amp1=0.5,amp2=0.6)
+    data = bigauss(mock_x,mean1=3,mean2=4,std1=0.5,std2=0.2,amp1=0.5,amp2=0.6)
+    return data
+
+@pytest.fixture(scope='module')
+def mock_data_noise(mock_x):
+    data = bigauss(mock_x,mean1=3,mean2=4,std1=0.5,std2=0.2,amp1=0.5,amp2=0.6)
+    data += whitegaussnoise(mock_x,0.01,seed=1)
+    return data
 
 model_types = ['parametric','semiparametric','semiparametric_vec',
                 'nonparametric','nonparametric_vec','nonparametric_vec_normalized']
@@ -511,7 +518,7 @@ def test_fit_model_confidence_intervals(mock_data,model_type,method):
     model = _generate_model(model_type, fixed_axis=True)
 
     if method=='bootstrap':
-        results = fit(model,mock_data + whitegaussnoise(x,0.01,seed=1), bootstrap=3)
+        results = fit(model,mock_data + whitegaussnoise(x,0.01,seed=1), bootstrap=100)
     else: 
         results = fit(model,mock_data + whitegaussnoise(x,0.01,seed=1))
     
@@ -546,6 +553,27 @@ def test_fit_evaluate_model(mock_data,mock_x,model_type):
         response *= results.scale
     
     assert np.allclose(response,mock_data)
+
+# ================================================================
+@pytest.mark.parametrize('method', ['bootstrap','moment'])
+@pytest.mark.parametrize('model_type', model_types)
+def test_fit_modelUncert(mock_data_noise,mock_x,model_type,method): 
+    "Check that the uncertainty of fit results can be calculated and is the uncertainty of the model is non zero for all but nonparametric models"
+    model = _generate_model(model_type, fixed_axis=False)
+    
+    if method=='bootstrap':
+        results = fit(model,mock_data_noise,mock_x, bootstrap=3)
+    else: 
+        results = fit(model,mock_data_noise,mock_x)
+
+    assert hasattr(results,'modelUncert')
+    ci_lower = results.modelUncert.ci(95)[:,0]
+    ci_upper = results.modelUncert.ci(95)[:,1]
+    assert np.less_equal(ci_lower,ci_upper).all()
+    if model_type != 'nonparametric' and model_type != 'nonparametric_vec' and model_type != 'nonparametric_vec_normalized':
+        assert np.all(np.round(ci_lower) <= np.round(results.model)) and np.less(ci_lower.sum(),results.model.sum())
+        assert np.all(np.round(ci_upper,5) >= np.round(results.model,5)) and np.greater(ci_upper.sum(),results.model.sum())
+
 # ================================================================
 
 # ================================================================

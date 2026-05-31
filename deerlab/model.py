@@ -218,6 +218,49 @@ class Parameter():
             self.frozen = False
             self.value = None
     #---------------------------------------------------------------------------------------
+    def copy(self):
+        """
+        Return a deep copy of the parameter
+        """
+
+        return deepcopy(self)
+    
+    #---------------------------------------------------------------------------------------
+
+    def to_dict(self):
+        """
+        Return a dictionary with the parameter attributes
+        """
+        return {
+            'name': self.name,
+            'description': self.description,
+            'unit': self.unit,
+            'par0': self.par0,
+            'lb': self.lb,
+            'ub': self.ub,
+            'frozen': self.frozen,
+            'value': self.value,
+            'linear': self.linear
+        }
+    #---------------------------------------------------------------------------------------
+
+    @classmethod
+    def from_dict(cls, param_dict):
+        """
+        Create a Parameter object from a dictionary of attributes
+
+        Parameters
+        ----------
+        param_dict : dict
+            Dictionary containing the parameter attributes. The keys of the dictionary must be the same as the attributes of the Parameter class.
+
+        Returns
+        -------
+        parameter : Parameter object
+            Parameter object created from the input dictionary.
+        """
+        return cls(**param_dict)
+
 #===================================================================================
 
 
@@ -236,6 +279,8 @@ class Model():
     <parameter_name> : :ref:`Parameter` 
         Model parameter. One :ref:`Parameter` instance is assigned for each
         parameter (with name ``<parameter_name>``) in the model.  
+    name : string
+        Name of the model, useful for rebuilding the model from a dictionary.
     description : string 
         Description of the model.
     signature : string 
@@ -336,6 +381,7 @@ class Model():
             nonlinfcn = lambda *_: Amatrix 
         self.nonlinmodel = nonlinfcn
         self.description = None
+        self.name = None
         self._constantsInfo = []
         self.parents = None
 
@@ -867,7 +913,7 @@ class Model():
 
         # Check that all parameters have been passed
         if len(θ)!=self.Nparam:
-            raise SyntaxError(f'The model requires {self.Nparam} parameters, but {len(args_list)} were specified.')   
+            raise SyntaxError(f'The model requires {self.Nparam} parameters, but {len(θ)} were specified.')   
 
         # Determine which parameters are linear and which nonlinear
         θlin, θnonlin = self._split_linear(θ)
@@ -973,6 +1019,77 @@ class Model():
         """
         return self._parameter_table()      
     #---------------------------------------------------------------------------------------
+    def copy(self):
+        """
+        Return a deep copy of the model
+        """
+
+        return deepcopy(self)
+
+    #--------------------------------------------------------------------------------
+
+    def to_dict(self):
+        """
+        Convert the model to a dictionary representation. 
+
+        Returns
+        -------
+        model_dict : dict
+            Dictionary representation of the model, containing all the information about the model's parameters and their values.
+        """
+        # Get the model's metadata in vector form
+        metadata = self.getmetadata()
+        # Create a dictionary with the model's metadata
+        model_dict = {
+            'description': self.description,
+            'signature': self.signature,
+            'constants': [entry['argkey'] for entry in self._constantsInfo],
+            'parameters': []
+        }
+        # Add each parameter's information to the dictionary
+        for name, lb, par0, ub, linear, frozen, unit in zip(metadata['names'], metadata['lb'], metadata['par0'], metadata['ub'], metadata['linear'], metadata['frozen'], metadata['units']):
+            param_dict = {
+                'name': name,
+                'lb': lb,
+                'par0': par0,
+                'ub': ub,
+                'linear': linear,
+                'frozen': frozen,
+                'unit': unit
+            }
+            model_dict['parameters'].append(param_dict)
+        return model_dict
+    
+    @classmethod
+    def from_dict(self, model_dict):
+        """
+        Update the model's parameters and their values from a dictionary representation. 
+
+        Parameters
+        ----------
+        model_dict : dict
+            Dictionary representation of the model, containing all the information about the model's parameters and their values.
+        """
+        # Update the model's description and signature
+        self.description = model_dict['description']
+        self.signature = model_dict['signature']
+        # Update the model's constants
+        self._constantsInfo = [{'argkey': argkey, 'argidx': idx} for idx, argkey in enumerate(model_dict['constants'])]
+        # Update the model's parameters
+        for param_dict in model_dict['parameters']:
+            name = param_dict['name']
+            lb = param_dict['lb']
+            par0 = param_dict['par0']
+            ub = param_dict['ub']
+            linear = param_dict['linear']
+            frozen = param_dict['frozen']
+            unit = param_dict['unit']
+            if linear:
+                self.addlinear(name=name, lb=lb, ub=ub, par0=par0, unit=unit)
+            else:
+                self.addnonlinear(key=name, lb=lb, ub=ub, par0=par0, unit=unit)
+            if frozen:
+                getattr(self,name).freeze(par0)
 #===================================================================================
 
 #==============================================================================
@@ -1276,6 +1393,7 @@ def _linked_model_with_constants(nonlinfcn,mapping,constantsInfo,linear_reduce_i
     # Make a matrix if model function returns a vector
     if len(A.shape)<2: A = np.expand_dims(A,1)
     # Sum the output matrix along the columns specified in the linear_reduce_idx array
+    if len(linear_reduce_idx)==0: return A
     Amapped = np.vstack([np.sum(np.atleast_2d(A[:,idx]),axis=1) for idx in linear_reduce_idx]).T
     return Amapped
 # ---------------------------------------------------------------------
@@ -1412,7 +1530,7 @@ def link(model,**links):
                 else: 
                     model.Nnonlin -= Nremoved
                     # Update the parameter vector map
-                    mapping[unlinked_nonlinear_idx[n]] = link_indices
+                    mapping[unlinked_nonlinear_idx[n]] = link_indices[0]
                 # Delete the linked parameter from the model
                 delattr(model,param)
 
@@ -1456,6 +1574,9 @@ def link(model,**links):
         for arg in links[key]:
             if arg in newmodel.signature: 
                 newmodel.signature.remove(arg)
+
+    if hasattr(model,'Bmodel') and model.Bmodel is not None:
+        newmodel.Bmodel = link(model.Bmodel,**links)
     return newmodel
 #==============================================================================================
 

@@ -403,7 +403,7 @@ def dipolarkernel(t, r, *, pathways=None, mod=None, bg=None, method='fresnel', e
         if Nspin==2:
 
             # Determine the modulated dipolar interaction
-            q = int(np.where([np.any(δq!=0) for δq in δ])[0])
+            q = int(np.where([np.any(δq!=0) for δq in δ])[0][0])
             # Construc the effective dipolar evolution time for the modulated dipolar interactions
             tdip = np.sum(np.array([δ_qd*(t_d-tref_qd) for t_d,δ_qd,tref_qd in zip(t,δ[q],tref[q])],dtype=object), axis=0).astype(float)
             # Compute and accumulate the two-spin dipolar pathway contribution to the dipolar kernel
