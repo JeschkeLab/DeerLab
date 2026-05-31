@@ -64,7 +64,7 @@ you can do so by using the `numpy.savetxt` function on the relevant arrays.
 # %%
 np.savetxt('fitted_signal.txt', np.column_stack((t, Vexp, results.model, results.bg)), header='Time (μs), Data, Fit, Background')
 
-Pfit = results.evaluate(dl.dd_gauss2, r)
-Puncert = results.propagate(dl.dd_gauss2, r).ci(95)
+Pfit = results.P
+Puncert = results.PUncert.ci(95)
 np.savetxt('distance_distribution.txt', np.column_stack((r, Pfit, Puncert[:,0], Puncert[:,1])), header='Distance (nm), P(r), P(r) 95% CI lower, P(r) 95% CI upper')
 # %%
