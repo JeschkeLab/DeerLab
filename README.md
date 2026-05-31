@@ -14,6 +14,7 @@ The documentation can be found [here](https://jeschkelab.github.io/DeerLab/index
 
 The early versions of DeerLab (up to version 0.9.2) are written in MATLAB. The old MATLAB codebase is archived and can be found [here](https://github.com/JeschkeLab/DeerLab-Matlab).
 
+A graphical user interface (GUI) for processing DEER data using DeerLab is now available as a separate package called [DeerAnalysis](https://github.com/JeschkeLab/DeerAnalysis).
 ## Requirements
 
 DeerLab is available for Windows, Mac and Linux systems and requires **Python 3.9** to **3.13**
@@ -58,4 +59,4 @@ Here is the citation in bibtex format:
 
 DeerLab is licensed under the [MIT License](LICENSE).
 
-Copyright © 2019-2024: Luis Fábregas Ibáñez, Stefan Stoll, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).
+Copyright © 2019-2026: Luis Fábregas Ibáñez, Stefan Stoll, Hugo Karas, Gunnar Jeschke, and [other contributors](https://github.com/JeschkeLab/DeerLab/contributors).

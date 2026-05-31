@@ -1,44 +1,53 @@
 name: Docs Build & Deployment
 
-on: 
+on:
   workflow_dispatch:
   release:
     types: [published]
 
-jobs:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-  deploy:
+jobs:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-        cache: 'pip'
-        cache-dependency-path: setup.py
-    - name: Install dependencies
-      run: |
-           python -m pip install --upgrade pip
-           python -m pip install furo
-           python -m pip install numpydoc
-           python -m pip install sphinx-gallery
-           python -m pip install sphinxcontrib-httpdomain
-           python -m pip install sphinxcontrib-ghcontributors
-           python -m pip install sphinx-issues
-           python -m pip install sphinx-copybutton  
-           python -m pip install sphinx
-           python -m pip install sphinx-design
-           python -m pip install .
-           sudo apt-get update -y
-           sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
-    - name: Build with Sphinx
-      run: |
-           sphinx-build -E -b html ./docsrc/source ./docs
-    - name: Deploy to GH-Pages
-      if: always()
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: setup.py
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install furo numpydoc sphinx-gallery sphinxcontrib-httpdomain sphinxcontrib-ghcontributors sphinx-issues sphinx-copybutton sphinx sphinx-design .
+          sudo apt-get update -y
+          sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Sphinx
+        run: sphinx-build -E -b html ./docsrc/source ./docs
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

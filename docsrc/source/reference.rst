@@ -87,7 +87,7 @@ Reference Index
     formatted_table
     store_pickle
     read_pickle
-    dump_jsons
-    load_jsons
+    json_dumps
+    json_loads
     show_config
     freedist

@@ -24,6 +24,22 @@ Release Notes
 - |fix| : Something which was not working as expected or leading to errors has been fixed.
 - |api| : This will require changes in your scripts or code.
 
+
+Release ``v1.2`` - June 2026
+------------------------------------------
+- |feature| : `modelUncert` is now returned in the `FitResult` object
+- |feature| : Added new saving and loading options for `FitResult` and `UQResult` objects, using `save` and `load` functions.
+- |feature| : Added new automatic calculation of background function with `dipolarbackgroundmodel` function. Added `FitResult.bg` and `FitResult.bgUncert` attributes to store the fitted background function and its uncertainty, when possible.
+- |feature| : Added multi-core parallelization to the `profile_analysis` function via the `cores` argument.
+- |feature| : Added a new `show_config` function to display deatils about how DeerLab is configured in the current system.
+- |fix| : Fixes issues with bootrstrap uncertainties
+- |api| : N bootstrap samples no longer produces N+1 samples
+- |enhancement| : Support Python 3.13 and 3.14
+- |fix| : All gaussian models now normalise to 1
+- |fix| : Fixed bug in `ex_fitting_5pdeer_pathways` so scales are now correct on the pathways. 
+- |api| : Models are now deepcopied on import to avoid issues with users modifying the built-in models. 
+- |fix| : Fixes bug where some parameters frozen before the `dl.dipolarmodel` function were not frozen in the resulting model.
+
 Release ``v1.1.4`` - September 2024
 ------------------------------------------
 - |enhancement| : Expanded sophgrid to allow for closed phi integral. (:pr:`482`)
