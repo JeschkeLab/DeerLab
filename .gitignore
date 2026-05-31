@@ -28,3 +28,9 @@ docsrc/source/_autosummary/**/*
 docsrc/source/auto_examples/**/*
 docsrc/plot_directive/
 docsrc/source/_build/
+
+examples/**/*.txt
+examples/**/*.hdf5
+examples/**/*.npy
+examples/**/*.npz
+examples/**/*.csv
