@@ -655,5 +655,7 @@ def elementarykernel_threespin(tdips,rs,method,ωex,gridsize,g,Pθ,complex):
 
     if  method=='grid': 
         K0 = elementarykernel_threespin_grid(tdips,gridsize,Pθ)
+    else:
+        raise KeyError("Only the 'grid' method is supported for three-spin dipolar kernels.")
     return K0
 #==============================================================================
