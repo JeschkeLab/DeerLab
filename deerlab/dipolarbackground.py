@@ -5,6 +5,75 @@
 
 import numpy as np
 import inspect
+from math import factorial
+
+def _multispin_pathways(λs, trefs, harmonics, λu, Q, triangles=None, minamp=0):
+    """
+    Construct the two-spin and three-spin dipolar pathways of a multi-spin system from its pair dipolar pathways,
+    following eqn (15) of Fábregas-Ibáñez et al., Phys. Chem. Chem. Phys., 24 2022, 22645-22660.
+
+    Parameters
+    ----------
+    λs : array_like, shape (Q, npathways)
+        Amplitudes of the pair dipolar pathways, ``λs[q][p]`` for pathway ``p`` on interaction ``q``.
+    trefs : array_like
+        Refocusing times of the pair dipolar pathways.
+    harmonics : array_like
+        Harmonics of the pair dipolar pathways.
+    λu : float
+        Amplitude of the unmodulated pair dipolar pathway.
+    Q : int
+        Number of dipolar interactions in the spin system.
+    triangles : list of lists, optional
+        Triads of (0-based) interaction indices forming triangles. Two interactions only give a three-spin
+        contribution if they share a common spin, i.e. if they belong to the same triangle. If not specified,
+        all pairs of interactions are assumed to share a spin (always true for three-spin systems).
+    minamp : float, optional
+        Three-spin pathways with an amplitude below ``minamp`` are neglected. Between ``minamp`` and ``2*minamp``
+        their amplitude is switched on linearly, so that the pathways do not appear abruptly as the parameters change.
+
+    Returns
+    -------
+    twospin_pathways : list of dict
+        Two-spin dipolar pathways, with the unmodulated contribution as the last element.
+    threespin_pathways : list of dict
+        Three-spin dipolar pathways.
+    """
+    npathways = len(harmonics)
+    joined = lambda q1,q2: triangles is None or any(q1 in triangle and q2 in triangle for triangle in triangles)
+
+    Λ0 = 1
+    twospin_pathways, threespin_pathways = [],[]
+    # Two-spin pathways: pair pathway p on interaction q, all other interactions unmodulated
+    for p in range(npathways):
+        for q in range(Q):
+            λ2k = factorial(Q-1)*λs[q][p]*λu**(Q-1)
+            tref = tuple(trefs[p] if n==q else None for n in range(Q))
+            δs = tuple(harmonics[p] if n==q else 0 for n in range(Q))
+            twospin_pathways.append({'amp':λ2k, 'reftime':tref, 'harmonic':δs})
+            Λ0 -= λ2k
+
+    # Three-spin pathways: pair pathways p≤p' on two different interactions q≠q' sharing a common spin
+    for p in range(npathways):
+        for p2 in range(p,npathways):
+            for q1 in range(Q):
+                for q2 in range(Q):
+                    if q1==q2 or not joined(q1,q2):
+                        continue
+                    λ3k = 2*factorial(Q-2)*λs[q1][p]*λs[q2][p2]*λu**(Q-2)
+                    if minamp>0:
+                        λ3k = λ3k*np.clip(λ3k/minamp - 1, 0, 1)
+                    if λ3k<=0:
+                        continue
+                    tref = tuple(trefs[p] if n==q1 else trefs[p2] if n==q2 else None for n in range(Q))
+                    δs = tuple(harmonics[p] if n==q1 else harmonics[p2] if n==q2 else 0 for n in range(Q))
+                    threespin_pathways.append({'amp':λ3k, 'reftime':tref, 'harmonic':δs})
+                    Λ0 -= λ3k
+
+    # Unmodulated contribution
+    twospin_pathways.append({'amp':Λ0})
+
+    return twospin_pathways, threespin_pathways
 
 def dipolarbackground(t, pathways, basis):
     r"""Computes the (multi-pathway) background function.
@@ -243,6 +312,9 @@ def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftime
 
     **kwargs:
         Additional keyword arguments. If ``experiment`` is not specified, the number of pathways can be specified with the keyword argument ``npathways`` (default is 1).
+        For systems with ``spins>3``, the interspin triangles can be specified with the keyword argument ``triangles`` (see ``dipolarmodel``);
+        if not specified, all pairs of interactions are assumed to share a common spin. The keyword argument ``minamp`` sets the
+        threshold amplitude for neglecting three-spin pathways (default is 0).
 
     Returns
     -------
@@ -264,16 +336,19 @@ def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftime
     """
     from deerlab.dipolarmodel import _populate_dipolar_pathways_parameters
     from deerlab.model import Model
-    from itertools import permutations
-    from math import factorial
 
     if basis is None:
         from deerlab.bg_models import bg_hom3d
         basis = bg_hom3d
 
+    triangles = kwargs.get('triangles', None)
+    if triangles is not None and np.min(triangles)!=0:
+        triangles = [np.array(triangle)-1 for triangle in triangles]
+    minamp = kwargs.get('minamp', 0)
+
     if experiment is None:
         npathways = kwargs.get('npathways', 1)
-        harmonics = [1]
+        harmonics = [1]*npathways
         if npathways>1:
             pulsedelay_names = ['reftime'+str(i+1) for i in range(npathways)]
         else:
@@ -401,36 +476,7 @@ def dipolarbackgroundmodel(experiment=None, basis=None, parametrization='reftime
                     return basis(tdip, *basis_constants[1:])
 
             # Construct all multi-spin dipolar pathways
-            paths, threespin_paths = [], []
-            Λ0 = 1.0
-
-            for idx in range(npathways):
-                tref_idx = trefs[idx]
-                δ_idx = harmonics[idx]
-
-                for perm in set(permutations([0]+[None]*(Q-1))):
-                    q = int(np.where(np.array(perm)==0)[0][0])
-                    λp = λs_matrix[q, idx]
-                    λ2k = factorial(Q-1)*λp*lamu**(Q-1)
-                    tref_path = tuple([tref_idx if n==0 else None for n in perm])
-                    δs_path = tuple([δ_idx if n==0 else 0 for n in perm])
-                    paths.append({'amp': λ2k, 'reftime': tref_path, 'harmonic': δs_path})
-                    Λ0 -= λ2k
-
-                    for idx2 in range(idx+1, npathways):
-                        tref_idx2 = trefs[idx2]
-                        δ_idx2 = harmonics[idx2]
-                        for perm2 in set(permutations([0,1]+[None]*(Q-2))):
-                            perm2_arr = np.array(perm2)
-                            q2 = int(np.where(perm2_arr==1)[0][0])
-                            λm = λs_matrix[q2, idx]
-                            λ3k = 2*factorial(Q-2)*λp*λm*lamu**(Q-2)
-                            tref_path2 = tuple([tref_idx if n==0 else tref_idx2 if n==1 else None for n in perm2])
-                            δs_path2 = tuple([δ_idx if n==0 else δ_idx2 if n==1 else 0 for n in perm2])
-                            threespin_paths.append({'amp': λ3k, 'reftime': tref_path2, 'harmonic': δs_path2})
-                            Λ0 -= λ3k
-
-            paths.append({'amp': Λ0})
+            paths, threespin_paths = _multispin_pathways(λs_matrix, trefs, harmonics, lamu, Q, triangles=triangles, minamp=minamp)
             return dipolarbackground(t, paths+threespin_paths, basis_fcn)
 
     # Define the dipolar background model

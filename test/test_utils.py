@@ -36,6 +36,31 @@ def test_sophegrid():
     assert np.allclose(theta, np.array([0]),rtol=1e-4)
     assert np.allclose(weights*4*np.pi, np.array([12.5664]),rtol=1e-4)
 
+def test_choleskycovmat_roundtrip():
+    # Test that the factors of a known covariance matrix, ordered as in dipolarmodel
+    # (ℓ11,...,ℓQQ, ℓ21,ℓ31,...,ℓQ1, ℓ32,...), give back the same covariance matrix
+    from deerlab.utils import choleskycovmat
+    for Q in [3,4,6]:
+        rng = np.random.default_rng(Q)
+        A = rng.normal(size=(Q,Q))
+        Σ = 0.1*(A@A.T + Q*np.eye(Q))
+        L = np.linalg.cholesky(Σ)
+        cholfactors = [L[q,q] for q in range(Q)] + [L[j,q] for q in range(Q) for j in range(q+1,Q)]
+
+        assert np.allclose(choleskycovmat(Q,cholfactors),Σ)
+
+def test_choleskycovmat_named_factors():
+    # Test that each named factor ℓjq is placed at the lower triangular position (j,q)
+    from deerlab.utils import choleskycovmat
+    # Only ℓ21 non-zero: correlation between dimensions 1 and 2 only
+    Σ = choleskycovmat(3,[0.3,0.3,0.3, 0.2,0,0])
+    assert Σ[0,1]!=0 and Σ[0,2]==0 and Σ[1,2]==0
+    # Only ℓ32 non-zero: correlation between dimensions 2 and 3 only
+    Σ = choleskycovmat(3,[0.3,0.3,0.3, 0,0,0.2])
+    assert Σ[1,2]!=0 and Σ[0,1]==0 and Σ[0,2]==0
+    # Docstring example
+    assert np.allclose(choleskycovmat(3,[3.0,2.0,1.0,0.5,0.5,0.5]), [[9,1.5,1.5],[1.5,4.25,1.25],[1.5,1.25,1.5]])
+
 def test_config():
     from deerlab.utils import show_config
 

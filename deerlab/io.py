@@ -79,6 +79,12 @@ def _create_h5_element(group: h5py.Group, key, value):
         subgroup = group.create_group(key)
         for subkey, subvalue in value.items():
             _create_h5_element(subgroup, subkey, subvalue)
+    elif isinstance(value, np.ndarray) and value.dtype == object:
+        # Object-dtype arrays (e.g. ragged arrays from global fits) — store elements individually
+        subgroup = group.create_group(key)
+        subgroup.attrs['__type__'] = 'ndarray_object'
+        for i, item in enumerate(value):
+            _create_h5_element(subgroup, f'{key}_{i}', item)
     else:
         group.create_dataset(key, data=value)
 

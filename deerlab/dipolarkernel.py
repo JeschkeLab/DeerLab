@@ -577,8 +577,9 @@ def _echomodulation_threespin(tdips,ωrs,rs,θ1,φ1,weights,complex):
 
     # Law of cosines
     r1,r2,r3 = rs
-    Δθ12 = np.arccos((r1**2 + r2**2 - r3**2)/(2*r1*r2))
-    Δθ13 = np.arccos((r1**2 + r3**2 - r2**2)/(2*r1*r3))
+    # (clipped to avoid NaNs from round-off errors in degenerate triangles)
+    Δθ12 = np.arccos(np.clip((r1**2 + r2**2 - r3**2)/(2*r1*r2),-1,1))
+    Δθ13 = np.arccos(np.clip((r1**2 + r3**2 - r2**2)/(2*r1*r3),-1,1))
     sinΔθ12, cosΔθ12 = np.sin(Δθ12), np.cos(Δθ12)
     sinΔθ13, cosΔθ13 = np.sin(Δθ13), np.cos(Δθ13)
 

@@ -25,6 +25,14 @@ Release Notes
 - |api| : This will require changes in your scripts or code.
 
 
+Unreleased
+------------------------------------------
+- |api| : Fixed ``choleskycovmat``, which filled an upper (instead of lower) triangular matrix and placed the off-diagonal factors at positions not matching their names. The ``cholJQ`` parameters of multi-spin ``dipolarmodel`` models now correspond to the lower triangular Cholesky factors ``ℓJQ`` (i.e. ``Σ = L@L.T`` with ``L = np.linalg.cholesky(Σ)``). Fitted covariance matrices are unaffected, but individual off-diagonal ``chol`` values from previous fits are not directly comparable, and freezing only some of them now has the expected effect.
+- |fix| : Multi-spin ``dipolarmodel`` models are now deterministic and smooth in all their parameters, such that fits converge. The multivariate distance distribution was previously sampled with a new set of random samples at every evaluation and histogrammed, which made the finite-difference Jacobian dominated by sampling noise and stalled the optimizer at the start values. Its univariate and trivariate marginals, truncated by the triangle inequality, are now evaluated by deterministic quadrature on fixed point sets that scale with the means and covariance of the distribution.
+- |fix| : Fixed the construction of the multi-spin dipolar pathways in ``dipolarmodel`` and ``dipolarbackgroundmodel`` to follow eqn (15) of Fábregas-Ibáñez et al. (PCCP, 2022). Three-spin pathways formed by the same pair pathway on two interactions (e.g. in single-pathway 4-pulse DEER) are now included, three-spin pathways are no longer duplicated for each interaction, the second pair pathway's amplitude is used for mixed pathways, only interactions sharing a common spin contribute, and models with multiple pathways or with the ``'delays'`` and ``'shift'`` parametrizations no longer fail or misassign parameters.
+- |fix| : Multi-spin ``dipolarmodel`` models with ``Bmodel=None`` can now be evaluated, and a wrongly formatted ``triangles`` argument raises an informative error.
+- |fix| : ``dipolarbackgroundmodel`` without an ``experiment`` and with ``npathways>1`` no longer fails for multi-spin systems.
+
 Release ``v1.2`` - June 2026
 ------------------------------------------
 - |feature| : `modelUncert` is now returned in the `FitResult` object

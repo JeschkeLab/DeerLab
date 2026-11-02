@@ -920,37 +920,38 @@ def choleskycovmat(Q,cholfactors):
     Q : int
         Dimension of the covariance matrix.
     cholfactors : array_like
-        List of Cholesky decomposition factors. The first `Q` values correspond to the 
-        diagonal values of the Cholesky decomposition matrix. The remaining values are used to
-        fill the lower triangular matrix row by row. 
+        List of Cholesky decomposition factors. The first `Q` values correspond to the
+        diagonal values ``ℓ11, ℓ22, ..., ℓQQ`` of the lower triangular Cholesky matrix. The
+        remaining values fill the strictly lower triangular part column by column, i.e.
+        ``ℓ21, ℓ31, ..., ℓQ1, ℓ32, ..., ℓQ(Q-1)``.
 
     Returns
     -------
-    Σ : ndarray 
-        Covariance matrix.
+    Σ : ndarray
+        Covariance matrix ``Σ = L@L.T``.
 
     Examples
     --------
     >>> choleskycovmat(3, [3.0, 2.0, 1.0, 0.5, 0.5, 0.5])
-    array([[3.  , 1.5 , 0.75],
-           [1.5 , 2.25, 1.25],
-           [0.75, 1.25, 1.5 ]])
+    array([[9.  , 1.5 , 1.5 ],
+           [1.5 , 4.25, 1.25],
+           [1.5 , 1.25, 1.5 ]])
     """
-    
+
     #Check that the correct number of Cholesky factors has been specified
     N = Q*(Q+1)/2
-    if len(cholfactors)!=N: 
+    if len(cholfactors)!=N:
         raise ValueError(f'The Cholesky decomposition factors vector must have {N} elements')
 
     # Initialize Cholesky decomposition matrix
     L = np.zeros((Q,Q))
 
-    # Fill the Cholesky factors as a lower triangular matrix
-    for q in range(Q):
-        tril_idx = np.where(np.eye(Q,k=q) == 1)
-        L[tril_idx] = cholfactors[:(Q-q)]
-        cholfactors = cholfactors[(Q-q):]
-        
+    # Fill the diagonal
+    L[np.diag_indices(Q)] = cholfactors[:Q]
+    # Fill the strictly lower triangular part column by column (ℓ21, ℓ31, ..., ℓ32, ...)
+    cols,rows = np.triu_indices(Q,k=1)
+    L[rows,cols] = cholfactors[Q:]
+
     # Cholesky decomposition of the covariance matrix
     Σ = L@L.T
 
