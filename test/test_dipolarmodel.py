@@ -6,7 +6,8 @@ from deerlab.fit import fit
 from deerlab.dipolarmodel import ExperimentInfo,dipolarpenalty, dipolarmodel, ex_4pdeer, ex_3pdeer,ex_fwd5pdeer, ex_rev5pdeer, ex_sifter, ex_ridme, ex_dqc
 from deerlab import dd_gauss,dd_gauss2,bg_hom3d,bg_exp,UQResult
 from deerlab.utils import assert_docstring
-from pytest import fixture 
+from pytest import fixture
+import pytest
 
 # ======================================================================
 def test_type(): 
@@ -641,8 +642,99 @@ def test_fourspin_simulation():
     assert not np.mean(np.diff(Vsim))>0.025
 # ======================================================================
 
+threespin_params = dict(lam1=0.15, reftime1=0, lamu=0.6, conc=50, rmean1=2.3, rmean2=4.4, rmean3=5.9,
+                        chol11=0.35, chol22=0.22, chol33=0.3, chol21=0.05, chol31=0.1, chol32=0.1)
+
 # ======================================================================
-def test_parametrization_reftimes_model(): 
+def test_threespin_deterministic():
+    "Check that the multi-spin model returns the same signal when evaluated twice with the same parameters"
+
+    model = dipolarmodel(t,spins=3,npathways=1)
+    V1 = model(**threespin_params, scale=1)
+    V2 = model(**threespin_params, scale=1)
+
+    assert np.array_equal(V1,V2)
+# ======================================================================
+
+# ======================================================================
+def test_threespin_smooth():
+    "Check that the multi-spin model is smooth in all its parameters, such that finite-difference gradients are reliable"
+
+    model = dipolarmodel(t,spins=3,npathways=1)
+    V0 = model(**threespin_params, scale=1)
+    for name in ['rmean1','chol11','chol21','chol32','lam1']:
+        grads = []
+        for h in [1e-8,1e-6]:
+            params = dict(threespin_params)
+            params[name] += h
+            grads.append((model(**params, scale=1) - V0)/h)
+        assert np.allclose(grads[0],grads[1],atol=1e-2*np.max(np.abs(grads[1])))
+# ======================================================================
+
+# ======================================================================
+def test_threespin_triangle_inequality():
+    "Check that distance distributions violating the triangle inequality do not contribute"
+
+    model = dipolarmodel(t,spins=3,npathways=1,Bmodel=None)
+    params = {k:v for k,v in threespin_params.items() if k!='conc'}
+    # Shift the third distance such that the triangle inequality r3 <= r1 + r2 is barely fulfilled
+    params['rmean3'] = params['rmean1'] + params['rmean2'] - 0.1
+    V = model(**params, scale=1)
+
+    assert np.all(np.isfinite(V))
+# ======================================================================
+
+# ======================================================================
+def test_threespin_multipathway():
+    "Check that multi-spin models with multiple pathways can be evaluated"
+
+    experiment = ex_4pdeer(tau1, tau2, pathways=[1,2])
+    model = dipolarmodel(t,spins=3,experiment=experiment)
+    params = {k:v for k,v in threespin_params.items() if k not in ['lam1','reftime1']}
+    V = model(**params, lam1=0.15, lam2=0.05, reftime1=tau1, reftime2=tau1+tau2, scale=1)
+
+    assert np.all(np.isfinite(V)) and len(V)==len(t)
+# ======================================================================
+
+# ======================================================================
+def test_threespin_parametrizations():
+    "Check that the different parametrizations of multi-spin models lead to the same signal"
+
+    experiment = ex_4pdeer(tau1, tau2, pathways=[1,2])
+    params = {k:v for k,v in threespin_params.items() if k not in ['lam1','reftime1']}
+    params.update(lam1=0.15, lam2=0.05, scale=1)
+    model_reftimes = dipolarmodel(t,spins=3,experiment=experiment,parametrization='reftimes')
+    model_delays = dipolarmodel(t,spins=3,experiment=experiment,parametrization='delays')
+    model_shift = dipolarmodel(t,spins=3,experiment=experiment,parametrization='shift')
+
+    V_reftimes = model_reftimes(**params, reftime1=tau1, reftime2=tau1+tau2)
+    V_delays = model_delays(**params, tau1=tau1, tau2=tau2)
+    V_shift = model_shift(**params, tshift=0)
+
+    assert np.allclose(V_reftimes,V_delays) and np.allclose(V_reftimes,V_shift)
+# ======================================================================
+
+# ======================================================================
+def test_threespin_nobackground():
+    "Check that multi-spin models without background can be evaluated"
+
+    model = dipolarmodel(t,spins=3,npathways=1,Bmodel=None)
+    params = {k:v for k,v in threespin_params.items() if k!='conc'}
+    V = model(**params, scale=1)
+
+    assert np.all(np.isfinite(V))
+# ======================================================================
+
+# ======================================================================
+def test_threespin_triangles_validation():
+    "Check that a wrongly formatted list of triangles raises an informative error"
+
+    with pytest.raises(SyntaxError):
+        dipolarmodel(t,spins=3,npathways=1,triangles=[1,2,3])
+# ======================================================================
+
+# ======================================================================
+def test_parametrization_reftimes_model():
     "Check that the parametrization leads to the correct model"
 
     experiment = ex_4pdeer(tau1,tau2, pathways=[1,2])

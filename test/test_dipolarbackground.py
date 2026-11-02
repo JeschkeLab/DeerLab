@@ -1,6 +1,5 @@
 
 import numpy as np
-from itertools import permutations
 from math import factorial
 from deerlab.bg_models import _hom3d, bg_exp, _homfractal, bg_hom3d
 from deerlab.dipolarbackground import dipolarbackground, dipolarbackgroundmodel
@@ -193,20 +192,45 @@ def test_dipolarbackgroundmodel_twospin_delays():
 # ==================================================================================
 
 # ==================================================================================
+def _multispin_reference_pathways(lams, trefs, harmonics, lamu, Q=3):
+    """
+    Reference multi-spin pathways following eqn (15) of Fábregas-Ibáñez et al., PCCP 24 (2022) 22645,
+    with lams[q][p] the amplitude of pair pathway p on interaction q (three-spin system, all interactions joined)
+    """
+    Λ0 = 1.0
+    paths, threespin = [], []
+    P = len(trefs)
+    # Two-spin pathways: (Q-1)! λu^(Q-1) λp, pair pathway p on interaction q
+    for p in range(P):
+        for q in range(Q):
+            λ2k = factorial(Q-1)*lams[q][p]*lamu**(Q-1)
+            paths.append({'amp': λ2k,
+                          'reftime': tuple(trefs[p] if n==q else None for n in range(Q)),
+                          'harmonic': tuple(harmonics[p] if n==q else 0 for n in range(Q))})
+            Λ0 -= λ2k
+    # Three-spin pathways: 2(Q-2)! λu^(Q-2) λp λp', pair pathways p<=p' on interactions q!=q'
+    for p in range(P):
+        for p2 in range(p, P):
+            for q1 in range(Q):
+                for q2 in range(Q):
+                    if q1==q2:
+                        continue
+                    λ3k = 2*factorial(Q-2)*lams[q1][p]*lams[q2][p2]*lamu**(Q-2)
+                    threespin.append({'amp': λ3k,
+                                      'reftime': tuple(trefs[p] if n==q1 else trefs[p2] if n==q2 else None for n in range(Q)),
+                                      'harmonic': tuple(harmonics[p] if n==q1 else harmonics[p2] if n==q2 else 0 for n in range(Q))})
+                    Λ0 -= λ3k
+    paths.append({'amp': Λ0})
+    return paths + threespin
+# ==================================================================================
+
+# ==================================================================================
 def test_dipolarbackgroundmodel_threespin_single_pathway():
     "Test dipolarbackgroundmodel for a three-spin system with a single pathway"
     lam, lamu = 0.4, 0.8
-    Q = 3
-    # Construct reference pathways manually
-    Λ0 = 1.0
-    paths_ref = []
-    for perm in set(permutations([0]+[None]*(Q-1))):
-        λ2k = factorial(Q-1)*lam*lamu**(Q-1)
-        tref_path = tuple([tau if n==0 else None for n in perm])
-        δs_path = tuple([1 if n==0 else 0 for n in perm])
-        paths_ref.append({'amp': λ2k, 'reftime': tref_path, 'harmonic': δs_path})
-        Λ0 -= λ2k
-    paths_ref.append({'amp': Λ0})
+    paths_ref = _multispin_reference_pathways([[lam]]*3, [tau], [1], lamu)
+    # A single pathway also gives three-spin pathways (same pair pathway on two interactions)
+    assert len(paths_ref) == 3 + 1 + 6
     Bref = dipolarbackground(t, paths_ref, lambda td, l: _hom3d(td, conc, l))
     experiment = ex_3pdeer(tau, pathways=[1])
     Bmodel = dipolarbackgroundmodel(experiment, bg_hom3d, spins=3)
@@ -218,38 +242,8 @@ def test_dipolarbackgroundmodel_threespin_single_pathway():
 def test_dipolarbackgroundmodel_threespin_multi_pathway():
     "Test dipolarbackgroundmodel for a three-spin system with multiple pathways"
     lam1, lam2, lamu = 0.3, 0.1, 0.7
-    Q = 3
-    harmonics_exp = [1, 1]
-    trefs_exp = [tau1, tau1+tau2]
-
-    # Construct reference pathways manually
-    Λ0 = 1.0
-    paths_ref, threespin_ref = [], []
-    for idx, (tref_idx, δ_idx) in enumerate(zip(trefs_exp, harmonics_exp)):
-        lam_idx = [lam1, lam2][idx]
-        for perm in set(permutations([0]+[None]*(Q-1))):
-            q = int(np.where(np.array(perm)==0)[0][0])
-            λp = lam_idx
-            λ2k = factorial(Q-1)*λp*lamu**(Q-1)
-            paths_ref.append({'amp': λ2k,
-                               'reftime': tuple([tref_idx if n==0 else None for n in perm]),
-                               'harmonic': tuple([δ_idx if n==0 else 0 for n in perm])})
-            Λ0 -= λ2k
-            for idx2 in range(idx+1, 2):
-                tref_idx2 = trefs_exp[idx2]
-                δ_idx2 = harmonics_exp[idx2]
-                for perm2 in set(permutations([0,1]+[None]*(Q-2))):
-                    perm2_arr = np.array(perm2)
-                    q2 = int(np.where(perm2_arr==1)[0][0])
-                    λm = lam_idx
-                    λ3k = 2*factorial(Q-2)*λp*λm*lamu**(Q-2)
-                    threespin_ref.append({'amp': λ3k,
-                                          'reftime': tuple([tref_idx if n==0 else tref_idx2 if n==1 else None for n in perm2]),
-                                          'harmonic': tuple([δ_idx if n==0 else δ_idx2 if n==1 else 0 for n in perm2])})
-                    Λ0 -= λ3k
-    paths_ref.append({'amp': Λ0})
-    Bref = dipolarbackground(t, paths_ref+threespin_ref, lambda td, l: _hom3d(td, conc, l))
-
+    paths_ref = _multispin_reference_pathways([[lam1,lam2]]*3, [tau1, tau1+tau2], [1, 1], lamu)
+    Bref = dipolarbackground(t, paths_ref, lambda td, l: _hom3d(td, conc, l))
     experiment = ex_4pdeer(tau1, tau2, pathways=[1,2])
     Bmodel = dipolarbackgroundmodel(experiment, bg_hom3d, spins=3)
     Bval = Bmodel(t, conc, lam1, lam2, tau1, tau1+tau2, lamu)
@@ -261,18 +255,7 @@ def test_dipolarbackgroundmodel_threespin_nosamespins():
     "Test dipolarbackgroundmodel for a three-spin system with samespins=False"
     lam_q = [0.3, 0.4, 0.2]   # different amplitudes per interaction
     lamu = 0.8
-    Q = 3
-    # Construct reference pathways with per-interaction amplitudes
-    Λ0 = 1.0
-    paths_ref = []
-    for perm in set(permutations([0]+[None]*(Q-1))):
-        q = int(np.where(np.array(perm)==0)[0][0])
-        λ2k = factorial(Q-1)*lam_q[q]*lamu**(Q-1)
-        tref_path = tuple([tau if n==0 else None for n in perm])
-        δs_path = tuple([1 if n==0 else 0 for n in perm])
-        paths_ref.append({'amp': λ2k, 'reftime': tref_path, 'harmonic': δs_path})
-        Λ0 -= λ2k
-    paths_ref.append({'amp': Λ0})
+    paths_ref = _multispin_reference_pathways([[lam] for lam in lam_q], [tau], [1], lamu)
     Bref = dipolarbackground(t, paths_ref, lambda td, l: _hom3d(td, conc, l))
 
     experiment = ex_3pdeer(tau, pathways=[1])
@@ -285,16 +268,7 @@ def test_dipolarbackgroundmodel_threespin_nosamespins():
 def test_dipolarbackgroundmodel_threespin_delays():
     "Test dipolarbackgroundmodel for a three-spin system with delays parametrization"
     lam, lamu = 0.4, 0.8
-    Q = 3
-    Λ0 = 1.0
-    paths_ref = []
-    for perm in set(permutations([0]+[None]*(Q-1))):
-        λ2k = factorial(Q-1)*lam*lamu**(Q-1)
-        tref_path = tuple([tau if n==0 else None for n in perm])
-        δs_path = tuple([1 if n==0 else 0 for n in perm])
-        paths_ref.append({'amp': λ2k, 'reftime': tref_path, 'harmonic': δs_path})
-        Λ0 -= λ2k
-    paths_ref.append({'amp': Λ0})
+    paths_ref = _multispin_reference_pathways([[lam]]*3, [tau], [1], lamu)
     Bref = dipolarbackground(t, paths_ref, lambda td, l: _hom3d(td, conc, l))
 
     experiment = ex_3pdeer(tau, pathways=[1])

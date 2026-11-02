@@ -41,3 +41,5 @@ from .diststats import diststats
 from .profile_analysis import profile_analysis
 from .utils import *
 from .io import save, load, json_dumps, json_loads
+
+from .threespin import prepare_MMMx,plot_multivariate

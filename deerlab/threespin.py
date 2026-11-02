@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from numpy import cos, sin, sqrt, arccos
 from deerlab.bg_models import _strexp,_hom3d
 from deerlab.dd_models import dd_gauss, dd_wormgauss
+from deerlab.dipolarmodel import _triangleweight
 from deerlab import FitResult
 import numexpr as ne
 import matplotlib.gridspec as gridspec
@@ -464,20 +465,22 @@ def _extract_means_and_cholesky(fit:FitResult) -> dict:
     output = {}
     if any(re.match(r'rmean\d+', p) for p in param_list): # model is dd_Gauss
         output['model'] = 'dd_Gauss'
-        means = np.array([fit.params[f'rmean{i+1}'] for i in range(len(param_list)//2)])
+        means = np.array([getattr(fit, p) for p in param_list if re.match(r'rmean\d+', p)])
         L = np.zeros((len(means), len(means)))
         for i in range(len(means)):
             for j in range(i+1):
-                L[i,j] = fit.params[f'chol{i+1}{j+1}']
-        return output.update({'means': means, 'L': L})
+                L[i,j] = getattr(fit,f'chol{i+1}{j+1}')
+        output.update({'means': means, 'L': L})
+        return output
     elif any(re.match(r'contour\d+', p) for p in param_list): # model is dd.WormGauss
         output['model'] = 'dd_WormGauss'
-        means = np.array([fit.params[f'contour{i+1}'] for i in range(len(param_list)//2)])
+        means = np.array([getattr(fit, p) for p in param_list if re.match(r'contour\d+', p)])
         L = np.zeros((len(means), len(means)))
         for i in range(len(means)):
             for j in range(i+1):
-                L[i,j] = fit.params[f'chol{i+1}{j+1}']
-        return output.update({'means': means, 'L': L})
+                L[i,j] = getattr(fit,f'chol{i+1}{j+1}')
+        output.update({'means': means, 'L': L})
+        return output
     else:
         raise ValueError("The fit result does not contain the expected parameters for a dd.Gauss or dd.WormGauss model.")
 
@@ -487,6 +490,66 @@ def _inverse_sample_function(dist, pnts, x_min=-100, x_max=100, n=1e5,**kwargs):
     cumulative -= cumulative.min()
     f = interp1d(cumulative/cumulative.max(), x)
     return f(np.random.random(int(pnts)))
+
+def _gaussian_marginals(means, L, Npoints=121, nsigma=5):
+    """
+    Computes the 1D and 2D marginals of a trivariate normal distance distribution truncated by the triangle
+    inequality, as in the forward model of multi-spin ``dipolarmodel`` models (see ``_triangleweight``).
+
+    The distribution is evaluated on a grid spanning ``nsigma`` standard deviations around the mean of each
+    distance, and returned in the same format as ``prepare_MMMx``, keyed 'r1', 'r2', 'r3' and 'r1_r2' etc.
+
+    Parameters
+    ----------
+    means : array_like
+        Mean distances, in nm.
+    L : array_like
+        Lower Cholesky factor of the covariance matrix, in nm.
+    Npoints : int, optional
+        Number of grid points along each distance, by default 121.
+    nsigma : float, optional
+        Half-width of the grid in standard deviations, by default 5.
+    """
+    means,L = np.asarray(means,dtype=float),np.asarray(L,dtype=float)
+    Ndims = len(means)
+    if Ndims != 3:
+        raise NotImplementedError("Only trivariate (three-spin) distance distributions are currently supported.")
+
+    Σ = L@L.T
+    sigmas = np.maximum(np.sqrt(np.diag(Σ)),1e-3)
+    labels = [f'r{q+1}' for q in range(Ndims)]
+    r = {label: np.linspace(max(mean-nsigma*sigma,0),mean+nsigma*sigma,Npoints) for label,mean,sigma in zip(labels,means,sigmas)}
+
+    grid = np.stack(np.meshgrid(*r.values(),indexing='ij'),axis=-1)
+    P = st.multivariate_normal(mean=means,cov=Σ,allow_singular=True).pdf(grid)
+    P *= _triangleweight(*np.moveaxis(grid,-1,0))
+    P /= np.sum(P)
+
+    P_1D = {label: np.sum(P,axis=tuple(k for k in range(Ndims) if k != q)) for q,label in enumerate(labels)}
+    P_2D = {f'{labels[i]}_{labels[j]}': np.sum(P,axis=tuple(k for k in range(Ndims) if k not in (i,j))) for i,j in combinations(range(Ndims),2)}
+
+    return {'P_1D': P_1D, 'P_2D': P_2D, 'r': r}
+
+def _plot_marginals(axs, marginals, color, label=None, alpha=0.3):
+    """
+    Plots gridded 1D marginals on the diagonal panels and 2D marginals as contours on the lower-triangle panels.
+
+    Parameters
+    ----------
+    marginals : dict
+        Dictionary with keys 'r', 'P_1D' and 'P_2D' as returned by ``prepare_MMMx`` or ``_gaussian_marginals``.
+        The k-th distance is plotted on diagonal panel r{k+1}, and the joint of the i-th and j-th distance on panel r{i+1}{j+1}.
+    """
+    labels = list(marginals['P_1D'])
+    for k,key in enumerate(labels):
+        r = marginals['r'][key]
+        P1D = marginals['P_1D'][key]
+        P1D = P1D/np.trapezoid(P1D,r) # Normalize as a probability density (1/nm), such that different grids can be compared
+        axs[f'r{k+1}'].fill_between(r, P1D, color=color, alpha=alpha, linewidth=0)
+        axs[f'r{k+1}'].plot(r, P1D, color=color, label=label)
+
+    for i,j in combinations(range(len(labels)),2):
+        _contour2d(marginals['r'][labels[i]], marginals['r'][labels[j]], marginals['P_2D'][f'{labels[i]}_{labels[j]}'], color=color, ax=axs[f'r{i+1}{j+1}'])
 
 
 def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None, table=True, fig=None):
@@ -519,6 +582,11 @@ def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None
         If True, a table of the mean distances and the cholesky factors of the covariance matrix will be added to the plot, by default True. 
     fig: matplotlib.figure.Figure, optional
         If provided, the plot will be added to this figure, by default None.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure containing the plot.
     """
 
     if Nspins < 3 or Nspins > 4:
@@ -570,45 +638,29 @@ def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None
     table_params = {}
     
     if sim is not None:
-
-        # Plot the 1D marginals of the simulation, the k-th distance (e.g. r12, r13, r23) on diagonal panel r{k+1}
-        for k,label in enumerate(sim['P_1D']):
-            r = sim['r'][label]
-            P1D = sim['P_1D'][label]
-            axs[f'r{k+1}'].plot(r, P1D, color='grey', alpha=0.5, label='Simulation')
-            axs[f'r{k+1}'].set_ylim(0, 1.05*np.max(P1D))
-
-        # Plot the 2D marginals of the simulation, the joint of the i-th and j-th distance on panel r{i+1}{j+1}
-        labels = list(sim['P_1D'])
-        for i,j in combinations(range(len(labels)),2):
-            _contour2d(sim['r'][labels[i]], sim['r'][labels[j]], sim['P_2D'][f'{labels[i]}_{labels[j]}'], color='grey', ax=axs[f'r{i+1}{j+1}'])
-
+        # Plot the 1D and 2D marginals of the simulation, the k-th distance (e.g. r12, r13, r23) on diagonal panel r{k+1}
+        _plot_marginals(axs, sim, color='grey', label=sim['Type'])
         table_params[sim['Type']] = {'means': sim['means'], 'L': sim['L'], 'color': 'grey'}
 
     if fit is not None:
         # Extract the means and cholesky factors for dd.Gauss or dd.WormGauss models, using the parameter to idenify the type or model. dd.Gauss has rmean1, rmean2 etc..
         fit_values = _extract_means_and_cholesky(fit)
-        
-        np.random.seed(seed=1)
-        if fit_values['model'] == 'dd_Gauss':
-            Nsamples = 10000
-            Σ = fit_values['L']@fit_values['L'].T # Covariance matrix from the Cholesky factor
-            rsamples = st.multivariate_normal(means=fit_values['means'], cov=Σ).rvs(Nsamples)
-        elif fit_values['model'] == 'dd_WormGauss':
-            Nsamples = 500000
-            rsamples = []
-            for contour,persistence,std in zip(fit_values['means'], fit_values['L'].diagonal()):
-                P = lambda r: dd_wormgauss(r,contour,persistence,std) 
-                rsamples.append(_inverse_sample_function(P, Nsamples, x_min=0, x_max=8, n=300) )
-            rsamples = np.array(rsamples).T
-            rsamples = np.maximum(rsamples,1e-16) # Avoid values exactly at zero
 
-        # Calculate the 1D marginals of each pairwise distance (r12, r13, r23)
-        P_1D = {}
-        for i in range(Nspins):
-            P_1D[f'r{i+1}'] = np.sum(rsamples,axis=tuple(j for j in range(Nspins) if j != i))  # marginal of r{i+1}
-            
-        
-    if table:
+        if fit_values['model'] == 'dd_Gauss':
+            # Multivariate normal distribution truncated by the triangle inequality, as in the dipolarmodel forward model
+            fit_marginals = _gaussian_marginals(fit_values['means'], fit_values['L'])
+        else:
+            raise NotImplementedError("Plotting of multivariate dd_WormGauss fits is not yet supported.")
+
+        _plot_marginals(axs, fit_marginals, color='blue', label='Fit')
+        table_params['Fit'] = {'means': fit_values['means'], 'L': fit_values['L'], 'color': 'blue'}
+
+    # The 1D marginals are densities, start their axes at zero
+    for k in range(Nspins):
+        axs[f'r{k+1}'].set_ylim(bottom=0)
+
+    if table and table_params:
         _add_param_table(fig,axs,table_params,Nspins)
+
+    return fig
 
