@@ -664,3 +664,95 @@ def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None
 
     return fig
 
+# -----------------------------------------------------------------------------
+# Multivariate time-domain plot functions
+# -----------------------------------------------------------------------------
+
+def _dataset_params(fit:FitResult, model, n, nDatasets) -> dict:
+    """
+    Fitted values of the parameters of the model of the n-th dataset. In a global fit of merged models, the
+    parameters of the n-th model are named with the suffix ``_{n+1}``, unless they were linked back to their
+    original name, so the suffixed name is looked up first.
+    """
+    params = {}
+    for param in model._parameter_list():
+        candidates = [f'{param}_{n+1}', param] if nDatasets > 1 else [param]
+        for candidate in candidates:
+            if candidate in fit.paramlist:
+                params[param] = getattr(fit,candidate)
+                break
+        else:
+            raise KeyError(f"The fit result does not contain the parameter '{param}' of the model of dataset {n+1} (looked for {candidates}).")
+    return params
+
+def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=None, labels:list=None):
+    """
+    Generate time-domain plots of the experimental data and the fitted model for 
+    multivariate distance dsitributions. It shows the exp data, the fitted model
+    and the two-spin and three-spin contributions for each case.
+
+    Parameters
+    ----------
+    fit, FitResult
+        The fit result to be plotted.
+    Vexps, list[array_like]
+        The list of experimental data to be plotted, each element is an array of shape (N) where N is the number of time points.
+    ts, list[array_like]
+        The list of time axes corresponding to the experimental data, each element is an array of shape (N).
+    models, list[Model], optional
+        The multi-spin ``dipolarmodel`` of each dataset, as used to build the fitted model. If provided, the two-spin and
+        three-spin contributions of each dataset are evaluated at the fitted parameter values and plotted. In a global fit
+        of merged models, the parameters of the n-th model are looked up as ``<name>_<n>`` and otherwise as ``<name>``
+        (e.g. when linked back to their original name), by default None.
+    fig, matplotlib.figure.Figure, optional
+        If provided, the plot will be added to this figure, by default None.
+    labels, list, optional
+        The labels for the datasets, by default None. If None, the datasets will be labeled as Dataset 1, Dataset 2, etc.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure containing the plot.
+    """
+    Vexps = list(Vexps) if isinstance(Vexps,(list,tuple)) else [Vexps]
+    ts = list(ts) if isinstance(ts,(list,tuple)) else [ts]
+    Vfits = fit.model if isinstance(fit.model,list) else [fit.model]
+    nDatasets = len(Vexps)
+
+    if len(ts) != nDatasets:
+        raise ValueError("The number of time axes must match the number of experimental datasets.")
+    if len(Vfits) != nDatasets:
+        raise ValueError("The number of models in the fit result must match the number of experimental datasets.")
+    if models is not None:
+        models = list(models) if isinstance(models,(list,tuple)) else [models]
+        if len(models) != nDatasets:
+            raise ValueError("The number of dipolar models must match the number of experimental datasets.")
+        if not all(hasattr(model,'contributions') for model in models):
+            raise ValueError("The two-spin and three-spin contributions can only be computed for multi-spin dipolarmodel models (spins>2).")
+
+    if labels is None:
+        labels = [f'Dataset {i+1}' for i in range(nDatasets)]
+
+    if fig is None:
+        fig,axs = plt.subplots(nDatasets,1,figsize=(6,3*nDatasets),sharex=True,squeeze=False)
+    else:
+        axs = fig.subplots(nDatasets,1,sharex=True,squeeze=False)
+    axs = axs[:,0]
+
+    for i in range(nDatasets):
+        axs[i].plot(ts[i],Vexps[i],color='black',label='Exp',alpha=0.5)
+        axs[i].plot(ts[i],Vfits[i],color='blue',label='Fit')
+
+        if models is not None:
+            # Evaluate the contributions at the fitted parameters, these add up to the fitted model
+            contributions = models[i].contributions(**_dataset_params(fit,models[i],i,nDatasets))
+            axs[i].plot(ts[i],contributions['twospin'],color='tab:green',linestyle='--',label='Two-spin')
+            axs[i].plot(ts[i],contributions['threespin'],color='tab:red',linestyle='--',label='Three-spin')
+
+        axs[i].set_title(labels[i])
+        axs[i].set_ylabel('V(t) (arb.u.)')
+        axs[i].legend(frameon=False,loc='best')
+    axs[-1].set_xlabel('Time (μs)')
+    fig.tight_layout()
+
+    return fig

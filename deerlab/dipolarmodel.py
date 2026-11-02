@@ -601,8 +601,11 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
     #------------------------------------------------------------------------
 
     #------------------------------------------------------------------------
-    def Vmultispin_nonlinear_fcn(*nonlin):
-        """ Non-linear part of the dipolar signal function """
+    def multispin_contributions(*nonlin):
+        """ 
+        Two-spin (including the unmodulated contribution) and three-spin intramolecular contributions,
+        and intermolecular contribution of the non-linear part of the multi-spin dipolar signal 
+        """
         # Make input arguments as array to access subsets easily
         nonlin = np.atleast_1d(nonlin)
         # Construct the basis function of the intermolecular contribution
@@ -627,7 +630,8 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
 
         # Start by accounting for the unmodulated contribution
         Λ0 = twospin_pathways.pop(-1)['amp']
-        Vintra = Λ0
+        Vtwospin = np.full(len(t),Λ0,dtype=float)
+        Vthreespin = np.zeros(len(t))
 
         # Account for all two-spin intramolecular contributions
         for q in range(Q):
@@ -646,7 +650,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
                                         g=g, method=kernelmethod, gridsize=gridsize)
 
             # Two-spin intramolecular contribution from all pathways modulated by the q-th interaction
-            Vintra += Ktwospin@Punimarg
+            Vtwospin += Ktwospin@Punimarg
 
         # Account for all three-spin intramolecular contributions
         for triangle in triangles:
@@ -676,7 +680,7 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
                                         g=g, method='grid', gridsize=gridsize)
 
             # Three-spin intramolecular contribution from all pathways modulated by the triangle interaction
-            Vintra += Kthreespin@Ptrimarg
+            Vthreespin += Kthreespin@Ptrimarg
 
         # Compute the multi-spin dipolar intermolecular contribution
         if Bmodel is None:
@@ -684,10 +688,32 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
         else:
             Vinter = dipolarbackground(t, twospin_pathways+threespin_pathways, Bfcn)
 
+        return Vtwospin, Vthreespin, Vinter
+    #------------------------------------------------------------------------
+
+    #------------------------------------------------------------------------
+    def Vmultispin_nonlinear_fcn(*nonlin):
+        """ Non-linear part of the dipolar signal function """
+        Vtwospin, Vthreespin, Vinter = multispin_contributions(*nonlin)
+
         # Construct the full dipolar signal 
-        Vnonlin = Vintra*Vinter
+        Vnonlin = (Vtwospin + Vthreespin)*Vinter
 
         return Vnonlin
+    #------------------------------------------------------------------------
+
+    #------------------------------------------------------------------------
+    def contributions(**params):
+        """
+        Two-spin and three-spin contributions to the multi-spin dipolar signal, such that ``V = Vtwospin + Vthreespin``.
+        Takes the same keyword arguments as the model call. The two-spin contribution includes the unmodulated
+        contribution, and both contributions include the intermolecular contribution and the overall scale.
+        """
+        missing = [param for param in signature+['scale'] if param not in params]
+        if missing:
+            raise KeyError(f'Missing model parameters: {missing}')
+        Vtwospin, Vthreespin, Vinter = multispin_contributions(*[params[param] for param in signature])
+        return {'twospin': params['scale']*Vtwospin*Vinter, 'threespin': params['scale']*Vthreespin*Vinter}
     #------------------------------------------------------------------------
 
     # Create the dipolar model object
@@ -736,6 +762,8 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
     DipolarSignal.t = t
     if spins==2:
         DipolarSignal.r = r
+    else:
+        DipolarSignal.contributions = contributions
 
     return DipolarSignal
 #===============================================================================

@@ -6,7 +6,8 @@ from scipy.stats import multivariate_normal
 import matplotlib.pyplot as plt
 from matplotlib.table import Table
 from deerlab import FitResult
-from deerlab.threespin import prepare_MMMx, plot_multivariate, _extract_means_and_cholesky, _gaussian_marginals
+from deerlab.dipolarmodel import dipolarmodel
+from deerlab.threespin import prepare_MMMx, plot_multivariate, plot_multivariate_td, _extract_means_and_cholesky, _gaussian_marginals
 from deerlab.utils import choleskycovmat
 
 # Synthetic trivariate distribution in the MMMx layout: axes (r12,r13,r23) in Å
@@ -228,4 +229,90 @@ def test_plot_multivariate_invalid_Nspins(gauss_fit, Nspins):
     "Check that unsupported numbers of spins raise an error"
     with pytest.raises(ValueError):
         plot_multivariate(Nspins=Nspins, fit=gauss_fit)
+# ======================================================================
+
+# ----------------------------------------------------------------------
+# plot_multivariate_td
+# ----------------------------------------------------------------------
+
+t_td = [np.linspace(-0.2,2.5,60), np.linspace(-0.1,3,50)]
+params_td = dict(lam1=0.1, reftime1=0, lamu=0.7, conc=50, rmean1=3, rmean2=3.2, rmean3=2.8,
+                 chol11=0.3, chol22=0.2, chol33=0.3, chol21=0.05, chol31=0, chol32=0.1, scale=1)
+
+def _contribution_lines(ax):
+    return {line.get_label(): line.get_ydata() for line in ax.get_lines()}
+
+# ======================================================================
+def test_multispin_contributions():
+    "Check that the two-spin and three-spin contributions add up to the multi-spin dipolar signal"
+    model = dipolarmodel(t_td[0],spins=3,npathways=1)
+    params = {**params_td, 'scale': 2}
+    contributions = model.contributions(**params)
+
+    assert np.allclose(contributions['twospin'] + contributions['threespin'], model(**params))
+    assert np.max(np.abs(contributions['threespin'])) > 0
+# ======================================================================
+
+# ======================================================================
+def test_plot_multivariate_td_single():
+    "Check that the contributions of a single dataset are plotted at the fitted parameters"
+    model = dipolarmodel(t_td[0],spins=3,npathways=1)
+    V = model(**params_td)
+    fit = FitResult.from_dict({'paramlist': model._parameter_list(), 'model': V, **params_td})
+    contributions = model.contributions(**params_td)
+
+    fig = plot_multivariate_td(fit, [V], [t_td[0]], models=[model])
+    lines = _contribution_lines(fig.axes[0])
+
+    assert np.allclose(lines['Fit'], V)
+    assert np.allclose(lines['Two-spin'], contributions['twospin'])
+    assert np.allclose(lines['Three-spin'], contributions['threespin'])
+    plt.close(fig)
+# ======================================================================
+
+# ======================================================================
+def test_plot_multivariate_td_global():
+    "Check that the parameters of each dataset of a global fit of merged models are used"
+    models = [dipolarmodel(t,spins=3,npathways=1) for t in t_td]
+    # Distance distribution shared by both datasets (linked back to the original names), the rest per dataset
+    shared = [param for param in models[0]._parameter_list() if param.startswith(('rmean','chol'))]
+    params = [{**params_td, 'lam1': 0.1, 'conc': 50, 'scale': 1}, {**params_td, 'lam1': 0.15, 'conc': 100, 'scale': 2}]
+    fit_dict = {param: params_td[param] for param in shared}
+    for n in range(2):
+        fit_dict.update({f'{param}_{n+1}': value for param,value in params[n].items() if param not in shared})
+    Vs = [model(**param) for model,param in zip(models,params)]
+    fit = FitResult.from_dict({'paramlist': list(fit_dict), 'model': Vs, **fit_dict})
+
+    fig = plot_multivariate_td(fit, Vs, t_td, models=models, labels=['A','B'])
+
+    assert [ax.get_title() for ax in fig.axes] == ['A','B']
+    for ax,model,param,V in zip(fig.axes,models,params,Vs):
+        lines = _contribution_lines(ax)
+        assert np.allclose(lines['Two-spin'] + lines['Three-spin'], V)
+        assert np.allclose(lines['Three-spin'], model.contributions(**param)['threespin'])
+    plt.close(fig)
+# ======================================================================
+
+# ======================================================================
+def test_plot_multivariate_td_without_models():
+    "Check that only the data and fit are plotted if no models are given"
+    V = np.linspace(1,0.5,60)
+    fit = FitResult.from_dict({'paramlist': [], 'model': V})
+
+    fig = plot_multivariate_td(fit, [V], [t_td[0]])
+
+    assert set(_contribution_lines(fig.axes[0])) == {'Exp','Fit'}
+    plt.close(fig)
+# ======================================================================
+
+# ======================================================================
+def test_plot_multivariate_td_missing_param():
+    "Check that a fit without the parameters of the model raises an error"
+    model = dipolarmodel(t_td[0],spins=3,npathways=1)
+    V = model(**params_td)
+    fit = FitResult.from_dict({'paramlist': ['rmean1'], 'model': V, 'rmean1': 3})
+
+    with pytest.raises(KeyError):
+        plot_multivariate_td(fit, [V], [t_td[0]], models=[model])
+    plt.close('all')
 # ======================================================================
