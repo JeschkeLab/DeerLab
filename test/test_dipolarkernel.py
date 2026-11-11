@@ -664,6 +664,31 @@ def test_threespin_grid_complexvalue():
     assert abs(K - Kref)<1e-2
 #=======================================================================
 
+def test_threespin_equilateral_symmetry():
+#=======================================================================
+    "Check that all pairs of interactions of an equilateral triangle give the same three-spin kernel"
+
+    t = np.linspace(0,1.5,30)
+    r = [np.array(3.0)]*3
+    Ks = [dipolarkernel(t,r,pathways=[{'reftime':tuple(0 if δ else None for δ in δs),'amp':1,'harmonic':δs}],gridsize=15000)
+            for δs in [(1,1,0),(1,0,1),(0,1,1)]]
+
+    assert np.allclose(Ks[0],Ks[1],atol=1e-2) and np.allclose(Ks[0],Ks[2],atol=1e-2)
+#=======================================================================
+
+def test_threespin_relabelling():
+#=======================================================================
+    "Check that the three-spin kernel does not depend on the labelling of the triangle's distances"
+
+    t = np.linspace(0,1.5,30)
+    r1,r2,r3 = np.array(3.0),np.array(3.5),np.array(2.5)
+    # Pathway modulated by the second and third distances, and the same pathway with relabelled distances
+    K = dipolarkernel(t,[r1,r2,r3],pathways=[{'reftime':(None,0,0),'amp':1,'harmonic':(0,1,1)}],gridsize=15000)
+    Kref = dipolarkernel(t,[r2,r3,r1],pathways=[{'reftime':(0,0,None),'amp':1,'harmonic':(1,1,0)}],gridsize=15000)
+
+    assert np.allclose(K,Kref,atol=1e-2)
+#=======================================================================
+
 def test_threespin_twodimensional():
 #=======================================================================
     "Check that three-spin and bidimensional kernels are of the correct size"

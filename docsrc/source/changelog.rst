@@ -32,6 +32,9 @@ Unreleased
 - |fix| : Fixed the construction of the multi-spin dipolar pathways in ``dipolarmodel`` and ``dipolarbackgroundmodel`` to follow eqn (15) of Fábregas-Ibáñez et al. (PCCP, 2022). Three-spin pathways formed by the same pair pathway on two interactions (e.g. in single-pathway 4-pulse DEER) are now included, three-spin pathways are no longer duplicated for each interaction, the second pair pathway's amplitude is used for mixed pathways, only interactions sharing a common spin contribute, and models with multiple pathways or with the ``'delays'`` and ``'shift'`` parametrizations no longer fail or misassign parameters.
 - |fix| : Multi-spin ``dipolarmodel`` models with ``Bmodel=None`` can now be evaluated, and a wrongly formatted ``triangles`` argument raises an informative error.
 - |fix| : ``dipolarbackgroundmodel`` without an ``experiment`` and with ``npathways>1`` no longer fails for multi-spin systems.
+- |fix| : Fixed the geometry of the three-spin dipolar kernel. The second and third interspin vectors were placed on the same side of the first one, so three-spin pathways modulated by the second and third interactions used the wrong angle between them (e.g. parallel vectors for an equilateral triangle), and multi-spin models depended on the labelling of the distances.
+- |api| : The upper boundary and start value of the ``lamu`` parameter of multi-spin ``dipolarmodel`` and ``dipolarbackgroundmodel`` models now depend on the number of spins. The boundary is set 20% above the largest value consistent with identical spins (about 1.10 for three spins and 0.43 for four spins), instead of 1.
+- |api| : The default ``minamp`` threshold of multi-spin ``dipolarmodel`` models is now ``0``. The previous ``1e-3`` neglected the main three-spin pathways of weakly pumped experiments.
 
 Release ``v1.2`` - June 2026
 ------------------------------------------
