@@ -688,8 +688,8 @@ def _dataset_params(fit:FitResult, model, n, nDatasets) -> dict:
 def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=None, labels:list=None):
     """
     Generate time-domain plots of the experimental data and the fitted model for 
-    multivariate distance dsitributions. It shows the exp data, the fitted model
-    and the two-spin and three-spin contributions for each case.
+    multivariate distance dsitributions. It shows the exp data, the fitted model,
+    the two-spin and three-spin contributions and the background for each case.
 
     Parameters
     ----------
@@ -701,7 +701,8 @@ def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=N
         The list of time axes corresponding to the experimental data, each element is an array of shape (N).
     models, list[Model], optional
         The multi-spin ``dipolarmodel`` of each dataset, as used to build the fitted model. If provided, the two-spin and
-        three-spin contributions of each dataset are evaluated at the fitted parameter values and plotted. In a global fit
+        three-spin contributions and the background (the unmodulated contribution ``Λ0*B``) of each dataset are evaluated 
+        at the fitted parameter values and plotted. In a global fit
         of merged models, the parameters of the n-th model are looked up as ``<name>_<n>`` and otherwise as ``<name>``
         (e.g. when linked back to their original name), by default None.
     fig, matplotlib.figure.Figure, optional
@@ -728,7 +729,7 @@ def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=N
         if len(models) != nDatasets:
             raise ValueError("The number of dipolar models must match the number of experimental datasets.")
         if not all(hasattr(model,'contributions') for model in models):
-            raise ValueError("The two-spin and three-spin contributions can only be computed for multi-spin dipolarmodel models (spins>2).")
+            raise ValueError("The two-spin and three-spin contributions and the background can only be computed for multi-spin dipolarmodel models (spins>2).")
 
     if labels is None:
         labels = [f'Dataset {i+1}' for i in range(nDatasets)]
@@ -744,10 +745,11 @@ def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=N
         axs[i].plot(ts[i],Vfits[i],color='blue',label='Fit')
 
         if models is not None:
-            # Evaluate the contributions at the fitted parameters, these add up to the fitted model
+            # Evaluate the contributions at the fitted parameters, the two-spin and three-spin ones add up to the fitted model
             contributions = models[i].contributions(**_dataset_params(fit,models[i],i,nDatasets))
             axs[i].plot(ts[i],contributions['twospin'],color='tab:green',linestyle='--',label='Two-spin')
             axs[i].plot(ts[i],contributions['threespin'],color='tab:red',linestyle='--',label='Three-spin')
+            axs[i].plot(ts[i],contributions['background'],color='tab:gray',linestyle=':',label='Background')
 
         axs[i].set_title(labels[i])
         axs[i].set_ylabel('V(t) (arb.u.)')

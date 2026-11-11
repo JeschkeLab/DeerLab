@@ -254,6 +254,20 @@ def test_multispin_contributions():
 # ======================================================================
 
 # ======================================================================
+def test_multispin_contributions_background():
+    "Check that the background contribution is the unmodulated contribution times the background model"
+    model = dipolarmodel(t_td[0],spins=3,npathways=1)
+    params = {**params_td, 'scale': 2}
+    contributions = model.contributions(**params)
+
+    lam, lamu = params['lam1'], params['lamu']
+    Λ0 = 1 - 3*2*lam*lamu**2 - 6*2*lam**2*lamu
+    B = model.Bmodel(t=t_td[0], conc=params['conc'], lam1=lam, reftime1=params['reftime1'], lamu=lamu)
+
+    assert np.allclose(contributions['background'], params['scale']*Λ0*B)
+# ======================================================================
+
+# ======================================================================
 def test_plot_multivariate_td_single():
     "Check that the contributions of a single dataset are plotted at the fitted parameters"
     model = dipolarmodel(t_td[0],spins=3,npathways=1)
@@ -267,6 +281,7 @@ def test_plot_multivariate_td_single():
     assert np.allclose(lines['Fit'], V)
     assert np.allclose(lines['Two-spin'], contributions['twospin'])
     assert np.allclose(lines['Three-spin'], contributions['threespin'])
+    assert np.allclose(lines['Background'], contributions['background'])
     plt.close(fig)
 # ======================================================================
 
@@ -290,6 +305,7 @@ def test_plot_multivariate_td_global():
         lines = _contribution_lines(ax)
         assert np.allclose(lines['Two-spin'] + lines['Three-spin'], V)
         assert np.allclose(lines['Three-spin'], model.contributions(**param)['threespin'])
+        assert np.allclose(lines['Background'], model.contributions(**param)['background'])
     plt.close(fig)
 # ======================================================================
 

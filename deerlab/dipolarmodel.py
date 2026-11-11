@@ -607,7 +607,8 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
     def multispin_contributions(*nonlin):
         """ 
         Two-spin (including the unmodulated contribution) and three-spin intramolecular contributions,
-        and intermolecular contribution of the non-linear part of the multi-spin dipolar signal 
+        intermolecular contribution, and amplitude of the unmodulated contribution of the non-linear part 
+        of the multi-spin dipolar signal 
         """
         # Make input arguments as array to access subsets easily
         nonlin = np.atleast_1d(nonlin)
@@ -691,13 +692,13 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
         else:
             Vinter = dipolarbackground(t, twospin_pathways+threespin_pathways, Bfcn)
 
-        return Vtwospin, Vthreespin, Vinter
+        return Vtwospin, Vthreespin, Vinter, Λ0
     #------------------------------------------------------------------------
 
     #------------------------------------------------------------------------
     def Vmultispin_nonlinear_fcn(*nonlin):
         """ Non-linear part of the dipolar signal function """
-        Vtwospin, Vthreespin, Vinter = multispin_contributions(*nonlin)
+        Vtwospin, Vthreespin, Vinter, _ = multispin_contributions(*nonlin)
 
         # Construct the full dipolar signal 
         Vnonlin = (Vtwospin + Vthreespin)*Vinter
@@ -708,15 +709,17 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
     #------------------------------------------------------------------------
     def contributions(**params):
         """
-        Two-spin and three-spin contributions to the multi-spin dipolar signal, such that ``V = Vtwospin + Vthreespin``.
+        Two-spin and three-spin contributions to the multi-spin dipolar signal, such that ``V = Vtwospin + Vthreespin``,
+        and the background ``Λ0*B``, i.e. the unmodulated contribution including the intermolecular contribution.
         Takes the same keyword arguments as the model call. The two-spin contribution includes the unmodulated
-        contribution, and both contributions include the intermolecular contribution and the overall scale.
+        contribution, and all contributions include the intermolecular contribution and the overall scale.
         """
         missing = [param for param in signature+['scale'] if param not in params]
         if missing:
             raise KeyError(f'Missing model parameters: {missing}')
-        Vtwospin, Vthreespin, Vinter = multispin_contributions(*[params[param] for param in signature])
-        return {'twospin': params['scale']*Vtwospin*Vinter, 'threespin': params['scale']*Vthreespin*Vinter}
+        Vtwospin, Vthreespin, Vinter, Λ0 = multispin_contributions(*[params[param] for param in signature])
+        return {'twospin': params['scale']*Vtwospin*Vinter, 'threespin': params['scale']*Vthreespin*Vinter,
+                'background': params['scale']*Λ0*Vinter*np.ones(len(t))}
     #------------------------------------------------------------------------
 
     # Create the dipolar model object
