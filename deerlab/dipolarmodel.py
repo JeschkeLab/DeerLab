@@ -223,7 +223,7 @@ def _populate_dipolar_pathways_parameters(model,npathways,spins=2,samespins=True
 
 
 def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, parametrization='reftimes', npathways=1,  spins=2, harmonics=None,
-                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=1e-3, samespins=True, triangles=None, interp=True,):
+                    excbandwidth=np.inf, orisel=None, g=[ge,ge], gridsize=1000, minamp=0, samespins=True, triangles=None, interp=True,):
     """
     Generate a dipolar EPR signal model.
     
@@ -302,7 +302,8 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
         Only when ``spins>2``. Threshold amplitude for neglecting three-spin interaction pathways. To enhance performance, all dipolar
         pathways arising from three-spin interactions with an amplitude ``lam<minamp`` are approximated as having zero amplitude.
         Between ``minamp`` and ``2*minamp`` their amplitude is switched on linearly, to keep the model continuous in its parameters.
-        The default threshold is ``1e-3``.
+        The default threshold is ``0``, i.e. all three-spin pathways are included. Thresholds such as ``1e-3`` can neglect the
+        main three-spin pathways of weakly pumped experiments.
     
     orisel : callable  or ``None``, optional
         Probability distribution of possible orientations of the interspin vector to account

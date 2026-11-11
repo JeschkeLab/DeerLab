@@ -672,6 +672,19 @@ def test_threespin_smooth():
 # ======================================================================
 
 # ======================================================================
+def test_threespin_weakpumping():
+    "Check that by default the three-spin contribution is included also for weakly pumped experiments"
+
+    model = dipolarmodel(t,spins=3,npathways=1,Bmodel=None)
+    params = {k:v for k,v in threespin_params.items() if k!='conc'}
+    # Three-spin pathway amplitudes 2*lam1^2*lamu = 8e-4
+    params.update(lam1=0.02, lamu=1.0)
+    Vthreespin = model.contributions(**params, scale=1)['threespin']
+
+    assert np.max(np.abs(Vthreespin))>0
+# ======================================================================
+
+# ======================================================================
 def test_threespin_triangle_inequality():
     "Check that distance distributions violating the triangle inequality do not contribute"
 
