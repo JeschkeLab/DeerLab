@@ -214,8 +214,10 @@ def _populate_dipolar_pathways_parameters(model,npathways,spins=2,samespins=True
     elif parametrization=='shift':
         variability = 5*experiment.pulselength
         getattr(model,'tshift').set(par0=0,lb=-variability,ub=variability,description=f'Variability of experimental pulse delays',unit='μs')
-    if spins>2: 
-        getattr(model,f'lamu').set(lb=0,ub=1,par0=0.5,description='Amplitude of unmodulated pairwise pathway',unit='')
+    
+    if spins>2: # Sets the lamu_max for spins>2 using λu^Q = 16(Q-2)!(1-p)^(spins-1)/(spins*(Q-1)!^2)
+        lamu_max = (16*factorial(Q-2)/(spins*factorial(Q-1)**2))**(1/Q)
+        getattr(model,f'lamu').set(lb=0,ub=1.2*lamu_max,par0=lamu_max*0.9**((spins-1)/Q),description='Amplitude of unmodulated pairwise pathway',unit='')
     
     return model
 
