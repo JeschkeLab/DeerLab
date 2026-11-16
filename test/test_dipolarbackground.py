@@ -208,9 +208,9 @@ def _multispin_reference_pathways(lams, trefs, harmonics, lamu, Q=3):
                           'reftime': tuple(trefs[p] if n==q else None for n in range(Q)),
                           'harmonic': tuple(harmonics[p] if n==q else 0 for n in range(Q))})
             Λ0 -= λ2k
-    # Three-spin pathways: 2(Q-2)! λu^(Q-2) λp λp', pair pathways p<=p' on interactions q!=q'
+    # Three-spin pathways: 2(Q-2)! λu^(Q-2) λp λp', pair pathways p,p' (all ordered pairs) on interactions q!=q'
     for p in range(P):
-        for p2 in range(p, P):
+        for p2 in range(P):
             for q1 in range(Q):
                 for q2 in range(Q):
                     if q1==q2:
@@ -222,6 +222,37 @@ def _multispin_reference_pathways(lams, trefs, harmonics, lamu, Q=3):
                     Λ0 -= λ3k
     paths.append({'amp': Λ0})
     return paths + threespin
+# ==================================================================================
+
+# ==================================================================================
+def test_multispin_pathways_productform():
+    "Check the multi-spin pathway amplitudes against the expansion of the product of the partner spins' pathways"
+    from collections import defaultdict
+    from itertools import product
+    from deerlab.dipolarbackground import _multispin_pathways
+    # Three spins A,B,C, interactions 0=AB, 1=AC, 2=BC. Each partner of the observed spin independently follows
+    # the unmodulated pair pathway or pair pathway k (refocusing at trefs[k]) with probability pk
+    interactions = {'AB':0,'AC':1,'BC':2}
+    pk = {'u':0.70, 0:0.20, 1:0.06, 2:0.04}
+    trefs = [0.4, 4.4, 0.0]
+    expected = defaultdict(float)
+    for observer in 'ABC':
+        partners = [spin for spin in 'ABC' if spin!=observer]
+        for states in product(pk, repeat=2):
+            key = tuple(sorted((interactions[''.join(sorted(observer+spin))],trefs[k]) for spin,k in zip(partners,states) if k!='u'))
+            expected[key] += np.prod([pk[k] for k in states])/3
+    # Pair pathway amplitudes reproducing the two-spin and same-pathway three-spin amplitudes of the expansion
+    lamu = (4*pk['u']**2/3)**(1/3)
+    lams = np.array([[pk[k]*pk['u']/(3*lamu**2) for k in range(3)]]*3)
+    twospin, threespin = _multispin_pathways(lams, trefs, [1,1,1], lamu, 3)
+    amplitudes = defaultdict(float)
+    for pathway in twospin[:-1] + threespin:
+        key = tuple(sorted((q,pathway['reftime'][q]) for q in range(3) if pathway['harmonic'][q]!=0))
+        amplitudes[key] += pathway['amp']
+    amplitudes[()] = twospin[-1]['amp']
+
+    assert set(amplitudes)==set(expected)
+    assert all(np.isclose(amplitudes[key],expected[key]) for key in expected)
 # ==================================================================================
 
 # ==================================================================================

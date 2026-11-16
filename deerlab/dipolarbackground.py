@@ -53,14 +53,16 @@ def _multispin_pathways(λs, trefs, harmonics, λu, Q, triangles=None, minamp=0)
             twospin_pathways.append({'amp':λ2k, 'reftime':tref, 'harmonic':δs})
             Λ0 -= λ2k
 
-    # Three-spin pathways: pair pathways p≤p' on two different interactions q≠q' sharing a common spin
+    # Three-spin pathways: pair pathways p≤p' on two different interactions q≠q' sharing a common spin. For p≠p',
+    # the same pathway also arises from pair pathway p' on q and p on q', hence the additional factor of 2.
     for p in range(npathways):
         for p2 in range(p,npathways):
+            multiplicity = 1 if p==p2 else 2
             for q1 in range(Q):
                 for q2 in range(Q):
                     if q1==q2 or not joined(q1,q2):
                         continue
-                    λ3k = 2*factorial(Q-2)*λs[q1][p]*λs[q2][p2]*λu**(Q-2)
+                    λ3k = multiplicity*2*factorial(Q-2)*λs[q1][p]*λs[q2][p2]*λu**(Q-2)
                     if minamp>0:
                         λ3k = λ3k*np.clip(λ3k/minamp - 1, 0, 1)
                     if λ3k<=0:

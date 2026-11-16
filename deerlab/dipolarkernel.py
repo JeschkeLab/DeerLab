@@ -618,14 +618,9 @@ def elementarykernel_threespin(tdips,rs,method,ωex,gridsize,g,Pθ,complex):
     ωrs = [(μ0/2)*μB**2*g[0]*g[1]/h*1e21/(r_q**3) for r_q in rs] # rad μs^-1
 
     # Orientation selection
-    orientationselection = Pθ is not None 
+    orientationselection = Pθ is not None
     if orientationselection:
-        # Ensure zero-derivatives at [0,π/2]
-        θ = np.linspace(0,π/2,50) # rad
-        Pθ_ = make_interp_spline(θ, Pθ(θ),bc_type="clamped")
-        # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
-        Pθnorm,_ = quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
-        Pθ = lambda θ: Pθ_(θ)/Pθnorm
+        Pθ = _normalized_orientationselection(Pθ)
 
 
     def elementarykernel_threespin_grid(tsdip,gridsize,Pθ):
@@ -633,7 +628,7 @@ def elementarykernel_threespin(tdips,rs,method,ωex,gridsize,g,Pθ,complex):
         """Calculate kernel using grid-based powder integration (converges very slowly with gridsize)"""
 
         # Orientational grid
-        φ,θ,weights = sophegrid(octants=4,maxphi=2*np.pi,size=int(np.floor(1/2*(np.sqrt(2*gridsize - 1) +1 ))))
+        φ,θ,weights = _threespin_orientationgrid(gridsize)
 
         D = len(tsdip[0].shape)
         dims = np.arange(D + 2)
@@ -656,9 +651,105 @@ def elementarykernel_threespin(tdips,rs,method,ωex,gridsize,g,Pθ,complex):
     #------------------------------------------------------------------------
 
 
-    if  method=='grid': 
+    if  method=='grid':
         K0 = elementarykernel_threespin_grid(tdips,gridsize,Pθ)
     else:
         raise KeyError("Only the 'grid' method is supported for three-spin dipolar kernels.")
     return K0
+#==============================================================================
+
+def _normalized_orientationselection(Pθ):
+#==============================================================================
+    "Orientation selection probability density, smoothed and normalized such that ∫P(cosθ)dcosθ=1"
+    # Ensure zero-derivatives at [0,π/2]
+    θ = np.linspace(0,π/2,50) # rad
+    Pθ_ = make_interp_spline(θ, Pθ(θ),bc_type="clamped")
+    # Ensure normalization of probability density function (∫P(cosθ)dcosθ=1)
+    Pθnorm,_ = quad(lambda cosθ: Pθ_(np.arccos(cosθ)),0,1,limit=1000)
+    return lambda θ: Pθ_(θ)/Pθnorm
+#==============================================================================
+
+def _threespin_orientationgrid(gridsize):
+#==============================================================================
+    "Grid of orientations (φ,θ) of the first interspin vector and their weights, for three-spin kernels"
+    return sophegrid(octants=4,maxphi=2*np.pi,size=int(np.floor(1/2*(np.sqrt(2*gridsize - 1) +1 ))))
+#==============================================================================
+
+def threespin_kernel_moments(t,rs,P,factors,pairs,g,gridsize=1000,orisel=None,memorylimit=0.5):
+#==============================================================================
+    """
+    Distance-averaged three-spin dipolar kernels of all pathways modulated by pairs of interactions of a triangle.
+
+    The q-th interaction of the triangle with distances ``rs[:,q]`` modulates the echo by the factor 
+    ``cos(ω_q*δ*(t-tref)*(1-3cos²θ_q))`` for each of its modulation factors ``(tref,δ)`` in ``factors[q]``. For each 
+    pair of interactions ``(i,j)`` in ``pairs``, an array ``M[(i,j)]`` of shape ``(len(t),len(factors[i]),len(factors[j]))`` 
+    is returned, where ``M[(i,j)][:,a,b]`` is the kernel of the pathway modulated by the a-th factor of the i-th interaction 
+    and the b-th factor of the j-th interaction, averaged over the powder orientations and over the distances with 
+    probabilities ``P``. It is identical (up to round-off errors) to averaging the kernels of ``dipolarkernel`` for these 
+    pathways with ``method='grid'``, but much faster:
+
+        * Only the orientations with φ≤π are used (with doubled weights), since the kernels are invariant under reflection 
+          through the plane of the triangle (φ→-φ), and so is the orientation grid.
+        * Using ``cos(x(t-tref)) = cos(xt)cos(x*tref) + sin(xt)sin(x*tref)``, the sums over the distances and orientations 
+          of all products of modulation factors are obtained as matrix multiplications.
+
+    The distances are processed in chunks, such that the intermediate arrays take at most ``memorylimit`` GB.
+    """
+    t,P = np.atleast_1d(t).astype(float),np.atleast_1d(P).astype(float)
+    rs = np.atleast_2d(rs)
+    ωrs = (μ0/2)*μB**2*g[0]*g[1]/h*1e21/rs**3 # rad μs^-1
+
+    # Orientations of the first interspin vector, restricted to φ≤π
+    φ,θ,weights = _threespin_orientationgrid(gridsize)
+    if orisel is not None:
+        weights = weights*_normalized_orientationselection(orisel)(θ)
+    onplane = np.isclose(np.sin(φ),0,atol=1e-12)  # φ=0 or φ=π, their own mirror images
+    half = φ <= π + 1e-12
+    φ,θ,weights = φ[half],θ[half],np.where(onplane,1,2)[half]*weights[half]
+    cosθ1,sinθ1,cosφ1 = np.cos(θ),np.sin(θ),np.cos(φ)
+
+    # Orientations of the other two interspin vectors within the plane of the triangle (law of cosines, see _echomodulation_threespin) 
+    r1,r2,r3 = rs.T
+    Δθ12 = np.arccos(np.clip((r1**2 + r2**2 - r3**2)/(2*r1*r2),-1,1))
+    Δθ13 = -np.arccos(np.clip((r1**2 + r3**2 - r2**2)/(2*r1*r3),-1,1))
+    def cosθs(nodes):
+        return [cosθ1[np.newaxis,:],
+                np.sin(Δθ12[nodes,None])*cosφ1*sinθ1 + np.cos(Δθ12[nodes,None])*cosθ1,
+                np.sin(Δθ13[nodes,None])*cosφ1*sinθ1 + np.cos(Δθ13[nodes,None])*cosθ1]
+
+    # Group the modulation factors of each interaction by their absolute harmonic |δ| (the modulation is even in δ) 
+    used = sorted({q for pair in pairs for q in pair})
+    groups = {q:{} for q in used}
+    for q in used:
+        for n,(tref,δ) in enumerate(factors[q]):
+            groups[q].setdefault(abs(δ),[]).append(n)
+
+    nt = len(t)
+    M = {(i,j): np.zeros((nt,len(factors[i]),len(factors[j]))) for i,j in pairs}
+    narrays = 2*sum(len(groups[q]) for q in used) + 4
+    chunksize = max(1,int(memorylimit*1e9/(8*nt*len(θ)*narrays)))
+    outer = lambda u,v: (u[:,:,np.newaxis]*v[:,np.newaxis,:]).reshape(len(u),-1)
+    for start in range(0,len(P),chunksize):
+        nodes = slice(start,start+chunksize)
+        cosθ = cosθs(nodes)
+        w = (P[nodes,None]*weights).ravel()[np.newaxis,:]
+        # cos(xt), sin(xt) of each interaction and harmonic, shape (len(t),K), and cos(x*tref), sin(x*tref) of its factors, shape (K,F)
+        trig = {}
+        for q in used:
+            x = (ωrs[nodes,q,None]*(1 - 3*cosθ[q]**2)).ravel()
+            for d,idx in groups[q].items():
+                dx = d*x
+                trefs = np.array([factors[q][n][0] for n in idx],dtype=float)
+                trig[(q,d)] = (ne.evaluate('cos(dx*t)',local_dict={'dx':dx[np.newaxis,:],'t':t[:,np.newaxis]}),
+                               ne.evaluate('sin(dx*t)',local_dict={'dx':dx[np.newaxis,:],'t':t[:,np.newaxis]}),
+                               np.cos(np.outer(dx,trefs)),np.sin(np.outer(dx,trefs)))
+        for i,j in pairs:
+            for di,idx_i in groups[i].items():
+                Ci,Si,ci,si = trig[(i,di)]
+                for dj,idx_j in groups[j].items():
+                    Cj,Sj,cj,sj = trig[(j,dj)]
+                    terms = (ne.evaluate('w*Ci*Cj')@outer(ci,cj) + ne.evaluate('w*Ci*Sj')@outer(ci,sj) 
+                           + ne.evaluate('w*Si*Cj')@outer(si,cj) + ne.evaluate('w*Si*Sj')@outer(si,sj))
+                    M[(i,j)][np.ix_(np.arange(nt),idx_i,idx_j)] += terms.reshape(nt,len(idx_i),len(idx_j))
+    return M
 #==============================================================================

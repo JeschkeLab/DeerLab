@@ -3,7 +3,7 @@ import numpy as np
 from numpy import pi, inf
 from deerlab.bg_models import bg_hom3d,bg_exp
 from deerlab.dd_models import dd_gauss
-from deerlab.dipolarkernel import dipolarkernel,elementarykernel_twospin
+from deerlab.dipolarkernel import dipolarkernel,elementarykernel_twospin,threespin_kernel_moments
 from deerlab.utils import assert_docstring
 from deerlab.constants import ge
 
@@ -687,6 +687,29 @@ def test_threespin_relabelling():
     Kref = dipolarkernel(t,[r2,r3,r1],pathways=[{'reftime':(0,0,None),'amp':1,'harmonic':(1,1,0)}],gridsize=15000)
 
     assert np.allclose(K,Kref,atol=1e-2)
+#=======================================================================
+
+@pytest.mark.parametrize('orisel', [None, lambda θ: np.cos(θ)**2 + 0.2])
+def test_threespin_kernel_moments(orisel):
+#=======================================================================
+    "Check that the distance-averaged three-spin kernels agree with averaging the kernels of dipolarkernel"
+
+    t = np.linspace(-0.2,3,40)
+    rng = np.random.default_rng(1)
+    rs = np.array([3.0,3.5,4.0]) + 0.3*rng.standard_normal((20,3))
+    P = rng.random(20); P /= np.sum(P)
+    # Several refocusing times and harmonics on the same interaction
+    factors = [[(0.4,1.0),(2.1,-1.0)],[(0.4,1.0),(0.9,2.0)],[(0.0,1.0)]]
+    pairs = [(0,1),(0,2),(1,2)]
+    M = threespin_kernel_moments(t,rs,P,factors,pairs,[ge,ge],gridsize=1000,orisel=orisel)
+
+    for i,j in pairs:
+        for a,(tref_a,δa) in enumerate(factors[i]):
+            for b,(tref_b,δb) in enumerate(factors[j]):
+                pathway = {'amp':1, 'reftime':tuple(tref_a if n==i else tref_b if n==j else None for n in range(3)),
+                           'harmonic':tuple(δa if n==i else δb if n==j else 0 for n in range(3))}
+                K = dipolarkernel(t,list(rs.T),pathways=[pathway],integralop=False,method='grid',gridsize=1000,orisel=orisel)
+                assert np.allclose(M[(i,j)][:,a,b], K@P, atol=1e-12)
 #=======================================================================
 
 def test_threespin_twodimensional():

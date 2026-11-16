@@ -672,6 +672,46 @@ def test_threespin_smooth():
 # ======================================================================
 
 # ======================================================================
+def test_threespin_contribution_kernels():
+    "Check that the three-spin contribution equals averaging the dipolarkernel kernels of all three-spin pathways"
+    from deerlab.dipolarbackground import _multispin_pathways
+    from deerlab.dipolarmodel import _trivariate_marginal
+
+    experiment = ex_4pdeer(tau1, tau2, pathways=[1,2,3])
+    model = dipolarmodel(t,spins=3,experiment=experiment,Bmodel=None)
+    params = {k:v for k,v in threespin_params.items() if k not in ['lam1','reftime1','conc']}
+    lams, trefs = [0.15,0.05,0.03], [tau1,tau1+tau2,0]
+    params.update(lam1=lams[0], lam2=lams[1], lam3=lams[2], reftime1=trefs[0], reftime2=trefs[1], reftime3=trefs[2], scale=1)
+    Vthreespin = model.contributions(**params)['threespin']
+
+    _, threespin = _multispin_pathways(np.array([lams]*3), trefs, experiment.harmonics, params['lamu'], 3)
+    means = np.array([params['rmean1'],params['rmean2'],params['rmean3']])
+    L = np.array([[params['chol11'],0,0],[params['chol21'],params['chol22'],0],[params['chol31'],params['chol32'],params['chol33']]])
+    r3,P = _trivariate_marginal(means,L@L.T,L,np.array([0,1,2]))
+    Vref = dipolarkernel(t,list(r3.T),pathways=threespin,integralop=False,method='grid',gridsize=1000)@P
+
+    assert np.allclose(Vthreespin,Vref,atol=1e-12)
+# ======================================================================
+
+# ======================================================================
+def test_threespin_cached_kernels():
+    "Check that the three-spin kernels are reused when only the pathway amplitudes change"
+    from deerlab.dipolarmodel import _threespin_cache
+
+    model = dipolarmodel(t,spins=3,npathways=1,Bmodel=None)
+    params = {k:v for k,v in threespin_params.items() if k!='conc'}
+    _threespin_cache.clear()
+    V1 = model(**params, scale=1)
+    V2 = model(**{**params,'lam1':0.2,'lamu':0.5}, scale=1)
+    assert len(_threespin_cache)==1
+    V3 = model(**{**params,'rmean1':params['rmean1']+0.1}, scale=1)
+    assert len(_threespin_cache)==2
+    # Cached kernels give the same signal as freshly computed ones
+    _threespin_cache.clear()
+    assert np.array_equal(model(**{**params,'lam1':0.2,'lamu':0.5}, scale=1), V2)
+# ======================================================================
+
+# ======================================================================
 def test_threespin_weakpumping():
     "Check that by default the three-spin contribution is included also for weakly pumped experiments"
 

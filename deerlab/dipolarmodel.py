@@ -4,7 +4,8 @@
 # Copyright(c) 2019-2022: Luis Fabregas, Stefan Stoll and other contributors.
 
 import numpy as np
-from deerlab.dipolarkernel import dipolarkernel
+from collections import OrderedDict
+from deerlab.dipolarkernel import dipolarkernel, threespin_kernel_moments
 from deerlab.dipolarbackground import dipolarbackground, dipolarbackgroundmodel, _multispin_pathways
 from deerlab.regoperator import regoperator
 from deerlab.dd_models import freedist
@@ -127,6 +128,29 @@ def _trivariate_marginal(rmeans, Σ, L, triangle):
     keep = P>0
     r,P = r[keep],P[keep]
     return r, P/np.sum(P) if np.sum(P)>0 else P
+#===============================================================================
+
+_threespin_cache = OrderedDict()
+_threespin_cachesize = 32
+
+#===============================================================================
+def _threespin_kernel_moments_cached(t, r3, P, factors, pairs, g, gridsize, orisel):
+    """
+    Distance-averaged three-spin kernels (see ``threespin_kernel_moments``), cached for the last evaluated distance
+    distributions, refocusing times and time axes. These do not depend on the pathway amplitudes, the background or
+    the scale, such that changing only those (e.g. in most columns of a finite-difference Jacobian, or in the other
+    datasets of a global fit with identical time axes and distance distribution) does not recompute the kernels.
+    """
+    key = (np.asarray(t,dtype=float).tobytes(), r3.tobytes(), P.tobytes(), repr(factors), tuple(pairs),
+           tuple(np.atleast_1d(g).tolist()), gridsize, orisel)
+    if key in _threespin_cache:
+        _threespin_cache.move_to_end(key)
+        return _threespin_cache[key]
+    M = threespin_kernel_moments(t,r3,P,factors,pairs,g,gridsize=gridsize,orisel=orisel)
+    _threespin_cache[key] = M
+    if len(_threespin_cache)>_threespin_cachesize:
+        _threespin_cache.popitem(last=False)
+    return M
 #===============================================================================
 
 
@@ -675,16 +699,29 @@ def dipolarmodel(t, r=None, Pmodel=None, Bmodel=bg_hom3d, experiment=None, param
             if not pathways_triangle:
                 continue
 
+            # Modulation factors (refocusing time, harmonic) of each interaction of the triangle, and the pair of
+            # interactions and the factors modulating each pathway
+            factors, terms = [[],[],[]], []
+            for pathway in pathways_triangle.values():
+                pair = tuple(n for n in range(3) if pathway['harmonic'][n]!=0)
+                indices = []
+                for n in pair:
+                    factor = (float(pathway['reftime'][n]), float(pathway['harmonic'][n]))
+                    if factor not in factors[n]:
+                        factors[n].append(factor)
+                    indices.append(factors[n].index(factor))
+                terms.append((pathway['amp'],pair,*indices))
+            pairs = sorted({term[1] for term in terms})
+
             # Get the marginal trivariate distance distribution
             r3,Ptrimarg = _trivariate_marginal(rmeans,Σ,L,triangle)
 
-            # Construct the corresponding dipolar kernel
-            Kthreespin = dipolarkernel(t,list(r3.T), pathways=list(pathways_triangle.values()), integralop=False,
-                                        excbandwidth=excbandwidth, orisel=orisel,
-                                        g=g, method='grid', gridsize=gridsize)
+            # Kernels of all the pathways, averaged over the distance distribution
+            Kthreespin = _threespin_kernel_moments_cached(t,r3,Ptrimarg,factors,pairs,g,gridsize,orisel)
 
             # Three-spin intramolecular contribution from all pathways modulated by the triangle interaction
-            Vthreespin += Kthreespin@Ptrimarg
+            for amp,pair,a,b in terms:
+                Vthreespin += amp*Kthreespin[pair][:,a,b]
 
         # Compute the multi-spin dipolar intermolecular contribution
         if Bmodel is None:
