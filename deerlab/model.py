@@ -1564,10 +1564,19 @@ def link(model,**links):
     if not isinstance(model,Model):
         raise TypeError('The first argument must be a Model object.')
     newmodel = deepcopy(model)
+    # Record the name of the parameter each original (unlinked) parameter was linked to, composing successive links,
+    # such that the values of the parameters of the original model can be retrieved, e.g. from a fit result
+    linked_names = dict(getattr(model,'_links',{}))
     # Perform the linking, one by one
-    for link_newname in links: 
+    for link_newname in links:
         to_link = [getattr(newmodel,parname) for parname in links[link_newname]]
         newmodel = _linkparameter(newmodel,to_link,link_newname)
+        for original,current in linked_names.items():
+            if current in links[link_newname]:
+                linked_names[original] = link_newname
+        for parname in links[link_newname]:
+            linked_names[parname] = link_newname
+    newmodel._links = linked_names
     # Update the new model signature
     for key in links.keys():
         newmodel.signature = [key if arg==links[key][0] else arg for arg in newmodel.signature]

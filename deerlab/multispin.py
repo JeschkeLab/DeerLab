@@ -491,7 +491,7 @@ def _inverse_sample_function(dist, pnts, x_min=-100, x_max=100, n=1e5,**kwargs):
     f = interp1d(cumulative/cumulative.max(), x)
     return f(np.random.random(int(pnts)))
 
-def _gaussian_marginals(means, L, Npoints=121, nsigma=5):
+def _gaussian_marginals(means, L, Npoints=121, nsigma=5, r=None, _cache=None):
     """
     Computes the 1D and 2D marginals of a trivariate normal distance distribution truncated by the triangle
     inequality, as in the forward model of multi-spin ``dipolarmodel`` models (see ``_triangleweight``).
@@ -509,6 +509,11 @@ def _gaussian_marginals(means, L, Npoints=121, nsigma=5):
         Number of grid points along each distance, by default 121.
     nsigma : float, optional
         Half-width of the grid in standard deviations, by default 5.
+    r : dict, optional
+        Fixed distance axes keyed 'r1', 'r2', 'r3', in nm. If given, ``Npoints`` and ``nsigma`` are ignored.
+        Used to evaluate many distributions on a common grid.
+    _cache : dict, optional
+        Dictionary in which the grid and its triangle weights are stored and reused across calls with the same ``r``.
     """
     means,L = np.asarray(means,dtype=float),np.asarray(L,dtype=float)
     Ndims = len(means)
@@ -516,13 +521,21 @@ def _gaussian_marginals(means, L, Npoints=121, nsigma=5):
         raise NotImplementedError("Only trivariate (three-spin) distance distributions are currently supported.")
 
     Σ = L@L.T
-    sigmas = np.maximum(np.sqrt(np.diag(Σ)),1e-3)
     labels = [f'r{q+1}' for q in range(Ndims)]
-    r = {label: np.linspace(max(mean-nsigma*sigma,0),mean+nsigma*sigma,Npoints) for label,mean,sigma in zip(labels,means,sigmas)}
+    if r is None:
+        sigmas = np.maximum(np.sqrt(np.diag(Σ)),1e-3)
+        r = {label: np.linspace(max(mean-nsigma*sigma,0),mean+nsigma*sigma,Npoints) for label,mean,sigma in zip(labels,means,sigmas)}
 
-    grid = np.stack(np.meshgrid(*r.values(),indexing='ij'),axis=-1)
+    if _cache is not None and 'grid' in _cache:
+        grid,W = _cache['grid'],_cache['W']
+    else:
+        grid = np.stack(np.meshgrid(*r.values(),indexing='ij'),axis=-1)
+        W = _triangleweight(*np.moveaxis(grid,-1,0))
+        if _cache is not None:
+            _cache.update({'grid': grid, 'W': W})
+
     P = st.multivariate_normal(mean=means,cov=Σ,allow_singular=True).pdf(grid)
-    P *= _triangleweight(*np.moveaxis(grid,-1,0))
+    P *= W
     P /= np.sum(P)
 
     P_1D = {label: np.sum(P,axis=tuple(k for k in range(Ndims) if k != q)) for q,label in enumerate(labels)}
@@ -530,33 +543,123 @@ def _gaussian_marginals(means, L, Npoints=121, nsigma=5):
 
     return {'P_1D': P_1D, 'P_2D': P_2D, 'r': r}
 
-def _plot_marginals(axs, marginals, color, label=None, alpha=0.3):
+def _sample_fit_params(fit:FitResult, Nsamples=300, seed=1):
+    """
+    Draws samples of the mean distances and Cholesky factors of a multi-spin dd_Gauss fit from its parameter uncertainty.
+
+    For bootstrapped fits, the bootstrap samples are used directly (subsampled to ``Nsamples`` if there are more).
+    For covariance-based (moment) uncertainties, the samples are drawn from the multivariate normal distribution of the
+    parameters, including their correlations, and clipped to the parameter bounds, consistent with the bounded
+    confidence intervals reported by DeerLab.
+
+    Returns
+    -------
+    means : ndarray, shape (Nsamples, Ndims)
+        Sampled mean distances, in nm.
+    L : ndarray, shape (Nsamples, Ndims, Ndims)
+        Sampled lower Cholesky factors, in nm.
+    """
+    Ndims = len(_extract_means_and_cholesky(fit)['means'])
+    tril = [(i,j) for i in range(Ndims) for j in range(i+1)]
+    names = [f'rmean{i+1}' for i in range(Ndims)] + [f'chol{i+1}{j+1}' for i,j in tril]
+    idx = [fit._param_idx[fit.paramlist.index(name)][0] for name in names]
+
+    uq = fit.paramUncert
+    rng = np.random.default_rng(seed)
+    if uq.type == 'bootstrap':
+        samples = np.atleast_2d(uq.samples)[:,idx]
+        if samples.shape[0] > Nsamples:
+            samples = samples[rng.choice(samples.shape[0],Nsamples,replace=False)]
+    elif uq.type in ('moment','profile'):
+        center = np.asarray(fit.param,dtype=float)[idx]
+        cov = np.asarray(uq.covmat,dtype=float)[np.ix_(idx,idx)]
+        samples = rng.multivariate_normal(center,cov,size=Nsamples,method='eigh',check_valid='ignore')
+        samples = np.clip(samples,np.asarray(uq.lb,dtype=float)[idx],np.asarray(uq.ub,dtype=float)[idx])
+    else:
+        raise ValueError("The fit result does not contain parameter uncertainties, confidence intervals cannot be computed.")
+
+    means = samples[:,:Ndims]
+    L = np.zeros((samples.shape[0],Ndims,Ndims))
+    for n,(i,j) in enumerate(tril):
+        L[:,i,j] = samples[:,Ndims+n]
+    return means, L
+
+def _gaussian_marginals_CI(means, L, coverage=90, Npoints=81, nsigma=5):
+    """
+    Pointwise confidence bands of the 1D marginals of ``_gaussian_marginals`` over a set of sampled parameters.
+
+    The marginals of all samples are evaluated on a common grid spanning ``nsigma`` standard deviations around the
+    means of (almost) all samples, and normalized as probability densities (1/nm).
+
+    Returns
+    -------
+    dict
+        'r': distance axes keyed 'r1', 'r2', 'r3', and 'lower'/'upper': the band limits of each 1D marginal, same keys.
+    """
+    Ndims = means.shape[1]
+    labels = [f'r{q+1}' for q in range(Ndims)]
+    sigmas = np.sqrt(np.sum(L**2,axis=2)) # sqrt(diag(L@L.T)) of each sample
+    lo = np.maximum(np.percentile(means - nsigma*sigmas,1,axis=0),0)
+    hi = np.percentile(means + nsigma*sigmas,99,axis=0)
+    r = {label: np.linspace(lo[q],hi[q],Npoints) for q,label in enumerate(labels)}
+
+    cache = {}
+    P_1D = {label: [] for label in labels}
+    for m,l in zip(means,L):
+        marginals = _gaussian_marginals(m,l,r=r,_cache=cache)
+        for label in labels:
+            P_1D[label].append(marginals['P_1D'][label]/np.trapezoid(marginals['P_1D'][label],r[label]))
+
+    p_lo,p_hi = (100-coverage)/2,(100+coverage)/2
+    bands = {label: np.percentile(np.array(P_1D[label]),[p_lo,p_hi],axis=0) for label in labels}
+    return {'r': r, 'lower': {label: band[0] for label,band in bands.items()}, 'upper': {label: band[1] for label,band in bands.items()}}
+
+def _plot_1D(ax, r, P, rotated=False, fill=False, **kwargs):
+    """
+    Plots a 1D marginal on a diagonal panel, as a line or (``fill=True``) a shaded area under ``P``, or a band
+    between the two rows of ``P``. If ``rotated``, the distance is plotted along the vertical axis instead.
+    """
+    if fill:
+        lower,upper = (P[0],P[1]) if np.ndim(P) == 2 else (np.zeros_like(P),P)
+        (ax.fill_betweenx if rotated else ax.fill_between)(r, lower, upper, linewidth=0, **kwargs)
+    else:
+        ax.plot(*((P,r) if rotated else (r,P)), **kwargs)
+
+def _plot_marginals(axs, marginals, color, label=None, alpha=0.3, fill=True):
     """
     Plots gridded 1D marginals on the diagonal panels and 2D marginals as contours on the lower-triangle panels.
+
+    The last 1D marginal is rotated, with the distance along the vertical axis, such that it shares the distance axis
+    of the last row of 2D panels.
 
     Parameters
     ----------
     marginals : dict
         Dictionary with keys 'r', 'P_1D' and 'P_2D' as returned by ``prepare_MMMx`` or ``_gaussian_marginals``.
         The k-th distance is plotted on diagonal panel r{k+1}, and the joint of the i-th and j-th distance on panel r{i+1}{j+1}.
+    fill : bool, optional
+        If True (default), the area under the 1D marginals is shaded.
     """
     labels = list(marginals['P_1D'])
     for k,key in enumerate(labels):
         r = marginals['r'][key]
         P1D = marginals['P_1D'][key]
         P1D = P1D/np.trapezoid(P1D,r) # Normalize as a probability density (1/nm), such that different grids can be compared
-        axs[f'r{k+1}'].fill_between(r, P1D, color=color, alpha=alpha, linewidth=0)
-        axs[f'r{k+1}'].plot(r, P1D, color=color, label=label)
+        rotated = k == len(labels)-1
+        if fill:
+            _plot_1D(axs[f'r{k+1}'], r, P1D, rotated=rotated, fill=True, color=color, alpha=alpha)
+        _plot_1D(axs[f'r{k+1}'], r, P1D, rotated=rotated, color=color, label=label)
 
     for i,j in combinations(range(len(labels)),2):
         _contour2d(marginals['r'][labels[i]], marginals['r'][labels[j]], marginals['P_2D'][f'{labels[i]}_{labels[j]}'], color=color, ax=axs[f'r{i+1}{j+1}'])
 
 
-def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None, table=True, fig=None):
+def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None, CI=False, Nsamples=300, table=True, fig=None):
 
     """"
     Generates the plot for multivariate distributions of more than two distances. 
     The plot is formed as a triangle of 2D distrubutions showing the correlation between any two distances, and the diagonal shows the 1D marginal distributions of each distance.
+    The last 1D marginal distribution is rotated, such that it shares the distance axis of the last row of 2D distributions.
 
     A simulated distribution from either MMMx or HSC can also be added to the plot for comparison, or plotted on its own.
 
@@ -578,6 +681,12 @@ def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None
     sim: dict, optional
         The MMMx or HSC simulation to be added. This should be created using the
         `prepare_MMMx` or `prepare_HSC` functions, by default None.
+    CI: bool, optional
+        If True, the 1D marginal distributions of the fit are shown with their pointwise 90% confidence bands, by default False.
+        The uncertainty is propagated by sampling the fitted means and Cholesky factors from the parameter uncertainty of the
+        fit (bootstrap samples, or the covariance matrix clipped to the parameter bounds).
+    Nsamples: int, optional
+        Number of parameter samples used to estimate the confidence bands if ``CI=True``, by default 300.
     table: bool, optional
         If True, a table of the mean distances and the cholesky factors of the covariance matrix will be added to the plot, by default True. 
     fig: matplotlib.figure.Figure, optional
@@ -611,14 +720,12 @@ def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None
     for i in range(Nspins):
         for j in range(i,Nspins):   
             if i == j: # Format the diagonal subplots
-                axs[f'r{i+1}'].set_xlim(*r_lim)
+                # The distance axis is shared with the 2D panels below them, or, for the rotated last one, left of it
                 if i<Nspins-1:
-                    axs[f'r{i+1}'].axis('off')
+                    axs[f'r{i+1}'].set_xlim(*r_lim)
                 else:
-                    axs[f'r{i+1}'].spines['top'].set_visible(False)
-                    axs[f'r{i+1}'].spines['right'].set_visible(False)
-                    axs[f'r{i+1}'].yaxis.set_visible(False)
-                    axs[f'r{i+1}'].set_xlabel(f'$r_{{{i+1}}}$ (nm)')
+                    axs[f'r{i+1}'].set_ylim(*r_lim)
+                axs[f'r{i+1}'].axis('off')
             if i < j: # Format the lower triangle subplots
                 axs[f'r{i+1}{j+1}'].set_xlim(*r_lim)
                 axs[f'r{i+1}{j+1}'].set_ylim(*r_lim)
@@ -652,12 +759,22 @@ def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None
         else:
             raise NotImplementedError("Plotting of multivariate dd_WormGauss fits is not yet supported.")
 
-        _plot_marginals(axs, fit_marginals, color='blue', label='Fit')
+        if CI:
+            # Propagate the parameter uncertainty to the 1D marginals by sampling the fitted parameters,
+            # the band replaces the shaded area under the fitted marginals
+            bands = _gaussian_marginals_CI(*_sample_fit_params(fit, Nsamples=Nsamples), coverage=90)
+            for k,key in enumerate(bands['r']):
+                _plot_1D(axs[f'r{k+1}'], bands['r'][key], np.stack([bands['lower'][key],bands['upper'][key]]),
+                         rotated=k == len(bands['r'])-1, fill=True, color='blue', alpha=0.3, label='Fit 90% CI')
+        _plot_marginals(axs, fit_marginals, color='blue', label='Fit', fill=not CI)
         table_params['Fit'] = {'means': fit_values['means'], 'L': fit_values['L'], 'color': 'blue'}
 
-    # The 1D marginals are densities, start their axes at zero
+    # The 1D marginals are densities, start their density axes at zero
     for k in range(Nspins):
-        axs[f'r{k+1}'].set_ylim(bottom=0)
+        if k<Nspins-1:
+            axs[f'r{k+1}'].set_ylim(bottom=0)
+        else:
+            axs[f'r{k+1}'].set_xlim(left=0)
 
     if table and table_params:
         _add_param_table(fig,axs,table_params,Nspins)
@@ -668,15 +785,22 @@ def plot_multivariate(*,Nspins, fit:FitResult=None, r_lim=(1,8), sim:dict = None
 # Multivariate time-domain plot functions
 # -----------------------------------------------------------------------------
 
-def _dataset_params(fit:FitResult, model, n, nDatasets) -> dict:
+def _dataset_params(fit:FitResult, model, n, nDatasets, links:dict=None) -> dict:
     """
     Fitted values of the parameters of the model of the n-th dataset. In a global fit of merged models, the
-    parameters of the n-th model are named with the suffix ``_{n+1}``, unless they were linked back to their
-    original name, so the suffixed name is looked up first.
+    parameters of the n-th model are named with the suffix ``_{n+1}``.
+
+    If ``links`` is given (the ``_links`` of the fitted model, mapping each original parameter name to the name
+    of the parameter it was linked to by ``dl.link``), the names are resolved exactly. Otherwise, the suffixed name
+    is looked up first and then the original name, which covers parameters linked back to their original name.
     """
     params = {}
     for param in model._parameter_list():
-        candidates = [f'{param}_{n+1}', param] if nDatasets > 1 else [param]
+        name = f'{param}_{n+1}' if nDatasets > 1 else param
+        if links is not None:
+            candidates = [links.get(name,name)]
+        else:
+            candidates = [name, param] if nDatasets > 1 else [param]
         for candidate in candidates:
             if candidate in fit.paramlist:
                 params[param] = getattr(fit,candidate)
@@ -685,7 +809,7 @@ def _dataset_params(fit:FitResult, model, n, nDatasets) -> dict:
             raise KeyError(f"The fit result does not contain the parameter '{param}' of the model of dataset {n+1} (looked for {candidates}).")
     return params
 
-def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=None, labels:list=None):
+def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None, fig=None, labels:list=None, globalmodel=None):
     """
     Generate time-domain plots of the experimental data and the fitted model for 
     multivariate distance dsitributions. It shows the exp data, the fitted model,
@@ -704,11 +828,15 @@ def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=N
         three-spin contributions and the background (the unmodulated contribution ``Λ0*B``) of each dataset are evaluated 
         at the fitted parameter values and plotted. In a global fit
         of merged models, the parameters of the n-th model are looked up as ``<name>_<n>`` and otherwise as ``<name>``
-        (e.g. when linked back to their original name), by default None.
+        (e.g. when linked back to their original name), by default None. If parameters were linked to other names
+        (e.g. ``lam23_1`` for ``lam2_1`` and ``lam3_1``), pass the fitted model as ``globalmodel``.
     fig, matplotlib.figure.Figure, optional
         If provided, the plot will be added to this figure, by default None.
     labels, list, optional
         The labels for the datasets, by default None. If None, the datasets will be labeled as Dataset 1, Dataset 2, etc.
+    globalmodel, Model, optional
+        The model that was fitted, i.e. the merged and linked ``models``. If provided, the links made with ``dl.link``
+        are used to find the fitted value of each parameter of ``models``, by default None.
 
     Returns
     -------
@@ -730,6 +858,7 @@ def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=N
             raise ValueError("The number of dipolar models must match the number of experimental datasets.")
         if not all(hasattr(model,'contributions') for model in models):
             raise ValueError("The two-spin and three-spin contributions and the background can only be computed for multi-spin dipolarmodel models (spins>2).")
+    links = getattr(globalmodel,'_links',{}) if globalmodel is not None else None
 
     if labels is None:
         labels = [f'Dataset {i+1}' for i in range(nDatasets)]
@@ -746,7 +875,7 @@ def plot_multivariate_td(fit:FitResult,Vexps:list,ts:list,models:list=None,fig=N
 
         if models is not None:
             # Evaluate the contributions at the fitted parameters, the two-spin and three-spin ones add up to the fitted model
-            contributions = models[i].contributions(**_dataset_params(fit,models[i],i,nDatasets))
+            contributions = models[i].contributions(**_dataset_params(fit,models[i],i,nDatasets,links))
             axs[i].plot(ts[i],contributions['twospin'],color='tab:green',linestyle='--',label='Two-spin')
             axs[i].plot(ts[i],contributions['threespin'],color='tab:red',linestyle='--',label='Three-spin')
             axs[i].plot(ts[i],contributions['background'],color='tab:gray',linestyle=':',label='Background')
